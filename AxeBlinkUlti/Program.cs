@@ -48,7 +48,7 @@ namespace AxeBlinkUlti
             if (_target != null)
             {
                 if (Vector3.DistanceSquared(me.Position, _target.Position) > 400)
-                    { me.CastAbility(blink, _target.Position;
+                    { me.CastAbility(blink, _target.Position);
                       return; }
                 else
                     { me.CastAbility(Chop, _target);
@@ -82,6 +82,8 @@ namespace AxeBlinkUlti
             var me = EntityList.GetLocalPlayer().Hero;
 
             Hero result = null;
+            var int minimumDistance = 1500;
+
             foreach (var hero in enemies)
             {
                 var distance = Vector3.DistanceSquared(me.Position, hero.Position);
