@@ -48,10 +48,10 @@ namespace AxeBlinkUlti
             if (_target != null)
             {
                 if (Vector3.DistanceSquared(me.Position, _target.Position) > 400)
-                    { me.CastAbility(blink, _target.Position);
+                    { blink.UseAbility(_target.Position);
                       return; }
                 else
-                    { me.CastAbility(Chop, _target);
+                    { Chop.UseAbility(_target);
                     return;}
             }
 
