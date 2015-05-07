@@ -17,6 +17,10 @@ namespace TinyAutoCombo
 
         private static Hero _target;
         private static bool activated;
+        private static bool AvalancheCasted;
+        private static bool TossCasted;
+        private static bool BlinkCasted;
+        
         static void Main(string[] args)
         {
             Game.OnGameUpdate += AutoCombo;
@@ -46,16 +50,31 @@ namespace TinyAutoCombo
 
             if (_target != null && _target.IsAlive && _target.IsVisible)
             {
-                if (Vector3.DistanceSquared(me.Position, _target.Position) > 400)
+                if (Vector3.DistanceSquared(me.Position, _target.Position) > 400 && BlinkCasted == false)
                 {
-                    me.CastAbility(blink, _target.Position);
+                    blink.UseAbility(_target.Position);
+                    BlinkCasted = true;
                     return;
                 }
                 else
                 {
-                    me.CastAbility(Avalanche, _target.Position);
-                    me.CastAbility(Toss, _target);
-                    return;
+                    if AvalancheCasted == false {
+                        Avalanche.UseAbility(_target.Position);
+                        AvalancheCasted = true;
+                        TossCasted = false;
+                        BlinkCasted = false;
+                        return
+                    }
+                    else 
+                    {
+                        if TossCasted == false
+                        {
+                            Toss.UseAbility(_target);
+                            AvalancheCasted = false;
+                            TossCasted = true;
+                            return;
+                        }
+                    }
                 }
             }
 
