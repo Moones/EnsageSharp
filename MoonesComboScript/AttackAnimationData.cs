@@ -62,7 +62,29 @@ namespace MoonesComboScript
             var gameTime = Game.GameTime;
             var attackSpeed = Math.Max(me.AttackSpeed, 600);
             var attackPoint = meData.AttackPoint / (1 + (attackSpeed - 100) / 100);
-            var attackRate = me.AttackBaseTime / (1 + (attackSpeed - 100) / 100);
+            var attackBaseTime = me.AttackBaseTime;
+            var spell = me.Spellbook.SpellQ;
+            if (me.Modifiers.Any(x => (x.Name == "modifier_alchemist_chemical_rage" || x.Name == "modifier_terrorblade_metamorphosis" || x.Name == "modifier_lone_druid_true_form" || x.Name == "modifier_troll_warlord_berserkers_rage")))
+            {
+                if (me.ClassId == ClassId.CDOTA_Unit_Hero_Alchemist)
+                {
+                    spell = me.Spellbook.SpellR;
+                }
+                else if (me.ClassId == ClassId.CDOTA_Unit_Hero_Terrorblade)
+                {
+                    spell = me.Spellbook.SpellE;
+                }
+                else if (me.ClassId == ClassId.CDOTA_Unit_Hero_LoneDruid)
+                {
+                    spell = me.Spellbook.SpellR;
+                }
+                else if (me.ClassId == ClassId.CDOTA_Unit_Hero_TrollWarlord)
+                {
+                    spell = me.Spellbook.SpellQ;
+                }
+                //attackBaseTime = spell.AbilityData.Any(x => x.Name == "base_attack_time");
+            }
+            var attackRate = attackBaseTime / (1 + (attackSpeed - 100) / 100);
             if (sender != null && me.Equals(sender) && args.Property == "m_NetworkActivity")
             {
                 if (args.NewValue == 424 || args.NewValue == 419)
@@ -84,18 +106,5 @@ namespace MoonesComboScript
                 }
             }
         }
-
-        //static bool HaveModifier(Entity ent, String name)
-        //{
-        //    foreach (var modifier in ent.modifiers)
-        //    {
-        //        if (modifier.name == name)
-        //        {
-        //            return true
-        //        }
-        //    }
-        //    return false
-        //}
-
     }
 }
