@@ -164,15 +164,73 @@ namespace MoonesComboScript
 
         }
 
-        public static AttackAnimationData GetByName(string unitName)
+        public static AttackAnimationData GetByName(String unitName)
         {
             return Units.FirstOrDefault(unitData => unitData.UnitName.ToLower() == unitName);
         }
 
-        public static AttackAnimationData GetByClassId(Ensage.ClassId classId)
+        public static AttackAnimationData GetByClassId(ClassId classId)
         {
             return Units.FirstOrDefault(unitData => unitData.UnitClassId.Equals(classId));
         }
 
+        public static float GetAttackSpeed(Unit unit)
+        {
+            var attackSpeed = Math.Max(unit.AttackSpeed, 600);
+            if (unit.Modifiers.Any(x => (x.Name == "modifier_ursa_overpower")))
+                attackSpeed = 600;
+            return (float) attackSpeed;
+        }
+
+        public static double GetAttackPoint(Unit unit)
+        {
+            ClassId classId = unit.ClassId;
+            String name = unit.Name;
+            AttackAnimationData data = GetByClassId(classId);
+            if (data == null)
+                data = GetByName(name);
+            var attackSpeed = GetAttackSpeed(unit);
+            return data.AttackPoint / (1 + (attackSpeed - 100) / 100);
+        }
+
+        public static double GetAttackBackswing(Unit unit)
+        {
+            ClassId classId = unit.ClassId;
+            String name = unit.Name;
+            AttackAnimationData data = GetByClassId(classId);
+            if (data == null)
+                data = GetByName(name);
+            var attackSpeed = GetAttackSpeed(unit);
+            return data.AttackBackswing / (1 + (attackSpeed - 100) / 100);
+        }
+
+        public static double GetAttackRate(Unit unit)
+        {
+            ClassId classId = unit.ClassId;
+            var attackSpeed = GetAttackSpeed(unit);
+            var attackBaseTime = unit.AttackBaseTime;
+            Ability spell;
+            if (unit.Modifiers.Any(x => (x.Name == "modifier_alchemist_chemical_rage" || x.Name == "modifier_terrorblade_metamorphosis" || x.Name == "modifier_lone_druid_true_form" || x.Name == "modifier_troll_warlord_berserkers_rage")))
+            {
+                if (classId == ClassId.CDOTA_Unit_Hero_Alchemist)
+                {
+                    spell = unit.Spellbook.Spells.FirstOrDefault(x => x.Name == "alchemist_chemical_rage");
+                }
+                else if (classId == ClassId.CDOTA_Unit_Hero_Terrorblade)
+                {
+                    spell = unit.Spellbook.Spells.FirstOrDefault(x => x.Name == "terrorblade_metamorphosis");
+                }
+                else if (classId == ClassId.CDOTA_Unit_Hero_LoneDruid)
+                {
+                    spell = unit.Spellbook.Spells.FirstOrDefault(x => x.Name == "lone_druid_true_form");
+                }
+                else if (classId == ClassId.CDOTA_Unit_Hero_TrollWarlord)
+                {
+                    spell = unit.Spellbook.Spells.FirstOrDefault(x => x.Name == "troll_warlord_berserkers_rage");
+                }
+                attackBaseTime = spell.AbilityData.("base_attack_time");
+            }
+            return attackBaseTime / (1 + (attackSpeed - 100) / 100);
+        }
     }
 }

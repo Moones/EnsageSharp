@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace MoonesComboScript
 {
-
     public class AttackAnimationData
     {
         public string UnitName;
@@ -23,7 +22,7 @@ namespace MoonesComboScript
         public double TurnRate;
         private static double moveTime = 0;
         private static double endTime = 0;
-        private static bool canMove = false;
+        public static bool canMove = false;
 
         public AttackAnimationData() { }
 
@@ -47,6 +46,7 @@ namespace MoonesComboScript
         static void Main(string[] args)
         {
             Entity.OnIntegerPropertyChange += Entity_OnIntegerPropertyChange;
+            Game.OnUpdate += TrackTick;
         }
 
         static void Entity_OnIntegerPropertyChange(Entity sender, EntityIntegerPropertyChangeEventArgs args)
@@ -60,34 +60,14 @@ namespace MoonesComboScript
             var me = EntityList.Hero;
             var meData = AttackAnimationDatabase.GetByClassId(me.ClassId);
             var gameTime = Game.GameTime;
-            var attackSpeed = Math.Max(me.AttackSpeed, 600);
-            var attackPoint = meData.AttackPoint / (1 + (attackSpeed - 100) / 100);
-            var attackBaseTime = me.AttackBaseTime;
-            var spell = me.Spellbook.SpellQ;
-            if (me.Modifiers.Any(x => (x.Name == "modifier_alchemist_chemical_rage" || x.Name == "modifier_terrorblade_metamorphosis" || x.Name == "modifier_lone_druid_true_form" || x.Name == "modifier_troll_warlord_berserkers_rage")))
-            {
-                if (me.ClassId == ClassId.CDOTA_Unit_Hero_Alchemist)
-                {
-                    spell = me.Spellbook.SpellR;
-                }
-                else if (me.ClassId == ClassId.CDOTA_Unit_Hero_Terrorblade)
-                {
-                    spell = me.Spellbook.SpellE;
-                }
-                else if (me.ClassId == ClassId.CDOTA_Unit_Hero_LoneDruid)
-                {
-                    spell = me.Spellbook.SpellR;
-                }
-                else if (me.ClassId == ClassId.CDOTA_Unit_Hero_TrollWarlord)
-                {
-                    spell = me.Spellbook.SpellQ;
-                }
-                //attackBaseTime = spell.AbilityData.Any(x => x.Name == "base_attack_time");
-            }
-            var attackRate = attackBaseTime / (1 + (attackSpeed - 100) / 100);
+            var attackSpeed = AttackAnimationDatabase.GetAttackSpeed(me);
+            var attackPoint = AttackAnimationDatabase.GetAttackPoint(me);
+            var attackRate = AttackAnimationDatabase.GetAttackRate(me);
+
             if (sender != null && me.Equals(sender) && args.Property == "m_NetworkActivity")
             {
                 if (args.NewValue == 424 || args.NewValue == 419)
+                {    
                     if (moveTime == 0)
                     {
                         moveTime = gameTime + attackPoint;
@@ -104,7 +84,22 @@ namespace MoonesComboScript
                         endTime = 0;
                     }
                 }
+                else
+                {
+                    canMove = false;
+                    moveTime = 0;
+                    endTime = 0;
+                }
             }
+        }
+        static void TrackTick(EventArgs args)
+        {
+           var me = EntityList.Hero;
+           var gameTime = Game.GameTime;
+           if (moveTime != 0 && moveTime <= gameTime)
+           {
+               canMove = true;
+           }
         }
     }
 }
