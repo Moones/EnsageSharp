@@ -58,9 +58,7 @@ namespace MoonesComboScript
             }
 
             var me = EntityList.Hero;
-            var meData = AttackAnimationDatabase.GetByClassId(me.ClassId);
             var gameTime = Game.GameTime;
-            var attackSpeed = AttackAnimationDatabase.GetAttackSpeed(me);
             var attackPoint = AttackAnimationDatabase.GetAttackPoint(me);
             var attackRate = AttackAnimationDatabase.GetAttackRate(me);
 

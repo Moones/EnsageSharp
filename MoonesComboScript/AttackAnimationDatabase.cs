@@ -190,18 +190,21 @@ namespace MoonesComboScript
             if (data == null)
                 data = GetByName(name);
             var attackSpeed = GetAttackSpeed(unit);
-            return data.AttackPoint / (1 + (attackSpeed - 100) / 100);
+            return (data.AttackPoint / (1 + (attackSpeed - 100) / 100)) - 0.13950280112044817927170868347339;
         }
 
         public static double GetAttackBackswing(Unit unit)
         {
-            ClassId classId = unit.ClassId;
-            String name = unit.Name;
-            AttackAnimationData data = GetByClassId(classId);
-            if (data == null)
-                data = GetByName(name);
-            var attackSpeed = GetAttackSpeed(unit);
-            return data.AttackBackswing / (1 + (attackSpeed - 100) / 100);
+            //ClassId classId = unit.ClassId;
+            //String name = unit.Name;
+            //AttackAnimationData data = GetByClassId(classId);
+            //if (data == null)
+            //    data = GetByName(name);
+            //var attackSpeed = GetAttackSpeed(unit);
+            //return (data.AttackBackswing / (1 + (attackSpeed - 100) / 100)) ;
+            var attackRate = GetAttackRate(unit);
+            var attackPoint = GetAttackPoint(unit);
+            return attackRate - attackPoint;
         }
 
         public static double GetAttackRate(Unit unit)
@@ -230,7 +233,7 @@ namespace MoonesComboScript
                 }
                 attackBaseTime = spell.AbilityData.("base_attack_time");
             }
-            return attackBaseTime / (1 + (attackSpeed - 100) / 100);
+            return (attackBaseTime / (1 + (attackSpeed - 100) / 100)) - 0.03;
         }
     }
 }
