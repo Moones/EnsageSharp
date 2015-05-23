@@ -212,7 +212,7 @@ namespace MoonesComboScript
             ClassId classId = unit.ClassId;
             var attackSpeed = GetAttackSpeed(unit);
             var attackBaseTime = unit.AttackBaseTime;
-            Ability spell;
+            Ability spell = null;
             if (unit.Modifiers.Any(x => (x.Name == "modifier_alchemist_chemical_rage" || x.Name == "modifier_terrorblade_metamorphosis" || x.Name == "modifier_lone_druid_true_form" || x.Name == "modifier_troll_warlord_berserkers_rage")))
             {
                 if (classId == ClassId.CDOTA_Unit_Hero_Alchemist)
@@ -231,8 +231,8 @@ namespace MoonesComboScript
                 {
                     spell = unit.Spellbook.Spells.FirstOrDefault(x => x.Name == "troll_warlord_berserkers_rage");
                 }
-                attackBaseTime = spell.AbilityData.("base_attack_time");
-            }
+                attackBaseTime = spell.AbilityData.FirstOrDefault(x => x.Name == "base_attack_time").Value;
+            }                
             return (attackBaseTime / (1 + (attackSpeed - 100) / 100)) - 0.03;
         }
     }

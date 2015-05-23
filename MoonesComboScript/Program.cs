@@ -18,22 +18,64 @@ namespace MoonesComboScript
         const int WM_KEYDOWN = 0x0105;
 
         private static Hero victim;
-        private readonly static Timer Timer = new Timer();
+        private static double victimHP;
+        private readonly static Timer ComboTimer = new Timer();
+        private readonly static Timer AttackTimer = new Timer();
 
         static void Main(string[] args)
         {
-            Timer.Tick += Timer_Tick;
+            ComboTimer.Tick += ComboTimer_Tick;
+            AttackTimer.Tick += AttackTimer_Tick;
             Game.OnUpdate += OrbWalker;
+            Game.OnUpdate += AutoCombo;
         }
 
-        static void Timer_Tick(object sender, EventArgs e)
+        static void ComboTimer_Tick(object sender, EventArgs e)
         {
-            Timer.Enabled = false;
+            ComboTimer.Enabled = false;
+        }
+
+        static void AttackTimer_Tick(object sender, EventArgs e)
+        {
+            AttackTimer.Enabled = false;
+        }
+
+        static void AutoCombo(EventArgs args)
+        {
+            if (ComboTimer.Enabled || !Game.IsInGame || Game.IsPaused)
+                return;
+
+            var me = EntityList.Hero;
+            var a1 = me.Spellbook.Spell1;
+            var a2 = me.Spellbook.Spell2;
+            var a3 = me.Spellbook.Spell3;
+            var a4 = me.Spellbook.Spell4;
+            var a5 = me.Spellbook.Spell5;
+            var a6 = me.Spellbook.Spell6;
+            var attackRange = GetAttackRange(me);
+            var victimdistance = GetDistance2D(victim.Position, me.Position);
+            var canMove = AttackAnimationData.canMove;
+            var mousePosition = Game.MousePosition;
+            var meDmg = me.DamageAverage+me.DamageBonus;
+            var blink = me.Inventory.Items.FirstOrDefault(x => x.Name == "item_blink");
+            if (victim != null && (!me.UnitState.HasFlag(UnitState.Invisible) || (a2.Name == "templar_assassin_meld" && a2.AbilityState == AbilityState.Ready && victimdistance < attackRange+50)) && ((victim.Health > 0 && victim.Health > meDmg) || victimdistance > attackRange+200) && me.IsAlive && victim.IsAlive)
+            {
+                if (blink != null && blink.AbilityState == AbilityState.Ready && victim.IsVisible && victim.IsAlive && victimdistance > 500 && victimdistance > attackRange+100 && victimdistance < 1700)
+                {
+                    var blinkRange = blink.AbilityData.FirstOrDefault(x => x.Name == "blink_range").Value;
+                    var blinkPos = victim.Position;
+                    if (victimdistance > blinkRange)
+                        blinkPos = (blinkPos - me.Position) * (blinkRange - 1) / GetDistance2D(blinkPos, me.Position) + me.Position;
+                    blink.UseAbility(blinkPos);
+                    ComboTimer.Start(200);
+                    return;
+                }
+            }
         }
 
         static void OrbWalker(EventArgs args)
         {
-            if (Timer.Enabled || !Game.IsInGame || Game.IsPaused)
+            if (AttackTimer.Enabled || !Game.IsInGame || Game.IsPaused)
                 return;
 
             var me = EntityList.Hero;
@@ -47,12 +89,14 @@ namespace MoonesComboScript
             if (canMove == false && victim != null && !victim.UnitState.HasFlag(UnitState.AttackImmune) && victimdistance < attackRange+100)
             {
                 me.Attack(victim);
-                Timer.Start(200);
+                AttackTimer.Start(200);
+                return;
             }
             else
             {
                 me.Move(mousePosition);
-                Timer.Start(200);
+                AttackTimer.Start(200);
+                return;
             }
         }
 
@@ -72,6 +116,8 @@ namespace MoonesComboScript
                     result = hero;
                 }
             }
+            if (result != null)
+                victimHP = result.Health;
             return result;
         }
 
