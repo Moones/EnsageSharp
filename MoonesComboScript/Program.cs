@@ -112,7 +112,7 @@ namespace MoonesComboScript
                         }
                     }
 
-                    if ((item == dagon || item == ethereal) && ((CanBeCasted(a4) && a4.Name == "necrolyte_reapers_scythe") || (killsteal && !victim.Modifiers.Any(x => (x.Name == "modifier_item_ethereal_blade_slow")) && !victim.Modifiers.Any(x => (x.Name == "modifier_necrolyte_reapers_scythe")))))
+                    if ((item == dagon || item == ethereal) && ((a4 && a4.Name == "necrolyte_reapers_scythe" && CanBeCasted(a4)) || (killsteal && !victim.Modifiers.Any(x => (x.Name == "modifier_item_ethereal_blade_slow")) && !victim.Modifiers.Any(x => (x.Name == "modifier_necrolyte_reapers_scythe")))))
                         go = false;
 
                 }

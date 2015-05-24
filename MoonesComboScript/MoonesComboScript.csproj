@@ -45,8 +45,6 @@
     <Compile Include="AttackAnimationData.cs" />
     <Compile Include="AttackAnimationDatabase.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="ItemData.cs" />
-    <Compile Include="ItemDatabase.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
