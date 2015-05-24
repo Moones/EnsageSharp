@@ -19,13 +19,17 @@ namespace MoonesComboScript
 
         private static Hero victim;
         private static double victimHP;
+        private static bool Retreat;
+        private static Vector3 mePosition;
         private readonly static Timer ComboTimer = new Timer();
         private readonly static Timer AttackTimer = new Timer();
+        private readonly static Timer MoveTimer = new Timer();
 
         static void Main(string[] args)
         {
             ComboTimer.Tick += ComboTimer_Tick;
             AttackTimer.Tick += AttackTimer_Tick;
+            MoveTimer.Tick += MoveTimer_Tick;
             Game.OnUpdate += OrbWalker;
             Game.OnUpdate += AutoCombo;
         }
@@ -38,6 +42,11 @@ namespace MoonesComboScript
         static void AttackTimer_Tick(object sender, EventArgs e)
         {
             AttackTimer.Enabled = false;
+        }
+
+        static void MoveTimer_Tick(object sender, EventArgs e)
+        {
+            MoveTimer.Enabled = false;
         }
 
         static void AutoCombo(EventArgs args)
@@ -58,17 +67,54 @@ namespace MoonesComboScript
             var mousePosition = Game.MousePosition;
             var meDmg = me.DamageAverage+me.DamageBonus;
             var blink = me.Inventory.Items.FirstOrDefault(x => x.Name == "item_blink");
-            if (victim != null && (!me.UnitState.HasFlag(UnitState.Invisible) || (a2.Name == "templar_assassin_meld" && a2.AbilityState == AbilityState.Ready && victimdistance < attackRange+50)) && ((victim.Health > 0 && victim.Health > meDmg) || victimdistance > attackRange+200) && me.IsAlive && victim.IsAlive)
+            if (victim != null && (!me.UnitState.HasFlag(UnitState.Invisible) || (a2.Name == "templar_assassin_meld" && CanBeCasted(a2) && victimdistance < attackRange+50)) && ((victim.Health > 0 && victim.Health > meDmg) || victimdistance > attackRange+200) && me.IsAlive && victim.IsAlive)
             {
-                if (blink != null && blink.AbilityState == AbilityState.Ready && victim.IsVisible && victim.IsAlive && victimdistance > 500 && victimdistance > attackRange+100 && victimdistance < 1700)
+                if (blink != null && CanBeCasted(blink) && victim.IsVisible && victim.IsAlive && victimdistance > 500 && victimdistance > attackRange + 100 && victimdistance < 1700)
                 {
                     var blinkRange = blink.AbilityData.FirstOrDefault(x => x.Name == "blink_range").Value;
                     var blinkPos = victim.Position;
-                    if (victimdistance > blinkRange)
+                    if (Retreat)
+                        blinkPos = mousePosition;
+                    if (victimdistance > blinkRange || Retreat)
                         blinkPos = (blinkPos - me.Position) * (blinkRange - 1) / GetDistance2D(blinkPos, me.Position) + me.Position;
                     blink.UseAbility(blinkPos);
-                    ComboTimer.Start(200);
+                    ComboTimer.Start(GetTurnTime(me, blinkPos) * 1000 + 100);
+                    AttackTimer.Start(GetTurnTime(me, blinkPos) * 1000);
+                    mePosition = blinkPos;
                     return;
+                }
+            }
+            var manaboots = me.Inventory.Items.FirstOrDefault(x => x.Name == "item_arcane_boots");
+            var dagon = GetDagon();
+            var ethereal = me.Inventory.Items.FirstOrDefault(x => x.Name == "item_ethereal_blade");
+            if (!me.UnitState.HasFlag(UnitState.Stunned) && victim.IsVisible && ((a2 == null || (a2.Name == "templar_assassin_meld" || me.Modifiers.Any(x => (x.Name == "modifier_templar_assassin_meld")) || !MoveTimer.Enabled))))
+            {
+                foreach (var itemData in ItemDatabase.Items)
+                {
+                    var itemname = itemData.Name;
+                    var stun = itemData.Stun;
+                    var slow = itemData.Slow;
+                    var special = itemData.Special;
+                    var throughBKB = itemData.ThroughBKB;
+                    var killsteal = itemData.Killsteal;
+                    var range = itemData.Range;
+                    var retreat = itemData.Retreat;
+                    var item = me.Inventory.Items.FirstOrDefault(x => x.Name == itemname);
+                    if (item != null && CanBeCasted(item))
+                    {
+                        var go = true;
+                        if (itemname == "item_refresher" || (itemname == "item_cyclone" && me.ClassId == ClassId.CDOTA_Unit_Hero_Tinker))
+                        {
+                            if (me.Spellbook.Spells.Any(x => x.Name != "tinker_march_of_the_machines" && x.Name != "tinker_rearm" && x.Name != "invoker_alacrity" && x.Name != "invoker_forge_spirit" && x.Name != "invoker_ice_wall" && x.Name != "invoker_ghost_walk" && x.Name != "invoker_cold_snap" && x.Name != "invoker_quas" && x.Name != "invoker_exort" && x.Name != "invoker_wex" && x.Name != "invoker_invoke" && x.Level > 0 && x.Cooldown == 0 && !x.AbilityBehavior.HasFlag(AbilityBehavior.Passive)))
+                                go = false;
+                            if (me.Inventory.Items.Any(x => x.Name != "item_blink" && x.Name != "item_travel_boots" && x.Name != itemname && x.Name != "item_travel_boots_2" && x.Name != "item_tpscroll" && x.Cost > 1000 && CanBeCasted(x)))
+                                go = false;
+                        }
+                    }
+
+                    if ((item == dagon || item == ethereal) && ((a4 && a4.Name == "necrolyte_reapers_scythe" && CanBeCasted(a4)) || (killsteal && !victim.Modifiers.Any(x => (x.Name == "modifier_item_ethereal_blade_slow")) && !victim.Modifiers.Any(x => (x.Name == "modifier_necrolyte_reapers_scythe")))))
+                        go = false;
+
                 }
             }
         }
@@ -148,6 +194,11 @@ namespace MoonesComboScript
             return unit.AttackRange + bonus;
         }
 
+        static bool CanBeCasted(Ability ability)
+        {
+            return ability != null && ability.AbilityState == AbilityState.Ready;
+        }
+
         static float FindAngleR(Entity ent)
         {
             return (float)(ent.RotationRad < 0 ? Math.Abs(ent.RotationRad) : 2 * Math.PI - ent.RotationRad);
@@ -165,6 +216,26 @@ namespace MoonesComboScript
             if (first.X <= second.X && first.Y <= second.Y)
                 return xAngle + 90 + 180;
             return 0;
+        }
+
+        static Item GetDagon()
+        {
+            return EntityList.GetLocalPlayer().Hero.Inventory.Items.ToList().FirstOrDefault(x => x.Name.Substring(0, 10) == "item_dagon");
+        }
+
+        static double GetTurnTime(Unit unit, Vector3 position)
+        {
+            ClassId classId = unit.ClassId;
+            String name = unit.Name;
+            AttackAnimationData data = AttackAnimationDatabase.GetByClassId(classId);
+            if (data == null)
+                data = AttackAnimationDatabase.GetByName(name);
+            if (data != null)
+            {
+                var turnRate = data.TurnRate;
+                return (Math.Max(Math.Abs(FindAngleR(unit) - DegreeToRadian(FindAngleBetween(unit, position))) - 0.69, 0) / (turnRate * (1 / 0.03)));
+            }
+            return (Math.Max(Math.Abs(FindAngleR(unit) - DegreeToRadian(FindAngleBetween(unit, position))) - 0.69, 0) / (0.5 * (1 / 0.03)));
         }
 
         static float GetDistance2D(Vector3 p1, Vector3 p2)
