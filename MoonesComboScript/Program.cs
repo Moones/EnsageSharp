@@ -110,11 +110,9 @@ namespace MoonesComboScript
                             if (me.Inventory.Items.Any(x => x.Name != "item_blink" && x.Name != "item_travel_boots" && x.Name != itemname && x.Name != "item_travel_boots_2" && x.Name != "item_tpscroll" && x.Cost > 1000 && CanBeCasted(x)))
                                 go = false;
                         }
+                        if ((item == dagon || item == ethereal) && ((CanBeCasted(a4) && a4.Name == "necrolyte_reapers_scythe") || (killsteal && !victim.Modifiers.Any(x => (x.Name == "modifier_item_ethereal_blade_slow")) && !victim.Modifiers.Any(x => (x.Name == "modifier_necrolyte_reapers_scythe")))))
+                            go = false;
                     }
-
-                    if ((item == dagon || item == ethereal) && ((a4 && a4.Name == "necrolyte_reapers_scythe" && CanBeCasted(a4)) || (killsteal && !victim.Modifiers.Any(x => (x.Name == "modifier_item_ethereal_blade_slow")) && !victim.Modifiers.Any(x => (x.Name == "modifier_necrolyte_reapers_scythe")))))
-                        go = false;
-
                 }
             }
         }
