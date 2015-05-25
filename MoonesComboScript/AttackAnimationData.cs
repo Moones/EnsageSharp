@@ -43,7 +43,7 @@ namespace MoonesComboScript
             TurnRate = turnRate;
         }
 
-        static void Main(string[] args)
+        static AttackAnimationData()
         {
             Entity.OnIntegerPropertyChange += Entity_OnIntegerPropertyChange;
             Game.OnUpdate += TrackTick;

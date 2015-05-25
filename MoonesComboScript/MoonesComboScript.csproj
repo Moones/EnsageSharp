@@ -13,7 +13,7 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -36,7 +36,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Ensage.NET">
-      <HintPath>D:\Downloads\Ensage.NET.dll</HintPath>
+      <HintPath>..\..\..\Visual Studio 2013\Projects\ensage\Release\Ensage.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>..\..\..\Visual Studio 2013\Libraries\SharpDX\Bin\DirectX11_2-Signed-net40\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ensage;
+using SharpDX;
 
 #endregion
 
@@ -231,9 +232,9 @@ namespace MoonesComboScript
             if (data != null)
             {
                 var turnRate = data.TurnRate;
-                return (Math.Max(Math.Abs(FindAngleR(unit) - DegreeToRadian(FindAngleBetween(unit, position))) - 0.69, 0) / (turnRate * (1 / 0.03)));
+                return (Math.Max(Math.Abs(FindAngleR(unit) - DegreeToRadian(FindAngleBetween(unit.Position, position))) - 0.69, 0) / (turnRate * (1 / 0.03)));
             }
-            return (Math.Max(Math.Abs(FindAngleR(unit) - DegreeToRadian(FindAngleBetween(unit, position))) - 0.69, 0) / (0.5 * (1 / 0.03)));
+            return (Math.Max(Math.Abs(FindAngleR(unit) - DegreeToRadian(FindAngleBetween(unit.Position, position))) - 0.69, 0) / (0.5 * (1 / 0.03)));
         }
 
         static float GetDistance2D(Vector3 p1, Vector3 p2)
