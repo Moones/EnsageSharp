@@ -36,10 +36,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Ensage.NET">
-      <HintPath>..\..\..\Visual Studio 2013\Projects\ensage\Release\Ensage.NET.dll</HintPath>
+      <HintPath>D:\Downloads\Ensage.NET.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>..\..\..\Visual Studio 2013\Libraries\SharpDX\Bin\DirectX11_2-Signed-net40\SharpDX.dll</HintPath>
+      <HintPath>D:\Downloads\sharpdx\Bin\DirectX11_2-net40\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
