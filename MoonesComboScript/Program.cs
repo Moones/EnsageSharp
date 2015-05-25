@@ -72,9 +72,14 @@ namespace MoonesComboScript
             var mousePosition = Game.MousePosition;
             var meDmg = me.DamageAverage+me.DamageBonus;
             var blink = me.Inventory.Items.FirstOrDefault(x => x.Name == "item_blink");
-            if (_victim != null && (!me.UnitState.HasFlag(UnitState.Invisible) || (a2.Name == "templar_assassin_meld" && CanBeCasted(a2) && victimdistance < attackRange+50)) && ((_victim.Health > 0 && _victim.Health > meDmg) || victimdistance > attackRange+200) && me.IsAlive && _victim.IsAlive)
+            if (_victim != null &&
+                (!me.UnitState.HasFlag(UnitState.Invisible) ||
+                 (a2.Name == "templar_assassin_meld" && CanBeCasted(a2) && victimdistance < attackRange + 50)) &&
+                ((_victim.Health > 0 && _victim.Health > meDmg) || victimdistance > attackRange + 200) && me.IsAlive &&
+                _victim.IsAlive)
             {
-                if (blink != null && CanBeCasted(blink) && _victim.IsVisible && _victim.IsAlive && victimdistance > 500 && victimdistance > attackRange + 100 && victimdistance < 1700)
+                if (blink != null && CanBeCasted(blink) && _victim.IsVisible && _victim.IsAlive && victimdistance > 500 &&
+                    victimdistance > attackRange + 100 && victimdistance < 1700)
                 {
                     var firstOrDefault = blink.AbilityData.FirstOrDefault(x => x.Name == "blink_range");
                     if (firstOrDefault != null)
@@ -84,7 +89,8 @@ namespace MoonesComboScript
                         if (Retreat)
                             blinkPos = mousePosition;
                         if (victimdistance > blinkRange || Retreat)
-                            blinkPos = (blinkPos - me.Position) * (blinkRange - 1) / GetDistance2D(blinkPos, me.Position) + me.Position;
+                            blinkPos = (blinkPos - me.Position)*(blinkRange - 1)/GetDistance2D(blinkPos, me.Position) +
+                                       me.Position;
                         blink.UseAbility(blinkPos);
                         ComboTimer.Start(GetTurnTime(me, blinkPos) * 1000 + 100);
                         AttackTimer.Start(GetTurnTime(me, blinkPos) * 1000);
@@ -97,7 +103,10 @@ namespace MoonesComboScript
             var octa = me.Inventory.Items.FirstOrDefault(x => x.Name == "item_octarine_core");
             var dagon = GetDagon();
             var ethereal = me.Inventory.Items.FirstOrDefault(x => x.Name == "item_ethereal_blade");
-            if (!me.UnitState.HasFlag(UnitState.Stunned) && _victim.IsVisible && ((a2 == null || (a2.Name == "templar_assassin_meld" || me.Modifiers.Any(x => (x.Name == "modifier_templar_assassin_meld")) || !MoveTimer.Enabled))))
+            if (!me.UnitState.HasFlag(UnitState.Stunned) && _victim.IsVisible &&
+                ((a2 == null ||
+                  (a2.Name == "templar_assassin_meld" ||
+                   me.Modifiers.Any(x => (x.Name == "modifier_templar_assassin_meld")) || !MoveTimer.Enabled))))
             {
                 foreach (var itemData in ItemDatabase.Items)
                 {
