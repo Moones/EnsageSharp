@@ -185,8 +185,10 @@ namespace MoonesComboScript
                                 var cd = ab.CooldownTotal;
                                 if (octa != null)
                                     cd *= 0.75f;
-                                if (ab.Name == "invoker_chaos_meteor")
+                                if (ab.Name == "invoker_chaos_meteor" || ab.Name == "mirana_arrow")
                                     cd -= 5;
+                                else if (ab.Name == "pudge_meat_hook")
+                                    cd -= 2;
                                 else
                                     cd -= 3;
                                 if (ab.Cooldown > cd)
@@ -225,7 +227,51 @@ namespace MoonesComboScript
                         ((me.Modifiers.Any(x => x.Name == "modifier_spirit_breaker_charge_of_darkness")) ||
                          itemname == "item_armlet"))
                     {
-                        
+                        var delay = 0.0;
+                        if (itemname == "item_ethereal_blade" && dagon != null && CanBeCasted(dagon))
+                            delay = (Math.Min(item.CastRange - 50, victimdistance - 100)/
+                                      item.AbilityData.FirstOrDefault(x => x.Name == "projectile_speed").Value)*1000;
+                        if (item.AbilityBehavior.HasFlag(AbilityBehavior.UnitTarget))
+                        {
+                            if (item.TargetTeamType.HasFlag(TargetTeamType.Allied) && !item.TargetTeamType.HasFlag(TargetTeamType.Enemy) && !item.TargetTeamType.HasFlag(TargetTeamType.All))
+                                item.UseAbility(me);
+                            else if ((item.TargetTeamType.HasFlag(TargetTeamType.Enemy) ||
+                                      item.TargetTeamType.HasFlag(TargetTeamType.Custom) ||
+                                      item.TargetTeamType.HasFlag(TargetTeamType.All)) && !IsInvul(_victim) &&
+                                     !me.Modifiers.Any(
+                                         x =>
+                                             x.Name == "modifier_eul_cyclone" ||
+                                             x.Name == "modifier_brewmaster_storm_cyclone" ||
+                                             x.Name == "modifier_invoker_tornado") &&
+                                     (!Retreat || victimdistance < item.CastRange + 50))
+                            {
+                                item.UseAbility(_victim);
+                                delay += GetTurnTime(me, _victim.Position)*1000;
+                            }
+                        }
+                        else if (item.AbilityBehavior.HasFlag(AbilityBehavior.NoTarget) &&
+                                 (range == 0 || victimdistance - 50 < range) &&
+                                 (itemname != "item_armlet" ||
+                                  me.Modifiers.All(x => x.Name != "modifier_item_armlet_unholy_strength")))
+                            item.UseAbility();
+                        else if (item.AbilityBehavior.HasFlag(AbilityBehavior.Point) ||
+                                 item.AbilityBehavior.HasFlag(AbilityBehavior.AreaOfEffect))
+                        {
+                            if (item.TargetTeamType.HasFlag(TargetTeamType.Allied) && !item.TargetTeamType.HasFlag(TargetTeamType.Enemy))
+                                item.UseAbility(me.Position);
+                            else
+                            {
+                                delay += GetTurnTime(me,_victim.Position)*1000;
+                                var delay2 = delay + 0.8;
+                                var speed = item.AbilityData.FirstOrDefault(x => x.Name == "speed").Value;
+                                if (speed <= 0)
+                                    speed = int.MaxValue;
+                                //Add Prediction
+                                item.UseAbility(_victim.Position);
+                            }
+                        }
+                        ComboTimer.Start(delay);
+
                     }
 
                 }
