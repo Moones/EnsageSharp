@@ -52,7 +52,7 @@ namespace MoonesComboScript
             MoveTimer.Enabled = false;
         }
 
-        static void AutoCombo(EventArgs args)
+        private static void AutoCombo(EventArgs args)
         {
             if (ComboTimer.Enabled || !Game.IsInGame || Game.IsPaused)
                 return;
@@ -103,178 +103,182 @@ namespace MoonesComboScript
             var octa = me.Inventory.Items.FirstOrDefault(x => x.Name == "item_octarine_core");
             var dagon = GetDagon();
             var ethereal = me.Inventory.Items.FirstOrDefault(x => x.Name == "item_ethereal_blade");
-            if (!me.UnitState.HasFlag(UnitState.Stunned) && _victim.IsVisible &&
-                ((a2 == null ||
-                  (a2.Name == "templar_assassin_meld" ||
-                   me.Modifiers.Any(x => (x.Name == "modifier_templar_assassin_meld")) || !MoveTimer.Enabled))))
+            if (me.UnitState.HasFlag(UnitState.Stunned) || !_victim.IsVisible ||
+                ((a2 != null &&
+                  (a2.Name != "templar_assassin_meld" &&
+                   !me.Modifiers.Any(x => (x.Name == "modifier_templar_assassin_meld")) && MoveTimer.Enabled)))) return;
+            foreach (var itemData in ItemDatabase.Items)
             {
-                foreach (var itemData in ItemDatabase.Items)
+                var itemname = itemData.Name;
+                var stun = itemData.Stun;
+                var slow = itemData.Slow;
+                var special = itemData.Special;
+                var throughBkb = itemData.ThroughBKB;
+                var killsteal = itemData.Killsteal;
+                var range = itemData.Range;
+                var retreat = itemData.Retreat;
+                var item = me.Inventory.Items.FirstOrDefault(x => x.Name == itemname);
+                if (item == null || !CanBeCasted(item)) continue;
+                var go = true;
+                if (itemname == "item_refresher" ||
+                    (itemname == "item_cyclone" && me.ClassId == ClassId.CDOTA_Unit_Hero_Tinker))
                 {
-                    var itemname = itemData.Name;
-                    var stun = itemData.Stun;
-                    var slow = itemData.Slow;
-                    var special = itemData.Special;
-                    var throughBkb = itemData.ThroughBKB;
-                    var killsteal = itemData.Killsteal;
-                    var range = itemData.Range;
-                    var retreat = itemData.Retreat;
-                    var item = me.Inventory.Items.FirstOrDefault(x => x.Name == itemname);
-                    if (item == null || !CanBeCasted(item)) continue;
-                    var go = true;
-                    if (itemname == "item_refresher" ||
-                        (itemname == "item_cyclone" && me.ClassId == ClassId.CDOTA_Unit_Hero_Tinker))
-                    {
-                        if (
-                            meSpells.Spells.Any(
-                                x =>
-                                    x.Name != "tinker_march_of_the_machines" && x.Name != "tinker_rearm" &&
-                                    x.Name != "invoker_alacrity" && x.Name != "invoker_forge_spirit" &&
-                                    x.Name != "invoker_ice_wall" && x.Name != "invoker_ghost_walk" &&
-                                    x.Name != "invoker_cold_snap" && x.Name != "invoker_quas" &&
-                                    x.Name != "invoker_exort" && x.Name != "invoker_wex" && x.Name != "invoker_invoke" &&
-                                    x.Level > 0 && x.Cooldown == 0 &&
-                                    !x.AbilityBehavior.HasFlag(AbilityBehavior.Passive)))
-                            go = false;
-                        if (
-                            me.Inventory.Items.Any(
-                                x =>
-                                    x.Name != "item_blink" && x.Name != "item_travel_boots" && x.Name != itemname &&
-                                    x.Name != "item_travel_boots_2" && x.Name != "item_tpscroll" && x.Cost > 1000 &&
-                                    CanBeCasted(x)))
-                            go = false;
-
-
-                    }
-                    if (itemname == "item_refresher" &&
-                        (item.ManaCost*2 < me.Mana || (manaboots != null && item.ManaCost*2 < (me.Mana + 135))))
+                    if (
+                        meSpells.Spells.Any(
+                            x =>
+                                x.Name != "tinker_march_of_the_machines" && x.Name != "tinker_rearm" &&
+                                x.Name != "invoker_alacrity" && x.Name != "invoker_forge_spirit" &&
+                                x.Name != "invoker_ice_wall" && x.Name != "invoker_ghost_walk" &&
+                                x.Name != "invoker_cold_snap" && x.Name != "invoker_quas" &&
+                                x.Name != "invoker_exort" && x.Name != "invoker_wex" && x.Name != "invoker_invoke" &&
+                                x.Level > 0 && Math.Abs(x.Cooldown) < 3 &&
+                                !x.AbilityBehavior.HasFlag(AbilityBehavior.Passive)))
                         go = false;
-                    if (itemname == "item_cyclone")
+                    if (
+                        me.Inventory.Items.Any(
+                            x =>
+                                x.Name != "item_blink" && x.Name != "item_travel_boots" && x.Name != itemname &&
+                                x.Name != "item_travel_boots_2" && x.Name != "item_tpscroll" && x.Cost > 1000 &&
+                                CanBeCasted(x)))
+                        go = false;
+
+
+                }
+                if (itemname == "item_refresher" &&
+                    (item.ManaCost*2 < me.Mana || (manaboots != null && item.ManaCost*2 < (me.Mana + 135))))
+                    go = false;
+                if (itemname == "item_cyclone")
+                {
+                    foreach (var ab in meSpells.Spells)
+                    {
+                        var abcd = ab.CooldownTotal;
+                        if (octa != null)
+                            abcd *= 0.75f;
+                        abcd -= 3;
+                        if (ab.Cooldown > abcd && ab.Damage > 0)
+                            go = false;
+                    }
+                }
+                if ((Equals(item, dagon) || Equals(item, ethereal)) &&
+                    ((CanBeCasted(a4) && a4.Name == "necrolyte_reapers_scythe") ||
+                     (killsteal && !_victim.Modifiers.Any(x => (x.Name == "modifier_item_ethereal_blade_slow")) &&
+                      !_victim.Modifiers.Any(x => (x.Name == "modifier_necrolyte_reapers_scythe")))))
+                    go = false;
+                if (itemname == "item_dust" && !CanGoInvis(_victim))
+                    go = false;
+                if ((itemname == "item_diffusal_blade" || itemname == "item_diffusal_blade_2") &&
+                    !CanBePurged(_victim))
+                    go = false;
+                if (Equals(item, manaboots) && (me.ManaMaximum - me.Mana) < 135)
+                    go = false;
+                if (itemname == "item_cyclone")
+                {
+                    if (_xposition != null)
+                        go = false;
+                    if (a1 != null && id == ClassId.CDOTA_Unit_Hero_AncientApparition && CanBeCasted(a1))
+                        go = false;
+                    if (id == ClassId.CDOTA_Unit_Hero_Invoker)
                     {
                         foreach (var ab in meSpells.Spells)
                         {
-                            var abcd = ab.CooldownTotal;
+                            var cd = ab.CooldownTotal;
                             if (octa != null)
-                                abcd *= 0.75f;
-                            abcd -= 3;
-                            if (ab.Cooldown > abcd && ab.Damage > 0)
-                                go = false;
-                        }
-                    }
-                    if ((Equals(item, dagon) || Equals(item, ethereal)) &&
-                        ((CanBeCasted(a4) && a4.Name == "necrolyte_reapers_scythe") ||
-                         (killsteal && !_victim.Modifiers.Any(x => (x.Name == "modifier_item_ethereal_blade_slow")) &&
-                          !_victim.Modifiers.Any(x => (x.Name == "modifier_necrolyte_reapers_scythe")))))
-                        go = false;
-                    if (itemname == "item_dust" && !CanGoInvis(_victim))
-                        go = false;
-                    if ((itemname == "item_diffusal_blade" || itemname == "item_diffusal_blade_2") &&
-                        !CanBePurged(_victim))
-                        go = false;
-                    if (Equals(item, manaboots) && (me.ManaMaximum - me.Mana) < 135)
-                        go = false;
-                    if (itemname == "item_cyclone")
-                    {
-                        if (_xposition != null)
-                            go = false;
-                        if (a1 != null && id == ClassId.CDOTA_Unit_Hero_AncientApparition && CanBeCasted(a1))
-                            go = false;
-                        if (id == ClassId.CDOTA_Unit_Hero_Invoker)
-                        {
-                            foreach (var ab in meSpells.Spells)
+                                cd *= 0.75f;
+                            switch (ab.Name)
                             {
-                                var cd = ab.CooldownTotal;
-                                if (octa != null)
-                                    cd *= 0.75f;
-                                if (ab.Name == "invoker_chaos_meteor" || ab.Name == "mirana_arrow")
+                                case "invoker_chaos_meteor":
+                                case "mirana_arrow":
                                     cd -= 5;
-                                else if (ab.Name == "pudge_meat_hook")
+                                    break;
+                                case "pudge_meat_hook":
                                     cd -= 2;
-                                else
+                                    break;
+                                default:
                                     cd -= 3;
-                                if (ab.Cooldown > cd)
-                                    go = false;
+                                    break;
                             }
-                            if ((a4.Name == "invoker_tornado" && CanBeCasted(a4)) ||
-                                (a5.Name == "invoker_tornado" && CanBeCasted(a5)))
+                            if (ab.Cooldown > cd)
                                 go = false;
                         }
-                        if (id == ClassId.CDOTA_Unit_Hero_Pudge &&
-                            (me.Modifiers.Any(x => (x.Name == "modifier_pudge_rot")) ||
-                             (a4 != null && CanBeCasted(a4) && victimdistance < 400) ||
-                             (a1 != null && CanBeCasted(a1) && victimdistance + 100 > item.CastRange)))
-                            go = false;
-                        if (
-                            _victim.Modifiers.Any(
-                                x =>
-                                    x.Name == "modifier_invoker_chaos_meteor_burn" ||
-                                    x.Name == "modifier_invoker_cold_snap" ||
-                                    x.Name == "modifier_invoker_ice_wall_slow_debuff" ||
-                                    x.Name == "modifier_invoker_ice_wall_slow_aura" ||
-                                    x.Name == "modifier_pudge_meat_hook" || x.Name == "modifier_ghost_state" ||
-                                    x.Name == "modifier_item_ethereal_blade_slow") || !CanMove(_victim) ||
-                            IsHexed(_victim) || IsDisarmed(_victim) || IsSilenced(_victim) ||
-                            _victim.MovementSpeedTotal < 250 || IsRooted(_victim))
+                        if ((a4.Name == "invoker_tornado" && CanBeCasted(a4)) ||
+                            (a5.Name == "invoker_tornado" && CanBeCasted(a5)))
                             go = false;
                     }
-                    if (_victim.Modifiers.Any(x => x.Name == "modifier_" + itemname + "_debuff"))
+                    if (id == ClassId.CDOTA_Unit_Hero_Pudge &&
+                        (me.Modifiers.Any(x => (x.Name == "modifier_pudge_rot")) ||
+                         (a4 != null && CanBeCasted(a4) && victimdistance < 400) ||
+                         (a1 != null && CanBeCasted(a1) && victimdistance + 100 > item.CastRange)))
                         go = false;
-                    if ((!IsMagicImmune(_victim) || item.DamageType == DamageType.Physical || throughBkb) && go &&
-                        (itemname != "item_refresher" ||
-                         (item.ManaCost*2 < me.Mana || (manaboots != null && item.ManaCost*2 < (me.Mana + 135)))) &&
-                        ((!stun && !slow && !special) || ChainStun(_victim, 0, null, false) ||
-                         (itemname == "item_blade_mail" && ChainStun(_victim, 0, "modifier_axe_berserkers_call", false))) &&
-                        (!Retreat || retreat || stun || slow) &&
-                        ((me.Modifiers.Any(x => x.Name == "modifier_spirit_breaker_charge_of_darkness")) ||
-                         itemname == "item_armlet"))
-                    {
-                        var delay = 0.0;
-                        if (itemname == "item_ethereal_blade" && dagon != null && CanBeCasted(dagon))
-                            delay = (Math.Min(item.CastRange - 50, victimdistance - 100)/
-                                      item.AbilityData.FirstOrDefault(x => x.Name == "projectile_speed").Value)*1000;
-                        if (item.AbilityBehavior.HasFlag(AbilityBehavior.UnitTarget))
-                        {
-                            if (item.TargetTeamType.HasFlag(TargetTeamType.Allied) && !item.TargetTeamType.HasFlag(TargetTeamType.Enemy) && !item.TargetTeamType.HasFlag(TargetTeamType.All))
-                                item.UseAbility(me);
-                            else if ((item.TargetTeamType.HasFlag(TargetTeamType.Enemy) ||
-                                      item.TargetTeamType.HasFlag(TargetTeamType.Custom) ||
-                                      item.TargetTeamType.HasFlag(TargetTeamType.All)) && !IsInvul(_victim) &&
-                                     !me.Modifiers.Any(
-                                         x =>
-                                             x.Name == "modifier_eul_cyclone" ||
-                                             x.Name == "modifier_brewmaster_storm_cyclone" ||
-                                             x.Name == "modifier_invoker_tornado") &&
-                                     (!Retreat || victimdistance < item.CastRange + 50))
-                            {
-                                item.UseAbility(_victim);
-                                delay += GetTurnTime(me, _victim.Position)*1000;
-                            }
-                        }
-                        else if (item.AbilityBehavior.HasFlag(AbilityBehavior.NoTarget) &&
-                                 (range == 0 || victimdistance - 50 < range) &&
-                                 (itemname != "item_armlet" ||
-                                  me.Modifiers.All(x => x.Name != "modifier_item_armlet_unholy_strength")))
-                            item.UseAbility();
-                        else if (item.AbilityBehavior.HasFlag(AbilityBehavior.Point) ||
-                                 item.AbilityBehavior.HasFlag(AbilityBehavior.AreaOfEffect))
-                        {
-                            if (item.TargetTeamType.HasFlag(TargetTeamType.Allied) && !item.TargetTeamType.HasFlag(TargetTeamType.Enemy))
-                                item.UseAbility(me.Position);
-                            else
-                            {
-                                delay += GetTurnTime(me,_victim.Position)*1000;
-                                var delay2 = delay + 0.8;
-                                var speed = item.AbilityData.FirstOrDefault(x => x.Name == "speed").Value;
-                                if (speed <= 0)
-                                    speed = int.MaxValue;
-                                //Add Prediction
-                                item.UseAbility(_victim.Position);
-                            }
-                        }
-                        ComboTimer.Start(delay);
-
-                    }
-
+                    if (
+                        _victim.Modifiers.Any(
+                            x =>
+                                x.Name == "modifier_invoker_chaos_meteor_burn" ||
+                                x.Name == "modifier_invoker_cold_snap" ||
+                                x.Name == "modifier_invoker_ice_wall_slow_debuff" ||
+                                x.Name == "modifier_invoker_ice_wall_slow_aura" ||
+                                x.Name == "modifier_pudge_meat_hook" || x.Name == "modifier_ghost_state" ||
+                                x.Name == "modifier_item_ethereal_blade_slow") || !CanMove(_victim) ||
+                        IsHexed(_victim) || IsDisarmed(_victim) || IsSilenced(_victim) ||
+                        _victim.MovementSpeedTotal < 250 || IsRooted(_victim))
+                        go = false;
                 }
+                if (_victim.Modifiers.Any(x => x.Name == "modifier_" + itemname + "_debuff"))
+                    go = false;
+                if ((IsMagicImmune(_victim) && item.DamageType != DamageType.Physical && !throughBkb) || !go ||
+                    (itemname == "item_refresher" &&
+                     (!(item.ManaCost*2 < me.Mana) && (manaboots == null || !(item.ManaCost*2 < (me.Mana + 135))))) ||
+                    ((stun || slow || special) && !ChainStun(_victim, 0, null, false) &&
+                     (itemname != "item_blade_mail" || !ChainStun(_victim, 0, "modifier_axe_berserkers_call", false))) ||
+                    (Retreat && !retreat && !stun && !slow) ||
+                    ((me.Modifiers.All(x => x.Name != "modifier_spirit_breaker_charge_of_darkness")) &&
+                     itemname != "item_armlet")) continue;
+                var delay = 0.0;
+                if (itemname == "item_ethereal_blade" && dagon != null && CanBeCasted(dagon))
+                    delay = (Math.Min(item.CastRange - 50, victimdistance - 100)/
+                             item.AbilityData.FirstOrDefault(x => x.Name == "projectile_speed").Value)*1000;
+                if (item.AbilityBehavior.HasFlag(AbilityBehavior.UnitTarget))
+                {
+                    if (item.TargetTeamType.HasFlag(TargetTeamType.Allied) &&
+                        !item.TargetTeamType.HasFlag(TargetTeamType.Enemy) &&
+                        !item.TargetTeamType.HasFlag(TargetTeamType.All))
+                        item.UseAbility(me);
+                    else if ((item.TargetTeamType.HasFlag(TargetTeamType.Enemy) ||
+                              item.TargetTeamType.HasFlag(TargetTeamType.Custom) ||
+                              item.TargetTeamType.HasFlag(TargetTeamType.All)) && !IsInvul(_victim) &&
+                             !me.Modifiers.Any(
+                                 x =>
+                                     x.Name == "modifier_eul_cyclone" ||
+                                     x.Name == "modifier_brewmaster_storm_cyclone" ||
+                                     x.Name == "modifier_invoker_tornado") &&
+                             (!Retreat || victimdistance < item.CastRange + 50))
+                    {
+                        item.UseAbility(_victim);
+                        delay += GetTurnTime(me, _victim.Position)*1000;
+                    }
+                }
+                else if (item.AbilityBehavior.HasFlag(AbilityBehavior.NoTarget) &&
+                         (Math.Abs(range) < 1 || victimdistance - 50 < range) &&
+                         (itemname != "item_armlet" ||
+                          me.Modifiers.All(x => x.Name != "modifier_item_armlet_unholy_strength")))
+                    item.UseAbility();
+                else if (item.AbilityBehavior.HasFlag(AbilityBehavior.Point) ||
+                         item.AbilityBehavior.HasFlag(AbilityBehavior.AreaOfEffect))
+                {
+                    if (item.TargetTeamType.HasFlag(TargetTeamType.Allied) &&
+                        !item.TargetTeamType.HasFlag(TargetTeamType.Enemy))
+                        item.UseAbility(me.Position);
+                    else
+                    {
+                        delay += GetTurnTime(me, _victim.Position)*1000;
+                        var delay2 = delay + 0.8;
+                        var speed = item.AbilityData.FirstOrDefault(x => x.Name == "speed").Value;
+                        if (speed <= 0)
+                            speed = int.MaxValue;
+                        //Add Prediction
+                        item.UseAbility(_victim.Position);
+                    }
+                }
+                ComboTimer.Start(delay);
             }
         }
 
@@ -296,13 +300,11 @@ namespace MoonesComboScript
             {
                 me.Attack(_victim);
                 AttackTimer.Start(200);
-                return;
             }
             else
             {
                 me.Move(mousePosition);
                 AttackTimer.Start(200);
-                return;
             }
         }
 
@@ -319,11 +321,9 @@ namespace MoonesComboScript
             foreach (var hero in enemies)
             {
                 var distance = Vector3.DistanceSquared(mousePosition, hero.Position);
-                if (result == null || distance < minimumDistance)
-                {
-                    minimumDistance = distance;
-                    result = hero;
-                }
+                if (result != null && !(distance < minimumDistance)) continue;
+                minimumDistance = distance;
+                result = hero;
             }
             if (result != null)
                 _victimHp = result.Health;
@@ -332,29 +332,43 @@ namespace MoonesComboScript
 
         static float GetAttackRange(Unit unit)
         {
-            var bonus = 0;
-            ClassId classId = unit.ClassId;
-            if (classId == ClassId.CDOTA_Unit_Hero_TemplarAssassin)
+            var bonus = 0.0;
+            var classId = unit.ClassId;
+            switch (classId)
             {
-                Ability psi = unit.Spellbook.SpellW;
-            } 
-            else if (classId == ClassId.CDOTA_Unit_Hero_Sniper)
-            {
-                Ability aim = unit.Spellbook.SpellE;
+                case ClassId.CDOTA_Unit_Hero_TemplarAssassin:
+                    var psi = unit.Spellbook.SpellW;
+                    if (psi != null && psi.Level > 0)
+                    {
+                        var firstOrDefault = psi.AbilityData.FirstOrDefault(x => x.Name == "bonus_attack_range");
+                        if (firstOrDefault != null)
+                            bonus = firstOrDefault.Value;
+                    }
+                    break;
+                case ClassId.CDOTA_Unit_Hero_Sniper:
+                    var aim = unit.Spellbook.SpellE;
+                    if (aim != null && aim.Level > 0)
+                    {
+                        var firstOrDefault = aim.AbilityData.FirstOrDefault(x => x.Name == "bonus_attack_range");
+                        if (firstOrDefault != null)
+                            bonus = firstOrDefault.Value;
+                    }
+                    break;
+                case ClassId.CDOTA_Unit_Hero_Enchantress:
+                    var impetus = unit.Spellbook.SpellR;
+                    if (impetus.Level > 0 && unit.Inventory.Items.Any(x => (x.Name == "item_ultimate_scepter")))
+                        bonus = 190;
+                    break;
+                default:
+                    if (unit.Modifiers.Any(x => (x.Name == "modifier_lone_druid_true_form")))
+                        bonus = -423;
+                    else if (unit.Modifiers.Any(x => (x.Name =="dragon_knight_elder_dragon_form")))
+                        bonus = 372;
+                    else if (unit.Modifiers.Any(x => (x.Name == "terrorblade_metamorphosis")))
+                        bonus = 422;
+                    break;
             }
-            else if (classId == ClassId.CDOTA_Unit_Hero_Enchantress)
-            {
-                Ability impetus = unit.Spellbook.SpellR;
-                if (impetus.Level > 0 && unit.Inventory.Items.Any(x => (x.Name == "item_ultimate_scepter")))
-                    bonus = 190;
-            } 
-            else if (unit.Modifiers.Any(x => (x.Name == "modifier_lone_druid_true_form")))
-                bonus = -423;
-            else if (unit.Modifiers.Any(x => (x.Name =="dragon_knight_elder_dragon_form")))
-                bonus = 372;
-            else if (unit.Modifiers.Any(x => (x.Name == "terrorblade_metamorphosis")))
-                bonus = 422;
-            return unit.AttackRange + bonus;
+            return (float) (unit.AttackRange + bonus);
         }
 
         static bool CanBeCasted(Ability ability)
@@ -391,22 +405,20 @@ namespace MoonesComboScript
 
         static double GetTurnTime(Unit unit, Vector3 position)
         {
-            ClassId classId = unit.ClassId;
-            String name = unit.Name;
-            AttackAnimationData data = AttackAnimationDatabase.GetByClassId(classId) ??
+            var classId = unit.ClassId;
+            var name = unit.Name;
+            var data = AttackAnimationDatabase.GetByClassId(classId) ??
                                        AttackAnimationDatabase.GetByName(name);
-            if (data != null)
-            {
-                var turnRate = data.TurnRate;
+            if (data == null)
                 return
                     (Math.Max(
                         Math.Abs(FindAngleR(unit) - DegreeToRadian(FindAngleBetween(unit.Position, position))) - 0.69, 0)/
-                     (turnRate*(1/0.03)));
-            }
+                     (0.5*(1/0.03)));
+            var turnRate = data.TurnRate;
             return
                 (Math.Max(
                     Math.Abs(FindAngleR(unit) - DegreeToRadian(FindAngleBetween(unit.Position, position))) - 0.69, 0)/
-                 (0.5*(1/0.03)));
+                 (turnRate*(1/0.03)));
         }
 
         static float GetDistance2D(Vector3 p1, Vector3 p2)
@@ -528,16 +540,13 @@ namespace MoonesComboScript
                 "modifier_puck_phase_shift"
             };
             var modifiers = unit.Modifiers.OrderByDescending(x => x.RemainingTime);
-            foreach (var m in modifiers)
+            foreach (var m in modifiers.Where(m => (m.IsStunDebuff || modifiersList.Contains(m.Name)) && (except == null || m.Name == except)))
             {
-                if ((m.IsStunDebuff || modifiersList.Contains(m.Name) && (except == null || m.Name == except)))
-                {
-                    stunned = true;
-                    var remainingTime = m.RemainingTime;
-                    if (m.Name == "modifier_eul_cyclone")
-                        remainingTime += 0.07f;
-                    chain = remainingTime <= delay;
-                }
+                stunned = true;
+                var remainingTime = m.RemainingTime;
+                if (m.Name == "modifier_eul_cyclone")
+                    remainingTime += 0.07f;
+                chain = remainingTime <= delay;
             }
             return ((((!(stunned || IsStunned(unit)) || chain) && !onlychain) || (onlychain && chain)));
         }
