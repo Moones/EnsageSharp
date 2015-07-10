@@ -72,7 +72,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ensage.NET">
-      <HintPath>..\..\..\..\..\..\Ensage.NET\System\Ensage.NET.dll</HintPath>
+      <HintPath>C:\Ensage.NET\System\Ensage.NET.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>C:\Ensage.NET\System\SharpDX.dll</HintPath>

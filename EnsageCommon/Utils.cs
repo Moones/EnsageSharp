@@ -11,9 +11,9 @@ namespace Ensage.Common
     public class Utils
     {
 
-        private static readonly Dictionary<String, double> Sleeps = new Dictionary<String, double>();
+        public static readonly Dictionary<String, double> Sleeps = new Dictionary<String, double>();
         
-        static float GetAttackRange(Unit unit)
+        public static float GetAttackRange(Unit unit)
         {
             var bonus = 0.0;
             var classId = unit.ClassId;
@@ -54,17 +54,17 @@ namespace Ensage.Common
             return (float)(unit.AttackRange + bonus);
         }
 
-        static bool CanBeCasted(Ability ability)
+        public static bool CanBeCasted(Ability ability)
         {
             return ability != null && ability.AbilityState == AbilityState.Ready;
         }
 
-        static float FindAngleR(Entity ent)
+        public static float FindAngleR(Entity ent)
         {
             return (float)(ent.RotationRad < 0 ? Math.Abs(ent.RotationRad) : 2 * Math.PI - ent.RotationRad);
         }
 
-        static float FindAngleBetween(Vector3 first, Vector3 second)
+        public static float FindAngleBetween(Vector3 first, Vector3 second)
         {
             var xAngle = (float)(Math.Atan(Math.Abs(second.X - first.X) / Math.Abs(second.Y - first.Y)) * (180.0 / Math.PI));
             if (first.X <= second.X && first.Y >= second.Y)
@@ -78,17 +78,17 @@ namespace Ensage.Common
             return 0;
         }
 
-        static float FindAngleBetween(Entity unit, Vector3 second)
+        public static float FindAngleBetween(Entity unit, Vector3 second)
         {
             return FindAngleBetween(unit.Position, second);
         }
 
-        static float FindAngleBetween(Vector3 first, Entity unit)
+        public static float FindAngleBetween(Vector3 first, Entity unit)
         {
             return FindAngleBetween(first, unit.Position);
         }
 
-        static Item GetDagon()
+        public static Item GetDagon()
         {
             return
                 EntityList.GetLocalPlayer()
@@ -96,7 +96,7 @@ namespace Ensage.Common
                     .FirstOrDefault(x => x.Name.Substring(0, 10) == "item_dagon");
         }
 
-        static double GetTurnTime(Entity unit, Vector3 position)
+        public static double GetTurnTime(Entity unit, Vector3 position)
         {
             var classId = unit.ClassId;
             var name = unit.Name;
@@ -114,12 +114,12 @@ namespace Ensage.Common
                  (turnRate * (1 / 0.03)));
         }
 
-        static double DegreeToRadian(double angle)
+        public static double DegreeToRadian(double angle)
         {
             return Math.PI * angle / 180.0;
         }
 
-        static bool CanGoInvis(Unit unit)
+        public static bool CanGoInvis(Unit unit)
         {
             var invis =
                 unit.Spellbook.Spells.FirstOrDefault(x => x.Name == "bounty_hunter_wind_walk" || x.Name == "clinkz_skeleton_walk") ??
@@ -131,81 +131,81 @@ namespace Ensage.Common
             return (invis != null && CanBeCasted(invis)) || (riki != null && riki.Level > 0);
         }
 
-        static Ability FindSpell(Unit unit, String name)
+        public static Ability FindSpell(Unit unit, String name)
         {
             return unit.Spellbook.Spells.FirstOrDefault(x => x.Name == name);
         }
 
-        static bool IsUnitState(Unit unit, UnitState state)
+        public static bool IsUnitState(Unit unit, UnitState state)
         {
             return unit.UnitState.HasFlag(state);
         }
 
-        static bool CanMove(Unit unit)
+        public static bool CanMove(Unit unit)
         {
             return !IsRooted(unit) && !IsStunned(unit) &&
                    unit.Modifiers.Any(x => x.Name != "modifier_slark_pounce_leash") && unit.IsAlive;
         }
 
-        static bool IsRooted(Unit unit)
+        public static bool IsRooted(Unit unit)
         {
             return IsUnitState(unit, UnitState.Rooted);
         }
-        static bool IsStunned(Unit unit)
+        public static bool IsStunned(Unit unit)
         {
             return IsUnitState(unit, UnitState.Stunned);
         }
-        static bool IsDisarmed(Unit unit)
+        public static bool IsDisarmed(Unit unit)
         {
             return IsUnitState(unit, UnitState.Disarmed);
         }
-        static bool IsAttackImmune(Unit unit)
+        public static bool IsAttackImmune(Unit unit)
         {
             return IsUnitState(unit, UnitState.AttackImmune);
         }
-        static bool IsSilenced(Unit unit)
+        public static bool IsSilenced(Unit unit)
         {
             return IsUnitState(unit, UnitState.Silenced);
         }
-        static bool IsHexed(Unit unit)
+        public static bool IsHexed(Unit unit)
         {
             return IsUnitState(unit, UnitState.Hexed);
         }
-        static bool IsInvisible(Unit unit)
+        public static bool IsInvisible(Unit unit)
         {
             return IsUnitState(unit, UnitState.Invisible);
         }
-        static bool IsInvul(Unit unit)
+        public static bool IsInvul(Unit unit)
         {
             return IsUnitState(unit, UnitState.Invulnerable);
         }
-        static bool IsMagicImmune(Unit unit)
+        public static bool IsMagicImmune(Unit unit)
         {
             return IsUnitState(unit, UnitState.MagicImmune);
         }
 
-        static bool IsIllusion(Hero unit)
+        public static bool IsIllusion(Hero unit)
         {
             return unit.IsIllusion;
         }
 
-        static bool IsIllusion(Meepo unit)
+        public static bool IsIllusion(Meepo unit)
         {
             return unit.IsIllusion && unit.IsMeepoIllusion;
         }
 
-        static bool CanCast(Unit unit)
+        public static bool CanCast(Unit unit)
         {
             return !IsSilenced(unit) && !IsStunned(unit) && unit.IsAlive;
         }
 
-        static bool CanAttack(Unit unit)
+        public static bool CanAttack(Unit unit)
         {
             return unit.AttackCapabilities != AttackCapabilities.None && !IsDisarmed(unit) && !IsStunned(unit) &&
                    unit.IsAlive;
         }
 
-        static void Sleep(double duration, String name)
+        public static void Sleep(double duration, String name)
         {
             double dur;
             var tick = Environment.TickCount;
@@ -215,13 +215,13 @@ namespace Ensage.Common
             }
         }
 
-        static bool SleepCheck(String name)
+        public static bool SleepCheck(String name)
         {
             double asd;
             return !Sleeps.TryGetValue(name, out asd) || Environment.TickCount > asd;
         }
 
-        static Team GetEnemyTeam(Unit unit)
+        public static Team GetEnemyTeam(Unit unit)
         {
             var team = unit.Team;
             switch (team)
