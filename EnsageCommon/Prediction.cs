@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using Ensage;
 using System;
@@ -86,7 +86,20 @@ namespace Ensage.Common
                     }
                     else
                     {
-                        if (unit.LastActivity != 422)
+                        if (unit.Modifiers.Any(x => x.Name == "modifier_storm_spirit_ball_lightning"))
+                        {
+                            var ballLightning = Utils.FindSpell(unit, "storm_spirit_ball_lightning");
+                            var firstOrDefault = ballLightning.AbilityData.LastOrDefault(x => x.Name == "ball_lightning_move_speed");
+                            if (firstOrDefault != null)
+                            {
+                                var ballSpeed = firstOrDefault.GetValue(2);
+                                Console.WriteLine(ballSpeed);
+                                var newpredict = VectorOp.UnitVectorFromXYAngle(unit.RotationRad + data.RotSpeed) *
+                                            (ballSpeed / 1000);
+                                data.Speed = newpredict;
+                            } 
+                        }
+                        else if (unit.LastActivity != 422)
                             data.Speed = speed;
                         else
                         {
