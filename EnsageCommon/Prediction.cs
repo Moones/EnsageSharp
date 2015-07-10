@@ -89,10 +89,10 @@ namespace Ensage.Common
                         if (unit.Modifiers.Any(x => x.Name == "modifier_storm_spirit_ball_lightning"))
                         {
                             var ballLightning = Utils.FindSpell(unit, "storm_spirit_ball_lightning");
-                            var firstOrDefault = ballLightning.AbilityData.LastOrDefault(x => x.Name == "ball_lightning_move_speed");
+                            var firstOrDefault = ballLightning.AbilityData.FirstOrDefault(x => x.Name == "ball_lightning_move_speed");
                             if (firstOrDefault != null)
                             {
-                                var ballSpeed = firstOrDefault.GetValue(2);
+                                var ballSpeed = firstOrDefault.GetValue(ballLightning.Level-1);
                                 Console.WriteLine(ballSpeed);
                                 var newpredict = VectorOp.UnitVectorFromXYAngle(unit.RotationRad + data.RotSpeed) *
                                             (ballSpeed / 1000);
