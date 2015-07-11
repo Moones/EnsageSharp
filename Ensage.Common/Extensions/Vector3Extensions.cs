@@ -23,6 +23,14 @@ namespace Ensage.Common.Extensions
         {
             return GetDistance2D(unit.Position, vector);
         }
+        public static float GetDistance2D(this Entity unit, Vector3 vector)
+        {
+            return GetDistance2D(unit.Position, vector);
+        }
+        public static float GetDistance2D(this Entity unit1, Entity unit2)
+        {
+            return GetDistance2D(unit1.Position, unit2.Position);
+        }
 
         public static float FindAngleBetween(this Vector3 first, Vector3 second)
         {

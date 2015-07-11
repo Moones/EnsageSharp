@@ -99,6 +99,11 @@ namespace Ensage.Common.Extensions
                  (turnRate * (1 / 0.03)));
         }
 
+        public static double GetTurnTime(this Entity unit, Entity unit2)
+        {
+            return unit.GetTurnTime(unit2.Position);
+        }
+
         public static bool CanGoInvis(this Unit unit)
         {
             var invis =
