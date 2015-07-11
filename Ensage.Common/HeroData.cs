@@ -48,6 +48,7 @@ namespace Ensage.Common
         static HeroData()
         {
             Entity.OnIntegerPropertyChange += Entity_OnIntegerPropertyChange;
+            Drawing.OnDraw += TrackTick;
         }
 
         public static bool IsInBackswingtime(Unit unit)

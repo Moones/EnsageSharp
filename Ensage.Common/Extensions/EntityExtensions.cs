@@ -205,5 +205,16 @@ namespace Ensage.Common.Extensions
             }
             return team;
         }
+
+        public static bool IsInBackswingtime(this Unit unit)
+        {
+            return HeroData.IsInBackswingtime(unit);
+        }
+
+        public static Vector3 Predict(this Unit unit, float delay)
+        {
+            return Prediction.PredictedXYZ(unit, delay);
+        }
+
     }
 }
