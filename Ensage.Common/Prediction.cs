@@ -40,6 +40,11 @@ namespace Ensage.Common
             Lasttick = lasttick;
         }
 
+        static Prediction()
+        {
+            Game.OnUpdate += SpeedTrack;
+        }
+
         public static List<Prediction> TrackTable = new List<Prediction>();
 
         public static void SpeedTrack(EventArgs args)

@@ -45,6 +45,11 @@ namespace Ensage.Common
             CanMove = canMove;
         }
 
+        static HeroData()
+        {
+            Entity.OnIntegerPropertyChange += Entity_OnIntegerPropertyChange;
+        }
+
         public static bool IsInBackswingtime(Unit unit)
         {
             var attackPoint = HeroDatabase.GetAttackPoint(unit);
