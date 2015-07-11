@@ -31,7 +31,7 @@ namespace Ensage.Common
             double turnRate,
             double moveTime,
             double endTime,
-            double canMove)
+            bool canMove)
         {
             UnitName = unitName;
             UnitClassId = unitClassId;
@@ -42,17 +42,15 @@ namespace Ensage.Common
             TurnRate = turnRate;
             MoveTime = moveTime;
             EndTime = endTime;
+            CanMove = canMove;
         }
 
         public static bool IsInBackswingtime(Unit unit)
         {
-            var ping = Game.Ping;
             var attackPoint = HeroDatabase.GetAttackPoint(unit);
-            if (attackPoint * 1000 < ping)
+            if (attackPoint * 1000 < Game.Ping)
                 return false;
-            var classId = unit.ClassId;
-            var name = unit.Name;
-            var data = HeroDatabase.GetByClassId(classId) ?? HeroDatabase.GetByName(name);
+            var data = HeroDatabase.GetByClassId(unit.ClassId) ?? HeroDatabase.GetByName(unit.Name);
             return data != null && data.CanMove;
         }
 
@@ -62,13 +60,13 @@ namespace Ensage.Common
                 return;
 
             var me = EntityList.Hero;
-            if (me == null) return;
+            if (me == null)
+                return;
 
             var unit = sender as Unit;
-            var classId = unit.ClassId;
-            var name = unit.Name;
-            var data = HeroDatabase.GetByClassId(classId) ?? HeroDatabase.GetByName(name);
-            if (data == null) return;
+            var data = HeroDatabase.GetByClassId(unit.ClassId) ?? HeroDatabase.GetByName(unit.Name);
+            if (data == null) 
+                return;
             var gameTime = Game.GameTime;
             var attackPoint = HeroDatabase.GetAttackPoint(unit);
             var attackRate = HeroDatabase.GetAttackRate(unit);

@@ -249,7 +249,6 @@ namespace Ensage.Common
 
         public static double GetAttackRate(Unit unit)
         {
-            var classId = unit.ClassId;
             var attackSpeed = GetAttackSpeed(unit);
             var attackBaseTime = unit.AttackBaseTime;
             Ability spell = null;
@@ -259,19 +258,19 @@ namespace Ensage.Common
                         (x.Name == "modifier_alchemist_chemical_rage" || x.Name == "modifier_terrorblade_metamorphosis" ||
                          x.Name == "modifier_lone_druid_true_form" || x.Name == "modifier_troll_warlord_berserkers_rage")))
                 return (attackBaseTime / (1 + (attackSpeed - 100) / 100)) - 0.03;
-            switch (classId)
+            switch (unit.ClassId)
             {
                 case ClassId.CDOTA_Unit_Hero_Alchemist:
-                    spell = unit.Spellbook.Spells.FirstOrDefault(x => x.Name == "alchemist_chemical_rage");
+                    spell = unit.Spellbook.Spells.First(x => x.Name == "alchemist_chemical_rage");
                     break;
                 case ClassId.CDOTA_Unit_Hero_Terrorblade:
-                    spell = unit.Spellbook.Spells.FirstOrDefault(x => x.Name == "terrorblade_metamorphosis");
+                    spell = unit.Spellbook.Spells.First(x => x.Name == "terrorblade_metamorphosis");
                     break;
                 case ClassId.CDOTA_Unit_Hero_LoneDruid:
-                    spell = unit.Spellbook.Spells.FirstOrDefault(x => x.Name == "lone_druid_true_form");
+                    spell = unit.Spellbook.Spells.First(x => x.Name == "lone_druid_true_form");
                     break;
                 case ClassId.CDOTA_Unit_Hero_TrollWarlord:
-                    spell = unit.Spellbook.Spells.FirstOrDefault(x => x.Name == "troll_warlord_berserkers_rage");
+                    spell = unit.Spellbook.Spells.First(x => x.Name == "troll_warlord_berserkers_rage");
                     break;
             }
             attackBaseTime = spell.AbilityData.FirstOrDefault(x => x.Name == "base_attack_time").Value;
