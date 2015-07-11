@@ -78,12 +78,9 @@ namespace Ensage.Common.Extensions
             return unit.Position.FindAngleBetween(second);
         }
 
-        public static Item GetDagon()
+        public static Item GetDagon(this Entity unit)
         {
-            return
-                EntityList.GetLocalPlayer()
-                    .Hero.Inventory.Items.ToList()
-                    .FirstOrDefault(x => x.Name.Substring(0, 10) == "item_dagon");
+            return unit.Inventory.Items.ToList().FirstOrDefault(x => x.Name.Substring(0, 10) == "item_dagon");
         }
 
         public static double GetTurnTime(this Entity unit, Vector3 position)
