@@ -78,7 +78,7 @@ namespace Ensage.Common.Extensions
             return unit.Position.FindAngleBetween(second);
         }
 
-        public static Item GetDagon(this Entity unit)
+        public static Item GetDagon(this Unit unit)
         {
             return unit.Inventory.Items.ToList().FirstOrDefault(x => x.Name.Substring(0, 10) == "item_dagon");
         }
@@ -111,12 +111,12 @@ namespace Ensage.Common.Extensions
             return (invis != null && CanBeCasted(invis)) || (riki != null && riki.Level > 0);
         }
 
-        public static Ability FindSpell(Unit unit, String name)
+        public static Ability FindSpell(this Unit unit, string name)
         {
             return unit.Spellbook.Spells.FirstOrDefault(x => x.Name == name);
         }
 
-        public static bool IsUnitState(Unit unit, UnitState state)
+        public static bool IsUnitState(this Unit unit, UnitState state)
         {
             return unit.UnitState.HasFlag(state);
         }
@@ -172,12 +172,12 @@ namespace Ensage.Common.Extensions
             return IsUnitState(unit, UnitState.MagicImmune);
         }
 
-        public static bool IsIllusion(Hero unit)
+        public static bool IsIllusion(this Hero unit)
         {
             return unit.IsIllusion;
         }
 
-        public static bool IsIllusion(Meepo unit)
+        public static bool IsIllusion(this Meepo unit)
         {
             return unit.IsIllusion && unit.IsMeepoIllusion;
         }
