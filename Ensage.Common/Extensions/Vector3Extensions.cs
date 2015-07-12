@@ -19,17 +19,10 @@ namespace Ensage.Common.Extensions
         {
             return (float)Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
         }
+
         public static float GetDistance2D(this Vector3 vector, Entity unit)
         {
-            return GetDistance2D(unit.Position, vector);
-        }
-        public static float GetDistance2D(this Entity unit, Vector3 vector)
-        {
-            return GetDistance2D(unit.Position, vector);
-        }
-        public static float GetDistance2D(this Entity unit1, Entity unit2)
-        {
-            return GetDistance2D(unit1.Position, unit2.Position);
+            return unit.Position.GetDistance2D(vector);
         }
 
         public static float FindAngleBetween(this Vector3 first, Vector3 second)

@@ -97,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\EntityExtensions.cs" />
+    <Compile Include="Extensions\GameExtensions.cs" />
     <Compile Include="HeroData.cs" />
     <Compile Include="HeroDatabase.cs" />
     <Compile Include="Prediction.cs" />
