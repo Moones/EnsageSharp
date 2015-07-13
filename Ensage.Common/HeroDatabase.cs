@@ -11,14 +11,14 @@ namespace Ensage.Common
 
     public static class HeroDatabase
     {
-        public static List<HeroData> Units = new List<HeroData>();
+        public static List<AttackAnimationData> Units = new List<AttackAnimationData>();
 
         static HeroDatabase()
         {
             #region AntiMage
 
             Units.Add(
-                new HeroData
+                new AttackAnimationData
                 {
                     UnitName = "npc_dota_hero_antimage",
                     UnitClassId = ClassId.CDOTA_Unit_Hero_AntiMage,
@@ -34,7 +34,7 @@ namespace Ensage.Common
             #region Axe
 
             Units.Add(
-                new HeroData
+                new AttackAnimationData
                 {
                     UnitName = "npc_dota_hero_axe",
                     UnitClassId = ClassId.CDOTA_Unit_Hero_Axe,
@@ -43,9 +43,6 @@ namespace Ensage.Common
                     AttackBackswing = 0.5,
                     ProjectileSpeed = int.MaxValue,
                     TurnRate = 0.6,
-                    MoveTime = 0,
-                    EndTime = 0,
-                    CanMove = false,
                 });
 
             #endregion
@@ -53,7 +50,7 @@ namespace Ensage.Common
             #region Bane
 
             Units.Add(
-                new HeroData
+                new AttackAnimationData
                 {
                     UnitName = "npc_dota_hero_bane",
                     UnitClassId = ClassId.CDOTA_Unit_Hero_Bane,
@@ -69,7 +66,7 @@ namespace Ensage.Common
             #region Bloodseeker
 
             Units.Add(
-                new HeroData
+                new AttackAnimationData
                 {
                     UnitName = "npc_dota_hero_bloodseeker",
                     UnitClassId = ClassId.CDOTA_Unit_Hero_Bloodseeker,
@@ -85,7 +82,7 @@ namespace Ensage.Common
             #region CrystalMaiden
 
             Units.Add(
-                new HeroData
+                new AttackAnimationData
                 {
                     UnitName = "npc_dota_hero_crystal_maiden",
                     UnitClassId = ClassId.CDOTA_Unit_Hero_CrystalMaiden,
@@ -101,7 +98,7 @@ namespace Ensage.Common
             #region DrowRanger
 
             Units.Add(
-                new HeroData
+                new AttackAnimationData
                 {
                     UnitName = "npc_dota_hero_drow_ranger",
                     UnitClassId = ClassId.CDOTA_Unit_Hero_DrowRanger,
@@ -117,7 +114,7 @@ namespace Ensage.Common
             #region DrowRanger
 
             Units.Add(
-                new HeroData
+                new AttackAnimationData
                 {
                     UnitName = "npc_dota_hero_drow_ranger",
                     UnitClassId = ClassId.CDOTA_Unit_Hero_DrowRanger,
@@ -133,7 +130,7 @@ namespace Ensage.Common
             #region Earthshaker
 
             Units.Add(
-                new HeroData
+                new AttackAnimationData
                 {
                     UnitName = "npc_dota_hero_earthshaker",
                     UnitClassId = ClassId.CDOTA_Unit_Hero_Earthshaker,
@@ -149,7 +146,7 @@ namespace Ensage.Common
             #region Juggernaut
 
             Units.Add(
-                new HeroData
+                new AttackAnimationData
                 {
                     UnitName = "npc_dota_hero_juggernaut",
                     UnitClassId = ClassId.CDOTA_Unit_Hero_Juggernaut,
@@ -165,7 +162,7 @@ namespace Ensage.Common
             #region Pudge
 
             Units.Add(
-                new HeroData
+                new AttackAnimationData
                 {
                     UnitName = "npc_dota_hero_pudge",
                     UnitClassId = ClassId.CDOTA_Unit_Hero_Pudge,
@@ -174,9 +171,6 @@ namespace Ensage.Common
                     AttackBackswing = 1.17,
                     ProjectileSpeed = int.MaxValue,
                     TurnRate = 0.5,
-                    MoveTime = 0,
-                    EndTime = 0,
-                    CanMove = false,
                 });
 
             #endregion
@@ -184,7 +178,7 @@ namespace Ensage.Common
             #region Mirana
 
             Units.Add(
-                new HeroData
+                new AttackAnimationData
                 {
                     UnitName = "npc_dota_hero_mirana",
                     UnitClassId = ClassId.CDOTA_Unit_Hero_Mirana,
@@ -193,21 +187,18 @@ namespace Ensage.Common
                     AttackBackswing = 0.7,
                     ProjectileSpeed = 900,
                     TurnRate = 0.4,
-                    MoveTime = 0,
-                    EndTime = 0,
-                    CanMove = false,
                 });
 
             #endregion
 
         }
 
-        public static HeroData GetByName(String unitName)
+        public static AttackAnimationData GetByName(string unitName)
         {
             return Units.FirstOrDefault(unitData => unitData.UnitName.ToLower() == unitName);
         }
 
-        public static HeroData GetByClassId(ClassId classId)
+        public static AttackAnimationData GetByClassId(ClassId classId)
         {
             return Units.FirstOrDefault(unitData => unitData.UnitClassId.Equals(classId));
         }

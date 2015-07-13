@@ -1,13 +1,39 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using SharpDX;
 
 #endregion
 
 namespace Ensage.Common
 {
-    public class HeroData
+    public class AttackAnimation
+    {
+        public string UnitName;
+        public ClassId UnitClassId;
+        public double MoveTime;
+        public double EndTime;
+        public bool CanMove;
+
+        public AttackAnimation() { }
+
+        public AttackAnimation(string unitName,
+            ClassId unitClassId,
+            double moveTime,
+            double endTime,
+            bool canMove)
+        {
+            UnitName = unitName;
+            UnitClassId = unitClassId;
+            MoveTime = moveTime;
+            EndTime = endTime;
+            CanMove = canMove;
+        }
+    }
+
+    public class AttackAnimationData
     {
         public string UnitName;
         public ClassId UnitClassId;
@@ -16,22 +42,16 @@ namespace Ensage.Common
         public double AttackBackswing;
         public int ProjectileSpeed;
         public double TurnRate;
-        public double MoveTime;
-        public double EndTime;
-        public bool CanMove;
 
-        public HeroData() { }
+        public AttackAnimationData() { }
 
-        public HeroData(string unitName,
+        public AttackAnimationData(string unitName,
             ClassId unitClassId,
             double attackRate,
             double attackPoint,
             double attackBackswing,
             int projectileSpeed,
-            double turnRate,
-            double moveTime,
-            double endTime,
-            bool canMove)
+            double turnRate)
         {
             UnitName = unitName;
             UnitClassId = unitClassId;
@@ -40,10 +60,15 @@ namespace Ensage.Common
             AttackBackswing = attackBackswing;
             ProjectileSpeed = projectileSpeed;
             TurnRate = turnRate;
-            MoveTime = moveTime;
-            EndTime = endTime;
-            CanMove = canMove;
         }
+    }
+    
+    public class HeroData
+    {
+
+        public static double Count = 0;
+        public static double MaxCount = 0;
+        public static double StartTime = 0;
 
         static HeroData()
         {
@@ -52,55 +77,74 @@ namespace Ensage.Common
             EntityList.OnProjectileAdd += EntityList_OnProjectileAdd;
         }
 
+        public static List<AttackAnimation> AttackAnimation = new List<AttackAnimation>();
+
         static void EntityList_OnProjectileAdd(EntityListProjectileAddEventArgs args)
         {
-            if (!Game.IsInGame || args.Projectile.Source == null)
+            if (!Game.IsInGame || args.Projectile.Source == null || MaxCount < 1)
                 return;
 
             var projectile = args.Projectile;
             var unit = projectile.Source as Unit;
-            Console.WriteLine(unit.Name);
-            var data = HeroDatabase.GetByClassId(unit.ClassId) ?? HeroDatabase.GetByName(unit.Name);
+            //Console.WriteLine(unit.Name);
+            var data =
+                AttackAnimation.FirstOrDefault(
+                    unitData => unitData.UnitName == unit.Name || unitData.UnitClassId == unit.ClassId);
             if (data == null)
                 return;
             if (data.CanMove)
                 return;
 
             var attackPoint = HeroDatabase.GetAttackPoint(unit);
+            var attackRate = HeroDatabase.GetAttackRate(unit);
             data.CanMove = true;
-            data.EndTime = Game.GameTime + data.MoveTime - attackPoint;
+            data.EndTime = Game.GameTime + attackRate - attackPoint;
+            //Console.WriteLine("proj");
+        }
+
+        public static double FPS()
+        {
+            return MaxCount;
         }
 
         public static bool IsInBackswingtime(Unit unit)
         {
-            var attackPoint = HeroDatabase.GetAttackPoint(unit);
-            if (attackPoint * 1000 < Game.Ping)
+            if (MaxCount < 1)
                 return false;
-            var data = HeroDatabase.GetByClassId(unit.ClassId) ?? HeroDatabase.GetByName(unit.Name);
+
+            var attackPoint = HeroDatabase.GetAttackPoint(unit);
+            //if (attackPoint * 1000 < Game.Ping/2)
+            //    return false;
+            var data =
+                AttackAnimation.FirstOrDefault(
+                    unitData => unitData.UnitName == unit.Name || unitData.UnitClassId == unit.ClassId);
+            //Console.WriteLine(data);
             return data != null && data.CanMove;
         }
 
         public static void Entity_OnIntegerPropertyChange(Entity sender, EntityIntegerPropertyChangeEventArgs args)
         {
-            if (!Game.IsInGame || Game.IsPaused || args.Property != "m_NetworkActivity")
+            if (!Game.IsInGame || Game.IsPaused || args.Property != "m_NetworkActivity" || MaxCount < 1)
                 return;
 
             var unit = sender as Unit;
-            var data = HeroDatabase.GetByClassId(unit.ClassId) ?? HeroDatabase.GetByName(unit.Name);
+            var data =
+                AttackAnimation.FirstOrDefault(
+                    unitData => unitData.UnitName == unit.Name || unitData.UnitClassId == unit.ClassId);
             if (data == null) 
                 return;
             var gameTime = Game.GameTime;
             var attackPoint = HeroDatabase.GetAttackPoint(unit);
             var attackRate = HeroDatabase.GetAttackRate(unit);
             //Console.WriteLine(attackPoint + " " + attackRate);
-
-            if (args.NewValue == 424 && Math.Abs(data.MoveTime) < 0.00001)
+           // Console.WriteLine("{0}  {1}",data.EndTime,gameTime);
+            if (args.NewValue == 424 && Math.Abs(data.MoveTime) == 0)
             {
                 data.MoveTime = gameTime + attackPoint;
                 data.EndTime = gameTime + attackRate;
                 // Console.WriteLine(gameTime + " " + data.MoveTime + " " + data.EndTime);
             }
-            else if (data.MoveTime > 0 && gameTime > data.MoveTime)
+            else if (data.MoveTime > 0 && gameTime > data.MoveTime && !data.CanMove)
             {
                 data.CanMove = true;
             }
@@ -112,20 +156,19 @@ namespace Ensage.Common
             }
         }
 
-        public static double Count;
-        public static double MaxCount;
-        public static double StartTime = 0;
-
         public static void TrackTick(EventArgs args)
         {
             if (!Game.IsInGame || Game.IsPaused)
                 return;
             var me = EntityList.Hero;
             if (me == null) return;
+            //Console.WriteLine(me.ClassId);
             var gameTime = Game.GameTime;
             var tick = Environment.TickCount;
             if (StartTime == 0)
+            {
                 StartTime = gameTime;
+            }
             else if (gameTime - StartTime >= 1)
             {
                 StartTime = gameTime;
@@ -134,11 +177,29 @@ namespace Ensage.Common
             }
             else
                 Count += 1;
-            // Console.WriteLine(MaxCount);
-            var units = EntityList.GetEntities<Entity>();
-            foreach (var data in from unit in units let classId = unit.ClassId let name = unit.Name select HeroDatabase.GetByClassId(classId) ?? HeroDatabase.GetByName(name) into data where data != null select data)
-            {
 
+            if (MaxCount < 1)
+                return;
+            //Console.WriteLine(MaxCount);
+            var units = EntityList.GetEntities<Unit>();
+            foreach (var unit in units)
+            {
+                var data =
+                    AttackAnimation.FirstOrDefault(
+                        unitData => unitData.UnitName == unit.Name || unitData.UnitClassId == unit.ClassId);
+                if (data == null && unit.IsAlive && unit.IsVisible)
+                {
+                    //Console.WriteLine(unit.ClassId);
+                    data = new AttackAnimation(unit.Name, unit.ClassId, 0, 0, false);
+                    AttackAnimation.Add(data);
+                }
+                if (data != null && (!unit.IsAlive || !unit.IsVisible))
+                {
+                    AttackAnimation.Remove(data);
+                    continue;
+                }
+                if (data == null)
+                    continue;
                 if (data.MoveTime > 0 && gameTime > data.MoveTime)
                 {
                     data.CanMove = true;
