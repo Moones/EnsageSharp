@@ -49,6 +49,26 @@ namespace Ensage.Common
         {
             Entity.OnIntegerPropertyChange += Entity_OnIntegerPropertyChange;
             Drawing.OnDraw += TrackTick;
+            EntityList.OnProjectileAdd += EntityList_OnProjectileAdd;
+        }
+
+        static void EntityList_OnProjectileAdd(EntityListProjectileAddEventArgs args)
+        {
+            if (!Game.IsInGame || args.Projectile.Source == null)
+                return;
+
+            var projectile = args.Projectile;
+            var unit = projectile.Source as Unit;
+            Console.WriteLine(unit.Name);
+            var data = HeroDatabase.GetByClassId(unit.ClassId) ?? HeroDatabase.GetByName(unit.Name);
+            if (data == null)
+                return;
+            if (data.CanMove)
+                return;
+
+            var attackPoint = HeroDatabase.GetAttackPoint(unit);
+            data.CanMove = true;
+            data.EndTime = Game.GameTime + data.MoveTime - attackPoint;
         }
 
         public static bool IsInBackswingtime(Unit unit)
@@ -63,10 +83,6 @@ namespace Ensage.Common
         public static void Entity_OnIntegerPropertyChange(Entity sender, EntityIntegerPropertyChangeEventArgs args)
         {
             if (!Game.IsInGame || Game.IsPaused || args.Property != "m_NetworkActivity")
-                return;
-
-            var me = EntityList.Hero;
-            if (me == null)
                 return;
 
             var unit = sender as Unit;
