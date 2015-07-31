@@ -301,9 +301,14 @@ namespace Ensage.Common.Extensions
             return unit.Position.FindAngleBetween(second);
         }
 
+        public static Item GetLeveledItem(this Unit unit, string name)
+        {
+            return unit.Inventory.Items.ToList().OrderByDescending(x => x.Name).FirstOrDefault(x => x.Name.Substring(0, name.Length) == name);
+        }
+
         public static Item GetDagon(this Unit unit)
         {
-            return unit.Inventory.Items.ToList().FirstOrDefault(x => x.Name.Substring(0, 10) == "item_dagon");
+            return unit.GetLeveledItem("item_dagon");
         }
 
         public static double GetTurnTime(this Entity unit, Vector3 position)
