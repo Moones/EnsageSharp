@@ -308,8 +308,8 @@ namespace Ensage.Common.Extensions
 
         public static double GetTurnTime(this Entity unit, Vector3 position)
         {
-            var data = HeroDatabase.GetByClassId(unit.ClassId) ??
-                                       HeroDatabase.GetByName(unit.Name);
+            var data = UnitDatabase.GetByClassId(unit.ClassId) ??
+                                       UnitDatabase.GetByName(unit.Name);
             if (data == null)
                 return
                     (Math.Max(
@@ -672,7 +672,7 @@ namespace Ensage.Common.Extensions
 
         public static bool IsInBackswingtime(this Unit unit)
         {
-            return HeroData.IsInBackswingtime(unit);
+            return UnitData.IsInBackswingtime(unit);
         }
 
         public static Vector3 Predict(this Unit unit, float delay)

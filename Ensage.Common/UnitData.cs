@@ -63,14 +63,14 @@ namespace Ensage.Common
         }
     }
     
-    public class HeroData
+    public class UnitData
     {
 
         public static double Count = 0;
         public static double MaxCount = 0;
         public static double StartTime = 0;
 
-        static HeroData()
+        static UnitData()
         {
             Entity.OnIntegerPropertyChange += Entity_OnIntegerPropertyChange;
             Drawing.OnDraw += TrackTick;
@@ -95,8 +95,8 @@ namespace Ensage.Common
             if (data.CanMove)
                 return;
 
-            var attackPoint = HeroDatabase.GetAttackPoint(unit);
-            var attackRate = HeroDatabase.GetAttackRate(unit);
+            var attackPoint = UnitDatabase.GetAttackPoint(unit);
+            var attackRate = UnitDatabase.GetAttackRate(unit);
             data.CanMove = true;
             data.EndTime = Game.GameTime + attackRate - attackPoint;
             //Console.WriteLine("proj");
@@ -112,7 +112,7 @@ namespace Ensage.Common
             if (MaxCount < 1)
                 return false;
 
-            var attackPoint = HeroDatabase.GetAttackPoint(unit);
+            var attackPoint = UnitDatabase.GetAttackPoint(unit);
             //if (attackPoint * 1000 < Game.Ping/2)
             //    return false;
             var data =
@@ -134,8 +134,8 @@ namespace Ensage.Common
             if (data == null) 
                 return;
             var gameTime = Game.GameTime;
-            var attackPoint = HeroDatabase.GetAttackPoint(unit);
-            var attackRate = HeroDatabase.GetAttackRate(unit);
+            var attackPoint = UnitDatabase.GetAttackPoint(unit);
+            var attackRate = UnitDatabase.GetAttackRate(unit);
             //Console.WriteLine(attackPoint + " " + attackRate);
            // Console.WriteLine("{0}  {1}",data.EndTime,gameTime);
             if (args.NewValue == 424 && Math.Abs(data.MoveTime) == 0)

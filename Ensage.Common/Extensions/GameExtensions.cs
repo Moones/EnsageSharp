@@ -4,7 +4,7 @@
     {
         public static double FPS(this Game game)
         {
-            return HeroData.MaxCount;
+            return UnitData.MaxCount;
         }
     }
 }

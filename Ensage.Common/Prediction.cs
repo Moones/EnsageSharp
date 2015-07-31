@@ -139,7 +139,7 @@ namespace Ensage.Common
                     unitData => unitData.UnitName == unit.Name || unitData.UnitClassId == unit.ClassId);
             if (IsIdle(unit) || data == null)
                 return unit.Position;
-            var fpsTolerancy = ((1 / HeroData.MaxCount) * 3 * (1 + (1 - 1 / HeroData.MaxCount))) * 1000;
+            var fpsTolerancy = ((1 / UnitData.MaxCount) * 3 * (1 + (1 - 1 / UnitData.MaxCount))) * 1000;
             var v = unit.Position + data.Speed * (float)(delay + fpsTolerancy);
             return new Vector3(v.X, v.Y, 0);
         }
