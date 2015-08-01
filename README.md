@@ -1,2 +1,3 @@
 # Ensage.NET
-Guess what!
+Public repository for upcoming .NET version of Ensage.
+
