@@ -257,7 +257,7 @@ namespace Ensage.Common.Extensions
                     {
                         var firstOrDefault = psi.AbilityData.FirstOrDefault(x => x.Name == "bonus_attack_range");
                         if (firstOrDefault != null)
-                            bonus = firstOrDefault.Value;
+                            bonus = firstOrDefault.GetValue(psi.level - 1);
                     }
                     break;
                 case ClassId.CDOTA_Unit_Hero_Sniper:
@@ -266,7 +266,7 @@ namespace Ensage.Common.Extensions
                     {
                         var firstOrDefault = aim.AbilityData.FirstOrDefault(x => x.Name == "bonus_attack_range");
                         if (firstOrDefault != null)
-                            bonus = firstOrDefault.Value;
+                            bonus = firstOrDefault.GetValue(aim.level - 1);
                     }
                     break;
                 case ClassId.CDOTA_Unit_Hero_Enchantress:
