@@ -339,7 +339,7 @@ namespace Ensage.Common.Extensions
                 unit.Inventory.Items.FirstOrDefault(
                     x =>
                         x.Name == "item_invis_sword" || x.Name == "item_silver_edge" ||
-                        x.Name == "item_glimmer_cape" || x.Name == "item_moon_shard");
+                        x.Name == "item_glimmer_cape");
             var riki = FindSpell(unit, "riki_permanent_invisibility");
             return (invis != null && CanBeCasted(invis)) || (riki != null && riki.Level > 0);
         }
