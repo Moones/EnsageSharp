@@ -223,26 +223,25 @@ namespace Ensage.Common.Extensions
 
         }
 
-        public static float GetDistance2D(this Entity unit, Vector3 vector)
+        public static float Distance2D(this Entity unit, Vector3 vector)
         {
-            return unit.Position.GetDistance2D(vector);
+            return unit.Position.Distance2D(vector);
         }
 
-        public static float GetDistance2D(this Entity unit1, Entity unit2)
+        public static float Distance2D(this Entity unit1, Entity unit2)
         {
-            return unit1.Position.GetDistance2D(unit2.Position);
+            return unit1.Position.Distance2D(unit2.Position);
         }
 
-        public static Vector3 UnitVectorFromXYAngle(this Entity unit)
+        public static Vector2 Vector2FromPolarAngle(this Entity unit, float delta = 0f, float radial = 1f)
         {
             var alpha = unit.RotationRad;
-            return new Vector3((float)Math.Cos(alpha), (float)Math.Sin(alpha), 0);
+            return VectorExtensions.FromPolarCoordinates(radial, alpha + delta);
         }
 
-        public static Vector3 UnitVectorFromXYAngle(this Entity unit, double delta)
+        public static Vector3 Vector3FromPolarAngle(this Entity unit, float delta = 0f, float radial = 1f)
         {
-            var alpha = unit.RotationRad + delta;
-            return new Vector3((float)Math.Cos(alpha), (float)Math.Sin(alpha), 0);
+            return Vector2FromPolarAngle(unit, delta, radial).ToVector3();
         }
 
         public static float GetAttackRange(this Unit unit)
@@ -257,7 +256,7 @@ namespace Ensage.Common.Extensions
                     {
                         var firstOrDefault = psi.AbilityData.FirstOrDefault(x => x.Name == "bonus_attack_range");
                         if (firstOrDefault != null)
-                            bonus = firstOrDefault.GetValue(psi.level - 1);
+                            bonus = firstOrDefault.GetValue(psi.Level - 1);
                     }
                     break;
                 case ClassId.CDOTA_Unit_Hero_Sniper:
@@ -266,7 +265,7 @@ namespace Ensage.Common.Extensions
                     {
                         var firstOrDefault = aim.AbilityData.FirstOrDefault(x => x.Name == "bonus_attack_range");
                         if (firstOrDefault != null)
-                            bonus = firstOrDefault.GetValue(aim.level - 1);
+                            bonus = firstOrDefault.GetValue(aim.Level - 1);
                     }
                     break;
                 case ClassId.CDOTA_Unit_Hero_Enchantress:
@@ -298,7 +297,7 @@ namespace Ensage.Common.Extensions
 
         public static float FindAngleBetween(this Entity unit, Vector3 second)
         {
-            return unit.Position.FindAngleBetween(second);
+            return unit.Position.ToVector2().FindAngleBetween(second.ToVector2());
         }
 
         public static Item GetLeveledItem(this Unit unit, string name)
@@ -477,7 +476,7 @@ namespace Ensage.Common.Extensions
                 }
                 else if (v.SourceTeam == -2)
                 {
-                    if (target.GetDistance2D(source) < 2200)
+                    if (target.Distance2D(source) < 2200)
                         amp += burst;
                     else
                         amp += burst/2;
@@ -581,7 +580,7 @@ namespace Ensage.Common.Extensions
                     var baseAmp = .05*spell.Level;
                     if (spell.Owner.AghanimState())
                         baseAmp = baseAmp + .1;
-                    var distance = target.GetDistance2D(spell.Owner);
+                    var distance = target.Distance2D(spell.Owner);
                     if (distance <= 200)
                         amp += (baseAmp + 0.15);
                     else if (distance > 750)
@@ -605,7 +604,7 @@ namespace Ensage.Common.Extensions
                     if (firstOrDefault != null)
                     {
                         var bloodrite = firstOrDefault.GetValue(spell.Level - 1);
-                        if (target.GetDistance2D(source) > 2200)
+                        if (target.Distance2D(source) > 2200)
                             bloodrite /= 2;
                         ampFromME += bloodrite;
                     }
