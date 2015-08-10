@@ -127,6 +127,7 @@ namespace Ensage.Common
             if (!Game.IsInGame || Game.IsPaused || args.Property != "m_NetworkActivity" || MaxCount < 1)
                 return;
 
+
             var unit = sender as Unit;
             var data =
                 AttackAnimation.FirstOrDefault(

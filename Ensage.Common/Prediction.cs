@@ -86,7 +86,7 @@ namespace Ensage.Common
                     var speed = (unit.Position - data.LastPosition) / (tick - data.Lasttick);
                     if (Math.Abs(data.RotSpeed) > 0.05 && data.Speed != new Vector3(0, 0, 0))
                     {
-                        data.Speed = unit.UnitVectorFromXYAngle(data.RotSpeed) / (tick - data.Lasttick);
+                        data.Speed = unit.Vector3FromPolarAngle(data.RotSpeed) / (tick - data.Lasttick);
                     }
                     else
                     {
@@ -98,7 +98,7 @@ namespace Ensage.Common
                             {
                                 var ballSpeed = firstOrDefault.GetValue(ballLightning.Level - 1);
                                 Console.WriteLine(ballSpeed);
-                                var newpredict = unit.UnitVectorFromXYAngle(data.RotSpeed) *
+                                var newpredict = unit.Vector3FromPolarAngle(data.RotSpeed) *
                                             (ballSpeed / 1000);
                                 data.Speed = newpredict;
                             }
@@ -107,16 +107,16 @@ namespace Ensage.Common
                             data.Speed = speed;
                         else
                         {
-                            var newpredict = unit.UnitVectorFromXYAngle(data.RotSpeed) *
+                            var newpredict = unit.Vector3FromPolarAngle(data.RotSpeed) *
                                              (unit.MovementSpeedTotal / 1000);
                             data.Speed = newpredict;
                         }
                     }
                     var predict = PredictedXYZ(unit, 1000);
-                    var realspeed = predict.GetDistance2D(unit.Position);
+                    var realspeed = predict.Distance2D(unit.Position);
                     if ((realspeed + 100 > unit.MovementSpeedTotal) && unit.LastActivity == 422)
                     {
-                        var newpredict = unit.UnitVectorFromXYAngle() * (unit.MovementSpeedTotal / 1000);
+                        var newpredict = unit.Vector3FromPolarAngle() * (unit.MovementSpeedTotal / 1000);
                         data.Speed = newpredict;
                     }
                     data.LastPosition = unit.Position;
@@ -128,7 +128,7 @@ namespace Ensage.Common
 
         public static Vector3 InFront(Unit unit, float distance)
         {
-            var v = unit.Position + unit.UnitVectorFromXYAngle() * distance;
+            var v = unit.Position + unit.Vector3FromPolarAngle() * distance;
             return new Vector3(v.X, v.Y, 0);
         }
 
@@ -154,15 +154,15 @@ namespace Ensage.Common
                 return target.Position;
             var predict = PredictedXYZ(target, delay);
             var sourcePos = source.Position;
-            var reachTime = (predict.GetDistance2D(sourcePos) / speed) * 1000;
+            var reachTime = (predict.Distance2D(sourcePos) / speed) * 1000;
             predict = PredictedXYZ(target, delay + reachTime);
-            reachTime = (predict.GetDistance2D(sourcePos) / speed) * 1000;
+            reachTime = (predict.Distance2D(sourcePos) / speed) * 1000;
             predict = PredictedXYZ(target, delay + reachTime);
             sourcePos = (source.Position - predict) *
-                        (predict.GetDistance2D(source.Position) - radius / 2) /
-                        predict.GetDistance2D(source.Position) +
+                        (predict.Distance2D(source.Position) - radius / 2) /
+                        predict.Distance2D(source.Position) +
                         predict;
-            reachTime = (predict.GetDistance2D(sourcePos) / speed) * 1000;
+            reachTime = (predict.Distance2D(sourcePos) / speed) * 1000;
             return PredictedXYZ(target, delay + reachTime);
         }
 
