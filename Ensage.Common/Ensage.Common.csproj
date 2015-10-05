@@ -99,6 +99,8 @@
     <Compile Include="Algorithm.cs" />
     <Compile Include="Extensions\EntityExtensions.cs" />
     <Compile Include="Extensions\GameExtensions.cs" />
+    <Compile Include="SpellData.cs" />
+    <Compile Include="SpellDatabase.cs" />
     <Compile Include="UnitData.cs" />
     <Compile Include="UnitDatabase.cs" />
     <Compile Include="Prediction.cs" />
