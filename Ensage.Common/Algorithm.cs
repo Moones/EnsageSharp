@@ -24,11 +24,11 @@ namespace Ensage.Common
         {
             if (radius < 0)
             {
-                throw new ArgumentException("Number must be non-negative", nameof(radius));
+                throw new ArgumentException("Number must be non-negative", "radius");
             }
             if (!vector.Any())
             {
-                throw new ArgumentException("Vector list can not be empty", nameof(vector));
+                throw new ArgumentException("Vector list can not be empty", "vector");
             }
 
             var returnValue = Vector2.Zero;
