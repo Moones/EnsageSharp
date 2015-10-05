@@ -4,7 +4,7 @@
     public class SpellData
     {
         public string SpellName;
-        public bool IsStun;
+        public bool IsDisable;
         public bool IsSlow;
         public bool IsNuke;
         public bool IsSkillShot;
@@ -26,7 +26,7 @@
         public SpellData() { }
 
         public SpellData(string spellName,
-            bool isStun,
+            bool isDisable,
             bool isSlow,
             bool isNuke,
             bool isSkillShot,
@@ -45,7 +45,7 @@
             bool onlyForKillSteal)
         {
             SpellName = spellName;
-            IsStun = isStun;
+            IsDisable = isDisable;
             IsSlow = isSlow;
             IsNuke = isNuke;
             IsSkillShot = isSkillShot;

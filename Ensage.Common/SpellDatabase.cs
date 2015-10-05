@@ -14,7 +14,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "dark_seer_ion_shell",
-                    IsStun = true,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -41,17 +41,17 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "magnataur_shockwave",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
-                    IsNuke = false,
-                    IsSkillShot = false,
+                    IsNuke = true,
+                    IsSkillShot = true,
                     IsHeal = false,
                     IsShield = false,
                     AdditionalDelay = 0,
                     Radius = 0,
-                    StringRadius = "shock_width",
+                    StringRadius = null,
                     Speed = "shock_speed",
-                    Width = null,
+                    Width = "shock_width",
                     AllyBlock = false,
                     EnemyBlock = false,
                     MagicImmunityPierce = false,
@@ -68,9 +68,9 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ursa_earthshock",
-                    IsStun = true,
-                    IsSlow = false,
-                    IsNuke = false,
+                    IsDisable = false,
+                    IsSlow = true,
+                    IsNuke = true,
                     IsSkillShot = false,
                     IsHeal = false,
                     IsShield = false,
@@ -89,15 +89,15 @@ namespace Ensage.Common
 
             #endregion
 
-            #region chaos_knight_chaos_strike
+            #region chaos_knight_reality_rift
 
             Spells.Add(
                 new SpellData
                 {
-                    SpellName = "chaos_knight_chaos_strike",
-                    IsStun = true,
+                    SpellName = "chaos_knight_reality_rift",
+                    IsDisable = false,
                     IsSlow = false,
-                    IsNuke = false,
+                    IsNuke = true,
                     IsSkillShot = false,
                     IsHeal = false,
                     IsShield = false,
@@ -122,7 +122,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "skywrath_mage_mystic_flare",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -132,7 +132,7 @@ namespace Ensage.Common
                     Radius = 0,
                     StringRadius = null,
                     Speed = null,
-                    Width = null,
+                    Width = "radius",
                     AllyBlock = false,
                     EnemyBlock = false,
                     MagicImmunityPierce = false,
@@ -149,9 +149,9 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "death_prophet_carrion_swarm",
-                    IsStun = true,
+                    IsDisable = false,
                     IsSlow = false,
-                    IsNuke = false,
+                    IsNuke = true,
                     IsSkillShot = false,
                     IsHeal = false,
                     IsShield = false,
@@ -176,9 +176,9 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "zuus_lightning_bolt",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
-                    IsNuke = false,
+                    IsNuke = true,
                     IsSkillShot = false,
                     IsHeal = false,
                     IsShield = false,
@@ -203,7 +203,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "axe_berserkers_call",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -230,7 +230,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "beastmaster_wild_axes",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -257,7 +257,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "puck_waning_rift",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -284,7 +284,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "lone_druid_rabid",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -311,7 +311,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "rattletrap_battery_assault",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -338,7 +338,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "sven_storm_bolt",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -365,7 +365,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "chen_test_of_faith",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -392,7 +392,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "phantom_assassin_stifling_dagger",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -419,7 +419,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "bounty_hunter_track",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -446,7 +446,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "axe_battle_hunger",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -473,7 +473,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "storm_spirit_electric_vortex",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -500,7 +500,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ember_spirit_sleight_of_fist",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -527,7 +527,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "batrider_flamebreak",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -554,7 +554,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "mirana_arrow",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -581,7 +581,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "abaddon_aphotic_shield",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -608,7 +608,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "windrunner_shackleshot",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -635,7 +635,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ancient_apparition_cold_feet",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -662,7 +662,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "rattletrap_hookshot",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -689,7 +689,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shadow_shaman_mass_serpent_ward",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -716,7 +716,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ogre_magi_unrefined_fireblast",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -743,7 +743,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "oracle_fortunes_end",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -770,7 +770,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shredder_timber_chain",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -797,7 +797,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "doom_bringer_lvl_death",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -824,7 +824,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "crystal_maiden_freezing_field",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -851,7 +851,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "lich_frost_armor",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -878,7 +878,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "enigma_malefice",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -905,7 +905,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "elder_titan_earth_splitter",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -932,7 +932,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shredder_return_chakram_2",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -959,7 +959,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "zuus_thundergods_wrath",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -986,7 +986,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shredder_chakram_2",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1013,7 +1013,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "phantom_assassin_phantom_strike",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1040,7 +1040,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "pugna_decrepify",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1067,7 +1067,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "omniknight_purification",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1094,7 +1094,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "keeper_of_the_light_blinding_light",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1121,7 +1121,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "queenofpain_shadow_strike",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1148,7 +1148,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shredder_chakram",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1175,7 +1175,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "undying_soul_rip",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1202,7 +1202,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "invoker_sun_strike",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1229,7 +1229,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "winter_wyvern_splinter_blast",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1256,7 +1256,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "dark_seer_surge",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1283,7 +1283,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "mirana_starfall",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1310,7 +1310,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "luna_lucent_beam",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1337,7 +1337,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "nyx_assassin_mana_burn",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1364,7 +1364,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "dark_seer_vacuum",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1391,7 +1391,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "rattletrap_power_cogs",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1418,7 +1418,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "dark_seer_wall_of_replica",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1445,7 +1445,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ogre_magi_fireblast",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1472,7 +1472,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "riki_blink_strike",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1499,7 +1499,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "invoker_cold_snap",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1526,7 +1526,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "wisp_spirits",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1553,7 +1553,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "warlock_fatal_bonds",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1580,7 +1580,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "oracle_purifying_flames",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1607,7 +1607,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "burrow_width",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1634,7 +1634,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "pudge_meat_hook",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1661,7 +1661,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "keeper_of_the_light_mana_leak",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1688,7 +1688,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "keeper_of_the_light_spirit_form_illuminate",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1715,7 +1715,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "templar_assassin_meld",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1742,7 +1742,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "disruptor_glimpse",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1769,7 +1769,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "disruptor_thunder_strike",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1796,7 +1796,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "disruptor_kinetic_field",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1823,7 +1823,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ember_spirit_searing_chains",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1850,7 +1850,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "silencer_curse_of_the_silent",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1877,7 +1877,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "venomancer_plague_ward",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1904,7 +1904,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "phoenix_icarus_dive_stop",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1931,7 +1931,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "phoenix_icarus_dive",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1958,7 +1958,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "puck_ethereal_jaunt",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -1985,7 +1985,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "enchantress_enchant",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2012,7 +2012,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "treant_leech_seed",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2039,7 +2039,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "phoenix_launch_fire_spirit",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2066,7 +2066,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "nyx_assassin_impale",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2093,7 +2093,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "tidehunter_gush",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2120,7 +2120,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shadow_demon_demonic_purge",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2147,7 +2147,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "puck_illusory_orb",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2174,7 +2174,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "legion_commander_duel",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2201,7 +2201,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "jakiro_dual_breath",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2228,7 +2228,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "lina_light_strike_array",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2255,7 +2255,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "clinkz_strafe",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2282,7 +2282,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shadow_demon_disruption",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2309,7 +2309,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "slardar_slithereen_crush",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2336,7 +2336,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "terrorblade_conjure_image",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2363,7 +2363,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "terrorblade_metamorphosis",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2390,7 +2390,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "slark_dark_pact",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2417,7 +2417,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "terrorblade_reflection",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2444,7 +2444,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shadow_demon_soul_catcher",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2471,7 +2471,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "terrorblade_sunder",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2498,7 +2498,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "bloodseeker_rupture",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2525,7 +2525,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "undying_tombstone",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2552,7 +2552,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "undying_decay",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2579,7 +2579,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "gyrocopter_flak_cannon",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2606,7 +2606,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "spectre_spectral_dagger",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2633,7 +2633,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "naga_siren_rip_tide",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2660,7 +2660,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "visage_soul_assumption",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2687,7 +2687,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "earthshaker_echo_slam",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2714,7 +2714,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "invoker_ice_wall",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2741,7 +2741,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "tinker_laser",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2768,7 +2768,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "rattletrap_rocket_flare",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2795,7 +2795,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "invoker_forge_spirit",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2822,7 +2822,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "weaver_the_swarm",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2849,7 +2849,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ember_spirit_fire_remnant",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2876,7 +2876,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "earthshaker_fissure",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2903,7 +2903,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "magnataur_skewer",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2930,7 +2930,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "beastmaster_primal_roar",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2957,7 +2957,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "tusk_walrus_kick",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -2984,7 +2984,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "brewmaster_thunder_clap",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3011,7 +3011,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "bane_nightmare",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3038,7 +3038,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "keeper_of_the_light_illuminate",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3065,7 +3065,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "nevermore_shadowraze3",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3092,7 +3092,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "windrunner_powershot",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3119,7 +3119,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "tusk_ice_shards",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3146,7 +3146,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "brewmaster_drunken_haze",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3173,7 +3173,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "leshrac_lightning_storm",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3200,7 +3200,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "necrolyte_death_pulse",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3227,7 +3227,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "invoker_alacrity",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3254,7 +3254,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shadow_shaman_voodoo",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3281,7 +3281,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "pugna_nether_blast",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3308,7 +3308,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "morphling_adaptive_strike",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3335,7 +3335,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "lone_druid_true_form",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3362,7 +3362,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "nevermore_shadowraze2",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3389,7 +3389,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "storm_spirit_ball_lightning",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3416,7 +3416,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "tusk_snowball",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3443,7 +3443,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "phoenix_sun_ray_toggle_move",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3470,7 +3470,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "doom_bringer_scorched_earth",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3497,7 +3497,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "phoenix_sun_ray",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3524,7 +3524,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "phoenix_fire_spirits",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3551,7 +3551,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "silencer_last_word",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3578,7 +3578,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "phantom_lancer_spirit_lance",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3605,7 +3605,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ursa_enrage",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3632,7 +3632,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "chen_penitence",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3659,7 +3659,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "invoker_deafening_blast",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3686,7 +3686,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "warlock_shadow_word",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3713,7 +3713,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "centaur_double_edge",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3740,7 +3740,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "earth_spirit_stone_caller",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3767,7 +3767,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "bane_fiends_grip",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3794,7 +3794,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ogre_magi_bloodlust",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3821,7 +3821,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "earthshaker_enchant_totem",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3848,7 +3848,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "earth_spirit_rolling_boulder",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3875,7 +3875,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "visage_grave_chill",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3902,7 +3902,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "tusk_frozen_sigil",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3929,7 +3929,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "night_stalker_void",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3956,7 +3956,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "riki_smoke_screen",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -3983,7 +3983,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "vengefulspirit_magic_missile",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4010,7 +4010,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "leshrac_diabolic_edict",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4037,7 +4037,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "earth_spirit_boulder_smash",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4064,7 +4064,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "slardar_sprint",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4091,7 +4091,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "razor_plasma_field",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4118,7 +4118,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ember_spirit_flame_guard",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4145,7 +4145,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "morphling_waveform",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4172,7 +4172,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "axe_culling_blade",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4199,7 +4199,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "weaver_shukuchi",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4226,7 +4226,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "death_prophet_silence",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4253,7 +4253,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "earth_spirit_geomagnetic_grip",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4280,7 +4280,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "enigma_midnight_pulse",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4307,7 +4307,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "sniper_assassinate",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4334,7 +4334,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "elder_titan_echo_stomp",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4361,7 +4361,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "nevermore_shadowraze1",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4388,7 +4388,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "nevermore_requiem",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4415,7 +4415,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "tiny_toss",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4442,7 +4442,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "slark_pounce",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4469,7 +4469,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ogre_magi_ignite",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4496,7 +4496,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "furion_sprout",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4523,7 +4523,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "kunkka_ghostship",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4550,7 +4550,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "troll_warlord_whirling_axes_ranged",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4577,7 +4577,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ember_spirit_activate_fire_remnant",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4604,7 +4604,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "storm_spirit_static_remnant",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4631,7 +4631,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "skeleton_king_hellfire_blast",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4658,7 +4658,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "centaur_hoof_stomp",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4685,7 +4685,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "tusk_walrus_punch",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4712,7 +4712,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "leshrac_split_earth",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4739,7 +4739,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "spirit_breaker_charge_of_darkness",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4766,7 +4766,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "vengefulspirit_wave_of_terror",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4793,7 +4793,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "queenofpain_scream_of_pain",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4820,7 +4820,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "earth_spirit_petrify",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4847,7 +4847,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "gyrocopter_rocket_barrage",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4874,7 +4874,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "invoker_emp",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4901,7 +4901,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "bane_enfeeble",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4928,7 +4928,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "bristleback_viscous_nasal_goo",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4955,7 +4955,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shadow_demon_shadow_poison",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -4982,7 +4982,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shredder_return_chakram",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5009,7 +5009,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shadow_shaman_ether_shock",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5036,7 +5036,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ancient_apparition_ice_vortex",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5063,7 +5063,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "bloodseeker_blood_bath",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5090,7 +5090,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "gyrocopter_homing_missile",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5117,7 +5117,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "jakiro_ice_path",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5144,7 +5144,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "drow_ranger_wave_of_silence",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5171,7 +5171,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "invoker_tornado",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5198,7 +5198,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "dragon_knight_breathe_fire",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5225,7 +5225,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "naga_siren_ensnare",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5252,7 +5252,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "kunkka_x_marks_the_spot",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5279,7 +5279,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "spirit_breaker_nether_strike",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5306,7 +5306,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "razor_static_link",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5333,7 +5333,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "necrolyte_reapers_scythe",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5360,7 +5360,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "broodmother_spawn_spiderlings",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5387,7 +5387,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "bristleback_quill_spray",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5414,7 +5414,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "legion_commander_overwhelming_odds",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5441,7 +5441,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ancient_apparition_ice_blast_release",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5468,7 +5468,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "tinker_heat_seeking_missile",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5495,7 +5495,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shredder_whirling_death",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5522,7 +5522,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "elder_titan_ancestral_spirit",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5549,7 +5549,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "chaos_knight_chaos_bolt",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5576,7 +5576,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "legion_commander_press_the_attack",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5603,7 +5603,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "kunkka_torrent",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5630,7 +5630,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "bounty_hunter_shuriken_toss",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5657,7 +5657,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "omniknight_repel",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5684,7 +5684,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "batrider_sticky_napalm",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5711,7 +5711,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "pudge_dismember",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5738,7 +5738,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "batrider_flaming_lasso",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5765,7 +5765,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "slardar_amplify_damage",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5792,7 +5792,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "lion_voodoo",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5819,7 +5819,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "lich_frost_nova",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5846,7 +5846,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "beastmaster_call_of_the_wild_boar",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5873,7 +5873,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "tiny_avalanche",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5900,7 +5900,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "doom_bringer_doom",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5927,7 +5927,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "tinker_rearm",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5954,7 +5954,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "abaddon_death_coil",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -5981,7 +5981,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "templar_assassin_refraction",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6008,7 +6008,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "troll_warlord_whirling_axes_melee",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6035,7 +6035,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "leshrac_pulse_nova",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6062,7 +6062,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "lion_finger_of_death",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6089,7 +6089,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "life_stealer_open_wounds",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6116,7 +6116,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "bane_brain_sap",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6143,7 +6143,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "zuus_arc_lightning",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6170,7 +6170,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "tidehunter_anchor_smash",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6197,7 +6197,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "night_stalker_crippling_fear",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6224,7 +6224,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "skywrath_mage_arcane_bolt",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6251,7 +6251,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "invoker_chaos_meteor",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6278,7 +6278,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "medusa_mystic_snake",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6305,7 +6305,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "sniper_shrapnel",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6332,7 +6332,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "lina_laguna_blade",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6359,7 +6359,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "ursa_overpower",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6386,7 +6386,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "queenofpain_sonic_wave",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6413,7 +6413,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "lion_impale",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6440,7 +6440,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "lina_dragon_slave",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6467,7 +6467,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "venomancer_venomous_gale",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6494,7 +6494,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "skywrath_mage_ancient_seal",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6521,7 +6521,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "antimage_mana_void",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6548,7 +6548,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "shadow_shaman_shackles",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6575,7 +6575,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "huskar_life_break",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6602,7 +6602,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "dragon_knight_dragon_tail",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6629,7 +6629,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "crystal_maiden_frostbite",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6656,7 +6656,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "skywrath_mage_concussive_shot",
-                    IsStun = true,
+                    IsDisable = true,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
@@ -6683,7 +6683,7 @@ namespace Ensage.Common
                 new SpellData
                 {
                     SpellName = "bloodseeker_bloodrage",
-                    IsStun = false,
+                    IsDisable = false,
                     IsSlow = false,
                     IsNuke = false,
                     IsSkillShot = false,
