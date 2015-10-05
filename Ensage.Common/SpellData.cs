@@ -4,7 +4,6 @@
     public class SpellData
     {
         public string SpellName;
-        public uint DefaultSlot;
         public bool IsStun;
         public bool IsSlow;
         public bool IsNuke;
@@ -27,7 +26,6 @@
         public SpellData() { }
 
         public SpellData(string spellName,
-            uint defaultSlot,
             bool isStun,
             bool isSlow,
             bool isNuke,
@@ -47,7 +45,6 @@
             bool onlyForKillSteal)
         {
             SpellName = spellName;
-            DefaultSlot = defaultSlot;
             IsStun = isStun;
             IsSlow = isSlow;
             IsNuke = isNuke;
