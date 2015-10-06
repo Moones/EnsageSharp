@@ -1,3 +1,3 @@
 # Ensage.NET
-Public repository for upcoming .NET version of Ensage.
+Repository of Moones for EnsageSharp
 
