@@ -94,20 +94,39 @@
                     CheckBombDamageAndDetonate(hero, bombsArray);
                 }
                 if (forceStaff == null || !(hero.Distance2D(me) <= forceStaff.CastRange)
-                    || !Utils.SleepCheck("forcestaff") || bombsArray.Any(x => x.Distance2D(hero) <= bombRadius))
+                    || !Utils.SleepCheck("forcestaff") || bombsArray.Any(x => x.Distance2D(hero) <= bombRadius)
+                    || Prediction.IsTurning(hero))
                 {
                     continue;
                 }
-                var forcePosition = hero.Position + hero.Vector3FromPolarAngle() * 600;
-                var possibleBombs = bombsArray.Any(x => x.Distance2D(forcePosition) <= bombRadius);
-                if (!possibleBombs)
+                //var forcePosition = hero.Position + hero.Vector3FromPolarAngle() * 600;
+                var data =
+                    Prediction.TrackTable.ToArray()
+                        .FirstOrDefault(
+                            unitData => unitData.UnitName == hero.Name || unitData.UnitClassID == hero.ClassID);
+
+                if (data != null)
                 {
-                    continue;
-                }
-                var dmg = CheckBombDamage(hero, forcePosition, bombsArray);
-                if (!(dmg >= hero.Health))
-                {
-                    continue;
+                    var turnTime =
+                        (Math.Max(
+                            Math.Abs(me.FindAngleR() - Utils.DegreeToRadian(me.FindAngleBetween(hero.Position))) - 0.69,
+                            0) / (0.5 * (1 / 0.03)));
+                    var predict = Prediction.PredictedXYZ(hero, (float)(turnTime * 1000 + Game.Ping));
+                    var forcePosition = predict
+                                        + VectorExtensions.FromPolarCoordinates(
+                                            1f,
+                                            hero.NetworkRotationRad + data.RotSpeed).ToVector3() * 600;
+
+                    var possibleBombs = bombsArray.Any(x => x.Distance2D(forcePosition) <= (bombRadius - 150));
+                    if (!possibleBombs)
+                    {
+                        continue;
+                    }
+                    var dmg = CheckBombDamage(hero, forcePosition, bombsArray);
+                    if (!(dmg >= hero.Health))
+                    {
+                        continue;
+                    }
                 }
                 forceStaff.UseAbility(hero);
                 Utils.Sleep(2000, "forcestaff");
