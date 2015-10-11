@@ -30,7 +30,7 @@
 
         private static Item blink;
 
-        private static Ability Earthshock;
+        private static Ability earthshock;
 
         private static bool enableQ = true;
 
@@ -131,12 +131,12 @@
             if (!loaded)
             {
                 me = ObjectMgr.LocalHero;
-                Earthshock = me.Spellbook.Spell1;
-                lastStack = 0;
                 if (!Game.IsInGame || me == null)
                 {
                     return;
                 }
+                earthshock = me.Spellbook.Spell1;
+                lastStack = 0;
                 loaded = true;
             }
 
@@ -235,15 +235,15 @@
                         return;
                     }
                 }
-                if (Earthshock.CanBeCasted() && Utils.SleepCheck("Q") && enableQ)
+                if (earthshock.CanBeCasted() && Utils.SleepCheck("Q") && enableQ)
                 {
-                    var radius = Earthshock.AbilityData.FirstOrDefault(x => x.Name == "shock_radius").GetValue(0);
+                    var radius = earthshock.AbilityData.FirstOrDefault(x => x.Name == "shock_radius").GetValue(0);
                     if (me.Distance2D(target) <= (radius + hullsum))
                     {
                         var canUse = Utils.ChainStun(target, Game.Ping / 1000 + 300, null, false);
                         if (canUse && !target.IsStunned())
                         {
-                            Earthshock.UseAbility();
+                            earthshock.UseAbility();
                             Utils.Sleep(Game.Ping / 1000 + 300, "Q");
                             Utils.Sleep(Game.Ping + turnTime * 1000, "move");
                             return;
