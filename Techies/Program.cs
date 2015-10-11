@@ -80,7 +80,7 @@
                         x =>
                         x.Team == me.GetEnemyTeam() && x.IsAlive && x.IsVisible && !x.IsMagicImmune()
                         && x.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
-                        && Utils.SleepCheck(x.ClassID.ToString()));
+                        && Utils.SleepCheck(x.ClassID.ToString()) && !x.IsIllusion);
             var bombs =
                 ObjectMgr.GetEntities<Unit>()
                     .Where(
