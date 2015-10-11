@@ -180,7 +180,7 @@
                 range = blinkRange + me.HullRadius;
             }
             target = me.ClosestToMouseTarget(range);
-            if (target == null || target.Distance2D(mousePosition) > target.Distance2D(me) + 700)
+            if (target == null || !target.IsAlive || !target.IsVisible || target.Distance2D(mousePosition) > target.Distance2D(me) + 700)
             {
                 if (!Utils.SleepCheck("move") || me.IsAttacking())
                 {
@@ -258,7 +258,7 @@
                     return;
                 }
             }
-            if (Utils.SleepCheck("attack") && targetDistance < (me.AttackRange + hullsum))
+            if (Utils.SleepCheck("attack"))
             {
                 me.Attack(target);
                 Utils.Sleep(150, "attack");
