@@ -180,7 +180,7 @@
                 range = blinkRange + me.HullRadius;
             }
             target = me.ClosestToMouseTarget(range);
-            if (target == null || target.Distance2D(mousePosition) > target.Distance2D(me) + 500)
+            if (target == null || target.Distance2D(mousePosition) > target.Distance2D(me) + 700)
             {
                 if (!Utils.SleepCheck("move") || me.IsAttacking())
                 {
@@ -202,58 +202,61 @@
                 (Math.Max(
                     Math.Abs(me.FindAngleR() - Utils.DegreeToRadian(me.FindAngleBetween(target.Position))) - 0.69,
                     0) / (0.5 * (1 / 0.03)));
-            if (blink != null && blink.CanBeCasted() && targetDistance > 400 && targetDistance < (blinkRange + hullsum)
-                && Utils.SleepCheck("blink"))
+            var notAttacking = ((targetDistance > (me.AttackRange + hullsum) && !me.IsAttacking())
+                                || ((stackCount < lastStack) && target.NetworkActivity != NetworkActivity.Idle1
+                                    && target.NetworkActivity != NetworkActivity.Idle2));
+            if (notAttacking)
             {
-                var position = target.Position + target.Vector3FromPolarAngle() * (hullsum + me.AttackRange);
-                var dist = position.Distance2D(mePosition);
-                if (dist > blinkRange)
+                if (blink != null && blink.CanBeCasted() && targetDistance > 400
+                    && targetDistance < (blinkRange + hullsum) && Utils.SleepCheck("blink"))
                 {
-                    position = (position - mePosition) * (blinkRange - 1) / position.Distance2D(me) + mePosition;
-                }
-                blink.UseAbility(position);
-                mePosition = position;
-                Utils.Sleep(Game.Ping + turnTime * 1000 + 100, "blink");
-                Utils.Sleep(Game.Ping + turnTime * 1000, "move");
-                return;
-            }
-            if (abyssalBlade != null && abyssalBlade.CanBeCasted() && targetDistance <= (300 + hullsum)
-                && Utils.SleepCheck("abyssal"))
-            {
-                var canUse = Utils.ChainStun(target, Game.Ping / 1000 + turnTime, null, false);
-                if (canUse)
-                {
-                    abyssalBlade.UseAbility(target);
-                    Utils.Sleep(Game.Ping / 1000 + turnTime + 100, "abyssal");
+                    var position = target.Position + target.Vector3FromPolarAngle() * (hullsum + me.AttackRange);
+                    var dist = position.Distance2D(mePosition);
+                    if (dist > blinkRange)
+                    {
+                        position = (position - mePosition) * (blinkRange - 1) / position.Distance2D(me) + mePosition;
+                    }
+                    blink.UseAbility(position);
+                    mePosition = position;
+                    Utils.Sleep(Game.Ping + turnTime * 1000 + 100, "blink");
                     Utils.Sleep(Game.Ping + turnTime * 1000, "move");
-                    Utils.Sleep(Game.Ping / 1000 + turnTime + 500, "Q");
                     return;
                 }
-            }
-            if (Earthshock.CanBeCasted() && Utils.SleepCheck("Q") && enableQ)
-            {
-                var radius = Earthshock.AbilityData.FirstOrDefault(x => x.Name == "shock_radius").GetValue(0);
-                if (me.Distance2D(target) <= (radius + hullsum))
+                if (abyssalBlade != null && abyssalBlade.CanBeCasted() && targetDistance <= (300 + hullsum)
+                    && Utils.SleepCheck("abyssal"))
                 {
-                    var canUse = Utils.ChainStun(target, Game.Ping / 1000 + 300, null, false);
-                    if (canUse && !target.IsStunned())
+                    var canUse = Utils.ChainStun(target, Game.Ping / 1000 + turnTime, null, false);
+                    if (canUse)
                     {
-                        Earthshock.UseAbility();
-                        Utils.Sleep(Game.Ping / 1000 + 300, "Q");
+                        abyssalBlade.UseAbility(target);
+                        Utils.Sleep(Game.Ping / 1000 + turnTime + 100, "abyssal");
                         Utils.Sleep(Game.Ping + turnTime * 1000, "move");
+                        Utils.Sleep(Game.Ping / 1000 + turnTime + 500, "Q");
                         return;
                     }
                 }
-            }
-            if (Utils.SleepCheck("move")
-                && ((targetDistance > (me.AttackRange + hullsum) && !me.IsAttacking()) || (stackCount < lastStack)
-                    || target.NetworkActivity == NetworkActivity.Idle1
-                    || target.NetworkActivity == NetworkActivity.Idle2))
-            {
-                var position = target.Position + target.Vector3FromPolarAngle() * (hullsum + me.AttackRange * 2);
-                me.Move(position);
-                Utils.Sleep(100, "move");
-                return;
+                if (Earthshock.CanBeCasted() && Utils.SleepCheck("Q") && enableQ)
+                {
+                    var radius = Earthshock.AbilityData.FirstOrDefault(x => x.Name == "shock_radius").GetValue(0);
+                    if (me.Distance2D(target) <= (radius + hullsum))
+                    {
+                        var canUse = Utils.ChainStun(target, Game.Ping / 1000 + 300, null, false);
+                        if (canUse && !target.IsStunned())
+                        {
+                            Earthshock.UseAbility();
+                            Utils.Sleep(Game.Ping / 1000 + 300, "Q");
+                            Utils.Sleep(Game.Ping + turnTime * 1000, "move");
+                            return;
+                        }
+                    }
+                }
+                if (Utils.SleepCheck("move"))
+                {
+                    var position = target.Position + target.Vector3FromPolarAngle() * (hullsum + me.AttackRange);
+                    me.Move(position);
+                    Utils.Sleep(100, "move");
+                    return;
+                }
             }
             if (Utils.SleepCheck("attack") && targetDistance < (me.AttackRange + hullsum))
             {
