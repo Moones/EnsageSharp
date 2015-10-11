@@ -205,6 +205,19 @@
             var notAttacking = ((targetDistance > (me.AttackRange + hullsum) && !me.IsAttacking())
                                 || ((stackCount < lastStack) && target.NetworkActivity != NetworkActivity.Idle1
                                     && target.NetworkActivity != NetworkActivity.Idle2));
+            if (abyssalBlade != null && abyssalBlade.CanBeCasted() && targetDistance <= (300 + hullsum)
+                && Utils.SleepCheck("abyssal"))
+            {
+                var canUse = Utils.ChainStun(target, Game.Ping / 1000 + turnTime, null, false);
+                if (canUse)
+                {
+                    abyssalBlade.UseAbility(target);
+                    Utils.Sleep(Game.Ping / 1000 + turnTime + 100, "abyssal");
+                    Utils.Sleep(Game.Ping + turnTime * 1000, "move");
+                    Utils.Sleep(Game.Ping / 1000 + turnTime + 500, "Q");
+                    return;
+                }
+            }
             if (notAttacking)
             {
                 if (blink != null && blink.CanBeCasted() && targetDistance > 400
@@ -221,19 +234,6 @@
                     Utils.Sleep(Game.Ping + turnTime * 1000 + 100, "blink");
                     Utils.Sleep(Game.Ping + turnTime * 1000, "move");
                     return;
-                }
-                if (abyssalBlade != null && abyssalBlade.CanBeCasted() && targetDistance <= (300 + hullsum)
-                    && Utils.SleepCheck("abyssal"))
-                {
-                    var canUse = Utils.ChainStun(target, Game.Ping / 1000 + turnTime, null, false);
-                    if (canUse)
-                    {
-                        abyssalBlade.UseAbility(target);
-                        Utils.Sleep(Game.Ping / 1000 + turnTime + 100, "abyssal");
-                        Utils.Sleep(Game.Ping + turnTime * 1000, "move");
-                        Utils.Sleep(Game.Ping / 1000 + turnTime + 500, "Q");
-                        return;
-                    }
                 }
                 if (earthshock.CanBeCasted() && Utils.SleepCheck("Q") && enableQ)
                 {
