@@ -205,7 +205,7 @@
             if (blink != null && blink.CanBeCasted() && targetDistance > 400 && targetDistance < (blinkRange + hullsum)
                 && Utils.SleepCheck("blink"))
             {
-                var position = target.Position + target.Vector3FromPolarAngle() * (hullsum + me.AttackRange * 2);
+                var position = target.Position + target.Vector3FromPolarAngle() * (hullsum + me.AttackRange);
                 var dist = position.Distance2D(mePosition);
                 if (dist > blinkRange)
                 {
@@ -246,7 +246,9 @@
                 }
             }
             if (Utils.SleepCheck("move")
-                && ((targetDistance > (me.AttackRange + hullsum) && !me.IsAttacking()) || stackCount < lastStack))
+                && ((targetDistance > (me.AttackRange + hullsum) && !me.IsAttacking()) || (stackCount < lastStack)
+                    || target.NetworkActivity == NetworkActivity.Idle1
+                    || target.NetworkActivity == NetworkActivity.Idle2))
             {
                 var position = target.Position + target.Vector3FromPolarAngle() * (hullsum + me.AttackRange * 2);
                 me.Move(position);
