@@ -83,7 +83,11 @@
                         && Utils.SleepCheck(x.ClassID.ToString()));
             var bombs =
                 ObjectMgr.GetEntities<Unit>()
-                    .Where(x => x.ClassID == ClassID.CDOTA_NPC_TechiesMines && x.Spellbook.Spell1 != null && x.IsAlive);
+                    .Where(
+                        x =>
+                        x.ClassID == ClassID.CDOTA_NPC_TechiesMines && x.Spellbook.Spell1 != null
+                        && x.Spellbook.Spell1.CanBeCasted() && x.IsAlive);
+
             var bombsArray = bombs as Unit[] ?? bombs.ToArray();
 
             foreach (var hero in enemyHeroes)
@@ -95,11 +99,11 @@
                 }
                 if (forceStaff == null || !(hero.Distance2D(me) <= forceStaff.CastRange)
                     || !Utils.SleepCheck("forcestaff") || bombsArray.Any(x => x.Distance2D(hero) <= bombRadius)
-                    || Prediction.IsTurning(hero))
+                    || Prediction.IsTurning(hero) || !forceStaff.CanBeCasted())
                 {
                     continue;
                 }
-                //var forcePosition = hero.Position + hero.Vector3FromPolarAngle() * 600;
+
                 var data =
                     Prediction.TrackTable.ToArray()
                         .FirstOrDefault(
@@ -129,7 +133,7 @@
                     }
                 }
                 forceStaff.UseAbility(hero);
-                Utils.Sleep(2000, "forcestaff");
+                Utils.Sleep(250, "forcestaff");
             }
             var creeps =
                 ObjectMgr.GetEntities<Creep>()
@@ -140,10 +144,6 @@
 
             var enumerable = creeps as Creep[] ?? creeps.ToArray();
 
-            if (!Utils.SleepCheck("creeps"))
-            {
-                return;
-            }
             foreach (var detonatableBombs in from creep in enumerable
                                              let nearbyBombs =
                                                  bombsArray.Any(x => x.Distance2D(creep) <= bombRadius + 500)
@@ -159,11 +159,11 @@
                                              where nearbyCreeps > 3
                                              select detonatableBombs)
             {
-                foreach (var data in detonatableBombs)
+                foreach (var data in detonatableBombs.Where(data => Utils.SleepCheck(data.Value.Handle.ToString())))
                 {
                     data.Value.UseAbility();
+                    Utils.Sleep(250, data.Value.Handle.ToString());
                 }
-                Utils.Sleep(500, "creeps");
             }
         }
 
@@ -217,11 +217,12 @@
             {
                 return;
             }
-            foreach (var data in detonatableBombs)
+            foreach (var data in detonatableBombs.Where(data => Utils.SleepCheck(data.Value.Handle.ToString())))
             {
                 data.Value.UseAbility();
+                Utils.Sleep(250, data.Value.Handle.ToString());
             }
-            Utils.Sleep(2000, hero.ClassID.ToString());
+            Utils.Sleep(250, hero.ClassID.ToString());
         }
 
         private static void Main()
