@@ -14,26 +14,80 @@
     {
         #region Static Fields
 
+        private static Ability bombAbility;
+
         private static float bombDmg;
 
         private static float bombRadius;
 
         private static uint lastLevel;
 
+        private static bool loaded;
+
+        private static Hero me;
+
         #endregion
 
         #region Public Methods and Operators
 
-        public static void Game_OnUpdate(EventArgs args)
+        public static void Init()
         {
-            var me = ObjectMgr.LocalHero;
+            Game.OnUpdate += Game_OnUpdate;
+            loaded = false;
+        }
 
-            if (!Game.IsInGame || Game.IsPaused || me == null || me.ClassID != ClassID.CDOTA_Unit_Hero_Techies)
+        #endregion
+
+        #region Methods
+
+        private static Dictionary<int, Ability> FindDetonatableBombs(Unit hero, Vector3 pos, IEnumerable<Unit> bombs)
+        {
+            var possibleBombs = bombs.Where(x => x.Distance2D(pos) <= bombRadius);
+            var detonatableBombs = new Dictionary<int, Ability>();
+            var dmg = 0f;
+            foreach (var bomb in possibleBombs)
+            {
+                if (dmg > 0)
+                {
+                    var takenDmg = hero.DamageTaken(dmg, DamageType.Magical, me, false);
+                    if (takenDmg >= hero.Health)
+                    {
+                        break;
+                    }
+                }
+                detonatableBombs[detonatableBombs.Count + 1] = bomb.Spellbook.Spell1;
+                dmg += bombDmg;
+            }
+            dmg = hero.DamageTaken(dmg, DamageType.Magical, me, false);
+            return dmg < hero.Health ? null : detonatableBombs;
+        }
+
+        private static void Game_OnUpdate(EventArgs args)
+        {
+            if (!loaded)
+            {
+                me = ObjectMgr.LocalHero;
+                if (!Game.IsInGame || me == null || me.ClassID != ClassID.CDOTA_Unit_Hero_Techies)
+                {
+                    return;
+                }
+                loaded = true;
+                bombAbility = me.Spellbook.SpellR;
+                Console.WriteLine("#Techies: Loaded!");
+            }
+
+            if (!Game.IsInGame || me == null || me.ClassID != ClassID.CDOTA_Unit_Hero_Techies)
+            {
+                loaded = false;
+                Console.WriteLine("#Techies: Unloaded!");
+                return;
+            }
+
+            if (Game.IsPaused)
             {
                 return;
             }
 
-            var bombAbility = me.Spellbook.SpellR;
             var bombLevel = bombAbility.Level;
             var forceStaff = me.FindItem("item_force_staff");
 
@@ -121,59 +175,28 @@
 
             var enumerable = creeps as Creep[] ?? creeps.ToArray();
 
-            foreach (var detonatableBombs in from creep in enumerable
-                                             let nearbyBombs =
-                                                 bombsArray.Any(x => x.Distance2D(creep) <= bombRadius + 500)
-                                             where nearbyBombs
-                                             let detonatableBombs =
-                                                 FindDetonatableBombs(creep, creep.Position, bombsArray)
-                                             where detonatableBombs != null
-                                             let nearbyCreeps =
-                                                 enumerable.Count(
-                                                     x =>
-                                                     x.Distance2D(creep) <= bombRadius
-                                                     && CheckBombDamage(x, x.Position, bombsArray) >= x.Health)
-                                             where nearbyCreeps > 3
-                                             select detonatableBombs)
+            foreach (var data in (from creep in enumerable
+                                  let nearbyBombs = bombsArray.Any(x => x.Distance2D(creep) <= bombRadius + 500)
+                                  where nearbyBombs
+                                  let detonatableBombs = FindDetonatableBombs(creep, creep.Position, bombsArray)
+                                  where detonatableBombs != null
+                                  let nearbyCreeps =
+                                      enumerable.Count(
+                                          x =>
+                                          x.Distance2D(creep) <= bombRadius
+                                          && CheckBombDamage(x, x.Position, bombsArray) >= x.Health)
+                                  where nearbyCreeps > 3
+                                  select detonatableBombs).SelectMany(
+                                      detonatableBombs =>
+                                      detonatableBombs.Where(data => Utils.SleepCheck(data.Value.Handle.ToString()))))
             {
-                foreach (var data in detonatableBombs.Where(data => Utils.SleepCheck(data.Value.Handle.ToString())))
-                {
-                    data.Value.UseAbility();
-                    Utils.Sleep(250, data.Value.Handle.ToString());
-                }
+                data.Value.UseAbility();
+                Utils.Sleep(250, data.Value.Handle.ToString());
             }
-        }
-
-        #endregion
-
-        #region Methods
-
-        private static Dictionary<int, Ability> FindDetonatableBombs(Unit hero, Vector3 pos, IEnumerable<Unit> bombs)
-        {
-            var me = ObjectMgr.LocalHero;
-            var possibleBombs = bombs.Where(x => x.Distance2D(pos) <= bombRadius);
-            var detonatableBombs = new Dictionary<int, Ability>();
-            var dmg = 0f;
-            foreach (var bomb in possibleBombs)
-            {
-                if (dmg > 0)
-                {
-                    var takenDmg = hero.DamageTaken(dmg, DamageType.Magical, me, false);
-                    if (takenDmg >= hero.Health)
-                    {
-                        break;
-                    }
-                }
-                detonatableBombs[detonatableBombs.Count + 1] = bomb.Spellbook.Spell1;
-                dmg += bombDmg;
-            }
-            dmg = hero.DamageTaken(dmg, DamageType.Magical, me, false);
-            return dmg < hero.Health ? null : detonatableBombs;
         }
 
         private static float CheckBombDamage(Unit hero, Vector3 pos, IEnumerable<Unit> bombs)
         {
-            var me = ObjectMgr.LocalHero;
             var possibleBombs = bombs.Where(x => x.Distance2D(pos) <= bombRadius);
             var dmg = bombDmg * possibleBombs.Count();
             return hero.DamageTaken(dmg, DamageType.Magical, me, false);
@@ -199,7 +222,6 @@
             {
                 return;
             }
-            var me = ObjectMgr.LocalHero;
             var possibleBombs = bombs.Where(x => x.Distance2D(pos) <= bombRadius);
             var detonatableBombs = new Dictionary<int, Ability>();
             var dmg = 0f;
