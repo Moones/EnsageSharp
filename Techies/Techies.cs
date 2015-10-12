@@ -161,8 +161,11 @@
 
             if (forceStaff == null)
             {
-                forceStaff = me.FindItem("item_force_staff");
+                Console.WriteLine("asd");
+                forceStaff = me.Inventory.Items.FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Item_ForceStaff);
+                    //me.FindItem("item_force_staff");
             }
+
 
             var suicideLevel = suicideAttack.Level;
 
