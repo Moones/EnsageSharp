@@ -171,16 +171,16 @@
             {
                 mePosition = me.Position;
             }
-            var range = 500f;
+            var range = 1000f;
             var blinkRange = 0f;
             var mousePosition = Game.MousePosition;
             if (blink != null)
             {
                 blinkRange = blink.AbilityData.FirstOrDefault(x => x.Name == "blink_range").GetValue(0);
-                range = blinkRange + me.HullRadius;
+                range = blinkRange + me.HullRadius + 200;
             }
             target = me.ClosestToMouseTarget(range);
-            if (target == null || !target.IsAlive || !target.IsVisible || target.Distance2D(mousePosition) > target.Distance2D(me) + 700)
+            if (target == null || !target.IsAlive || !target.IsVisible || target.Distance2D(mousePosition) > target.Distance2D(me) + 1000)
             {
                 if (!Utils.SleepCheck("move") || me.IsAttacking())
                 {
