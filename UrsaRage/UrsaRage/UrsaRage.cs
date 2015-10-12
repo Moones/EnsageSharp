@@ -192,10 +192,7 @@
             }
             var modifier = target.Modifiers.FirstOrDefault(x => x.Name == "modifier_ursa_fury_swipes_damage_increase");
             var stackCount = lastStack;
-            if (modifier != null)
-            {
-                lastStack = modifier.StackCount;
-            }
+            lastStack = modifier != null ? modifier.StackCount : 0;
             var targetDistance = mePosition.Distance2D(target);
             var hullsum = (me.HullRadius + target.HullRadius) * 2;
             var turnTime =
