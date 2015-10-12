@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Techies.cs" />
+	<Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
