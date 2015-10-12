@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
     using System.Linq;
 
     using Ensage;
@@ -9,22 +10,40 @@
     using Ensage.Common.Extensions;
 
     using SharpDX;
+    using SharpDX.Direct3D9;
+
+    using Color = SharpDX.Color;
+    using Font = SharpDX.Direct3D9.Font;
 
     internal class Techies
     {
         #region Static Fields
 
-        private static Ability bombAbility;
+        private static bool enableCreepWave = false;
 
-        private static float bombDmg;
-
-        private static float bombRadius;
-
-        private static uint lastLevel;
+        private static Ability forceStaff;
 
         private static bool loaded;
 
         private static Hero me;
+
+        private static Ability remoteMines;
+
+        private static float remoteMinesDmg;
+
+        private static uint remoteMinesLevel;
+
+        private static float remoteMinesRadius;
+
+        private static Ability suicideAttack;
+
+        private static float suicideAttackDmg;
+
+        private static uint suicideAttackLevel;
+
+        private static float suicideAttackRadius;
+
+        private static Font text;
 
         #endregion
 
@@ -34,15 +53,66 @@
         {
             Game.OnUpdate += Game_OnUpdate;
             loaded = false;
+            text = new Font(
+                Drawing.Direct3DDevice9,
+                new FontDescription
+                    {
+                        FaceName = "Tahoma", Height = 13, OutputPrecision = FontPrecision.Default,
+                        Quality = FontQuality.Default
+                    });
+
+            Drawing.OnPreReset += Drawing_OnPreReset;
+            Drawing.OnPostReset += Drawing_OnPostReset;
+            Drawing.OnEndScene += Drawing_OnEndScene;
+            AppDomain.CurrentDomain.DomainUnload += CurrentDomainDomainUnload;
+            Game.OnWndProc += Game_OnWndProc;
         }
 
         #endregion
 
         #region Methods
 
+        private static void CurrentDomainDomainUnload(object sender, EventArgs e)
+        {
+            text.Dispose();
+        }
+
+        private static void Drawing_OnEndScene(EventArgs args)
+        {
+            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed || !Game.IsInGame)
+            {
+                return;
+            }
+
+            var player = ObjectMgr.LocalPlayer;
+            if (player == null || player.Team == Team.Observer)
+            {
+                return;
+            }
+
+            text.DrawText(
+                null,
+                enableCreepWave
+                    ? "#Techies: Detonate on Creeps Enabled! | [L] for toggle"
+                    : "#Techies: Detonate on Creeps Disabled! | [L] for toggle",
+                5,
+                128,
+                Color.DarkOrange);
+        }
+
+        private static void Drawing_OnPostReset(EventArgs args)
+        {
+            text.OnResetDevice();
+        }
+
+        private static void Drawing_OnPreReset(EventArgs args)
+        {
+            text.OnLostDevice();
+        }
+
         private static Dictionary<int, Ability> FindDetonatableBombs(Unit hero, Vector3 pos, IEnumerable<Unit> bombs)
         {
-            var possibleBombs = bombs.Where(x => x.Distance2D(pos) <= bombRadius);
+            var possibleBombs = bombs.Where(x => x.Distance2D(pos) <= remoteMinesRadius);
             var detonatableBombs = new Dictionary<int, Ability>();
             var dmg = 0f;
             foreach (var bomb in possibleBombs)
@@ -56,7 +126,7 @@
                     }
                 }
                 detonatableBombs[detonatableBombs.Count + 1] = bomb.Spellbook.Spell1;
-                dmg += bombDmg;
+                dmg += remoteMinesDmg;
             }
             dmg = hero.DamageTaken(dmg, DamageType.Magical, me, false);
             return dmg < hero.Health ? null : detonatableBombs;
@@ -72,7 +142,8 @@
                     return;
                 }
                 loaded = true;
-                bombAbility = me.Spellbook.SpellR;
+                remoteMines = me.Spellbook.SpellR;
+                suicideAttack = me.Spellbook.SpellE;
                 Console.WriteLine("#Techies: Loaded!");
             }
 
@@ -88,22 +159,43 @@
                 return;
             }
 
-            var bombLevel = bombAbility.Level;
-            var forceStaff = me.FindItem("item_force_staff");
-
-            if (lastLevel != bombLevel)
+            if (forceStaff == null)
             {
-                var firstOrDefault = bombAbility.AbilityData.FirstOrDefault(x => x.Name == "damage");
+                forceStaff = me.FindItem("item_force_staff");
+            }
+
+            var suicideLevel = suicideAttack.Level;
+
+            if (suicideAttackLevel != suicideLevel)
+            {
+                var firstOrDefault = suicideAttack.AbilityData.FirstOrDefault(x => x.Name == "damage");
                 if (firstOrDefault != null)
                 {
-                    bombDmg = firstOrDefault.GetValue(bombLevel - 1);
+                    suicideAttackDmg = firstOrDefault.GetValue(suicideLevel - 1);
                 }
-                var abilityData = bombAbility.AbilityData.FirstOrDefault(x => x.Name == "radius");
+                var abilityData = suicideAttack.AbilityData.FirstOrDefault(x => x.Name == "small_radius");
                 if (abilityData != null)
                 {
-                    bombRadius = abilityData.Value;
+                    suicideAttackRadius = abilityData.Value;
                 }
-                lastLevel = bombLevel;
+                suicideAttackLevel = suicideLevel;
+            }
+
+            var bombLevel = remoteMines.Level;
+
+            if (remoteMinesLevel != bombLevel)
+            {
+                var firstOrDefault = remoteMines.AbilityData.FirstOrDefault(x => x.Name == "damage");
+                if (firstOrDefault != null)
+                {
+                    remoteMinesDmg = firstOrDefault.GetValue(bombLevel - 1);
+                }
+                var abilityData = remoteMines.AbilityData.FirstOrDefault(x => x.Name == "radius");
+                if (abilityData != null)
+                {
+                    remoteMinesRadius = abilityData.Value;
+                }
+                remoteMinesLevel = bombLevel;
             }
             var enemyHeroes =
                 ObjectMgr.GetEntities<Hero>()
@@ -123,14 +215,19 @@
 
             foreach (var hero in enemyHeroes)
             {
-                var nearbyBombs = bombsArray.Any(x => x.Distance2D(hero) <= bombRadius + 500);
+                var heroDistance = me.Distance2D(hero);
+                var nearbyBombs = bombsArray.Any(x => x.Distance2D(hero) <= remoteMinesRadius + 500);
                 if (nearbyBombs)
                 {
                     CheckBombDamageAndDetonate(hero, bombsArray);
                 }
-                if (forceStaff == null || !(hero.Distance2D(me) <= forceStaff.CastRange)
-                    || !Utils.SleepCheck("forcestaff") || bombsArray.Any(x => x.Distance2D(hero) <= bombRadius)
-                    || Prediction.IsTurning(hero) || !forceStaff.CanBeCasted())
+                //if (heroDistance < 400 && suicideAttackLevel > 0 && me.IsAlive)
+                //{
+                //    SuicideKillSteal(hero);
+                //}
+                if (forceStaff == null || !(heroDistance <= forceStaff.CastRange) || !Utils.SleepCheck("forcestaff")
+                    || bombsArray.Any(x => x.Distance2D(hero) <= remoteMinesRadius) || Prediction.IsTurning(hero)
+                    || !forceStaff.CanBeCasted())
                 {
                     continue;
                 }
@@ -152,7 +249,7 @@
                                             1f,
                                             hero.NetworkRotationRad + data.RotSpeed).ToVector3() * 600;
 
-                    var possibleBombs = bombsArray.Any(x => x.Distance2D(forcePosition) <= (bombRadius - 150));
+                    var possibleBombs = bombsArray.Any(x => x.Distance2D(forcePosition) <= (remoteMinesRadius - 150));
                     if (!possibleBombs)
                     {
                         continue;
@@ -166,6 +263,10 @@
                 forceStaff.UseAbility(hero);
                 Utils.Sleep(250, "forcestaff");
             }
+            if (!enableCreepWave)
+            {
+                return;
+            }
             var creeps =
                 ObjectMgr.GetEntities<Creep>()
                     .Where(
@@ -176,14 +277,14 @@
             var enumerable = creeps as Creep[] ?? creeps.ToArray();
 
             foreach (var data in (from creep in enumerable
-                                  let nearbyBombs = bombsArray.Any(x => x.Distance2D(creep) <= bombRadius + 500)
+                                  let nearbyBombs = bombsArray.Any(x => x.Distance2D(creep) <= remoteMinesRadius + 500)
                                   where nearbyBombs
                                   let detonatableBombs = FindDetonatableBombs(creep, creep.Position, bombsArray)
                                   where detonatableBombs != null
                                   let nearbyCreeps =
                                       enumerable.Count(
                                           x =>
-                                          x.Distance2D(creep) <= bombRadius
+                                          x.Distance2D(creep) <= remoteMinesRadius
                                           && CheckBombDamage(x, x.Position, bombsArray) >= x.Health)
                                   where nearbyCreeps > 3
                                   select detonatableBombs).SelectMany(
@@ -195,10 +296,19 @@
             }
         }
 
+        private static void Game_OnWndProc(WndEventArgs args)
+        {
+            if (args.Msg != (ulong)Utils.WindowsMessages.WM_KEYUP || args.WParam != 'L' || Game.IsChatOpen)
+            {
+                return;
+            }
+            enableCreepWave = !enableCreepWave;
+        }
+
         private static float CheckBombDamage(Unit hero, Vector3 pos, IEnumerable<Unit> bombs)
         {
-            var possibleBombs = bombs.Where(x => x.Distance2D(pos) <= bombRadius);
-            var dmg = bombDmg * possibleBombs.Count();
+            var possibleBombs = bombs.Where(x => x.Distance2D(pos) <= remoteMinesRadius);
+            var dmg = remoteMinesDmg * possibleBombs.Count();
             return hero.DamageTaken(dmg, DamageType.Magical, me, false);
         }
 
@@ -222,7 +332,7 @@
             {
                 return;
             }
-            var possibleBombs = bombs.Where(x => x.Distance2D(pos) <= bombRadius);
+            var possibleBombs = bombs.Where(x => x.Distance2D(pos) <= remoteMinesRadius);
             var detonatableBombs = new Dictionary<int, Ability>();
             var dmg = 0f;
             foreach (var bomb in possibleBombs)
@@ -236,7 +346,7 @@
                     }
                 }
                 detonatableBombs[detonatableBombs.Count + 1] = bomb.Spellbook.Spell1;
-                dmg += bombDmg;
+                dmg += remoteMinesDmg;
             }
             dmg = hero.DamageTaken(dmg, DamageType.Magical, me, false);
             if (dmg < hero.Health)
@@ -252,5 +362,34 @@
         }
 
         #endregion
+
+        //    }
+        //        pos = (pos - me.Position) * 99 / pos.Distance2D(me) + me.Position;
+        //    {
+        //    if (me.Distance2D(pos) > 100)
+        //    }
+        //        return;
+        //    {
+        //    if (!(dmg >= hero.Health))
+        //    var dmg = hero.DamageTaken(suicideAttackDmg, DamageType.Physical, me, true);
+        //    }
+        //        return;
+        //    {
+        //    if (!(pos.Distance2D(me) <= suicideAttackRadius))
+        //    }
+        //        pos = Prediction.InFront(hero, (Game.Ping / 1000) * hero.MovementSpeed);
+        //    {
+        //    if (hero.NetworkActivity == NetworkActivity.Move)
+        //    var pos = hero.Position;
+        //    }
+        //        return;
+        //    {
+        //    if (!Utils.SleepCheck("suicide"))
+        //{
+
+        //private static void SuicideKillSteal(Unit hero)
+        //    suicideAttack.UseAbility(pos);
+        //    Utils.Sleep(500,"suicide");
+        //}
     }
 }

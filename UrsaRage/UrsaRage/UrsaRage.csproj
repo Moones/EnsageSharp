@@ -37,16 +37,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ensage">
-      <HintPath>C:\PlaySharp\Release-build-2\System\Ensage.dll</HintPath>
+      <HintPath>C:\PlaySharp\System\Ensage.dll</HintPath>
     </Reference>
     <Reference Include="Ensage.Common">
-      <HintPath>C:\PlaySharp\Release-build-2\System\Ensage.Common.dll</HintPath>
+      <HintPath>C:\PlaySharp\System\Ensage.Common.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\PlaySharp\Release-build-2\System\SharpDX.dll</HintPath>
+      <HintPath>C:\PlaySharp\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>C:\PlaySharp\Release-build-2\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>C:\PlaySharp\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
