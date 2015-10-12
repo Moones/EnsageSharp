@@ -252,8 +252,7 @@
                 }
                 if (Utils.SleepCheck("move"))
                 {
-                    var position = target.Position + target.Vector3FromPolarAngle() * (hullsum + me.AttackRange);
-                    me.Move(position);
+                    me.Follow(target);
                     Utils.Sleep(100, "move");
                     return;
                 }
