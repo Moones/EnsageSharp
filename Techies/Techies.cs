@@ -144,6 +144,7 @@
                 loaded = true;
                 remoteMines = me.Spellbook.SpellR;
                 suicideAttack = me.Spellbook.SpellE;
+                forceStaff = null;
                 Console.WriteLine("#Techies: Loaded!");
             }
 
@@ -161,9 +162,7 @@
 
             if (forceStaff == null)
             {
-                Console.WriteLine("asd");
                 forceStaff = me.Inventory.Items.FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Item_ForceStaff);
-                    //me.FindItem("item_force_staff");
             }
 
 
