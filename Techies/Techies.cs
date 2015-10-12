@@ -358,7 +358,7 @@
                 data.Value.UseAbility();
                 Utils.Sleep(250, data.Value.Handle.ToString());
             }
-            Utils.Sleep(250, hero.ClassID.ToString());
+            Utils.Sleep(1000, hero.ClassID.ToString());
         }
 
         #endregion
