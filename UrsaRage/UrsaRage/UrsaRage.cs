@@ -243,7 +243,7 @@
             }
 
             var tick = Environment.TickCount;
-            if (me.NetworkActivity != (NetworkActivity)lastActivity && target != null)
+            if (me.NetworkActivity != (NetworkActivity)lastActivity && target != null && me.Modifiers.All(x => x.Name != "modifier_ursa_overpower"))
             {
                 lastActivity = (float)me.NetworkActivity;
                 if (lastActivity == 1503)
@@ -260,6 +260,21 @@
             if (abyssalBlade == null)
             {
                 abyssalBlade = me.FindItem("item_abyssal_blade");
+            }                     
+
+            if (earthshock == null)
+            {
+                earthshock = me.Spellbook.Spell1;
+            }
+
+            if (overpower == null)
+            {
+                overpower = me.Spellbook.SpellW;
+            }
+
+            if (enrage == null)
+            {
+                enrage = me.FindSpell("ursa_enrage");
             }
 
             if (!Game.IsKeyDown(Key.Space) || Game.IsChatOpen)
