@@ -303,7 +303,13 @@
             {
                 return;
             }
-            me.Move(Game.MousePosition);
+            var mousePos = Game.MousePosition;
+            if (mousePos.Distance2D(target) > 400)
+                me.Follow(target);
+            else
+            {
+                me.Move(mousePos);
+            }
             Utils.Sleep(100, "move");
         }
 
