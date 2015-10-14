@@ -19,11 +19,11 @@
 
         private static Item abyssalBlade;
 
+        private static Item scytheOfVyse;
+
         private static Item blink;
 
         private static float blinkRange;
-
-        private static bool canCancel;
 
         private static Ability earthshock;
 
@@ -61,6 +61,14 @@
         {
             Game.OnUpdate += Game_OnUpdate;
             loaded = false;
+            me = null;
+            target = null;
+            earthshock = null;
+            overpower = null;
+            enrage = null;
+            abyssalBlade = null;
+            scytheOfVyse = null;
+            blink = null;
             text = new Font(
                 Drawing.Direct3DDevice9,
                 new FontDescription
@@ -83,6 +91,7 @@
 
         private static bool CastCombo()
         {
+            var canCancel = (Orbwalking.CanCancelAnimation() && Orbwalking.AttackOnCooldown(target)) || (!Orbwalking.AttackOnCooldown(target) && targetDistance > 250);
             if (!Utils.SleepCheck("casting") || !me.CanCast() || !target.IsVisible || !canCancel)
             {
                 return false;
@@ -90,7 +99,7 @@
             if (abyssalBlade != null && abyssalBlade.CanBeCasted() && targetDistance <= (350 + hullsum)
                 && Utils.SleepCheck("abyssal"))
             {
-                var canUse = !target.IsStunned() && !target.IsHexed() && !target.IsInvul() && !target.IsMagicImmune();
+                var canUse = Utils.ChainStun(target, turnTime + 0.1 + Game.Ping / 1000, null, false);
                 if (canUse)
                 {
                     abyssalBlade.UseAbility(target);
@@ -99,6 +108,23 @@
                     Utils.Sleep(
                         turnTime * 1000 + 100
                         + (Math.Max(targetDistance - hullsum - abyssalBlade.CastRange, 0) / me.MovementSpeed) * 1000,
+                        "casting");
+                    Utils.Sleep(turnTime * 1000 + 200, "CHAINSTUN_SLEEP");
+                    return true;
+                }
+            }
+            if (scytheOfVyse != null && scytheOfVyse.CanBeCasted() && targetDistance <= (scytheOfVyse.CastRange + hullsum)
+                && Utils.SleepCheck("hex"))
+            {
+                var canUse = Utils.ChainStun(target, turnTime + 0.1 + Game.Ping / 1000, null, false);
+                if (canUse)
+                {
+                    scytheOfVyse.UseAbility(target);
+                    Utils.Sleep(turnTime * 1000 + 100 + Game.Ping, "hex");
+                    Utils.Sleep(turnTime * 1000 + 100, "move");
+                    Utils.Sleep(
+                        turnTime * 1000 + 100
+                        + (Math.Max(targetDistance - hullsum - scytheOfVyse.CastRange, 0) / me.MovementSpeed) * 1000,
                         "casting");
                     Utils.Sleep(turnTime * 1000 + 200, "CHAINSTUN_SLEEP");
                     return true;
@@ -116,8 +142,8 @@
                     pos = target.Position;
                 }
                 if (mePosition.Distance2D(pos) <= (radius)
-                    && (abyssalBlade == null || !abyssalBlade.CanBeCasted() || mePosition.Distance2D(pos) < 200
-                        || target.NetworkActivity == (NetworkActivity)1502))
+                    && (abyssalBlade == null || !abyssalBlade.CanBeCasted() || mePosition.Distance2D(pos) > 200)
+                    && (scytheOfVyse == null || !scytheOfVyse.CanBeCasted() || mePosition.Distance2D(pos) > 200))
                 {
                     var canUse = Utils.ChainStun(target, 0.3 + Game.Ping / 1000, null, false);
                     if (canUse)
@@ -240,6 +266,7 @@
                 enrage = me.FindSpell("ursa_enrage");
                 blink = me.FindItem("item_blink");
                 abyssalBlade = me.FindItem("item_abyssal_blade");
+                scytheOfVyse = me.FindItem("item_sheepstick");
                 loaded = true;
             }
 
@@ -248,6 +275,14 @@
                 overpowerCastPoint = 0;
                 earthshockCastPoint = 0;
                 loaded = false;
+                me = null;
+                target = null;
+                earthshock = null;
+                overpower = null;
+                enrage = null;
+                abyssalBlade = null;
+                scytheOfVyse = null;
+                blink = null;
                 return;
             }
 
@@ -264,6 +299,11 @@
             if (abyssalBlade == null)
             {
                 abyssalBlade = me.FindItem("item_abyssal_blade");
+            }
+
+            if (abyssalBlade == null)
+            {
+                abyssalBlade = me.FindItem("item_sheepstick");
             }
 
             if (earthshock == null)
@@ -298,6 +338,22 @@
             {
                 mePosition = me.Position;
             }
+            if (earthshock.IsInAbilityPhase && (target == null || !target.IsAlive || target.Distance2D(me) > earthshock.AbilityData.FirstOrDefault(x => x.Name == "shock_radius").GetValue(0)))
+            {
+                me.Stop();
+                if (target != null)
+                {
+                    me.Attack(target);
+                }
+            }
+            if (overpower.IsInAbilityPhase && (target == null || !target.IsAlive))
+            {
+                me.Stop();
+                if (target != null)
+                {
+                    me.Attack(target);
+                }
+            }
             var range = 1000f;
             var mousePosition = Game.MousePosition;
             if (blink != null)
@@ -305,9 +361,26 @@
                 blinkRange = blink.AbilityData.FirstOrDefault(x => x.Name == "blink_range").GetValue(0);
                 range = blinkRange + me.HullRadius + 500;
             }
-            target = me.ClosestToMouseTarget(range);
-            if (target == null || !target.IsAlive || !target.IsVisible
-                || target.Distance2D(mousePosition) > target.Distance2D(me) + 1000)
+            var canCancel = (Orbwalking.CanCancelAnimation() && Orbwalking.AttackOnCooldown(target))
+                            || (!Orbwalking.AttackOnCooldown(target)
+                                && (targetDistance > 350 || (target != null && !target.IsVisible))) || target == null;
+            if (canCancel)
+            {
+                if (target != null && !target.IsVisible)
+                {
+                    var closestToMouse = me.ClosestToMouseTarget(128);
+                    if (closestToMouse != null)
+                    {
+                        target = me.ClosestToMouseTarget(range);
+                    }
+                }
+                else
+                {
+                    target = me.ClosestToMouseTarget(range);
+                }       
+            }
+            if (target == null || !target.IsAlive || ((!target.IsVisible
+                   || target.Distance2D(mousePosition) > target.Distance2D(me) + 1000) && canCancel))
             {
                 if (!Utils.SleepCheck("move"))
                 {
@@ -329,7 +402,7 @@
             {
                 return;
             }
-            OrbWalk();
+            OrbWalk(Orbwalking.CanCancelAnimation());
         }
 
         private static void Game_OnWndProc(WndEventArgs args)
@@ -341,15 +414,14 @@
             enableQ = !enableQ;
         }
 
-        private static void OrbWalk()
+        private static void OrbWalk(bool canCancel)
         {
             //var modifier = target.Modifiers.FirstOrDefault(x => x.Name == "modifier_ursa_fury_swipes_damage_increase");
             // && UnitDatabase.GetAttackSpeed(me) < 300 && !me.Modifiers.Any(x => x.Name == "modifier_ursa_overpower")
             //var overpowering = me.Modifiers.Any(x => x.Name == "modifier_ursa_overpower");
-            canCancel = Orbwalking.CanCancelAnimation();
             var canAttack = !Orbwalking.AttackOnCooldown(target) && !target.IsInvul() && !target.IsAttackImmune()
                             && me.CanAttack();
-            if (canAttack && (targetDistance <= (200)))
+            if (canAttack && (targetDistance <= (350)))
             {
                 if (!Utils.SleepCheck("attack"))
                 {
@@ -360,11 +432,8 @@
                 return;
             }
 
-            var canMove = (targetDistance > (200) && canCancel)
-                          || (canCancel && me.NetworkActivity == (NetworkActivity)1503);
-            if (!Utils.SleepCheck("move") || !canMove
-                || ((!target.CanMove() || target.NetworkActivity == (NetworkActivity)1500 || target.MovementSpeed < 200)
-                    && targetDistance < 100))
+            var canMove = (canCancel && Orbwalking.AttackOnCooldown(target)) || (!Orbwalking.AttackOnCooldown(target) && targetDistance > 350);
+            if (!Utils.SleepCheck("move") || !canMove)
             {
                 return;
             }
@@ -373,9 +442,12 @@
             {
                 var pos = target.Position
                           + target.Vector3FromPolarAngle()
-                          * ((Game.Ping / 1000 + (targetDistance / me.MovementSpeed)) * target.MovementSpeed);
-                if (targetDistance > 150 && pos.Distance(me.Position) > target.Distance2D(pos) + 100)
+                          * (float)Math.Max((Game.Ping / 1000 + (targetDistance / me.MovementSpeed) + turnTime) * target.MovementSpeed, 500);
+
+                //Console.WriteLine(pos.Distance(me.Position) + " " + target.Distance2D(pos));
+                if (pos.Distance(me.Position) > target.Distance2D(pos) - 80)
                 {
+
                     me.Move(pos);
                 }
                 else
