@@ -11,6 +11,8 @@
     using SharpDX;
     using SharpDX.Direct3D9;
 
+    using unitDB = Ensage.Common.UnitDatabase;
+
     internal class UrsaRage
     {
         #region Static Fields
@@ -21,7 +23,11 @@
 
         private static float blinkRange;
 
+        private static bool canCancel;
+
         private static Ability earthshock;
+
+        private static double earthshockCastPoint;
 
         private static bool enableQ = true;
 
@@ -29,19 +35,15 @@
 
         private static float hullsum;
 
-        private static float lastActivity;
-
-        private static float lastStack;
-
         private static bool loaded;
 
         private static Hero me;
 
         private static Vector3 mePosition;
 
-        private static float nextAttack;
-
         private static Ability overpower;
+
+        private static double overpowerCastPoint;
 
         private static Hero target;
 
@@ -72,6 +74,7 @@
             Drawing.OnEndScene += Drawing_OnEndScene;
             AppDomain.CurrentDomain.DomainUnload += CurrentDomainDomainUnload;
             Game.OnWndProc += Game_OnWndProc;
+            Orbwalking.Load();
         }
 
         #endregion
@@ -80,11 +83,10 @@
 
         private static bool CastCombo()
         {
-            if (!Utils.SleepCheck("casting") || !me.CanCast() || !target.IsVisible)
+            if (!Utils.SleepCheck("casting") || !me.CanCast() || !target.IsVisible || !canCancel)
             {
                 return false;
             }
-            var casted = false;
             if (abyssalBlade != null && abyssalBlade.CanBeCasted() && targetDistance <= (350 + hullsum)
                 && Utils.SleepCheck("abyssal"))
             {
@@ -92,47 +94,58 @@
                 if (canUse)
                 {
                     abyssalBlade.UseAbility(target);
-                    Utils.Sleep(turnTime * 1000 + 1000 + Game.Ping, "abyssal");
+                    Utils.Sleep(turnTime * 1000 + 100 + Game.Ping, "abyssal");
                     Utils.Sleep(turnTime * 1000 + 100, "move");
-                    Utils.Sleep(turnTime * 1000 + 100, "casting");
-                    casted = true;
+                    Utils.Sleep(
+                        turnTime * 1000 + 100
+                        + (Math.Max(targetDistance - hullsum - abyssalBlade.CastRange, 0) / me.MovementSpeed) * 1000,
+                        "casting");
+                    Utils.Sleep(turnTime * 1000 + 200, "CHAINSTUN_SLEEP");
+                    return true;
                 }
             }
-            if (earthshock.CanBeCasted() && Utils.SleepCheck("Q") && enableQ)
+            if (earthshock.CanBeCasted() && Utils.SleepCheck("Q") && enableQ
+                && ((me.Mana - earthshock.ManaCost) > overpower.ManaCost || !overpower.CanBeCasted()))
             {
                 var radius = earthshock.AbilityData.FirstOrDefault(x => x.Name == "shock_radius").GetValue(0);
                 var pos = target.Position
                           + target.Vector3FromPolarAngle() * ((Game.Ping / 1000 + 0.3f) * target.MovementSpeed);
+
                 if (mePosition.Distance(pos) < targetDistance)
                 {
                     pos = target.Position;
                 }
-                if (mePosition.Distance2D(pos) <= (radius))
+                if (mePosition.Distance2D(pos) <= (radius)
+                    && (abyssalBlade == null || !abyssalBlade.CanBeCasted() || mePosition.Distance2D(pos) < 200
+                        || target.NetworkActivity == (NetworkActivity)1502))
                 {
-                    var canUse = !target.IsStunned() && !target.IsHexed() && !target.IsInvul()
-                                 && !target.IsMagicImmune();
+                    var canUse = Utils.ChainStun(target, 0.3 + Game.Ping / 1000, null, false);
                     if (canUse)
                     {
                         earthshock.UseAbility();
-                        Utils.Sleep(1000 + Game.Ping, "Q");
-                        Utils.Sleep(300, "casting");
-                        casted = true;
+                        Utils.Sleep(earthshockCastPoint * 1000 + Game.Ping, "Q");
+                        Utils.Sleep(earthshockCastPoint * 1000, "casting");
+                        return true;
                     }
                 }
                 else if (Utils.SleepCheck("moveCloser"))
                 {
                     me.Move(pos);
                     Utils.Sleep(200, "moveCloser");
-                    casted = false;
+                    return true;
                 }
             }
-            if (blink != null && blink.CanBeCasted() && targetDistance > 400 && targetDistance < (blinkRange + hullsum)
-                && Utils.SleepCheck("blink"))
+            if (blink != null && blink.CanBeCasted() && targetDistance > 400
+                && targetDistance < (blinkRange + hullsum * 2 + me.AttackRange) && Utils.SleepCheck("blink"))
             {
-                var position = target.Position + target.Vector3FromPolarAngle() * (hullsum + me.AttackRange);
-                if (mePosition.Distance(position) < targetDistance)
+                var position = target.Position;
+                if (target.NetworkActivity != (NetworkActivity)1500)
                 {
-                    position = target.Position;
+                    position = target.Position + target.Vector3FromPolarAngle() * (hullsum + me.AttackRange);
+                    if (mePosition.Distance(position) < targetDistance)
+                    {
+                        position = target.Position;
+                    }
                 }
                 var dist = position.Distance2D(mePosition);
                 if (dist > blinkRange)
@@ -141,39 +154,40 @@
                 }
                 blink.UseAbility(position);
                 mePosition = position;
-                Utils.Sleep(turnTime * 1000 + 1000 + Game.Ping, "blink");
+                Utils.Sleep(turnTime * 1000 + 100 + Game.Ping, "blink");
                 Utils.Sleep(turnTime * 1000 + 100, "move");
-                Utils.Sleep(turnTime * 1000 + 100, "casting");
-                casted = true;
+                Utils.Sleep(turnTime * 1000, "casting");
+                return true;
             }
             const int Radius = 300;
             var canAttack = !target.IsInvul() && !target.IsAttackImmune() && me.CanAttack();
             if (!canAttack)
             {
-                return casted;
+                return false;
             }
-            if (overpower.CanBeCasted() && Utils.SleepCheck("W") && !(earthshock.CanBeCasted() && enableQ))
+            if (overpower.CanBeCasted() && Utils.SleepCheck("W")
+                && !(earthshock.CanBeCasted() && enableQ && Utils.ChainStun(target, 0.3 + Game.Ping / 1000, null, false)))
             {
                 if (mePosition.Distance2D(target) <= (Radius + hullsum))
                 {
                     overpower.UseAbility();
-                    Utils.Sleep(1000 + Game.Ping, "W");
-                    Utils.Sleep(100, "casting");
-                    casted = true;
+                    Utils.Sleep(overpowerCastPoint * 1000 + Game.Ping, "W");
+                    Utils.Sleep(overpowerCastPoint * 1000, "casting");
+                    return true;
                 }
             }
             if (!enrage.CanBeCasted() || !Utils.SleepCheck("R"))
             {
-                return casted;
+                return false;
             }
             if (!(mePosition.Distance2D(target) <= (Radius + hullsum)))
             {
-                return casted;
+                return false;
             }
             enrage.UseAbility();
-            Utils.Sleep(1000 + Game.Ping, "R");
+            Utils.Sleep(100 + Game.Ping, "R");
             Utils.Sleep(100, "casting");
-            return casted;
+            return true;
         }
 
         private static void CurrentDomainDomainUnload(object sender, EventArgs e)
@@ -226,13 +240,14 @@
                 enrage = me.FindSpell("ursa_enrage");
                 blink = me.FindItem("item_blink");
                 abyssalBlade = me.FindItem("item_abyssal_blade");
-                lastStack = 0;
                 loaded = true;
-                lastActivity = 0;
+                Utils.ChainStun(me, 0.3 + Game.Ping / 1000, null, false);
             }
 
             if (!Game.IsInGame || me == null)
             {
+                overpowerCastPoint = 0;
+                earthshockCastPoint = 0;
                 loaded = false;
                 return;
             }
@@ -240,16 +255,6 @@
             if (Game.IsPaused)
             {
                 return;
-            }
-
-            var tick = Environment.TickCount;
-            if (me.NetworkActivity != (NetworkActivity)lastActivity && target != null && me.Modifiers.All(x => x.Name != "modifier_ursa_overpower"))
-            {
-                lastActivity = (float)me.NetworkActivity;
-                if (lastActivity == 1503)
-                {
-                    nextAttack = (tick + me.SecondsPerAttack * 1000 - Game.Ping);
-                }
             }
 
             if (blink == null)
@@ -260,16 +265,24 @@
             if (abyssalBlade == null)
             {
                 abyssalBlade = me.FindItem("item_abyssal_blade");
-            }                     
+            }
 
             if (earthshock == null)
             {
                 earthshock = me.Spellbook.Spell1;
             }
+            else if (earthshockCastPoint == 0)
+            {
+                earthshockCastPoint = 0.3;
+            }
 
             if (overpower == null)
             {
                 overpower = me.Spellbook.SpellW;
+            }
+            else if (overpowerCastPoint == 0)
+            {
+                overpowerCastPoint = 0.3;
             }
 
             if (enrage == null)
@@ -280,7 +293,6 @@
             if (!Game.IsKeyDown(Key.Space) || Game.IsChatOpen)
             {
                 target = null;
-                lastStack = 0;
                 return;
             }
             if (Utils.SleepCheck("blink"))
@@ -292,14 +304,9 @@
             if (blink != null)
             {
                 blinkRange = blink.AbilityData.FirstOrDefault(x => x.Name == "blink_range").GetValue(0);
-                range = blinkRange + me.HullRadius + 200;
+                range = blinkRange + me.HullRadius + 500;
             }
-            var lastTarget = target;
             target = me.ClosestToMouseTarget(range);
-            if (!Equals(target, lastTarget))
-            {
-                lastStack = 0;
-            }
             if (target == null || !target.IsAlive || !target.IsVisible
                 || target.Distance2D(mousePosition) > target.Distance2D(me) + 1000)
             {
@@ -319,7 +326,11 @@
             {
                 return;
             }
-            OrbWalk(tick);
+            if (!Utils.SleepCheck("casting"))
+            {
+                return;
+            }
+            OrbWalk();
         }
 
         private static void Game_OnWndProc(WndEventArgs args)
@@ -331,36 +342,47 @@
             enableQ = !enableQ;
         }
 
-        private static void OrbWalk(float tick)
+        private static void OrbWalk()
         {
-            var modifier = target.Modifiers.FirstOrDefault(x => x.Name == "modifier_ursa_fury_swipes_damage_increase");
-            var stackCount = lastStack;
-            var currentStack = modifier != null ? modifier.StackCount : 0;
-            var notAttacking = (stackCount < currentStack) || targetDistance > (hullsum + 300);
-            var overpowering = me.Modifiers.Any(x => x.Name == "modifier_ursa_overpower");
-            var canAttack = ((nextAttack - Game.Ping - turnTime) <= tick || overpowering) && !target.IsInvul()
-                            && !target.IsAttackImmune() && me.CanAttack();
-            if (canAttack)
+            //var modifier = target.Modifiers.FirstOrDefault(x => x.Name == "modifier_ursa_fury_swipes_damage_increase");
+            // && UnitDatabase.GetAttackSpeed(me) < 300 && !me.Modifiers.Any(x => x.Name == "modifier_ursa_overpower")
+            //var overpowering = me.Modifiers.Any(x => x.Name == "modifier_ursa_overpower");
+            canCancel = Orbwalking.CanCancelAnimation();
+            var canAttack = !Orbwalking.AttackOnCooldown(target) && !target.IsInvul() && !target.IsAttackImmune()
+                            && me.CanAttack();
+            if (canAttack && (targetDistance <= (200)))
             {
                 if (!Utils.SleepCheck("attack"))
                 {
                     return;
                 }
                 me.Attack(target);
-                lastStack = modifier != null ? modifier.StackCount : 0;
                 Utils.Sleep(100, "attack");
                 return;
             }
-            if (!Utils.SleepCheck("move") || !notAttacking
+
+            var canMove = (targetDistance > (200) && canCancel)
+                          || (canCancel && me.NetworkActivity == (NetworkActivity)1503);
+            if (!Utils.SleepCheck("move") || !canMove
                 || ((!target.CanMove() || target.NetworkActivity == (NetworkActivity)1500 || target.MovementSpeed < 200)
-                    && targetDistance < 200))
+                    && targetDistance < 100))
             {
                 return;
             }
             var mousePos = Game.MousePosition;
-            if (mousePos.Distance2D(target) > 400)
+            if (target.Distance2D(me) < 500)
             {
-                me.Follow(target);
+                var pos = target.Position
+                          + target.Vector3FromPolarAngle()
+                          * ((Game.Ping / 1000 + (targetDistance / me.MovementSpeed)) * target.MovementSpeed);
+                if (targetDistance > 150 && pos.Distance(me.Position) > target.Distance2D(pos) + 100)
+                {
+                    me.Move(pos);
+                }
+                else
+                {
+                    me.Follow(target);
+                }
             }
             else
             {
