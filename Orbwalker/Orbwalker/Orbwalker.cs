@@ -7,6 +7,8 @@
     using Ensage.Common;
     using Ensage.Common.Extensions;
 
+    using SharpDX;
+
     internal class Orbwalker
     {
         #region Static Fields
@@ -21,6 +23,8 @@
 
         private const Key KiteKey = Key.V;
 
+        private static ParticleEffect rangeDisplay;
+
         #endregion
 
         #region Public Methods and Operators
@@ -29,6 +33,12 @@
         {
             Game.OnUpdate += Game_OnUpdate;
             Orbwalking.Load();
+            if (rangeDisplay == null)
+            {
+                return;
+            }
+            rangeDisplay.Dispose();
+            rangeDisplay = null;
         }
 
         #endregion
@@ -51,6 +61,12 @@
             {
                 loaded = false;
                 me = null;
+                if (rangeDisplay == null)
+                {
+                    return;
+                }
+                rangeDisplay.Dispose();
+                rangeDisplay = null;
                 return;
             }
 
@@ -59,15 +75,25 @@
                 return;
             }
 
+            if (rangeDisplay == null)
+            {
+                rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\range_display.vpcf");
+               // rangeDisplay.SetControlPointEntity(1, me);
+                rangeDisplay.SetControlPoint(1, new Vector3(me.GetAttackRange() + me.HullRadius + 25, 0, 0));
+            }
+
+            //rangeDisplay.SetControlPoint(1, new Vector3(me.GetAttackRange() + me.HullRadius, 0, 0));
+            //rangeDisplay.SetControlPointEntity(1,me);
+
             var canCancel = Orbwalking.CanCancelAnimation();
             if (canCancel)
             {
                 if (target != null && !target.IsVisible)
                 {
-                    var trgt = me.BestAATarget();
-                    if (trgt != null)
+                    var closestToMouse = me.ClosestToMouseTarget(128);
+                    if (closestToMouse != null)
                     {
-                        target = trgt;
+                        target = closestToMouse;
                     }
                 }
                 else
