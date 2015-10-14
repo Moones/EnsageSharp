@@ -241,7 +241,6 @@
                 blink = me.FindItem("item_blink");
                 abyssalBlade = me.FindItem("item_abyssal_blade");
                 loaded = true;
-                Utils.ChainStun(me, 0.3 + Game.Ping / 1000, null, false);
             }
 
             if (!Game.IsInGame || me == null)
