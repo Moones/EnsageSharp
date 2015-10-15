@@ -367,13 +367,17 @@
             var pos = hero.Position;
             if (hero.NetworkActivity == NetworkActivity.Move)
             {
-                pos = Prediction.InFront(hero, (Game.Ping / 1000) * hero.MovementSpeed);
+                pos = Prediction.InFront(hero, (float)((Game.Ping / 1000 + me.GetTurnTime(hero)) * hero.MovementSpeed));
+            }
+            if (pos.Distance2D(me) < hero.Distance2D(me))
+            {
+                pos = hero.Position;
             }
             if (me.Distance2D(pos) > 100)
             {
                 pos = (pos - me.Position) * 99 / pos.Distance2D(me) + me.Position;
             }
-            if (!(pos.Distance2D(me) <= suicideAttackRadius))
+            if (!(pos.Distance2D(me) < suicideAttackRadius))
             {
                 return;
             }
