@@ -257,7 +257,7 @@
             if (!loaded)
             {
                 me = ObjectMgr.LocalHero;
-                if (!Game.IsInGame || me == null)
+                if (!Game.IsInGame || me == null || me.ClassID != ClassID.CDOTA_Unit_Hero_Ursa)
                 {
                     return;
                 }
