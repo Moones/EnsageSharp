@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Linq;
 
     using Ensage;
@@ -11,9 +10,6 @@
 
     using SharpDX;
     using SharpDX.Direct3D9;
-
-    using Color = SharpDX.Color;
-    using Font = SharpDX.Direct3D9.Font;
 
     internal class Techies
     {
@@ -165,7 +161,6 @@
                 forceStaff = me.Inventory.Items.FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Item_ForceStaff);
             }
 
-
             var suicideLevel = suicideAttack.Level;
 
             if (suicideAttackLevel != suicideLevel)
@@ -223,10 +218,10 @@
                 {
                     CheckBombDamageAndDetonate(hero, bombsArray);
                 }
-                //if (heroDistance < 400 && suicideAttackLevel > 0 && me.IsAlive)
-                //{
-                //    SuicideKillSteal(hero);
-                //}
+                if (heroDistance < 400 && suicideAttackLevel > 0 && me.IsAlive)
+                {
+                    SuicideKillSteal(hero);
+                }
                 if (forceStaff == null || !(heroDistance <= forceStaff.CastRange) || !Utils.SleepCheck("forcestaff")
                     || bombsArray.Any(x => x.Distance2D(hero) <= remoteMinesRadius) || Prediction.IsTurning(hero)
                     || !forceStaff.CanBeCasted())
@@ -363,35 +358,35 @@
             Utils.Sleep(1000, hero.ClassID.ToString());
         }
 
+        private static void SuicideKillSteal(Unit hero)
+        {
+            if (!Utils.SleepCheck("suicide"))
+            {
+                return;
+            }
+            var pos = hero.Position;
+            if (hero.NetworkActivity == NetworkActivity.Move)
+            {
+                pos = Prediction.InFront(hero, (Game.Ping / 1000) * hero.MovementSpeed);
+            }
+            if (me.Distance2D(pos) > 100)
+            {
+                pos = (pos - me.Position) * 99 / pos.Distance2D(me) + me.Position;
+            }
+            if (!(pos.Distance2D(me) <= suicideAttackRadius))
+            {
+                return;
+            }
+            var dmg = hero.DamageTaken(suicideAttackDmg, DamageType.Physical, me, true);
+            //Console.WriteLine(dmg);
+            if (!(dmg >= hero.Health))
+            {
+                return;
+            }
+            suicideAttack.UseAbility(pos);
+            Utils.Sleep(500, "suicide");
+        }
+
         #endregion
-
-        //    }
-        //        pos = (pos - me.Position) * 99 / pos.Distance2D(me) + me.Position;
-        //    {
-        //    if (me.Distance2D(pos) > 100)
-        //    }
-        //        return;
-        //    {
-        //    if (!(dmg >= hero.Health))
-        //    var dmg = hero.DamageTaken(suicideAttackDmg, DamageType.Physical, me, true);
-        //    }
-        //        return;
-        //    {
-        //    if (!(pos.Distance2D(me) <= suicideAttackRadius))
-        //    }
-        //        pos = Prediction.InFront(hero, (Game.Ping / 1000) * hero.MovementSpeed);
-        //    {
-        //    if (hero.NetworkActivity == NetworkActivity.Move)
-        //    var pos = hero.Position;
-        //    }
-        //        return;
-        //    {
-        //    if (!Utils.SleepCheck("suicide"))
-        //{
-
-        //private static void SuicideKillSteal(Unit hero)
-        //    suicideAttack.UseAbility(pos);
-        //    Utils.Sleep(500,"suicide");
-        //}
     }
 }
