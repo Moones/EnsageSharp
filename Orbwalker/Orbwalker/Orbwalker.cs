@@ -79,8 +79,8 @@
             {
                 rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\range_display.vpcf");
                // rangeDisplay.SetControlPointEntity(1, me);
-                rangeDisplay.SetControlPoint(1, new Vector3(me.GetAttackRange() + me.HullRadius + 25, 0, 0));
             }
+            rangeDisplay.SetControlPoint(1, new Vector3(me.GetAttackRange() + me.HullRadius + 25, 0, 0));
 
             //rangeDisplay.SetControlPoint(1, new Vector3(me.GetAttackRange() + me.HullRadius, 0, 0));
             //rangeDisplay.SetControlPointEntity(1,me);
