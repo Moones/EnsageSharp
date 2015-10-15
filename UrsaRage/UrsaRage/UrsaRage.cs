@@ -91,7 +91,9 @@
 
         private static bool CastCombo()
         {
-            var canCancel = (Orbwalking.CanCancelAnimation() && Orbwalking.AttackOnCooldown(target)) || (!Orbwalking.AttackOnCooldown(target) && targetDistance > 250);
+            var canCancel = (Orbwalking.CanCancelAnimation()
+                             && (Orbwalking.AttackOnCooldown(target) || me.NetworkActivity != (NetworkActivity)1503))
+                            || (!Orbwalking.AttackOnCooldown(target) && targetDistance > 250);
             if (!Utils.SleepCheck("casting") || !me.CanCast() || !target.IsVisible || !canCancel)
             {
                 return false;
@@ -104,7 +106,7 @@
                 {
                     abyssalBlade.UseAbility(target);
                     Utils.Sleep(turnTime * 1000 + 100 + Game.Ping, "abyssal");
-                    Utils.Sleep(turnTime * 1000 + 100, "move");
+                    Utils.Sleep(turnTime * 1000 + 50, "move");
                     Utils.Sleep(
                         turnTime * 1000 + 100
                         + (Math.Max(targetDistance - hullsum - abyssalBlade.CastRange, 0) / me.MovementSpeed) * 1000,
@@ -121,7 +123,7 @@
                 {
                     scytheOfVyse.UseAbility(target);
                     Utils.Sleep(turnTime * 1000 + 100 + Game.Ping, "hex");
-                    Utils.Sleep(turnTime * 1000 + 100, "move");
+                    Utils.Sleep(turnTime * 1000 + 50, "move");
                     Utils.Sleep(
                         turnTime * 1000 + 100
                         + (Math.Max(targetDistance - hullsum - scytheOfVyse.CastRange, 0) / me.MovementSpeed) * 1000,
@@ -181,7 +183,7 @@
                 blink.UseAbility(position);
                 mePosition = position;
                 Utils.Sleep(turnTime * 1000 + 100 + Game.Ping, "blink");
-                Utils.Sleep(turnTime * 1000 + 100, "move");
+                Utils.Sleep(turnTime * 1000 + 50, "move");
                 Utils.Sleep(turnTime * 1000, "casting");
                 return true;
             }
