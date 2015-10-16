@@ -15,8 +15,6 @@
     {
         #region Static Fields
 
-        private static bool enableCreepWave = false;
-
         private static Ability forceStaff;
 
         private static bool loaded;
@@ -40,6 +38,8 @@
         private static float suicideAttackRadius;
 
         private static Font text;
+
+        private static uint Case = 1;
 
         #endregion
 
@@ -85,12 +85,22 @@
             {
                 return;
             }
-
+            var sign = "#Techies: Detonate on Creeps Disabled! AutoSuicide Disabled | [L] for toggle";
+            switch (Case)
+            {
+                case 2:
+                    sign = "#Techies: Detonate on Creeps Enabled! AutoSuicide Enabled | [L] for toggle";
+                    break;
+                case 3:
+                    sign = "#Techies: Detonate on Creeps Disabled! AutoSuicide Enabled | [L] for toggle";
+                    break;
+                case 4:
+                    sign = "#Techies: Detonate on Creeps Enabled! AutoSuicide Disabled | [L] for toggle";
+                    break;
+            }
             text.DrawText(
                 null,
-                enableCreepWave
-                    ? "#Techies: Detonate on Creeps Enabled! | [L] for toggle"
-                    : "#Techies: Detonate on Creeps Disabled! | [L] for toggle",
+                sign,
                 5,
                 128,
                 Color.DarkOrange);
@@ -209,7 +219,7 @@
                         && x.Spellbook.Spell1.CanBeCasted() && x.IsAlive);
 
             var bombsArray = bombs as Unit[] ?? bombs.ToArray();
-
+            //Console.WriteLine(suicideAttackRadius);
             foreach (var hero in enemyHeroes)
             {
                 var heroDistance = me.Distance2D(hero);
@@ -218,7 +228,7 @@
                 {
                     CheckBombDamageAndDetonate(hero, bombsArray);
                 }
-                if (heroDistance < 400 && suicideAttackLevel > 0 && me.IsAlive)
+                if (heroDistance < 400 && suicideAttackLevel > 0 && me.IsAlive && (Case == 2 || Case == 3))
                 {
                     SuicideKillSteal(hero);
                 }
@@ -260,7 +270,7 @@
                 forceStaff.UseAbility(hero);
                 Utils.Sleep(250, "forcestaff");
             }
-            if (!enableCreepWave)
+            if (!(Case == 2 || Case == 4))
             {
                 return;
             }
@@ -299,7 +309,14 @@
             {
                 return;
             }
-            enableCreepWave = !enableCreepWave;
+            if (Case == 4)
+            {
+                Case = 1;
+            }
+            else
+            {
+                Case += 1;
+            }
         }
 
         private static float CheckBombDamage(Unit hero, Vector3 pos, IEnumerable<Unit> bombs)
@@ -364,8 +381,14 @@
             {
                 return;
             }
-            var pos = hero.Position;
-            if (hero.NetworkActivity == NetworkActivity.Move)
+            var dmg = hero.DamageTaken(suicideAttackDmg, DamageType.Physical, me, true);
+            //Console.WriteLine(dmg);
+            if (!(dmg >= hero.Health))
+            {
+                return;
+            }
+            var pos = hero.NetworkPosition;
+            if (hero.NetworkActivity == (NetworkActivity)1502)
             {
                 pos = Prediction.InFront(hero, (float)((Game.Ping / 1000 + me.GetTurnTime(hero)) * hero.MovementSpeed));
             }
@@ -373,20 +396,14 @@
             {
                 pos = hero.Position;
             }
-            if (me.Distance2D(pos) > 100)
-            {
-                pos = (pos - me.Position) * 99 / pos.Distance2D(me) + me.Position;
-            }
             if (!(pos.Distance2D(me) < suicideAttackRadius))
             {
                 return;
             }
-            var dmg = hero.DamageTaken(suicideAttackDmg, DamageType.Physical, me, true);
-            //Console.WriteLine(dmg);
-            if (!(dmg >= hero.Health))
+            if (me.Distance2D(pos) > 100)
             {
-                return;
-            }
+                pos = (pos - me.Position) * 99 / pos.Distance2D(me) + me.Position;
+            }            
             suicideAttack.UseAbility(pos);
             Utils.Sleep(500, "suicide");
         }
