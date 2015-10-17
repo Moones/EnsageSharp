@@ -72,10 +72,9 @@
                 Drawing.Direct3DDevice9,
                 new FontDescription
                     {
-                        FaceName = "ArialBlack", Height = 25, OutputPrecision = FontPrecision.Default,
+                        FaceName = "Arial", Height = 25, OutputPrecision = FontPrecision.Default,
                         Quality = FontQuality.Default, CharacterSet = FontCharacterSet.Default, Italic = false,
-                        MipLevels = 0, PitchAndFamily = FontPitchAndFamily.Modern, Weight = FontWeight.ExtraBold,
-                        Width = 10
+                        MipLevels = 0, PitchAndFamily = FontPitchAndFamily.Mono, Weight = FontWeight.Heavy, Width = 6
                     });
 
             Drawing.OnPreReset += Drawing_OnPreReset;
@@ -125,28 +124,33 @@
             {
                 return;
             }
-            foreach (
-                var hero in
-                    ObjectMgr.GetEntities<Hero>().Where(x => x.IsAlive && !x.IsIllusion && x.Team == me.GetEnemyTeam()))
+            foreach (var play in
+                ObjectMgr.GetEntities<Player>().Where(x => x.Hero != null && x.Hero.Team == me.GetEnemyTeam()))
             {
+                var hero = play.Hero;
+                var health = hero.Health;
+                if (!hero.IsAlive)
+                {
+                    health = hero.MaximumHealth;
+                }
                 var sizeX = HUDInfo.GetTopPanelSizeX(hero);
-                var x = HUDInfo.GetTopPanelPosition(hero).X + sizeX / 2;
-                var sizey = HUDInfo.GetTopPanelSizeY(hero);
+                var x = HUDInfo.GetTopPanelPosition(hero).X;
+                var sizey = HUDInfo.GetTopPanelSizeY(hero) + 10;
                 if (remoteMinesDmg > 0)
                 {
                     var dmg = hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me, false);
-                    var remoteNumber = Math.Ceiling(hero.Health / dmg);
+                    var remoteNumber = Math.Ceiling(health / dmg);
                     panelText.DrawText(
                         null,
                         remoteNumber.ToString(CultureInfo.InvariantCulture),
-                        (int)(x + sizeX / 3),
+                        (int)(x + sizeX / 4.3),
                         (int)sizey + 5,
                         Color.Green);
                 }
                 if (landMinesDmg > 0)
                 {
                     var dmg = hero.DamageTaken(landMinesDmg, DamageType.Physical, me, false);
-                    var landNumber = Math.Ceiling(hero.Health / dmg);
+                    var landNumber = Math.Ceiling(health / dmg);
                     panelText.DrawText(
                         null,
                         landNumber.ToString(CultureInfo.InvariantCulture),
@@ -157,11 +161,11 @@
                 if (suicideAttackDmg > 0)
                 {
                     var dmg = hero.DamageTaken(suicideAttackDmg, DamageType.Magical, me, false);
-                    var canKill = dmg > hero.Health;
+                    var canKill = dmg > health;
                     panelText.DrawText(
                         null,
                         canKill ? "Yes" : "No",
-                        (int)(x + sizeX / 3 + sizeX / 3),
+                        (int)(x + sizeX / 1.7),
                         (int)sizey + 5,
                         Color.DarkOrange);
                 }
@@ -446,7 +450,13 @@
             {
                 return;
             }
-            var possibleBombs = bombs.Where(x => x.Distance2D(pos) <= remoteMinesRadius);
+            var possibleBombs =
+                bombs.Where(
+                    x =>
+                    x.Distance2D(pos) <= remoteMinesRadius && x.Distance2D(hero.Position) <= remoteMinesRadius
+                    && (remoteMinesRadius - x.Distance2D(hero.Position) / hero.MovementSpeed > (Game.Ping / 1000)
+                        && (remoteMinesRadius - x.Distance2D(pos) / hero.MovementSpeed > (Game.Ping / 1000))));
+
             var detonatableBombs = new Dictionary<int, Ability>();
             var dmg = 0f;
             foreach (var bomb in possibleBombs)
@@ -466,6 +476,31 @@
             if (dmg < hero.Health)
             {
                 return;
+            }
+            if (hero.NetworkActivity == NetworkActivity.Move)
+            {
+                var pos1 = Prediction.InFront(
+                    hero,
+                    (float)((Game.Ping / 1000 + detonatableBombs.Count * 0.002) * hero.MovementSpeed));
+                var stop = false;
+                foreach (var mine in
+                    detonatableBombs.Where(data => Utils.SleepCheck(data.Value.Handle.ToString()))
+                        .Select(data => data.Value.Owner)
+                        .Where(
+                            mine =>
+                            mine.Distance2D(pos1) > remoteMinesRadius
+                            || mine.Distance2D(hero.Position) > remoteMinesRadius
+                            || (remoteMinesRadius - mine.Distance2D(hero.Position) / hero.MovementSpeed
+                                > (Game.Ping / 1000 + detonatableBombs.Count * 0.002)
+                                || (remoteMinesRadius - mine.Distance2D(pos1) / hero.MovementSpeed
+                                    > (Game.Ping / 1000 + detonatableBombs.Count * 0.002)))))
+                {
+                    stop = true;
+                }
+                if (stop)
+                {
+                    return;
+                }
             }
             foreach (var data in detonatableBombs.Where(data => Utils.SleepCheck(data.Value.Handle.ToString())))
             {
