@@ -17,13 +17,15 @@
 
         private static Hero me;
 
-        private static Hero target;
+        private static Unit target;
 
         private const Key ChaseKey = Key.Space;
 
         private const Key KiteKey = Key.V;
 
         private static ParticleEffect rangeDisplay;
+
+        private static float lastTargettime;
 
         #endregion
 
@@ -78,17 +80,13 @@
             if (rangeDisplay == null)
             {
                 rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\range_display.vpcf");
-               // rangeDisplay.SetControlPointEntity(1, me);
             }
             rangeDisplay.SetControlPoint(1, new Vector3(me.GetAttackRange() + me.HullRadius + 25, 0, 0));
-
-            //rangeDisplay.SetControlPoint(1, new Vector3(me.GetAttackRange() + me.HullRadius, 0, 0));
-            //rangeDisplay.SetControlPointEntity(1,me);
 
             var canCancel = Orbwalking.CanCancelAnimation();
             if (canCancel)
             {
-                if (target != null && !target.IsVisible)
+                if (target != null && !target.IsVisible && target is Hero)
                 {
                     var closestToMouse = me.ClosestToMouseTarget(128);
                     if (closestToMouse != null)
@@ -101,17 +99,25 @@
                     target = me.BestAATarget();
                 }
             }
+            if (target != null)
+            {
+                lastTargettime = Environment.TickCount;
+            }
+            else if (Environment.TickCount - lastTargettime > 5000)
+            {
+                target = TargetSelector.GetLowestHPCreep(me);
+            }
             if (Game.IsChatOpen)
             {
                 return;
             }
             if (Game.IsKeyDown(ChaseKey))
             {
-                Orbwalking.Orbwalk(target);
+                Orbwalking.Orbwalk(target,attackmodifiers: true);
             }
             if (Game.IsKeyDown(KiteKey))
             {
-                Orbwalking.Orbwalk(target,(float)(UnitDatabase.GetAttackRate(me)*1000));
+                Orbwalking.Orbwalk(target,attackmodifiers: true,bonusRange: (float)(UnitDatabase.GetAttackRate(me)*1000));
             }
         }
 

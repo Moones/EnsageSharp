@@ -46,7 +46,7 @@
       <HintPath>C:\PlaySharp1\System\Ensage.Common.dll</HintPath>
     </Reference>
     <Reference Include="EnsageSharp.Sandbox">
-      <HintPath>..\..\PlaySharp\System\EnsageSharp.Sandbox.dll</HintPath>
+      <HintPath>C:\PlaySharp1\System\EnsageSharp.Sandbox.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>C:\PlaySharp1\System\SharpDX.dll</HintPath>

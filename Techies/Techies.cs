@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
 
     using Ensage;
@@ -15,11 +16,23 @@
     {
         #region Static Fields
 
+        private static bool aghanims;
+
+        private static uint Case = 1;
+
         private static Ability forceStaff;
+
+        private static Ability landMines;
+
+        private static float landMinesDmg;
+
+        private static uint landMinesLevel;
 
         private static bool loaded;
 
         private static Hero me;
+
+        private static Font panelText;
 
         private static Ability remoteMines;
 
@@ -39,8 +52,6 @@
 
         private static Font text;
 
-        private static uint Case = 1;
-
         #endregion
 
         #region Public Methods and Operators
@@ -57,6 +68,16 @@
                         Quality = FontQuality.Default
                     });
 
+            panelText = new Font(
+                Drawing.Direct3DDevice9,
+                new FontDescription
+                    {
+                        FaceName = "ArialBlack", Height = 25, OutputPrecision = FontPrecision.Default,
+                        Quality = FontQuality.Default, CharacterSet = FontCharacterSet.Default, Italic = false,
+                        MipLevels = 0, PitchAndFamily = FontPitchAndFamily.Modern, Weight = FontWeight.ExtraBold,
+                        Width = 10
+                    });
+
             Drawing.OnPreReset += Drawing_OnPreReset;
             Drawing.OnPostReset += Drawing_OnPostReset;
             Drawing.OnEndScene += Drawing_OnEndScene;
@@ -71,6 +92,7 @@
         private static void CurrentDomainDomainUnload(object sender, EventArgs e)
         {
             text.Dispose();
+            panelText.Dispose();
         }
 
         private static void Drawing_OnEndScene(EventArgs args)
@@ -98,22 +120,64 @@
                     sign = "#Techies: Detonate on Creeps Enabled! AutoSuicide Disabled | [L] for toggle";
                     break;
             }
-            text.DrawText(
-                null,
-                sign,
-                5,
-                128,
-                Color.DarkOrange);
+            text.DrawText(null, sign, 5, 128, Color.DarkOrange);
+            if (!Utils.SleepCheck("drawPanel") || me == null)
+            {
+                return;
+            }
+            foreach (
+                var hero in
+                    ObjectMgr.GetEntities<Hero>().Where(x => x.IsAlive && !x.IsIllusion && x.Team == me.GetEnemyTeam()))
+            {
+                var sizeX = HUDInfo.GetTopPanelSizeX(hero);
+                var x = HUDInfo.GetTopPanelPosition(hero).X + sizeX / 2;
+                var sizey = HUDInfo.GetTopPanelSizeY(hero);
+                if (remoteMinesDmg > 0)
+                {
+                    var dmg = hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me, false);
+                    var remoteNumber = Math.Ceiling(hero.Health / dmg);
+                    panelText.DrawText(
+                        null,
+                        remoteNumber.ToString(CultureInfo.InvariantCulture),
+                        (int)(x + sizeX / 3),
+                        (int)sizey + 5,
+                        Color.Green);
+                }
+                if (landMinesDmg > 0)
+                {
+                    var dmg = hero.DamageTaken(landMinesDmg, DamageType.Physical, me, false);
+                    var landNumber = Math.Ceiling(hero.Health / dmg);
+                    panelText.DrawText(
+                        null,
+                        landNumber.ToString(CultureInfo.InvariantCulture),
+                        (int)x,
+                        (int)sizey + 5,
+                        Color.Red);
+                }
+                if (suicideAttackDmg > 0)
+                {
+                    var dmg = hero.DamageTaken(suicideAttackDmg, DamageType.Magical, me, false);
+                    var canKill = dmg > hero.Health;
+                    panelText.DrawText(
+                        null,
+                        canKill ? "Yes" : "No",
+                        (int)(x + sizeX / 3 + sizeX / 3),
+                        (int)sizey + 5,
+                        Color.DarkOrange);
+                }
+            }
         }
 
         private static void Drawing_OnPostReset(EventArgs args)
         {
             text.OnResetDevice();
+            panelText.OnResetDevice();
         }
 
         private static void Drawing_OnPreReset(EventArgs args)
         {
             text.OnLostDevice();
+            panelText.OnLostDevice();
         }
 
         private static Dictionary<int, Ability> FindDetonatableBombs(Unit hero, Vector3 pos, IEnumerable<Unit> bombs)
@@ -150,6 +214,7 @@
                 loaded = true;
                 remoteMines = me.Spellbook.SpellR;
                 suicideAttack = me.Spellbook.SpellE;
+                landMines = me.Spellbook.SpellQ;
                 forceStaff = null;
                 Console.WriteLine("#Techies: Loaded!");
             }
@@ -192,10 +257,21 @@
 
             if (remoteMinesLevel != bombLevel)
             {
-                var firstOrDefault = remoteMines.AbilityData.FirstOrDefault(x => x.Name == "damage");
-                if (firstOrDefault != null)
+                if (me.AghanimState())
                 {
-                    remoteMinesDmg = firstOrDefault.GetValue(bombLevel - 1);
+                    var firstOrDefault = remoteMines.AbilityData.FirstOrDefault(x => x.Name == "damage_scepter");
+                    if (firstOrDefault != null)
+                    {
+                        remoteMinesDmg = firstOrDefault.GetValue(bombLevel - 1);
+                    }
+                }
+                else
+                {
+                    var firstOrDefault = remoteMines.AbilityData.FirstOrDefault(x => x.Name == "damage");
+                    if (firstOrDefault != null)
+                    {
+                        remoteMinesDmg = firstOrDefault.GetValue(bombLevel - 1);
+                    }
                 }
                 var abilityData = remoteMines.AbilityData.FirstOrDefault(x => x.Name == "radius");
                 if (abilityData != null)
@@ -204,6 +280,29 @@
                 }
                 remoteMinesLevel = bombLevel;
             }
+
+            var landMineslvl = landMines.Level;
+
+            if (landMinesLevel != landMineslvl)
+            {
+                var firstOrDefault = landMines.AbilityData.FirstOrDefault(x => x.Name == "damage");
+                if (firstOrDefault != null)
+                {
+                    landMinesDmg = firstOrDefault.GetValue(landMineslvl - 1);
+                }
+                landMinesLevel = landMineslvl;
+            }
+
+            if (!aghanims && me.AghanimState())
+            {
+                var firstOrDefault = remoteMines.AbilityData.FirstOrDefault(x => x.Name == "damage_scepter");
+                if (firstOrDefault != null)
+                {
+                    remoteMinesDmg = firstOrDefault.GetValue(bombLevel - 1);
+                }
+                aghanims = true;
+            }
+
             var enemyHeroes =
                 ObjectMgr.GetEntities<Hero>()
                     .Where(
@@ -246,17 +345,18 @@
 
                 if (data != null)
                 {
-                    var turnTime =
-                        (Math.Max(
-                            Math.Abs(me.FindAngleR() - Utils.DegreeToRadian(me.FindAngleBetween(hero.Position))) - 0.69,
-                            0) / (0.5 * (1 / 0.03)));
-                    var predict = Prediction.PredictedXYZ(hero, (float)(turnTime * 1000 + Game.Ping));
-                    var forcePosition = predict
-                                        + VectorExtensions.FromPolarCoordinates(
-                                            1f,
-                                            hero.NetworkRotationRad + data.RotSpeed).ToVector3() * 600;
-
-                    var possibleBombs = bombsArray.Any(x => x.Distance2D(forcePosition) <= (remoteMinesRadius - 150));
+                    var turnTime = me.GetTurnTime(hero);
+                    var forcePosition = hero.Position;
+                    if (hero.NetworkActivity == (NetworkActivity)1502)
+                    {
+                        forcePosition = Prediction.InFront(
+                            hero,
+                            (float)((turnTime + Game.Ping / 1000) * hero.MovementSpeed));
+                    }
+                    forcePosition +=
+                        VectorExtensions.FromPolarCoordinates(1f, hero.NetworkRotationRad + data.RotSpeed).ToVector3()
+                        * 600;
+                    var possibleBombs = bombsArray.Any(x => x.Distance2D(forcePosition) <= (remoteMinesRadius - 75));
                     if (!possibleBombs)
                     {
                         continue;
@@ -403,7 +503,7 @@
             if (me.Distance2D(pos) > 100)
             {
                 pos = (pos - me.Position) * 99 / pos.Distance2D(me) + me.Position;
-            }            
+            }
             suicideAttack.UseAbility(pos);
             Utils.Sleep(500, "suicide");
         }
