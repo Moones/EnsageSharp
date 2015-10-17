@@ -125,7 +125,7 @@
                 return;
             }
             foreach (var play in
-                ObjectMgr.GetEntities<Player>().Where(x => x.Hero != null && x.Hero.Team == me.GetEnemyTeam()))
+                ObjectMgr.GetEntities<Player>().Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam()))
             {
                 var hero = play.Hero;
                 var health = hero.Health;
@@ -454,8 +454,7 @@
                 bombs.Where(
                     x =>
                     x.Distance2D(pos) <= remoteMinesRadius && x.Distance2D(hero.Position) <= remoteMinesRadius
-                    && (remoteMinesRadius - x.Distance2D(hero.Position) / hero.MovementSpeed > (Game.Ping / 1000)
-                        && (remoteMinesRadius - x.Distance2D(pos) / hero.MovementSpeed > (Game.Ping / 1000))));
+                    && (remoteMinesRadius - x.Distance2D(hero.Position - 50) / hero.MovementSpeed > (Game.Ping / 1000)));
 
             var detonatableBombs = new Dictionary<int, Ability>();
             var dmg = 0f;
@@ -490,10 +489,8 @@
                             mine =>
                             mine.Distance2D(pos1) > remoteMinesRadius
                             || mine.Distance2D(hero.Position) > remoteMinesRadius
-                            || (remoteMinesRadius - mine.Distance2D(hero.Position) / hero.MovementSpeed
-                                > (Game.Ping / 1000 + detonatableBombs.Count * 0.002)
-                                || (remoteMinesRadius - mine.Distance2D(pos1) / hero.MovementSpeed
-                                    > (Game.Ping / 1000 + detonatableBombs.Count * 0.002)))))
+                            || (remoteMinesRadius - mine.Distance2D(hero.Position - 50) / hero.MovementSpeed
+                                > (Game.Ping / 1000 + detonatableBombs.Count * 0.002))))
                 {
                     stop = true;
                 }
