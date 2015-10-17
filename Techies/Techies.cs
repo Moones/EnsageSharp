@@ -50,6 +50,8 @@
 
         private static float suicideAttackRadius;
 
+        private static Dictionary<float,bool> enabledHeroes = new Dictionary<float, bool>(); 
+
         private static Font text;
 
         #endregion
@@ -72,9 +74,9 @@
                 Drawing.Direct3DDevice9,
                 new FontDescription
                     {
-                        FaceName = "Arial", Height = 25, OutputPrecision = FontPrecision.Default,
-                        Quality = FontQuality.Default, CharacterSet = FontCharacterSet.Default, Italic = false,
-                        MipLevels = 0, PitchAndFamily = FontPitchAndFamily.Mono, Weight = FontWeight.Heavy, Width = 6
+                        FaceName = "Tahoma", Height = 25, OutputPrecision = FontPrecision.Raster,
+                        Quality = FontQuality.ClearTypeNatural, CharacterSet = FontCharacterSet.Default, Italic = false,
+                        MipLevels = 0, PitchAndFamily = FontPitchAndFamily.Swiss, Weight = FontWeight.ExtraBold, Width = 6
                     });
 
             Drawing.OnPreReset += Drawing_OnPreReset;
@@ -124,51 +126,65 @@
             {
                 return;
             }
-            foreach (var play in
-                ObjectMgr.GetEntities<Player>().Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam()))
+            try
             {
-                var hero = play.Hero;
-                var health = hero.Health;
-                if (!hero.IsAlive)
+
+                foreach (var play in
+                    ObjectMgr.GetEntities<Player>()
+                        .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam()))
                 {
-                    health = hero.MaximumHealth;
+                    var hero = play.Hero;
+                    bool enabled;
+                    if (!enabledHeroes.TryGetValue(hero.Handle, out enabled))
+                    {
+                        enabledHeroes[hero.Handle] = true;
+                    }
+                    var health = hero.Health;
+                    if (!hero.IsAlive)
+                    {
+                        health = hero.MaximumHealth;
+                    }
+                    var sizeX = HUDInfo.GetTopPanelSizeX(hero);
+                    var x = HUDInfo.GetTopPanelPosition(hero).X;
+                    var sizey = HUDInfo.GetTopPanelSizeY(hero) * 1.4;
+                    if (remoteMinesDmg > 0)
+                    {
+                        var dmg = hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me, false);
+                        var remoteNumber = Math.Ceiling(health / dmg);
+                        panelText.DrawText(
+                            null,
+                            remoteNumber.ToString(CultureInfo.InvariantCulture),
+                            (int)(x + sizeX / 3.6),
+                            (int)sizey,
+                            enabled ? Color.Green : Color.DimGray);
+                    }
+                    if (landMinesDmg > 0)
+                    {
+                        var dmg = hero.DamageTaken(landMinesDmg, DamageType.Physical, me, false);
+                        var landNumber = Math.Ceiling(health / dmg);
+                        panelText.DrawText(
+                            null,
+                            landNumber.ToString(CultureInfo.InvariantCulture),
+                            (int)x,
+                            (int)sizey,
+                            enabled ? Color.Red : Color.DimGray);
+                    }
+                    if (suicideAttackDmg > 0)
+                    {
+                        var dmg = hero.DamageTaken(suicideAttackDmg, DamageType.Magical, me, false);
+                        var canKill = dmg > health;
+                        panelText.DrawText(
+                            null,
+                            canKill ? "Yes" : "No",
+                            canKill ? (int)(x + sizeX / 2) : (int)(x + sizeX / 1.7),
+                            (int)sizey,
+                            enabled ? Color.DarkOrange : Color.DimGray);
+                    }
                 }
-                var sizeX = HUDInfo.GetTopPanelSizeX(hero);
-                var x = HUDInfo.GetTopPanelPosition(hero).X;
-                var sizey = HUDInfo.GetTopPanelSizeY(hero) + 10;
-                if (remoteMinesDmg > 0)
-                {
-                    var dmg = hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me, false);
-                    var remoteNumber = Math.Ceiling(health / dmg);
-                    panelText.DrawText(
-                        null,
-                        remoteNumber.ToString(CultureInfo.InvariantCulture),
-                        (int)(x + sizeX / 4.3),
-                        (int)sizey + 5,
-                        Color.Green);
-                }
-                if (landMinesDmg > 0)
-                {
-                    var dmg = hero.DamageTaken(landMinesDmg, DamageType.Physical, me, false);
-                    var landNumber = Math.Ceiling(health / dmg);
-                    panelText.DrawText(
-                        null,
-                        landNumber.ToString(CultureInfo.InvariantCulture),
-                        (int)x,
-                        (int)sizey + 5,
-                        Color.Red);
-                }
-                if (suicideAttackDmg > 0)
-                {
-                    var dmg = hero.DamageTaken(suicideAttackDmg, DamageType.Magical, me, false);
-                    var canKill = dmg > health;
-                    panelText.DrawText(
-                        null,
-                        canKill ? "Yes" : "No",
-                        (int)(x + sizeX / 1.7),
-                        (int)sizey + 5,
-                        Color.DarkOrange);
-                }
+            }
+            catch (Exception e)
+            {
+                //do nothin
             }
         }
 
@@ -219,6 +235,7 @@
                 remoteMines = me.Spellbook.SpellR;
                 suicideAttack = me.Spellbook.SpellE;
                 landMines = me.Spellbook.SpellQ;
+                enabledHeroes = new Dictionary<float, bool>(); 
                 forceStaff = null;
                 Console.WriteLine("#Techies: Loaded!");
             }
@@ -322,9 +339,13 @@
                         && x.Spellbook.Spell1.CanBeCasted() && x.IsAlive);
 
             var bombsArray = bombs as Unit[] ?? bombs.ToArray();
-            //Console.WriteLine(suicideAttackRadius);
             foreach (var hero in enemyHeroes)
             {
+                bool enabled;
+                if (!enabledHeroes.TryGetValue(hero.Handle, out enabled) || !enabled)
+                {
+                    continue;
+                }
                 var heroDistance = me.Distance2D(hero);
                 var nearbyBombs = bombsArray.Any(x => x.Distance2D(hero) <= remoteMinesRadius + 500);
                 if (nearbyBombs)
@@ -409,17 +430,38 @@
 
         private static void Game_OnWndProc(WndEventArgs args)
         {
-            if (args.Msg != (ulong)Utils.WindowsMessages.WM_KEYUP || args.WParam != 'L' || Game.IsChatOpen)
+            if (!Game.IsChatOpen && args.Msg == (ulong)Utils.WindowsMessages.WM_KEYUP && args.WParam == 'L')
+            {
+
+                if (Case == 4)
+                {
+                    Case = 1;
+                }
+                else
+                {
+                    Case += 1;
+                }
+            }
+            if (args.Msg != (ulong)Utils.WindowsMessages.WM_LBUTTONDOWN)
             {
                 return;
             }
-            if (Case == 4)
+            try
             {
-                Case = 1;
+
+                foreach (var hero in from play in ObjectMgr.GetEntities<Player>()
+                                         .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam()) select play.Hero into hero let sizeX = (float)HUDInfo.GetTopPanelSizeX(hero) let x = HUDInfo.GetTopPanelPosition(hero).X let sizey = HUDInfo.GetTopPanelSizeY(hero) * 1.4 where Utils.IsUnderRectangle(Game.MouseScreenPosition, x, 0, sizeX, (float)(sizey * 1.4)) select hero)
+                {
+                    bool enabled;
+                    if (enabledHeroes.TryGetValue(hero.Handle, out enabled))
+                    {
+                        enabledHeroes[hero.Handle] = !enabled;
+                    }
+                }
             }
-            else
+            catch (Exception e)
             {
-                Case += 1;
+                //
             }
         }
 
