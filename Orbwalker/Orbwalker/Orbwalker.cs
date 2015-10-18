@@ -23,11 +23,11 @@
 
         private const Key KiteKey = Key.V;
 
+        private const Key FarmKey = Key.B;
+
         private static ParticleEffect rangeDisplay;
 
         private static float lastRange;
-
-        private static float lastTargettime;
 
         #endregion
 
@@ -115,16 +115,7 @@
                     }
                 }
             }
-            //Console.WriteLine(target != null ? target.Name : "notarget");
-            if (target != null && target is Hero)
-            {
-                lastTargettime = Environment.TickCount;
-            }
-            else if (Environment.TickCount - lastTargettime > 5000 && canCancel)
-            {
-                //Console.WriteLine("asd");
-                target = TargetSelector.GetLowestHPCreep(me);
-            }
+
             if (Game.IsChatOpen)
             {
                 return;
@@ -132,6 +123,10 @@
 
             try
             {
+                if (Game.IsKeyDown(FarmKey))
+                {
+                    Orbwalking.Orbwalk(TargetSelector.GetLowestHPCreep(me));
+                }
                 if (Game.IsKeyDown(ChaseKey))
                 {
                     Orbwalking.Orbwalk(target, attackmodifiers: true);
