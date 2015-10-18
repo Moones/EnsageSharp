@@ -20,6 +20,8 @@
 
         private static uint Case = 1;
 
+        private static Dictionary<float, bool> enabledHeroes = new Dictionary<float, bool>();
+
         private static Ability forceStaff;
 
         private static Ability landMines;
@@ -49,8 +51,6 @@
         private static uint suicideAttackLevel;
 
         private static float suicideAttackRadius;
-
-        private static Dictionary<float,bool> enabledHeroes = new Dictionary<float, bool>(); 
 
         private static Font text;
 
@@ -128,12 +128,12 @@
             }
             try
             {
-
-                foreach (var play in
-                    ObjectMgr.GetEntities<Player>()
-                        .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam()))
+                foreach (
+                    var hero in
+                        ObjectMgr.GetEntities<Player>()
+                            .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam())
+                            .Select(play => play.Hero))
                 {
-                    var hero = play.Hero;
                     bool enabled;
                     if (!enabledHeroes.TryGetValue(hero.Handle, out enabled))
                     {
@@ -182,7 +182,7 @@
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //do nothin
             }
@@ -235,7 +235,7 @@
                 remoteMines = me.Spellbook.SpellR;
                 suicideAttack = me.Spellbook.SpellE;
                 landMines = me.Spellbook.SpellQ;
-                enabledHeroes = new Dictionary<float, bool>(); 
+                enabledHeroes = new Dictionary<float, bool>();
                 forceStaff = null;
                 Console.WriteLine("#Techies: Loaded!");
             }
@@ -324,13 +324,13 @@
                 aghanims = true;
             }
 
-            var enemyHeroes =
-                ObjectMgr.GetEntities<Hero>()
-                    .Where(
-                        x =>
-                        x.Team == me.GetEnemyTeam() && x.IsAlive && x.IsVisible && !x.IsMagicImmune()
-                        && x.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
-                        && Utils.SleepCheck(x.ClassID.ToString()) && !x.IsIllusion);
+            //var enemyHeroes =
+            //    ObjectMgr.GetEntities<Hero>()
+            //        .Where(
+            //            x =>
+            //            x.Team == me.GetEnemyTeam() && x.IsAlive && x.IsVisible && !x.IsMagicImmune()
+            //            && x.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
+            //            && Utils.SleepCheck(x.ClassID.ToString()) && !x.IsIllusion);
             var bombs =
                 ObjectMgr.GetEntities<Unit>()
                     .Where(
@@ -339,61 +339,74 @@
                         && x.Spellbook.Spell1.CanBeCasted() && x.IsAlive);
 
             var bombsArray = bombs as Unit[] ?? bombs.ToArray();
-            foreach (var hero in enemyHeroes)
+            try
             {
-                bool enabled;
-                if (!enabledHeroes.TryGetValue(hero.Handle, out enabled) || !enabled)
+                foreach (var hero in
+                    ObjectMgr.GetEntities<Player>()
+                        .Where(
+                            x =>
+                            x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam() && x.Hero.IsAlive
+                            && x.Hero.IsVisible)
+                        .Select(play => play.Hero))
                 {
-                    continue;
-                }
-                var heroDistance = me.Distance2D(hero);
-                var nearbyBombs = bombsArray.Any(x => x.Distance2D(hero) <= remoteMinesRadius + 500);
-                if (nearbyBombs)
-                {
-                    CheckBombDamageAndDetonate(hero, bombsArray);
-                }
-                if (heroDistance < 400 && suicideAttackLevel > 0 && me.IsAlive && (Case == 2 || Case == 3))
-                {
-                    SuicideKillSteal(hero);
-                }
-                if (forceStaff == null || !(heroDistance <= forceStaff.CastRange) || !Utils.SleepCheck("forcestaff")
-                    || bombsArray.Any(x => x.Distance2D(hero) <= remoteMinesRadius) || Prediction.IsTurning(hero)
-                    || !forceStaff.CanBeCasted())
-                {
-                    continue;
-                }
-
-                var data =
-                    Prediction.TrackTable.ToArray()
-                        .FirstOrDefault(
-                            unitData => unitData.UnitName == hero.Name || unitData.UnitClassID == hero.ClassID);
-
-                if (data != null)
-                {
-                    var turnTime = me.GetTurnTime(hero);
-                    var forcePosition = hero.Position;
-                    if (hero.NetworkActivity == (NetworkActivity)1502)
-                    {
-                        forcePosition = Prediction.InFront(
-                            hero,
-                            (float)((turnTime + Game.Ping / 1000) * hero.MovementSpeed));
-                    }
-                    forcePosition +=
-                        VectorExtensions.FromPolarCoordinates(1f, hero.NetworkRotationRad + data.RotSpeed).ToVector3()
-                        * 600;
-                    var possibleBombs = bombsArray.Any(x => x.Distance2D(forcePosition) <= (remoteMinesRadius - 75));
-                    if (!possibleBombs)
+                    bool enabled;
+                    if (!enabledHeroes.TryGetValue(hero.Handle, out enabled) || !enabled)
                     {
                         continue;
                     }
-                    var dmg = CheckBombDamage(hero, forcePosition, bombsArray);
-                    if (!(dmg >= hero.Health))
+                    var heroDistance = me.Distance2D(hero);
+                    var nearbyBombs = bombsArray.Any(x => x.Distance2D(hero) <= remoteMinesRadius + 500);
+                    if (nearbyBombs)
+                    {
+                        CheckBombDamageAndDetonate(hero, bombsArray);
+                    }
+                    if (heroDistance < 400 && suicideAttackLevel > 0 && me.IsAlive && (Case == 2 || Case == 3))
+                    {
+                        SuicideKillSteal(hero);
+                    }
+                    if (forceStaff == null || !(heroDistance <= forceStaff.CastRange) || !Utils.SleepCheck("forcestaff")
+                        || bombsArray.Any(x => x.Distance2D(hero) <= remoteMinesRadius) || Prediction.IsTurning(hero)
+                        || !forceStaff.CanBeCasted())
                     {
                         continue;
                     }
+
+                    var data =
+                        Prediction.TrackTable.ToArray()
+                            .FirstOrDefault(
+                                unitData => unitData.UnitName == hero.Name || unitData.UnitClassID == hero.ClassID);
+
+                    if (data != null)
+                    {
+                        var turnTime = me.GetTurnTime(hero);
+                        var forcePosition = hero.Position;
+                        if (hero.NetworkActivity == (NetworkActivity)1502)
+                        {
+                            forcePosition = Prediction.InFront(
+                                hero,
+                                (float)((turnTime + Game.Ping / 1000) * hero.MovementSpeed));
+                        }
+                        forcePosition +=
+                            VectorExtensions.FromPolarCoordinates(1f, hero.NetworkRotationRad + data.RotSpeed)
+                                .ToVector3() * 600;
+                        var possibleBombs = bombsArray.Any(x => x.Distance2D(forcePosition) <= (remoteMinesRadius - 75));
+                        if (!possibleBombs)
+                        {
+                            continue;
+                        }
+                        var dmg = CheckBombDamage(hero, forcePosition, bombsArray);
+                        if (!(dmg >= hero.Health))
+                        {
+                            continue;
+                        }
+                    }
+                    forceStaff.UseAbility(hero);
+                    Utils.Sleep(250, "forcestaff");
                 }
-                forceStaff.UseAbility(hero);
-                Utils.Sleep(250, "forcestaff");
+            }
+            catch (Exception)
+            {
+                //aa
             }
             if (!(Case == 2 || Case == 4))
             {
@@ -432,7 +445,6 @@
         {
             if (!Game.IsChatOpen && args.Msg == (ulong)Utils.WindowsMessages.WM_KEYUP && args.WParam == 'L')
             {
-
                 if (Case == 4)
                 {
                     Case = 1;
@@ -448,9 +460,18 @@
             }
             try
             {
-
-                foreach (var hero in from play in ObjectMgr.GetEntities<Player>()
-                                         .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam()) select play.Hero into hero let sizeX = (float)HUDInfo.GetTopPanelSizeX(hero) let x = HUDInfo.GetTopPanelPosition(hero).X let sizey = HUDInfo.GetTopPanelSizeY(hero) * 1.4 where Utils.IsUnderRectangle(Game.MouseScreenPosition, x, 0, sizeX, (float)(sizey * 1.4)) select hero)
+                foreach (
+                    var hero in
+                        from play in
+                            ObjectMgr.GetEntities<Player>()
+                            .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam())
+                        select play.Hero
+                        into hero
+                        let sizeX = (float)HUDInfo.GetTopPanelSizeX(hero)
+                        let x = HUDInfo.GetTopPanelPosition(hero).X
+                        let sizey = HUDInfo.GetTopPanelSizeY(hero) * 1.4
+                        where Utils.IsUnderRectangle(Game.MouseScreenPosition, x, 0, sizeX, (float)(sizey * 1.4))
+                        select hero)
                 {
                     bool enabled;
                     if (enabledHeroes.TryGetValue(hero.Handle, out enabled))
@@ -459,7 +480,7 @@
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //
             }
@@ -492,11 +513,12 @@
             {
                 return;
             }
+            var pos1 = pos;
             var possibleBombs =
                 bombs.Where(
                     x =>
-                    x.Distance2D(pos) <= remoteMinesRadius && x.Distance2D(hero.Position) <= remoteMinesRadius
-                    && (remoteMinesRadius - x.Distance2D(hero.Position - 50) / hero.MovementSpeed > (Game.Ping / 1000)));
+                    x.Distance2D(pos1) <= remoteMinesRadius && x.Distance2D(hero.Position) <= remoteMinesRadius
+                    && (remoteMinesRadius - x.Distance2D(pos1) - 50) / hero.MovementSpeed < (Game.Ping / 1000));
 
             var detonatableBombs = new Dictionary<int, Ability>();
             var dmg = 0f;
@@ -520,19 +542,16 @@
             }
             if (hero.NetworkActivity == NetworkActivity.Move)
             {
-                var pos1 = Prediction.InFront(
-                    hero,
-                    (float)((Game.Ping / 1000 + detonatableBombs.Count * 0.002) * hero.MovementSpeed));
+                pos = Prediction.InFront(hero, ((Game.Ping / 1000) * hero.MovementSpeed));
                 var stop = false;
                 foreach (var mine in
                     detonatableBombs.Where(data => Utils.SleepCheck(data.Value.Handle.ToString()))
                         .Select(data => data.Value.Owner)
                         .Where(
                             mine =>
-                            mine.Distance2D(pos1) > remoteMinesRadius
-                            || mine.Distance2D(hero.Position) > remoteMinesRadius
-                            || (remoteMinesRadius - mine.Distance2D(hero.Position - 50) / hero.MovementSpeed
-                                > (Game.Ping / 1000 + detonatableBombs.Count * 0.002))))
+                            mine.Distance2D(pos) > remoteMinesRadius
+                            || (remoteMinesRadius - mine.Distance2D(pos) - 50) / hero.MovementSpeed
+                            > (Game.Ping / 1000 + detonatableBombs.Count * 0.002)))
                 {
                     stop = true;
                 }
