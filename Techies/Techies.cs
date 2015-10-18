@@ -16,6 +16,8 @@
     {
         #region Static Fields
 
+        private static readonly Dictionary<Unit, float> RemoteMinesDb = new Dictionary<Unit, float>();
+
         private static bool aghanims;
 
         private static uint Case = 1;
@@ -61,6 +63,8 @@
         public static void Init()
         {
             Game.OnUpdate += Game_OnUpdate;
+            ObjectMgr.OnAddEntity += ObjectMgr_OnAddEntity;
+            ObjectMgr.OnRemoveEntity += ObjectMgr_OnRemoveEntity;
             loaded = false;
             text = new Font(
                 Drawing.Direct3DDevice9,
@@ -128,11 +132,10 @@
             }
             try
             {
-                foreach (
-                    var hero in
-                        ObjectMgr.GetEntities<Player>()
-                            .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam())
-                            .Select(play => play.Hero))
+                foreach (var hero in
+                    ObjectMgr.GetEntities<Player>()
+                        .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam())
+                        .Select(play => play.Hero))
                 {
                     bool enabled;
                     if (!enabledHeroes.TryGetValue(hero.Handle, out enabled))
@@ -200,9 +203,12 @@
             panelText.OnLostDevice();
         }
 
-        private static Dictionary<int, Ability> FindDetonatableBombs(Unit hero, Vector3 pos, IEnumerable<Unit> bombs)
+        private static Dictionary<int, Ability> FindDetonatableBombs(
+            Unit hero,
+            Vector3 pos,
+            IEnumerable<KeyValuePair<Unit, float>> bombs)
         {
-            var possibleBombs = bombs.Where(x => x.Distance2D(pos) <= remoteMinesRadius);
+            var possibleBombs = bombs.Where(x => x.Key.Distance2D(pos) <= remoteMinesRadius);
             var detonatableBombs = new Dictionary<int, Ability>();
             var dmg = 0f;
             foreach (var bomb in possibleBombs)
@@ -215,8 +221,8 @@
                         break;
                     }
                 }
-                detonatableBombs[detonatableBombs.Count + 1] = bomb.Spellbook.Spell1;
-                dmg += remoteMinesDmg;
+                detonatableBombs[detonatableBombs.Count + 1] = bomb.Key.Spellbook.Spell1;
+                dmg += bomb.Value;
             }
             dmg = hero.DamageTaken(dmg, DamageType.Magical, me, false);
             return dmg < hero.Health ? null : detonatableBombs;
@@ -332,13 +338,9 @@
             //            && x.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
             //            && Utils.SleepCheck(x.ClassID.ToString()) && !x.IsIllusion);
             var bombs =
-                ObjectMgr.GetEntities<Unit>()
-                    .Where(
-                        x =>
-                        x.ClassID == ClassID.CDOTA_NPC_TechiesMines && x.Spellbook.Spell1 != null
-                        && x.Spellbook.Spell1.CanBeCasted() && x.IsAlive);
-
-            var bombsArray = bombs as Unit[] ?? bombs.ToArray();
+                RemoteMinesDb.Where(
+                    x => x.Key.Spellbook.Spell1 != null && x.Key.Spellbook.Spell1.CanBeCasted() && x.Key.IsAlive);
+            var bombsArray = bombs as KeyValuePair<Unit, float>[] ?? bombs.ToArray();
             try
             {
                 foreach (var hero in
@@ -355,7 +357,7 @@
                         continue;
                     }
                     var heroDistance = me.Distance2D(hero);
-                    var nearbyBombs = bombsArray.Any(x => x.Distance2D(hero) <= remoteMinesRadius + 500);
+                    var nearbyBombs = bombsArray.Any(x => x.Key.Distance2D(hero) <= remoteMinesRadius + 500);
                     if (nearbyBombs)
                     {
                         CheckBombDamageAndDetonate(hero, bombsArray);
@@ -365,8 +367,8 @@
                         SuicideKillSteal(hero);
                     }
                     if (forceStaff == null || !(heroDistance <= forceStaff.CastRange) || !Utils.SleepCheck("forcestaff")
-                        || bombsArray.Any(x => x.Distance2D(hero) <= remoteMinesRadius) || Prediction.IsTurning(hero)
-                        || !forceStaff.CanBeCasted())
+                        || bombsArray.Any(x => x.Key.Distance2D(hero) <= remoteMinesRadius)
+                        || Prediction.IsTurning(hero) || !forceStaff.CanBeCasted())
                     {
                         continue;
                     }
@@ -380,7 +382,7 @@
                     {
                         var turnTime = me.GetTurnTime(hero);
                         var forcePosition = hero.Position;
-                        if (hero.NetworkActivity == (NetworkActivity)1502)
+                        if (hero.NetworkActivity == NetworkActivity.Move)
                         {
                             forcePosition = Prediction.InFront(
                                 hero,
@@ -389,7 +391,8 @@
                         forcePosition +=
                             VectorExtensions.FromPolarCoordinates(1f, hero.NetworkRotationRad + data.RotSpeed)
                                 .ToVector3() * 600;
-                        var possibleBombs = bombsArray.Any(x => x.Distance2D(forcePosition) <= (remoteMinesRadius - 75));
+                        var possibleBombs =
+                            bombsArray.Any(x => x.Key.Distance2D(forcePosition) <= (remoteMinesRadius - 75));
                         if (!possibleBombs)
                         {
                             continue;
@@ -422,7 +425,8 @@
             var enumerable = creeps as Creep[] ?? creeps.ToArray();
 
             foreach (var data in (from creep in enumerable
-                                  let nearbyBombs = bombsArray.Any(x => x.Distance2D(creep) <= remoteMinesRadius + 500)
+                                  let nearbyBombs =
+                                      bombsArray.Any(x => x.Key.Distance2D(creep) <= remoteMinesRadius + 500)
                                   where nearbyBombs
                                   let detonatableBombs = FindDetonatableBombs(creep, creep.Position, bombsArray)
                                   where detonatableBombs != null
@@ -460,18 +464,17 @@
             }
             try
             {
-                foreach (
-                    var hero in
-                        from play in
-                            ObjectMgr.GetEntities<Player>()
-                            .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam())
-                        select play.Hero
-                        into hero
-                        let sizeX = (float)HUDInfo.GetTopPanelSizeX(hero)
-                        let x = HUDInfo.GetTopPanelPosition(hero).X
-                        let sizey = HUDInfo.GetTopPanelSizeY(hero) * 1.4
-                        where Utils.IsUnderRectangle(Game.MouseScreenPosition, x, 0, sizeX, (float)(sizey * 1.4))
-                        select hero)
+                foreach (var hero in
+                    from play in
+                        ObjectMgr.GetEntities<Player>()
+                        .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam())
+                    select play.Hero
+                    into hero
+                    let sizeX = (float)HUDInfo.GetTopPanelSizeX(hero)
+                    let x = HUDInfo.GetTopPanelPosition(hero).X
+                    let sizey = HUDInfo.GetTopPanelSizeY(hero) * 1.4
+                    where Utils.IsUnderRectangle(Game.MouseScreenPosition, x, 0, sizeX, (float)(sizey * 1.4))
+                    select hero)
                 {
                     bool enabled;
                     if (enabledHeroes.TryGetValue(hero.Handle, out enabled))
@@ -486,14 +489,14 @@
             }
         }
 
-        private static float CheckBombDamage(Unit hero, Vector3 pos, IEnumerable<Unit> bombs)
+        private static float CheckBombDamage(Unit hero, Vector3 pos, IEnumerable<KeyValuePair<Unit, float>> bombs)
         {
-            var possibleBombs = bombs.Where(x => x.Distance2D(pos) <= remoteMinesRadius);
-            var dmg = remoteMinesDmg * possibleBombs.Count();
+            var dmg =
+                bombs.Where(x => x.Key.Distance2D(pos) <= remoteMinesRadius).Sum(possibleBomb => possibleBomb.Value);
             return hero.DamageTaken(dmg, DamageType.Magical, me, false);
         }
 
-        private static void CheckBombDamageAndDetonate(Unit hero, IEnumerable<Unit> bombs)
+        private static void CheckBombDamageAndDetonate(Unit hero, KeyValuePair<Unit, float>[] bombs)
         {
             var pos = hero.Position;
             if (hero.NetworkActivity == NetworkActivity.Move)
@@ -503,7 +506,10 @@
             CheckBombDamageAndDetonate(hero, pos, bombs);
         }
 
-        private static void CheckBombDamageAndDetonate(Unit hero, Vector3 pos, IEnumerable<Unit> bombs)
+        private static void CheckBombDamageAndDetonate(
+            Unit hero,
+            Vector3 pos,
+            IEnumerable<KeyValuePair<Unit, float>> bombs)
         {
             if (!Utils.SleepCheck(hero.ClassID.ToString()))
             {
@@ -517,8 +523,8 @@
             var possibleBombs =
                 bombs.Where(
                     x =>
-                    x.Distance2D(pos1) <= remoteMinesRadius && x.Distance2D(hero.Position) <= remoteMinesRadius
-                    && (remoteMinesRadius - x.Distance2D(pos1) - 50) / hero.MovementSpeed < (Game.Ping / 1000));
+                    x.Key.Distance2D(pos1) <= remoteMinesRadius && x.Key.Distance2D(hero.Position) <= remoteMinesRadius
+                    && (remoteMinesRadius - x.Key.Distance2D(pos1) - 50) / hero.MovementSpeed < (Game.Ping / 1000));
 
             var detonatableBombs = new Dictionary<int, Ability>();
             var dmg = 0f;
@@ -532,8 +538,8 @@
                         break;
                     }
                 }
-                detonatableBombs[detonatableBombs.Count + 1] = bomb.Spellbook.Spell1;
-                dmg += remoteMinesDmg;
+                detonatableBombs[detonatableBombs.Count + 1] = bomb.Key.Spellbook.Spell1;
+                dmg += bomb.Value;
             }
             dmg = hero.DamageTaken(dmg, DamageType.Magical, me, false);
             if (dmg < hero.Health)
@@ -566,6 +572,24 @@
                 Utils.Sleep(250, data.Value.Handle.ToString());
             }
             Utils.Sleep(1000, hero.ClassID.ToString());
+        }
+
+        private static void ObjectMgr_OnAddEntity(EntityEventArgs args)
+        {
+            var ent = args.Entity as Unit;
+            if (ent != null && (ent.ClassID == ClassID.CDOTA_NPC_TechiesMines))
+            {
+                RemoteMinesDb.Add(ent, remoteMinesDmg);
+            }
+        }
+
+        private static void ObjectMgr_OnRemoveEntity(EntityEventArgs args)
+        {
+            var ent = args.Entity as Unit;
+            if (ent != null && (ent.ClassID == ClassID.CDOTA_NPC_TechiesMines))
+            {
+                RemoteMinesDb.Remove(ent);
+            }
         }
 
         private static void SuicideKillSteal(Unit hero)
