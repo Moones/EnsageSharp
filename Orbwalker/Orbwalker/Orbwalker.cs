@@ -25,6 +25,8 @@
 
         private static ParticleEffect rangeDisplay;
 
+        private static float lastRange;
+
         private static float lastTargettime;
 
         #endregion
@@ -39,7 +41,6 @@
             {
                 return;
             }
-            rangeDisplay.Dispose();
             rangeDisplay = null;
         }
 
@@ -51,6 +52,7 @@
         {
             if (!loaded)
             {
+                //Orbwalking.Load();
                 me = ObjectMgr.LocalHero;
                 if (!Game.IsInGame || me == null)
                 {
@@ -59,19 +61,19 @@
                 loaded = true;
             }
 
-            if (!Game.IsInGame || me == null)
+            if (me == null || !me.IsValid)
             {
+                //Orbwalking.Load();
                 loaded = false;
-                me = null;
+                me = ObjectMgr.LocalHero;
                 if (rangeDisplay == null)
                 {
                     return;
                 }
-                rangeDisplay.Dispose();
                 rangeDisplay = null;
                 return;
             }
-
+                
             if (Game.IsPaused)
             {
                 return;
@@ -80,9 +82,19 @@
             if (rangeDisplay == null)
             {
                 rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\range_display.vpcf");
+                lastRange = me.GetAttackRange() + me.HullRadius + 25;
+                rangeDisplay.SetControlPoint(1, new Vector3(lastRange, 0, 0));
             }
-            rangeDisplay.SetControlPoint(1, new Vector3(me.GetAttackRange() + me.HullRadius + 25, 0, 0));
-
+            else
+            {
+                if (lastRange != (me.GetAttackRange() + me.HullRadius + 25))
+                {
+                    lastRange = me.GetAttackRange() + me.HullRadius + 25;
+                    rangeDisplay.Dispose();
+                    rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\range_display.vpcf");
+                    rangeDisplay.SetControlPoint(1, new Vector3(lastRange, 0, 0));
+                }
+            } 
             var canCancel = Orbwalking.CanCancelAnimation();
             if (canCancel)
             {
@@ -96,28 +108,45 @@
                 }
                 else
                 {
-                    target = me.BestAATarget();
+                    var bestAa = me.BestAATarget();
+                    if (bestAa != null)
+                    {
+                        target = me.BestAATarget();
+                    }
                 }
             }
-            if (target != null)
+            //Console.WriteLine(target != null ? target.Name : "notarget");
+            if (target != null && target is Hero)
             {
                 lastTargettime = Environment.TickCount;
             }
-            else if (Environment.TickCount - lastTargettime > 5000)
+            else if (Environment.TickCount - lastTargettime > 5000 && canCancel)
             {
+                //Console.WriteLine("asd");
                 target = TargetSelector.GetLowestHPCreep(me);
             }
             if (Game.IsChatOpen)
             {
                 return;
             }
-            if (Game.IsKeyDown(ChaseKey))
+
+            try
             {
-                Orbwalking.Orbwalk(target,attackmodifiers: true);
+                if (Game.IsKeyDown(ChaseKey))
+                {
+                    Orbwalking.Orbwalk(target, attackmodifiers: true);
+                }
+                if (Game.IsKeyDown(KiteKey))
+                {
+                    Orbwalking.Orbwalk(
+                        target,
+                        attackmodifiers: true,
+                        bonusRange: (float)(UnitDatabase.GetAttackRate(me) * 1000));
+                }
             }
-            if (Game.IsKeyDown(KiteKey))
+            catch (Exception)
             {
-                Orbwalking.Orbwalk(target,attackmodifiers: true,bonusRange: (float)(UnitDatabase.GetAttackRate(me)*1000));
+                //nopls
             }
         }
 
