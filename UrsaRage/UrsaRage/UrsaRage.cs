@@ -92,7 +92,7 @@
         private static bool CastCombo()
         {
             var canCancel = (Orbwalking.CanCancelAnimation()
-                             && (Orbwalking.AttackOnCooldown(target) || me.NetworkActivity != (NetworkActivity)1503))
+                             && (Orbwalking.AttackOnCooldown(target) || !me.IsAttacking()))
                             || (!Orbwalking.AttackOnCooldown(target) && targetDistance > 250);
             if (!Utils.SleepCheck("casting") || !me.CanCast() || !target.IsVisible || !canCancel)
             {
@@ -167,7 +167,7 @@
                 && targetDistance < (blinkRange + hullsum * 2 + me.AttackRange) && Utils.SleepCheck("blink"))
             {
                 var position = target.Position;
-                if (target.NetworkActivity != (NetworkActivity)1500)
+                if (target.NetworkActivity != NetworkActivity.Idle)
                 {
                     position = target.Position + target.Vector3FromPolarAngle() * (hullsum + me.AttackRange);
                     if (mePosition.Distance(position) < targetDistance)
