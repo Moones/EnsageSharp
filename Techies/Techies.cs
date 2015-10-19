@@ -365,12 +365,12 @@
             }
 
             var enemyHeroes =
-                ObjectMgr.GetEntities<Hero>()
+                players
                     .Where(
-                        x =>
-                        x.Team == me.GetEnemyTeam() && x.IsAlive && x.IsVisible && !x.IsMagicImmune()
-                        && x.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
-                        && Utils.SleepCheck(x.ClassID.ToString()) && !x.IsIllusion);
+                        x => x != null && x.Hero != null  &&
+                        x.Team == me.GetEnemyTeam() && x.Hero.IsAlive && x.Hero.IsVisible && !x.Hero.IsMagicImmune()
+                        && x.Hero.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
+                        && Utils.SleepCheck(x.Hero.ClassID.ToString()) && !x.Hero.IsIllusion);
             var bombs =
                 RemoteMinesDb.Where(
                     x => x.Key.Spellbook.Spell1 != null && x.Key.Spellbook.Spell1.CanBeCasted() && x.Key.IsAlive);
@@ -378,7 +378,7 @@
             try
             {
                 foreach (var hero in
-                    enemyHeroes)
+                    enemyHeroes.Select(x => x.Hero))
                 {
                     bool enabled;
                     if (!enabledHeroes.TryGetValue(hero.ClassID, out enabled) || !enabled)
