@@ -22,7 +22,7 @@
 
         private static uint Case = 1;
 
-        private static Dictionary<float, bool> enabledHeroes = new Dictionary<float, bool>();
+        private static Dictionary<ClassID, bool> enabledHeroes = new Dictionary<ClassID, bool>();
 
         private static Ability forceStaff;
 
@@ -37,6 +37,8 @@
         private static Hero me;
 
         private static Font panelText;
+
+        private static IEnumerable<Player> players;
 
         private static Ability remoteMines;
 
@@ -130,17 +132,23 @@
             {
                 return;
             }
+            //Console.WriteLine(players.Count());
             try
             {
+                if (players == null || players.Count() < 5)
+                {
+                    players =
+                        ObjectMgr.GetEntities<Player>()
+                            .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam());
+                }
+                var enumerable = players as Player[] ?? players.ToArray();
                 foreach (var hero in
-                    ObjectMgr.GetEntities<Player>()
-                        .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam())
-                        .Select(play => play.Hero))
+                    enumerable.Select(play => play.Hero))
                 {
                     bool enabled;
-                    if (!enabledHeroes.TryGetValue(hero.Handle, out enabled))
+                    if (!enabledHeroes.TryGetValue(hero.ClassID, out enabled))
                     {
-                        enabledHeroes[hero.Handle] = true;
+                        enabledHeroes[hero.ClassID] = true;
                     }
                     var health = hero.Health;
                     if (!hero.IsAlive)
@@ -152,7 +160,7 @@
                     var sizey = HUDInfo.GetTopPanelSizeY(hero) * 1.4;
                     if (remoteMinesDmg > 0)
                     {
-                        var dmg = hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me, false);
+                        var dmg = hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me);
                         var remoteNumber = Math.Ceiling(health / dmg);
                         panelText.DrawText(
                             null,
@@ -163,7 +171,7 @@
                     }
                     if (landMinesDmg > 0)
                     {
-                        var dmg = hero.DamageTaken(landMinesDmg, DamageType.Physical, me, false);
+                        var dmg = hero.DamageTaken(landMinesDmg, DamageType.Physical, me);
                         var landNumber = Math.Ceiling(health / dmg);
                         panelText.DrawText(
                             null,
@@ -174,7 +182,7 @@
                     }
                     if (suicideAttackDmg > 0)
                     {
-                        var dmg = hero.DamageTaken(suicideAttackDmg, DamageType.Magical, me, false);
+                        var dmg = hero.DamageTaken(suicideAttackDmg, DamageType.Magical, me);
                         var canKill = dmg > health;
                         panelText.DrawText(
                             null,
@@ -215,7 +223,7 @@
             {
                 if (dmg > 0)
                 {
-                    var takenDmg = hero.DamageTaken(dmg, DamageType.Magical, me, false);
+                    var takenDmg = hero.DamageTaken(dmg, DamageType.Magical, me);
                     if (takenDmg >= hero.Health)
                     {
                         break;
@@ -224,7 +232,7 @@
                 detonatableBombs[detonatableBombs.Count + 1] = bomb.Key.Spellbook.Spell1;
                 dmg += bomb.Value;
             }
-            dmg = hero.DamageTaken(dmg, DamageType.Magical, me, false);
+            dmg = hero.DamageTaken(dmg, DamageType.Magical, me);
             return dmg < hero.Health ? null : detonatableBombs;
         }
 
@@ -241,8 +249,34 @@
                 remoteMines = me.Spellbook.SpellR;
                 suicideAttack = me.Spellbook.SpellE;
                 landMines = me.Spellbook.SpellQ;
-                enabledHeroes = new Dictionary<float, bool>();
+                enabledHeroes = new Dictionary<ClassID, bool>();
                 forceStaff = null;
+                if (me.AghanimState())
+                {
+                    var firstOrDefault = remoteMines.AbilityData.FirstOrDefault(x => x.Name == "damage_scepter");
+                    if (firstOrDefault != null)
+                    {
+                        remoteMinesDmg = firstOrDefault.GetValue(remoteMines.Level - 1);
+                    }
+                }
+                else
+                {
+                    var firstOrDefault = remoteMines.AbilityData.FirstOrDefault(x => x.Name == "damage");
+                    if (firstOrDefault != null)
+                    {
+                        remoteMinesDmg = firstOrDefault.GetValue(remoteMines.Level - 1);
+                    }
+                }
+                foreach (
+                    var bomb in
+                        ObjectMgr.GetEntities<Unit>()
+                            .Where(
+                                x =>
+                                x.ClassID == ClassID.CDOTA_NPC_TechiesMines && x.Spellbook.Spell1 != null
+                                && x.Spellbook.Spell1.CanBeCasted() && x.IsAlive))
+                {
+                    RemoteMinesDb.Add(bomb, remoteMinesDmg);
+                }
                 Console.WriteLine("#Techies: Loaded!");
             }
 
@@ -330,13 +364,13 @@
                 aghanims = true;
             }
 
-            //var enemyHeroes =
-            //    ObjectMgr.GetEntities<Hero>()
-            //        .Where(
-            //            x =>
-            //            x.Team == me.GetEnemyTeam() && x.IsAlive && x.IsVisible && !x.IsMagicImmune()
-            //            && x.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
-            //            && Utils.SleepCheck(x.ClassID.ToString()) && !x.IsIllusion);
+            var enemyHeroes =
+                ObjectMgr.GetEntities<Hero>()
+                    .Where(
+                        x =>
+                        x.Team == me.GetEnemyTeam() && x.IsAlive && x.IsVisible && !x.IsMagicImmune()
+                        && x.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
+                        && Utils.SleepCheck(x.ClassID.ToString()) && !x.IsIllusion);
             var bombs =
                 RemoteMinesDb.Where(
                     x => x.Key.Spellbook.Spell1 != null && x.Key.Spellbook.Spell1.CanBeCasted() && x.Key.IsAlive);
@@ -344,15 +378,10 @@
             try
             {
                 foreach (var hero in
-                    ObjectMgr.GetEntities<Player>()
-                        .Where(
-                            x =>
-                            x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam() && x.Hero.IsAlive
-                            && x.Hero.IsVisible)
-                        .Select(play => play.Hero))
+                    enemyHeroes)
                 {
                     bool enabled;
-                    if (!enabledHeroes.TryGetValue(hero.Handle, out enabled) || !enabled)
+                    if (!enabledHeroes.TryGetValue(hero.ClassID, out enabled) || !enabled)
                     {
                         continue;
                     }
@@ -465,9 +494,7 @@
             try
             {
                 foreach (var hero in
-                    from play in
-                        ObjectMgr.GetEntities<Player>()
-                        .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam())
+                    from play in players
                     select play.Hero
                     into hero
                     let sizeX = (float)HUDInfo.GetTopPanelSizeX(hero)
@@ -477,9 +504,9 @@
                     select hero)
                 {
                     bool enabled;
-                    if (enabledHeroes.TryGetValue(hero.Handle, out enabled))
+                    if (enabledHeroes.TryGetValue(hero.ClassID, out enabled))
                     {
-                        enabledHeroes[hero.Handle] = !enabled;
+                        enabledHeroes[hero.ClassID] = !enabled;
                     }
                 }
             }
@@ -493,7 +520,7 @@
         {
             var dmg =
                 bombs.Where(x => x.Key.Distance2D(pos) <= remoteMinesRadius).Sum(possibleBomb => possibleBomb.Value);
-            return hero.DamageTaken(dmg, DamageType.Magical, me, false);
+            return hero.DamageTaken(dmg, DamageType.Magical, me);
         }
 
         private static void CheckBombDamageAndDetonate(Unit hero, KeyValuePair<Unit, float>[] bombs)
@@ -524,15 +551,14 @@
                 bombs.Where(
                     x =>
                     x.Key.Distance2D(pos1) <= remoteMinesRadius && x.Key.Distance2D(hero.Position) <= remoteMinesRadius
-                    && (remoteMinesRadius - x.Key.Distance2D(pos1) - 50) / hero.MovementSpeed < (Game.Ping / 1000));
-
+                    && (remoteMinesRadius - x.Key.Distance2D(pos1) - 50) / hero.MovementSpeed > (Game.Ping / 1000));
             var detonatableBombs = new Dictionary<int, Ability>();
             var dmg = 0f;
             foreach (var bomb in possibleBombs)
             {
                 if (dmg > 0)
                 {
-                    var takenDmg = hero.DamageTaken(dmg, DamageType.Magical, me, false);
+                    var takenDmg = hero.DamageTaken(dmg, DamageType.Magical, me);
                     if (takenDmg >= hero.Health)
                     {
                         break;
@@ -541,7 +567,7 @@
                 detonatableBombs[detonatableBombs.Count + 1] = bomb.Key.Spellbook.Spell1;
                 dmg += bomb.Value;
             }
-            dmg = hero.DamageTaken(dmg, DamageType.Magical, me, false);
+            dmg = hero.DamageTaken(dmg, DamageType.Magical, me);
             if (dmg < hero.Health)
             {
                 return;
@@ -557,7 +583,7 @@
                             mine =>
                             mine.Distance2D(pos) > remoteMinesRadius
                             || (remoteMinesRadius - mine.Distance2D(pos) - 50) / hero.MovementSpeed
-                            > (Game.Ping / 1000 + detonatableBombs.Count * 0.002)))
+                            < (Game.Ping / 1000 + detonatableBombs.Count * 0.002)))
                 {
                     stop = true;
                 }
