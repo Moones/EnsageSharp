@@ -11,25 +11,29 @@
 
     internal class Orbwalker
     {
-        #region Static Fields
+        #region Constants
 
-        private static bool loaded;
-
-        private static Hero me;
-
-        private static Hero target;
-
-        private static Unit creepTarget;
+        private const Key FarmKey = Key.B;
 
         private const Key ChaseKey = Key.Space;
 
         private const Key KiteKey = Key.V;
 
-        private const Key FarmKey = Key.B;
+        #endregion
+
+        #region Static Fields
+
+        private static Unit creepTarget;
+
+        private static float lastRange;
+
+        private static bool loaded;
+
+        private static Hero me;
 
         private static ParticleEffect rangeDisplay;
 
-        private static float lastRange;
+        private static Hero target;
 
         #endregion
 
@@ -75,7 +79,7 @@
                 rangeDisplay = null;
                 return;
             }
-                
+
             if (Game.IsPaused)
             {
                 return;
@@ -96,7 +100,11 @@
                     rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\range_display.vpcf");
                     rangeDisplay.SetControlPoint(1, new Vector3(lastRange, 0, 0));
                 }
-            } 
+            }
+            if (target != null && (!target.IsValid || !target.IsVisible || !target.IsAlive || target.Health <= 0))
+            {
+                target = null;
+            }
             var canCancel = Orbwalking.CanCancelAnimation();
             if (canCancel)
             {
@@ -112,13 +120,11 @@
                         target = me.BestAATarget();
                     }
                 }
-                if (Game.IsKeyDown(FarmKey) && (creepTarget == null || !Orbwalking.AttackOnCooldown(creepTarget)))
+                if (Game.IsKeyDown(FarmKey)
+                    && (creepTarget == null || !creepTarget.IsValid || !creepTarget.IsVisible || !creepTarget.IsAlive || creepTarget.Health <= 0
+                         || !Orbwalking.AttackOnCooldown(creepTarget)))
                 {
-                    var creep = TargetSelector.GetLowestHPCreep(me);
-                    if (creep != null)
-                    {
-                        creepTarget = creep;
-                    }
+                    creepTarget = TargetSelector.GetLowestHPCreep(me);
                 }
             }
 
