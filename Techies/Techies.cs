@@ -277,6 +277,9 @@
                 {
                     RemoteMinesDb.Add(bomb, remoteMinesDmg);
                 }
+                players =
+                        ObjectMgr.GetEntities<Player>()
+                            .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam());
                 Console.WriteLine("#Techies: Loaded!");
             }
 
