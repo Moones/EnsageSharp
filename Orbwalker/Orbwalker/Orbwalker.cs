@@ -17,7 +17,9 @@
 
         private static Hero me;
 
-        private static Unit target;
+        private static Hero target;
+
+        private static Unit creepTarget;
 
         private const Key ChaseKey = Key.Space;
 
@@ -98,20 +100,24 @@
             var canCancel = Orbwalking.CanCancelAnimation();
             if (canCancel)
             {
-                if (target != null && !target.IsVisible && target is Hero)
+                if (target != null && !target.IsVisible && !Orbwalking.AttackOnCooldown(target))
                 {
-                    var closestToMouse = me.ClosestToMouseTarget(128);
-                    if (closestToMouse != null)
-                    {
-                        target = closestToMouse;
-                    }
+                    target = me.ClosestToMouseTarget(128);
                 }
-                else
+                else if (target == null || !Orbwalking.AttackOnCooldown(target))
                 {
                     var bestAa = me.BestAATarget();
                     if (bestAa != null)
                     {
                         target = me.BestAATarget();
+                    }
+                }
+                if (Game.IsKeyDown(FarmKey) && (creepTarget == null || !Orbwalking.AttackOnCooldown(creepTarget)))
+                {
+                    var creep = TargetSelector.GetLowestHPCreep(me);
+                    if (creep != null)
+                    {
+                        creepTarget = creep;
                     }
                 }
             }
@@ -121,27 +127,20 @@
                 return;
             }
 
-            try
+            if (Game.IsKeyDown(FarmKey))
             {
-                if (Game.IsKeyDown(FarmKey))
-                {
-                    Orbwalking.Orbwalk(TargetSelector.GetLowestHPCreep(me));
-                }
-                if (Game.IsKeyDown(ChaseKey))
-                {
-                    Orbwalking.Orbwalk(target, attackmodifiers: true);
-                }
-                if (Game.IsKeyDown(KiteKey))
-                {
-                    Orbwalking.Orbwalk(
-                        target,
-                        attackmodifiers: true,
-                        bonusRange: (float)(UnitDatabase.GetAttackRate(me) * 1000));
-                }
+                Orbwalking.Orbwalk(creepTarget);
             }
-            catch (Exception)
+            if (Game.IsKeyDown(ChaseKey))
             {
-                //nopls
+                Orbwalking.Orbwalk(target, attackmodifiers: true);
+            }
+            if (Game.IsKeyDown(KiteKey))
+            {
+                Orbwalking.Orbwalk(
+                    target,
+                    attackmodifiers: true,
+                    bonusRange: (float)(UnitDatabase.GetAttackRate(me) * 1000));
             }
         }
 
