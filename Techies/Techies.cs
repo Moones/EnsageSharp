@@ -16,8 +16,6 @@
     {
         #region Static Fields
 
-        private static readonly Dictionary<Unit, float> RemoteMinesDb = new Dictionary<Unit, float>();
-
         private static bool aghanims;
 
         private static uint Case = 1;
@@ -26,9 +24,13 @@
 
         private static Ability forceStaff;
 
+        private static Dictionary<ClassID, double[]> heroTopPanel = new Dictionary<ClassID, double[]>();
+
         private static Ability landMines;
 
         private static float landMinesDmg;
+
+        private static Dictionary<ClassID, double> landMinesHeroDmg = new Dictionary<ClassID, double>();
 
         private static uint landMinesLevel;
 
@@ -40,9 +42,15 @@
 
         private static IEnumerable<Player> players;
 
+        //private static IEnumerable<Hero> enemyHeroes;
+
         private static Ability remoteMines;
 
+        private static Dictionary<Unit, float> remoteMinesDb = new Dictionary<Unit, float>();
+
         private static float remoteMinesDmg;
+
+        private static Dictionary<ClassID, double> remoteMinesHeroDmg = new Dictionary<ClassID, double>();
 
         private static uint remoteMinesLevel;
 
@@ -56,6 +64,8 @@
 
         private static float suicideAttackRadius;
 
+        private static Dictionary<ClassID, bool> suicideHeroDmg = new Dictionary<ClassID, bool>();
+
         private static Font text;
 
         #endregion
@@ -68,6 +78,14 @@
             ObjectMgr.OnAddEntity += ObjectMgr_OnAddEntity;
             ObjectMgr.OnRemoveEntity += ObjectMgr_OnRemoveEntity;
             loaded = false;
+            forceStaff = null;
+            //enemyHeroes = null;
+            players = null;
+            remoteMinesDb = new Dictionary<Unit, float>();
+            heroTopPanel = new Dictionary<ClassID, double[]>();
+            landMinesHeroDmg = new Dictionary<ClassID, double>();
+            suicideHeroDmg = new Dictionary<ClassID, bool>();
+            enabledHeroes = new Dictionary<ClassID, bool>();
             text = new Font(
                 Drawing.Direct3DDevice9,
                 new FontDescription
@@ -104,28 +122,23 @@
 
         private static void Drawing_OnEndScene(EventArgs args)
         {
-            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed || !Game.IsInGame)
+            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed || !Game.IsInGame || me == null)
             {
                 return;
             }
 
-            var player = ObjectMgr.LocalPlayer;
-            if (player == null || player.Team == Team.Observer)
-            {
-                return;
-            }
             var sign = "#Techies: Detonate on Creeps Disabled! AutoSuicide Disabled | [L] for toggle";
-            switch (Case)
+            if (Case == 2)
             {
-                case 2:
-                    sign = "#Techies: Detonate on Creeps Enabled! AutoSuicide Enabled | [L] for toggle";
-                    break;
-                case 3:
-                    sign = "#Techies: Detonate on Creeps Disabled! AutoSuicide Enabled | [L] for toggle";
-                    break;
-                case 4:
-                    sign = "#Techies: Detonate on Creeps Enabled! AutoSuicide Disabled | [L] for toggle";
-                    break;
+                sign = "#Techies: Detonate on Creeps Enabled! AutoSuicide Enabled | [L] for toggle";
+            }
+            else if (Case == 3)
+            {
+                sign = "#Techies: Detonate on Creeps Disabled! AutoSuicide Enabled | [L] for toggle";
+            }
+            else if (Case == 4)
+            {
+                sign = "#Techies: Detonate on Creeps Enabled! AutoSuicide Disabled | [L] for toggle";
             }
             text.DrawText(null, sign, 5, 128, Color.DarkOrange);
             if (!Utils.SleepCheck("drawPanel") || me == null)
@@ -142,26 +155,50 @@
                             .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam());
                 }
                 var enumerable = players as Player[] ?? players.ToArray();
+                //Console.WriteLine(enumerable.Count());
                 foreach (var hero in
-                    enumerable.Select(play => play.Hero))
+                    enumerable.Select(x => x.Hero))
                 {
+                    var classId = hero.ClassID;
                     bool enabled;
-                    if (!enabledHeroes.TryGetValue(hero.ClassID, out enabled))
+                    if (!enabledHeroes.TryGetValue(classId, out enabled))
                     {
-                        enabledHeroes[hero.ClassID] = true;
+                        enabledHeroes[classId] = true;
                     }
                     var health = hero.Health;
                     if (!hero.IsAlive)
                     {
                         health = hero.MaximumHealth;
                     }
-                    var sizeX = HUDInfo.GetTopPanelSizeX(hero);
-                    var x = HUDInfo.GetTopPanelPosition(hero).X;
-                    var sizey = HUDInfo.GetTopPanelSizeY(hero) * 1.4;
+                    double[] topPanel;
+                    if (!heroTopPanel.TryGetValue(classId, out topPanel))
+                    {
+                        topPanel = new double[3];
+                        topPanel[0] = HUDInfo.GetTopPanelSizeX(hero);
+                        topPanel[1] = HUDInfo.GetTopPanelPosition(hero).X;
+                        topPanel[2] = HUDInfo.GetTopPanelSizeY(hero) * 1.4;
+                        heroTopPanel.Add(classId, topPanel);
+                    }
+                    var sizeX = topPanel[0];
+                    var x = topPanel[1];
+                    var sizey = topPanel[2];
                     if (remoteMinesDmg > 0)
                     {
-                        var dmg = hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me);
-                        var remoteNumber = Math.Ceiling(health / dmg);
+                        double remoteNumber;
+                        if (!remoteMinesHeroDmg.TryGetValue(classId, out remoteNumber))
+                        {
+                            remoteNumber =
+                                Math.Ceiling(health / hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me));
+                            remoteMinesHeroDmg.Add(classId, remoteNumber);
+                            Utils.Sleep(1000, classId + " remoteNumber");
+                        }
+                        else if (Utils.SleepCheck(classId + " remoteNumber"))
+                        {
+                            remoteNumber =
+                                Math.Ceiling(health / hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me));
+                            remoteMinesHeroDmg[classId] = remoteNumber;
+                            Utils.Sleep(1000, classId + " remoteNumber");
+                        }
                         panelText.DrawText(
                             null,
                             remoteNumber.ToString(CultureInfo.InvariantCulture),
@@ -171,8 +208,19 @@
                     }
                     if (landMinesDmg > 0)
                     {
-                        var dmg = hero.DamageTaken(landMinesDmg, DamageType.Physical, me);
-                        var landNumber = Math.Ceiling(health / dmg);
+                        double landNumber;
+                        if (!landMinesHeroDmg.TryGetValue(classId, out landNumber))
+                        {
+                            landNumber = Math.Ceiling(health / hero.DamageTaken(landMinesDmg, DamageType.Physical, me));
+                            landMinesHeroDmg.Add(classId, landNumber);
+                            Utils.Sleep(1000, classId + " remoteNumber");
+                        }
+                        else if (Utils.SleepCheck(classId + " remoteNumber"))
+                        {
+                            landNumber = Math.Ceiling(health / hero.DamageTaken(landMinesDmg, DamageType.Physical, me));
+                            landMinesHeroDmg[classId] = landNumber;
+                            Utils.Sleep(1000, classId + " remoteNumber");
+                        }
                         panelText.DrawText(
                             null,
                             landNumber.ToString(CultureInfo.InvariantCulture),
@@ -182,8 +230,19 @@
                     }
                     if (suicideAttackDmg > 0)
                     {
-                        var dmg = hero.DamageTaken(suicideAttackDmg, DamageType.Magical, me);
-                        var canKill = dmg > health;
+                        bool canKill;
+                        if (!suicideHeroDmg.TryGetValue(classId, out canKill))
+                        {
+                            canKill = hero.DamageTaken(suicideAttackDmg, DamageType.Physical, me) > health;
+                            suicideHeroDmg.Add(classId, canKill);
+                            Utils.Sleep(200, classId + " canKill");
+                        }
+                        else if (Utils.SleepCheck(classId + " canKill"))
+                        {
+                            canKill = hero.DamageTaken(suicideAttackDmg, DamageType.Physical, me) > health;
+                            suicideHeroDmg[classId] = canKill;
+                            Utils.Sleep(200, classId + " canKill");
+                        }
                         panelText.DrawText(
                             null,
                             canKill ? "Yes" : "No",
@@ -249,8 +308,14 @@
                 remoteMines = me.Spellbook.SpellR;
                 suicideAttack = me.Spellbook.SpellE;
                 landMines = me.Spellbook.SpellQ;
-                enabledHeroes = new Dictionary<ClassID, bool>();
                 forceStaff = null;
+                //enemyHeroes = null;
+                players = null;
+                remoteMinesDb = new Dictionary<Unit, float>();
+                heroTopPanel = new Dictionary<ClassID, double[]>();
+                landMinesHeroDmg = new Dictionary<ClassID, double>();
+                suicideHeroDmg = new Dictionary<ClassID, bool>();
+                enabledHeroes = new Dictionary<ClassID, bool>();
                 if (me.AghanimState())
                 {
                     var firstOrDefault = remoteMines.AbilityData.FirstOrDefault(x => x.Name == "damage_scepter");
@@ -267,22 +332,23 @@
                         remoteMinesDmg = firstOrDefault.GetValue(remoteMines.Level - 1);
                     }
                 }
-                foreach (
-                    var bomb in
-                        ObjectMgr.GetEntities<Unit>()
-                            .Where(
-                                x =>
-                                x.ClassID == ClassID.CDOTA_NPC_TechiesMines && x.Spellbook.Spell1 != null
-                                && x.Spellbook.Spell1.CanBeCasted() && x.IsAlive))
+                foreach (var bomb in
+                    ObjectMgr.GetEntities<Unit>()
+                        .Where(
+                            x =>
+                            x.ClassID == ClassID.CDOTA_NPC_TechiesMines && x.Spellbook.Spell1 != null
+                            && x.Spellbook.Spell1.CanBeCasted() && x.IsAlive))
                 {
-                    RemoteMinesDb.Add(bomb, remoteMinesDmg);
+                    remoteMinesDb.Add(bomb, remoteMinesDmg);
                 }
+                //enemyHeroes =
+                //    ObjectMgr.GetEntities<Hero>()
+                //        .Where(x => x != null && x.IsValid && x.Team == me.GetEnemyTeam() && !x.IsIllusion);
                 players =
-                        ObjectMgr.GetEntities<Player>()
-                            .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam());
+                    ObjectMgr.GetEntities<Player>()
+                        .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam());
                 Console.WriteLine("#Techies: Loaded!");
             }
-
             if (!Game.IsInGame || me == null || me.ClassID != ClassID.CDOTA_Unit_Hero_Techies)
             {
                 loaded = false;
@@ -340,7 +406,7 @@
                 var abilityData = remoteMines.AbilityData.FirstOrDefault(x => x.Name == "radius");
                 if (abilityData != null)
                 {
-                    remoteMinesRadius = abilityData.Value;
+                    remoteMinesRadius = abilityData.Value + 20;
                 }
                 remoteMinesLevel = bombLevel;
             }
@@ -367,21 +433,23 @@
                 aghanims = true;
             }
 
-            var enemyHeroes =
-                players
-                    .Where(
-                        x => x != null && x.Hero != null  &&
-                        x.Team == me.GetEnemyTeam() && x.Hero.IsAlive && x.Hero.IsVisible && !x.Hero.IsMagicImmune()
-                        && x.Hero.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
-                        && Utils.SleepCheck(x.Hero.ClassID.ToString()) && !x.Hero.IsIllusion);
             var bombs =
-                RemoteMinesDb.Where(
-                    x => x.Key.Spellbook.Spell1 != null && x.Key.Spellbook.Spell1.CanBeCasted() && x.Key.IsAlive);
+                remoteMinesDb.Where(
+                    x =>
+                    x.Key != null && x.Key.IsValid && x.Key.Spellbook.Spell1 != null
+                    && x.Key.Spellbook.Spell1.CanBeCasted() && x.Key.IsAlive);
             var bombsArray = bombs as KeyValuePair<Unit, float>[] ?? bombs.ToArray();
+            var eHeroes =
+                ObjectMgr.GetEntities<Hero>()
+                    .Where(
+                        x =>
+                        x != null && x.IsValid && x.Team == me.GetEnemyTeam() && x.IsAlive && x.IsVisible
+                        && !x.IsMagicImmune() && x.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
+                        && Utils.SleepCheck(x.ClassID.ToString()) && !x.IsIllusion);
             try
             {
                 foreach (var hero in
-                    enemyHeroes.Select(x => x.Hero))
+                    eHeroes)
                 {
                     bool enabled;
                     if (!enabledHeroes.TryGetValue(hero.ClassID, out enabled) || !enabled)
@@ -554,7 +622,8 @@
                 bombs.Where(
                     x =>
                     x.Key.Distance2D(pos1) <= remoteMinesRadius && x.Key.Distance2D(hero.Position) <= remoteMinesRadius
-                    && (remoteMinesRadius - x.Key.Distance2D(pos1) - 50) / hero.MovementSpeed > (Game.Ping / 1000));
+                    && ((remoteMinesRadius - x.Key.Distance2D(pos1)) / hero.MovementSpeed > (Game.Ping / 1000)
+                        || hero.NetworkActivity == NetworkActivity.Idle));
             var detonatableBombs = new Dictionary<int, Ability>();
             var dmg = 0f;
             foreach (var bomb in possibleBombs)
@@ -585,8 +654,9 @@
                         .Where(
                             mine =>
                             mine.Distance2D(pos) > remoteMinesRadius
-                            || (remoteMinesRadius - mine.Distance2D(pos) - 50) / hero.MovementSpeed
-                            < (Game.Ping / 1000 + detonatableBombs.Count * 0.002)))
+                            || ((remoteMinesRadius - mine.Distance2D(pos)) / hero.MovementSpeed
+                                < (Game.Ping / 1000 + detonatableBombs.Count * 0.002)
+                                && hero.NetworkActivity != NetworkActivity.Idle)))
                 {
                     stop = true;
                 }
@@ -605,19 +675,38 @@
 
         private static void ObjectMgr_OnAddEntity(EntityEventArgs args)
         {
-            var ent = args.Entity as Unit;
-            if (ent != null && (ent.ClassID == ClassID.CDOTA_NPC_TechiesMines))
+            if (me == null || !Game.IsInGame)
             {
-                RemoteMinesDb.Add(ent, remoteMinesDmg);
+                return;
+            }
+            var ent = args.Entity as Unit;
+            if (ent == null)
+            {
+                return;
+            }
+            //if (ent is Hero && !ent.IsIllusion && ent.Team == me.GetEnemyTeam())
+            //{
+            //    Console.WriteLine("Heroadded");
+            //    enemyHeroes =
+            //        ObjectMgr.GetEntities<Hero>()
+            //            .Where(x => x != null && x.IsValid && x.Team == me.GetEnemyTeam() && !x.IsIllusion);
+            //}
+            if ((ent.ClassID == ClassID.CDOTA_NPC_TechiesMines))
+            {
+                remoteMinesDb.Add(ent, remoteMinesDmg);
             }
         }
 
         private static void ObjectMgr_OnRemoveEntity(EntityEventArgs args)
         {
-            var ent = args.Entity as Unit;
-            if (ent != null && (ent.ClassID == ClassID.CDOTA_NPC_TechiesMines))
+            if (me == null || !Game.IsInGame)
             {
-                RemoteMinesDb.Remove(ent);
+                return;
+            }
+            var ent = args.Entity as Unit;
+            if (ent != null && (ent.ClassID == ClassID.CDOTA_NPC_TechiesMines) && remoteMinesDb.ContainsKey(ent))
+            {
+                remoteMinesDb.Remove(ent);
             }
         }
 
