@@ -16,6 +16,8 @@
     {
         #region Static Fields
 
+        private static readonly Dictionary<ClassID, double> RemoteMinesHeroDmg = new Dictionary<ClassID, double>();
+
         private static bool aghanims;
 
         private static uint Case = 1;
@@ -38,6 +40,8 @@
 
         private static Hero me;
 
+        private static float monitor;
+
         private static Font panelText;
 
         private static IEnumerable<Player> players;
@@ -49,8 +53,6 @@
         private static Dictionary<Unit, float> remoteMinesDb = new Dictionary<Unit, float>();
 
         private static float remoteMinesDmg;
-
-        private static Dictionary<ClassID, double> remoteMinesHeroDmg = new Dictionary<ClassID, double>();
 
         private static uint remoteMinesLevel;
 
@@ -64,7 +66,9 @@
 
         private static float suicideAttackRadius;
 
-        private static Dictionary<ClassID, bool> suicideHeroDmg = new Dictionary<ClassID, bool>();
+        private static Font suicideDmgText;
+
+        private static Dictionary<ClassID, float> suicideHeroDmg = new Dictionary<ClassID, float>();
 
         private static Font text;
 
@@ -84,23 +88,36 @@
             remoteMinesDb = new Dictionary<Unit, float>();
             heroTopPanel = new Dictionary<ClassID, double[]>();
             landMinesHeroDmg = new Dictionary<ClassID, double>();
-            suicideHeroDmg = new Dictionary<ClassID, bool>();
+            suicideHeroDmg = new Dictionary<ClassID, float>();
             enabledHeroes = new Dictionary<ClassID, bool>();
+            var screenSize = new Vector2(Drawing.Width, Drawing.Height);
+            monitor = screenSize.X / 1600;
+            var monitorY = screenSize.Y / 720;
             text = new Font(
                 Drawing.Direct3DDevice9,
                 new FontDescription
                     {
-                        FaceName = "Tahoma", Height = 13, OutputPrecision = FontPrecision.Default,
-                        Quality = FontQuality.Default
+                        FaceName = "Tahoma", Height = (int)(12 * monitorY), OutputPrecision = FontPrecision.Raster,
+                        Quality = FontQuality.ClearTypeNatural, Width = (int)(4.5 * monitor)
                     });
 
             panelText = new Font(
                 Drawing.Direct3DDevice9,
                 new FontDescription
                     {
-                        FaceName = "Tahoma", Height = 25, OutputPrecision = FontPrecision.Raster,
+                        FaceName = "Tahoma", Height = (int)(18 * monitorY), OutputPrecision = FontPrecision.Raster,
                         Quality = FontQuality.ClearTypeNatural, CharacterSet = FontCharacterSet.Default, Italic = false,
-                        MipLevels = 0, PitchAndFamily = FontPitchAndFamily.Swiss, Weight = FontWeight.ExtraBold, Width = 6
+                        MipLevels = 0, PitchAndFamily = FontPitchAndFamily.Swiss, Weight = FontWeight.ExtraBold,
+                        Width = (int)(5 * monitor)
+                    });
+            suicideDmgText = new Font(
+                Drawing.Direct3DDevice9,
+                new FontDescription
+                    {
+                        FaceName = "Tahoma", Height = (int)(12 * monitorY), OutputPrecision = FontPrecision.Raster,
+                        Quality = FontQuality.ClearTypeNatural, CharacterSet = FontCharacterSet.Hangul, Italic = false,
+                        MipLevels = 3, PitchAndFamily = FontPitchAndFamily.Modern, Weight = FontWeight.Heavy,
+                        Width = (int)(4.5 * monitor)
                     });
 
             Drawing.OnPreReset += Drawing_OnPreReset;
@@ -118,6 +135,7 @@
         {
             text.Dispose();
             panelText.Dispose();
+            suicideDmgText.Dispose();
         }
 
         private static void Drawing_OnEndScene(EventArgs args)
@@ -185,18 +203,18 @@
                     if (remoteMinesDmg > 0)
                     {
                         double remoteNumber;
-                        if (!remoteMinesHeroDmg.TryGetValue(classId, out remoteNumber))
+                        if (!RemoteMinesHeroDmg.TryGetValue(classId, out remoteNumber))
                         {
                             remoteNumber =
                                 Math.Ceiling(health / hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me));
-                            remoteMinesHeroDmg.Add(classId, remoteNumber);
+                            RemoteMinesHeroDmg.Add(classId, remoteNumber);
                             Utils.Sleep(1000, classId + " remoteNumber");
                         }
                         else if (Utils.SleepCheck(classId + " remoteNumber"))
                         {
                             remoteNumber =
                                 Math.Ceiling(health / hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me));
-                            remoteMinesHeroDmg[classId] = remoteNumber;
+                            RemoteMinesHeroDmg[classId] = remoteNumber;
                             Utils.Sleep(1000, classId + " remoteNumber");
                         }
                         panelText.DrawText(
@@ -230,25 +248,45 @@
                     }
                     if (suicideAttackDmg > 0)
                     {
-                        bool canKill;
-                        if (!suicideHeroDmg.TryGetValue(classId, out canKill))
+                        float dmg;
+                        if (!suicideHeroDmg.TryGetValue(classId, out dmg))
                         {
-                            canKill = hero.DamageTaken(suicideAttackDmg, DamageType.Physical, me) > health;
-                            suicideHeroDmg.Add(classId, canKill);
-                            Utils.Sleep(200, classId + " canKill");
+                            dmg = health - hero.DamageTaken(suicideAttackDmg, DamageType.Physical, me);
+                            suicideHeroDmg.Add(classId, dmg);
+                            Utils.Sleep(150, classId + " canKill");
                         }
                         else if (Utils.SleepCheck(classId + " canKill"))
                         {
-                            canKill = hero.DamageTaken(suicideAttackDmg, DamageType.Physical, me) > health;
-                            suicideHeroDmg[classId] = canKill;
-                            Utils.Sleep(200, classId + " canKill");
+                            dmg = health - hero.DamageTaken(suicideAttackDmg, DamageType.Physical, me);
+                            suicideHeroDmg[classId] = dmg;
+                            Utils.Sleep(150, classId + " canKill");
                         }
+                        var canKill = dmg <= 0;
                         panelText.DrawText(
                             null,
                             canKill ? "Yes" : "No",
                             canKill ? (int)(x + sizeX / 2) : (int)(x + sizeX / 1.7),
                             (int)sizey,
                             enabled ? Color.DarkOrange : Color.DimGray);
+                        if (!hero.IsVisible || !hero.IsAlive)
+                        {
+                            continue;
+                        }
+                        Vector2 screenPos;
+                        if (
+                            !Drawing.WorldToScreen(
+                                hero.Position + new Vector3(0, 0, hero.HealthBarOffset),
+                                out screenPos) || screenPos.X + 20 > Drawing.Width || screenPos.X - 20 < 0
+                            || screenPos.Y + 100 > Drawing.Height || screenPos.Y - 30 < 0)
+                        {
+                            continue;
+                        }
+                        suicideDmgText.DrawText(
+                            null,
+                            canKill ? "Yes" : "No " + Math.Floor(dmg),
+                            canKill ? (int)(screenPos.X - 50) : (int)(screenPos.X - 45),
+                            (int)(screenPos.Y - 32 * monitor),
+                            enabled ? (canKill ? Color.LawnGreen : Color.Red) : Color.Gray);
                     }
                 }
             }
@@ -262,12 +300,14 @@
         {
             text.OnResetDevice();
             panelText.OnResetDevice();
+            suicideDmgText.OnResetDevice();
         }
 
         private static void Drawing_OnPreReset(EventArgs args)
         {
             text.OnLostDevice();
             panelText.OnLostDevice();
+            suicideDmgText.OnLostDevice();
         }
 
         private static Dictionary<int, Ability> FindDetonatableBombs(
@@ -314,8 +354,10 @@
                 remoteMinesDb = new Dictionary<Unit, float>();
                 heroTopPanel = new Dictionary<ClassID, double[]>();
                 landMinesHeroDmg = new Dictionary<ClassID, double>();
-                suicideHeroDmg = new Dictionary<ClassID, bool>();
+                suicideHeroDmg = new Dictionary<ClassID, float>();
                 enabledHeroes = new Dictionary<ClassID, bool>();
+                var screenSize = new Vector2(Drawing.Width, Drawing.Height);
+                monitor = screenSize.X / 1280;
                 if (me.AghanimState())
                 {
                     var firstOrDefault = remoteMines.AbilityData.FirstOrDefault(x => x.Name == "damage_scepter");
@@ -337,7 +379,8 @@
                         .Where(
                             x =>
                             x.ClassID == ClassID.CDOTA_NPC_TechiesMines && x.Spellbook.Spell1 != null
-                            && x.Spellbook.Spell1.CanBeCasted() && x.IsAlive))
+                            && x.Spellbook.Spell1.CanBeCasted() && x.IsAlive)
+                        .Where(bomb => !remoteMinesDb.ContainsKey(bomb)))
                 {
                     remoteMinesDb.Add(bomb, remoteMinesDmg);
                 }
@@ -443,9 +486,10 @@
                 ObjectMgr.GetEntities<Hero>()
                     .Where(
                         x =>
-                        x != null && x.IsValid && x.Team == me.GetEnemyTeam() && x.IsAlive && x.IsVisible
-                        && !x.IsMagicImmune() && x.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
-                        && Utils.SleepCheck(x.ClassID.ToString()) && !x.IsIllusion);
+                        x != null && x.IsValid && !x.IsIllusion && x.Team == me.GetEnemyTeam() && x.IsAlive
+                        && x.IsVisible && !x.IsMagicImmune()
+                        && x.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
+                        && Utils.SleepCheck(x.ClassID.ToString()));
             try
             {
                 foreach (var hero in
@@ -477,31 +521,30 @@
                         Prediction.TrackTable.ToArray()
                             .FirstOrDefault(
                                 unitData => unitData.UnitName == hero.Name || unitData.UnitClassID == hero.ClassID);
-
-                    if (data != null)
+                    if (data == null)
                     {
-                        var turnTime = me.GetTurnTime(hero);
-                        var forcePosition = hero.Position;
-                        if (hero.NetworkActivity == NetworkActivity.Move)
-                        {
-                            forcePosition = Prediction.InFront(
-                                hero,
-                                (float)((turnTime + Game.Ping / 1000) * hero.MovementSpeed));
-                        }
-                        forcePosition +=
-                            VectorExtensions.FromPolarCoordinates(1f, hero.NetworkRotationRad + data.RotSpeed)
-                                .ToVector3() * 600;
-                        var possibleBombs =
-                            bombsArray.Any(x => x.Key.Distance2D(forcePosition) <= (remoteMinesRadius - 75));
-                        if (!possibleBombs)
-                        {
-                            continue;
-                        }
-                        var dmg = CheckBombDamage(hero, forcePosition, bombsArray);
-                        if (!(dmg >= hero.Health))
-                        {
-                            continue;
-                        }
+                        continue;
+                    }
+                    var turnTime = me.GetTurnTime(hero);
+                    var forcePosition = hero.Position;
+                    if (hero.NetworkActivity == NetworkActivity.Move)
+                    {
+                        forcePosition = Prediction.InFront(
+                            hero,
+                            (float)((turnTime + Game.Ping / 1000) * hero.MovementSpeed));
+                    }
+                    forcePosition +=
+                        VectorExtensions.FromPolarCoordinates(1f, hero.NetworkRotationRad + data.RotSpeed).ToVector3()
+                        * 600;
+                    var possibleBombs = bombsArray.Any(x => x.Key.Distance2D(forcePosition) <= (remoteMinesRadius - 75));
+                    if (!possibleBombs)
+                    {
+                        continue;
+                    }
+                    var dmg = CheckBombDamage(hero, forcePosition, bombsArray);
+                    if (!(dmg >= hero.Health))
+                    {
+                        continue;
                     }
                     forceStaff.UseAbility(hero);
                     Utils.Sleep(250, "forcestaff");
@@ -618,12 +661,15 @@
                 return;
             }
             var pos1 = pos;
+            var turning = !Prediction.IsTurning(hero);
             var possibleBombs =
                 bombs.Where(
                     x =>
                     x.Key.Distance2D(pos1) <= remoteMinesRadius && x.Key.Distance2D(hero.Position) <= remoteMinesRadius
                     && ((remoteMinesRadius - x.Key.Distance2D(pos1)) / hero.MovementSpeed > (Game.Ping / 1000)
-                        || hero.NetworkActivity == NetworkActivity.Idle));
+                        || hero.NetworkActivity == NetworkActivity.Idle)
+                    && (!turning || x.Key.Distance2D(hero) < remoteMinesRadius - 20
+                        || x.Key.Distance2D(pos1) - 10 < x.Key.Distance2D(hero)));
             var detonatableBombs = new Dictionary<int, Ability>();
             var dmg = 0f;
             foreach (var bomb in possibleBombs)
@@ -691,7 +737,7 @@
             //        ObjectMgr.GetEntities<Hero>()
             //            .Where(x => x != null && x.IsValid && x.Team == me.GetEnemyTeam() && !x.IsIllusion);
             //}
-            if ((ent.ClassID == ClassID.CDOTA_NPC_TechiesMines))
+            if ((ent.ClassID == ClassID.CDOTA_NPC_TechiesMines) && !remoteMinesDb.ContainsKey(ent))
             {
                 remoteMinesDb.Add(ent, remoteMinesDmg);
             }
