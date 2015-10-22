@@ -670,7 +670,7 @@
                         || hero.NetworkActivity == NetworkActivity.Idle)
                     && (!turning || x.Key.Distance2D(hero) < remoteMinesRadius - 20
                         || x.Key.Distance2D(pos1) - 10 < x.Key.Distance2D(hero)));
-            var detonatableBombs = new Dictionary<int, Ability>();
+            var detonatableBombs = new Dictionary<Unit, Ability>();
             var dmg = 0f;
             foreach (var bomb in possibleBombs)
             {
@@ -682,7 +682,7 @@
                         break;
                     }
                 }
-                detonatableBombs[detonatableBombs.Count + 1] = bomb.Key.Spellbook.Spell1;
+                detonatableBombs[bomb.Key] = bomb.Key.Spellbook.Spell1;
                 dmg += bomb.Value;
             }
             dmg = hero.DamageTaken(dmg, DamageType.Magical, me);
@@ -696,7 +696,7 @@
                 var stop = false;
                 foreach (var mine in
                     detonatableBombs.Where(data => Utils.SleepCheck(data.Value.Handle.ToString()))
-                        .Select(data => data.Value.Owner)
+                        .Select(data => data.Key)
                         .Where(
                             mine =>
                             mine.Distance2D(pos) > remoteMinesRadius
