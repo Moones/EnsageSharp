@@ -32,7 +32,7 @@
                                { "dota_height_fog_scale", 0 }, { "dota_camera_distance", 1700 }, { "cam_showangles", 0 },
                                { "cl_disable_ragdolls", 0 }, { "dota_camera_fog_end_zoomed_in", 4500 },
                                { "dota_camera_fog_end_zoomed_out", 6000 }, { "dota_camera_fog_start_zoomed_in", 2000 },
-                               { "dota_camera_fog_start_zoomed_out", 4500 }
+                               { "dota_camera_fog_start_zoomed_out", 4500 }, { "r_farz", 18000 }
                            };
             foreach (var data in list)
             {
