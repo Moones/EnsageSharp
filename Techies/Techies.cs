@@ -98,7 +98,7 @@
                 new FontDescription
                     {
                         FaceName = "Tahoma", Height = (int)(12 * monitorY), OutputPrecision = FontPrecision.Raster,
-                        Quality = FontQuality.ClearTypeNatural, Width = (int)(4.5 * monitor)
+                        Quality = FontQuality.ClearTypeNatural
                     });
 
             panelText = new Font(
@@ -114,10 +114,10 @@
                 Drawing.Direct3DDevice9,
                 new FontDescription
                     {
-                        FaceName = "Tahoma", Height = (int)(12 * monitorY), OutputPrecision = FontPrecision.Raster,
+                        FaceName = "Tahoma", Height = (int)(13 * monitorY), OutputPrecision = FontPrecision.Raster,
                         Quality = FontQuality.ClearTypeNatural, CharacterSet = FontCharacterSet.Hangul, Italic = false,
                         MipLevels = 3, PitchAndFamily = FontPitchAndFamily.Modern, Weight = FontWeight.Heavy,
-                        Width = (int)(4.5 * monitor)
+                        Width = (int)(5 * monitor)
                     });
 
             Drawing.OnPreReset += Drawing_OnPreReset;
@@ -272,11 +272,8 @@
                         {
                             continue;
                         }
-                        Vector2 screenPos;
-                        if (
-                            !Drawing.WorldToScreen(
-                                hero.Position + new Vector3(0, 0, hero.HealthBarOffset),
-                                out screenPos) || screenPos.X + 20 > Drawing.Width || screenPos.X - 20 < 0
+                        var screenPos = HUDInfo.GetHPbarPosition(hero);
+                        if (screenPos.X + 20 > Drawing.Width || screenPos.X - 20 < 0
                             || screenPos.Y + 100 > Drawing.Height || screenPos.Y - 30 < 0)
                         {
                             continue;
@@ -284,8 +281,8 @@
                         suicideDmgText.DrawText(
                             null,
                             canKill ? "Yes" : "No " + Math.Floor(dmg),
-                            canKill ? (int)(screenPos.X - 50) : (int)(screenPos.X - 45),
-                            (int)(screenPos.Y - 32 * monitor),
+                            (int)(screenPos.X),
+                            (int)(screenPos.Y - HUDInfo.GetHpBarSizeY(hero)*1.5),
                             enabled ? (canKill ? Color.LawnGreen : Color.Red) : Color.Gray);
                     }
                 }
