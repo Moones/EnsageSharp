@@ -376,7 +376,7 @@
                         .Where(
                             x =>
                             x.ClassID == ClassID.CDOTA_NPC_TechiesMines && x.Spellbook.Spell1 != null
-                            && x.Spellbook.Spell1.CanBeCasted() && x.IsAlive)
+                            && x.Spellbook.Spell1.IsValid && x.Spellbook.Spell1.CanBeCasted() && x.IsAlive)
                         .Where(bomb => !remoteMinesDb.ContainsKey(bomb)))
                 {
                     remoteMinesDb.Add(bomb, remoteMinesDmg);
