@@ -159,10 +159,6 @@
                 sign = "#Techies: Detonate on Creeps Enabled! AutoSuicide Disabled | [L] for toggle";
             }
             text.DrawText(null, sign, 5, 128, Color.DarkOrange);
-            if (!Utils.SleepCheck("drawPanel") || me == null)
-            {
-                return;
-            }
             //Console.WriteLine(players.Count());
             try
             {
@@ -289,7 +285,9 @@
             }
             catch (Exception)
             {
-                //do nothin
+                players =
+                        ObjectMgr.GetEntities<Player>()
+                            .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam());
             }
         }
 
