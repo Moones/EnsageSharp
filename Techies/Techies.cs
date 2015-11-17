@@ -8,6 +8,7 @@
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Menu;
 
     using SharpDX;
     using SharpDX.Direct3D9;
@@ -16,11 +17,11 @@
     {
         #region Static Fields
 
+        private static readonly Menu Menu = new Menu("#TECHIES", "techies", true);
+
         private static readonly Dictionary<ClassID, double> RemoteMinesHeroDmg = new Dictionary<ClassID, double>();
 
         private static bool aghanims;
-
-        private static uint Case = 1;
 
         private static Dictionary<ClassID, bool> enabledHeroes = new Dictionary<ClassID, bool>();
 
@@ -70,17 +71,40 @@
 
         private static Dictionary<ClassID, float> suicideHeroDmg = new Dictionary<ClassID, float>();
 
-        private static Font text;
-
         #endregion
 
         #region Public Methods and Operators
 
         public static void Init()
         {
+            var optionsMenu = new Menu("Options", "options");
+            var detonationMenu = new Menu("Auto Detonation", "autoDetonation");
+            detonationMenu.AddItem(new MenuItem("autoDetonate", "Detonate on heroes").SetValue(true));
+            detonationMenu.AddItem(new MenuItem("autoDetonateCreeps", "Detonate on creeps").SetValue(true));
+            optionsMenu.AddSubMenu(detonationMenu);
+            var forceStaffMenu = new Menu("Auto ForceStaff", "autoForceStaff");
+            forceStaffMenu.AddItem(new MenuItem("useForceStaff", "Use ForceStaff").SetValue(true));
+            forceStaffMenu.AddItem(new MenuItem("checkRotating", "Dont use on turning enemy").SetValue(true));
+            forceStaffMenu.AddItem(
+                new MenuItem("straightTime", "Minimum straight time (secs)").SetValue(new Slider(0, 0, 5))
+                    .SetTooltip("Use force staff only on enemies who havent changed their direction X seconds"));
+            optionsMenu.AddSubMenu(forceStaffMenu);
+            var drawingMenu = new Menu("Drawings", "drawings");
+            drawingMenu.AddItem(new MenuItem("drawTopPanel", "Draw TopPanel").SetValue(true));
+            drawingMenu.AddItem(new MenuItem("drawSuicideKills", "Draw killability with Suicide").SetValue(true));
+            var suicideMenu = new Menu("Auto Suicide", "autoSuicide");
+            suicideMenu.AddItem(new MenuItem("autoSuicide", "Auto Suicide").SetValue(true));
+            suicideMenu.AddItem(
+                new MenuItem("HPTreshold", "HP treshold percent").SetValue(new Slider(100, 1))
+                    .SetTooltip("Use Suicide only if Your health percent goes below specified treshold"));
+            optionsMenu.AddSubMenu(drawingMenu);
+            optionsMenu.AddSubMenu(suicideMenu);
+            Menu.AddSubMenu(optionsMenu);
+            Menu.AddToMainMenu();
             Game.OnUpdate += Game_OnUpdate;
             ObjectMgr.OnAddEntity += ObjectMgr_OnAddEntity;
             ObjectMgr.OnRemoveEntity += ObjectMgr_OnRemoveEntity;
+
             loaded = false;
             forceStaff = null;
             //enemyHeroes = null;
@@ -93,13 +117,6 @@
             var screenSize = new Vector2(Drawing.Width, Drawing.Height);
             monitor = screenSize.X / 1600;
             var monitorY = screenSize.Y / 720;
-            text = new Font(
-                Drawing.Direct3DDevice9,
-                new FontDescription
-                    {
-                        FaceName = "Tahoma", Height = (int)(12 * monitorY), OutputPrecision = FontPrecision.Raster,
-                        Quality = FontQuality.ClearTypeNatural
-                    });
 
             panelText = new Font(
                 Drawing.Direct3DDevice9,
@@ -133,32 +150,18 @@
 
         private static void CurrentDomainDomainUnload(object sender, EventArgs e)
         {
-            text.Dispose();
             panelText.Dispose();
             suicideDmgText.Dispose();
         }
 
         private static void Drawing_OnEndScene(EventArgs args)
         {
-            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed || !Game.IsInGame || me == null)
+            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed || !Game.IsInGame || me == null
+                || (!Menu.Item("drawTopPanel").GetValue<bool>() && !Menu.Item("drawSuicideKills").GetValue<bool>()))
             {
                 return;
             }
 
-            var sign = "#Techies: Detonate on Creeps Disabled! AutoSuicide Disabled | [L] for toggle";
-            if (Case == 2)
-            {
-                sign = "#Techies: Detonate on Creeps Enabled! AutoSuicide Enabled | [L] for toggle";
-            }
-            else if (Case == 3)
-            {
-                sign = "#Techies: Detonate on Creeps Disabled! AutoSuicide Enabled | [L] for toggle";
-            }
-            else if (Case == 4)
-            {
-                sign = "#Techies: Detonate on Creeps Enabled! AutoSuicide Disabled | [L] for toggle";
-            }
-            text.DrawText(null, sign, 5, 128, Color.DarkOrange);
             //Console.WriteLine(players.Count());
             try
             {
@@ -196,55 +199,61 @@
                     var sizeX = topPanel[0];
                     var x = topPanel[1];
                     var sizey = topPanel[2];
-                    if (remoteMinesDmg > 0)
+                    if (Menu.Item("drawTopPanel").GetValue<bool>())
                     {
-                        double remoteNumber;
-                        if (!RemoteMinesHeroDmg.TryGetValue(classId, out remoteNumber))
+                        if (remoteMinesDmg > 0)
                         {
-                            remoteNumber =
-                                Math.Ceiling(health / hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me));
-                            RemoteMinesHeroDmg.Add(classId, remoteNumber);
-                            Utils.Sleep(1000, classId + " remoteNumber");
+                            double remoteNumber;
+                            if (!RemoteMinesHeroDmg.TryGetValue(classId, out remoteNumber))
+                            {
+                                remoteNumber =
+                                    Math.Ceiling(health / hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me));
+                                RemoteMinesHeroDmg.Add(classId, remoteNumber);
+                                Utils.Sleep(1000, classId + " remoteNumber");
+                            }
+                            else if (Utils.SleepCheck(classId + " remoteNumber"))
+                            {
+                                remoteNumber =
+                                    Math.Ceiling(health / hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me));
+                                RemoteMinesHeroDmg[classId] = remoteNumber;
+                                Utils.Sleep(1000, classId + " remoteNumber");
+                            }
+                            panelText.DrawText(
+                                null,
+                                remoteNumber.ToString(CultureInfo.InvariantCulture),
+                                (int)(x + sizeX / 3.6),
+                                (int)sizey,
+                                enabled ? Color.Green : Color.DimGray);
                         }
-                        else if (Utils.SleepCheck(classId + " remoteNumber"))
+                        if (landMinesDmg > 0)
                         {
-                            remoteNumber =
-                                Math.Ceiling(health / hero.DamageTaken(remoteMinesDmg, DamageType.Magical, me));
-                            RemoteMinesHeroDmg[classId] = remoteNumber;
-                            Utils.Sleep(1000, classId + " remoteNumber");
+                            double landNumber;
+                            if (!landMinesHeroDmg.TryGetValue(classId, out landNumber))
+                            {
+                                landNumber =
+                                    Math.Ceiling(health / hero.DamageTaken(landMinesDmg, DamageType.Physical, me));
+                                landMinesHeroDmg.Add(classId, landNumber);
+                                Utils.Sleep(1000, classId + " remoteNumber");
+                            }
+                            else if (Utils.SleepCheck(classId + " remoteNumber"))
+                            {
+                                landNumber =
+                                    Math.Ceiling(health / hero.DamageTaken(landMinesDmg, DamageType.Physical, me));
+                                landMinesHeroDmg[classId] = landNumber;
+                                Utils.Sleep(1000, classId + " remoteNumber");
+                            }
+                            panelText.DrawText(
+                                null,
+                                landNumber.ToString(CultureInfo.InvariantCulture),
+                                (int)x,
+                                (int)sizey,
+                                enabled ? Color.Red : Color.DimGray);
                         }
-                        panelText.DrawText(
-                            null,
-                            remoteNumber.ToString(CultureInfo.InvariantCulture),
-                            (int)(x + sizeX / 3.6),
-                            (int)sizey,
-                            enabled ? Color.Green : Color.DimGray);
-                    }
-                    if (landMinesDmg > 0)
-                    {
-                        double landNumber;
-                        if (!landMinesHeroDmg.TryGetValue(classId, out landNumber))
-                        {
-                            landNumber = Math.Ceiling(health / hero.DamageTaken(landMinesDmg, DamageType.Physical, me));
-                            landMinesHeroDmg.Add(classId, landNumber);
-                            Utils.Sleep(1000, classId + " remoteNumber");
-                        }
-                        else if (Utils.SleepCheck(classId + " remoteNumber"))
-                        {
-                            landNumber = Math.Ceiling(health / hero.DamageTaken(landMinesDmg, DamageType.Physical, me));
-                            landMinesHeroDmg[classId] = landNumber;
-                            Utils.Sleep(1000, classId + " remoteNumber");
-                        }
-                        panelText.DrawText(
-                            null,
-                            landNumber.ToString(CultureInfo.InvariantCulture),
-                            (int)x,
-                            (int)sizey,
-                            enabled ? Color.Red : Color.DimGray);
                     }
                     if (suicideAttackDmg > 0)
                     {
                         float dmg;
+
                         if (!suicideHeroDmg.TryGetValue(classId, out dmg))
                         {
                             dmg = health - hero.DamageTaken(suicideAttackDmg, DamageType.Physical, me);
@@ -258,49 +267,53 @@
                             Utils.Sleep(150, classId + " canKill");
                         }
                         var canKill = dmg <= 0;
-                        panelText.DrawText(
-                            null,
-                            canKill ? "Yes" : "No",
-                            canKill ? (int)(x + sizeX / 2) : (int)(x + sizeX / 1.7),
-                            (int)sizey,
-                            enabled ? Color.DarkOrange : Color.DimGray);
+                        if (Menu.Item("drawTopPanel").GetValue<bool>())
+                        {
+                            panelText.DrawText(
+                                null,
+                                canKill ? "Yes" : "No",
+                                canKill ? (int)(x + sizeX / 2) : (int)(x + sizeX / 1.7),
+                                (int)sizey,
+                                enabled ? Color.DarkOrange : Color.DimGray);
+                        }
                         if (!hero.IsVisible || !hero.IsAlive)
                         {
                             continue;
                         }
-                        var screenPos = HUDInfo.GetHPbarPosition(hero);
-                        if (screenPos.X + 20 > Drawing.Width || screenPos.X - 20 < 0
-                            || screenPos.Y + 100 > Drawing.Height || screenPos.Y - 30 < 0)
+                        if (Menu.Item("drawSuicideKills").GetValue<bool>())
                         {
-                            continue;
+                            var screenPos = HUDInfo.GetHPbarPosition(hero);
+                            if (screenPos.X + 20 > Drawing.Width || screenPos.X - 20 < 0
+                                || screenPos.Y + 100 > Drawing.Height || screenPos.Y - 30 < 0)
+                            {
+                                continue;
+                            }
+                            suicideDmgText.DrawText(
+                                null,
+                                canKill ? "Yes" : "No " + Math.Floor(dmg),
+                                (int)(screenPos.X),
+                                (int)(screenPos.Y - HUDInfo.GetHpBarSizeY(hero) * 1.5),
+                                enabled ? (canKill ? Color.LawnGreen : Color.Red) : Color.Gray);
                         }
-                        suicideDmgText.DrawText(
-                            null,
-                            canKill ? "Yes" : "No " + Math.Floor(dmg),
-                            (int)(screenPos.X),
-                            (int)(screenPos.Y - HUDInfo.GetHpBarSizeY(hero)*1.5),
-                            enabled ? (canKill ? Color.LawnGreen : Color.Red) : Color.Gray);
                     }
                 }
             }
             catch (Exception)
             {
                 players =
-                        ObjectMgr.GetEntities<Player>()
-                            .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam());
+                    ObjectMgr.GetEntities<Player>()
+                        .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam());
             }
         }
 
         private static void Drawing_OnPostReset(EventArgs args)
         {
-            text.OnResetDevice();
             panelText.OnResetDevice();
             suicideDmgText.OnResetDevice();
         }
 
         private static void Drawing_OnPreReset(EventArgs args)
         {
-            text.OnLostDevice();
             panelText.OnLostDevice();
             suicideDmgText.OnLostDevice();
         }
@@ -385,12 +398,13 @@
                 players =
                     ObjectMgr.GetEntities<Player>()
                         .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam());
-                Console.WriteLine("#Techies: Loaded!");
+                Game.PrintMessage(
+                    "<font face='Tahoma'><font color='#ff1111'>#TECHIES</font> by MOON<font color='#ff9900'>ES</font> loaded!</font> ",
+                    MessageType.LogMessage);
             }
             if (!Game.IsInGame || me == null || me.ClassID != ClassID.CDOTA_Unit_Hero_Techies)
             {
                 loaded = false;
-                Console.WriteLine("#Techies: Unloaded!");
                 return;
             }
 
@@ -399,7 +413,7 @@
                 return;
             }
 
-            if (forceStaff == null)
+            if (forceStaff == null && Menu.Item("useForceStaff").GetValue<bool>())
             {
                 forceStaff = me.Inventory.Items.FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Item_ForceStaff);
             }
@@ -470,7 +484,6 @@
                 }
                 aghanims = true;
             }
-
             var bombs =
                 remoteMinesDb.Where(
                     x =>
@@ -496,27 +509,37 @@
                         continue;
                     }
                     var heroDistance = me.Distance2D(hero);
-                    var nearbyBombs = bombsArray.Any(x => x.Key.Distance2D(hero) <= remoteMinesRadius + 500);
-                    if (nearbyBombs)
+                    if (Menu.Item("autoDetonate").GetValue<bool>())
                     {
-                        CheckBombDamageAndDetonate(hero, bombsArray);
+                        var nearbyBombs = bombsArray.Any(x => x.Key.Distance2D(hero) <= remoteMinesRadius + 500);
+                        if (nearbyBombs)
+                        {
+                            CheckBombDamageAndDetonate(hero, bombsArray);
+                        }
                     }
-                    if (heroDistance < 400 && suicideAttackLevel > 0 && me.IsAlive && (Case == 2 || Case == 3))
+                    //Game.PrintMessage((float)me.Health / me.MaximumHealth + " " + (float)Menu.Item("HPTreshold").GetValue<Slider>().Value / 100, MessageType.ChatMessage);
+                    if (Menu.Item("autoSuicide").GetValue<bool>() && suicideAttack.CanBeCasted()
+                        && (float)me.Health / me.MaximumHealth
+                        <= (float)Menu.Item("HPTreshold").GetValue<Slider>().Value / 100 && heroDistance < 400
+                        && suicideAttackLevel > 0 && me.IsAlive)
                     {
                         SuicideKillSteal(hero);
                     }
-                    if (forceStaff == null || !(heroDistance <= forceStaff.CastRange) || !Utils.SleepCheck("forcestaff")
+                    if (forceStaff == null || !Menu.Item("useForceStaff").GetValue<bool>()
+                        || !(heroDistance <= forceStaff.CastRange) || !Utils.SleepCheck("forcestaff")
                         || bombsArray.Any(x => x.Key.Distance2D(hero) <= remoteMinesRadius)
                         || Prediction.IsTurning(hero) || !forceStaff.CanBeCasted())
                     {
                         continue;
                     }
 
-                    var data =
-                        Prediction.TrackTable.ToArray()
-                            .FirstOrDefault(
-                                unitData => unitData.UnitName == hero.Name || unitData.UnitClassID == hero.ClassID);
-                    if (data == null)
+                    double rotSpeed;
+                    if (!Prediction.RotSpeedDictionary.TryGetValue(hero.Handle, out rotSpeed)
+                        || (rotSpeed > 0 && Menu.Item("checkRotating").GetValue<bool>()))
+                    {
+                        continue;
+                    }
+                    if (Prediction.StraightTime(hero) / 1000 < Menu.Item("straightTime").GetValue<Slider>().Value)
                     {
                         continue;
                     }
@@ -529,8 +552,8 @@
                             (float)((turnTime + Game.Ping / 1000) * hero.MovementSpeed));
                     }
                     forcePosition +=
-                        VectorExtensions.FromPolarCoordinates(1f, hero.NetworkRotationRad + data.RotSpeed).ToVector3()
-                        * 600;
+                        VectorExtensions.FromPolarCoordinates(1f, (float)(hero.NetworkRotationRad + rotSpeed))
+                            .ToVector3() * 600;
                     var possibleBombs = bombsArray.Any(x => x.Key.Distance2D(forcePosition) <= (remoteMinesRadius - 75));
                     if (!possibleBombs)
                     {
@@ -549,7 +572,8 @@
             {
                 //aa
             }
-            if (!(Case == 2 || Case == 4))
+
+            if (!Menu.Item("autoDetonateCreeps").GetValue<bool>())
             {
                 return;
             }
@@ -559,7 +583,6 @@
                         x =>
                         (x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Lane || x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Siege)
                         && x.IsAlive && x.IsVisible && x.IsSpawned && x.Team == me.GetEnemyTeam());
-
             var enumerable = creeps as Creep[] ?? creeps.ToArray();
 
             foreach (var data in (from creep in enumerable
@@ -585,17 +608,6 @@
 
         private static void Game_OnWndProc(WndEventArgs args)
         {
-            if (!Game.IsChatOpen && args.Msg == (ulong)Utils.WindowsMessages.WM_KEYUP && args.WParam == 'L')
-            {
-                if (Case == 4)
-                {
-                    Case = 1;
-                }
-                else
-                {
-                    Case += 1;
-                }
-            }
             if (args.Msg != (ulong)Utils.WindowsMessages.WM_LBUTTONDOWN)
             {
                 return;
