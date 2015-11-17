@@ -1,27 +1,19 @@
 ﻿namespace Orbwalker
 {
     using System;
-    using System.Windows.Input;
 
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Menu;
 
     using SharpDX;
 
     internal class Orbwalker
     {
-        #region Constants
-
-        private const Key FarmKey = Key.B;
-
-        private const Key ChaseKey = Key.Space;
-
-        private const Key KiteKey = Key.V;
-
-        #endregion
-
         #region Static Fields
+
+        private static readonly Menu Menu = new Menu("Orbwalker", "orbwalker", true);
 
         private static Unit creepTarget;
 
@@ -41,6 +33,13 @@
 
         public static void Init()
         {
+            Menu.AddItem(new MenuItem("chaseKey", "Chase Key").SetValue(new KeyBind(32, KeyBindType.Press)));
+            Menu.AddItem(new MenuItem("kiteKey", "Kite Key").SetValue(new KeyBind('V', KeyBindType.Press)));
+            Menu.AddItem(new MenuItem("farmKey", "Farm Key").SetValue(new KeyBind('B', KeyBindType.Press)));
+            Menu.AddItem(
+                new MenuItem("bonusWindup", "Bonus WindUp time on kitting").SetValue(new Slider(500, 100, 2000))
+                    .SetTooltip("Time between attacks in kitting mode"));
+            Menu.AddToMainMenu();
             Game.OnUpdate += Game_OnUpdate;
             Orbwalking.Load();
             if (rangeDisplay == null)
@@ -65,6 +64,9 @@
                     return;
                 }
                 loaded = true;
+                Game.PrintMessage(
+                    "<font face='Tahoma'><font color='#000000'>[--</font> <font color='#33ff66'>Orbwalker</font> by <font color='#999999'>MOON</font><font color='#ff9900'>ES</font> loaded! <font color='#000000'>--]</font></font>",
+                    MessageType.LogMessage);
             }
 
             if (me == null || !me.IsValid)
@@ -120,9 +122,9 @@
                         target = me.BestAATarget();
                     }
                 }
-                if (Game.IsKeyDown(FarmKey)
-                    && (creepTarget == null || !creepTarget.IsValid || !creepTarget.IsVisible || !creepTarget.IsAlive || creepTarget.Health <= 0
-                         || !Orbwalking.AttackOnCooldown(creepTarget)))
+                if (Game.IsKeyDown(Menu.Item("farmKey").GetValue<KeyBind>().Key)
+                    && (creepTarget == null || !creepTarget.IsValid || !creepTarget.IsVisible || !creepTarget.IsAlive
+                        || creepTarget.Health <= 0 || !Orbwalking.AttackOnCooldown(creepTarget)))
                 {
                     creepTarget = TargetSelector.GetLowestHPCreep(me);
                 }
@@ -133,20 +135,20 @@
                 return;
             }
 
-            if (Game.IsKeyDown(FarmKey))
+            if (Game.IsKeyDown(Menu.Item("farmKey").GetValue<KeyBind>().Key))
             {
                 Orbwalking.Orbwalk(creepTarget);
             }
-            if (Game.IsKeyDown(ChaseKey))
+            if (Game.IsKeyDown(Menu.Item("chaseKey").GetValue<KeyBind>().Key))
             {
                 Orbwalking.Orbwalk(target, attackmodifiers: true);
             }
-            if (Game.IsKeyDown(KiteKey))
+            if (Game.IsKeyDown(Menu.Item("kiteKey").GetValue<KeyBind>().Key))
             {
                 Orbwalking.Orbwalk(
                     target,
                     attackmodifiers: true,
-                    bonusRange: (float)(UnitDatabase.GetAttackRate(me) * 1000));
+                    bonusWindupMs: Menu.Item("bonusWindup").GetValue<Slider>().Value);
             }
         }
 
