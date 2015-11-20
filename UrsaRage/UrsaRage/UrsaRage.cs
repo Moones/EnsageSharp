@@ -27,8 +27,6 @@
 
         private static double earthshockCastPoint;
 
-        private static bool enableQ = true;
-
         private static Ability enrage;
 
         private static float hullsum;
@@ -90,7 +88,6 @@
             scytheOfVyse = null;
             blink = null;
             menuvalueSet = false;
-            Game.OnWndProc += Game_OnWndProc;
             Orbwalking.Load();
         }
 
@@ -144,7 +141,7 @@
                 }
             }
             if (manaCheck && menuValue.IsEnabled(earthshock.Name) && earthshock.CanBeCasted() && Utils.SleepCheck("Q")
-                && enableQ && ((me.Mana - earthshock.ManaCost) > overpower.ManaCost || !overpower.CanBeCasted()))
+                && ((me.Mana - earthshock.ManaCost) > overpower.ManaCost || !overpower.CanBeCasted()))
             {
                 var radius = earthshock.GetAbilityData("shock_radius");
                 var pos = target.Position
@@ -205,7 +202,7 @@
                 return false;
             }
             if (manaCheck && menuValue.IsEnabled(overpower.Name) && overpower.CanBeCasted() && Utils.SleepCheck("W")
-                && !(earthshock.CanBeCasted() && enableQ && Utils.ChainStun(target, 0.3 + Game.Ping / 1000, null, false)))
+                && !(earthshock.CanBeCasted() && Utils.ChainStun(target, 0.3 + Game.Ping / 1000, null, false)))
             {
                 if (mePosition.Distance2D(target) <= (Radius + hullsum))
                 {
@@ -393,15 +390,6 @@
                 return;
             }
             OrbWalk(Orbwalking.CanCancelAnimation());
-        }
-
-        private static void Game_OnWndProc(WndEventArgs args)
-        {
-            if (args.Msg != (ulong)Utils.WindowsMessages.WM_KEYUP || args.WParam != 'G' || Game.IsChatOpen)
-            {
-                return;
-            }
-            enableQ = !enableQ;
         }
 
         private static void OrbWalk(bool canCancel)
