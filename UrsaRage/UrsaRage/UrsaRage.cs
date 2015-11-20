@@ -1,25 +1,23 @@
 ﻿namespace UrsaRage
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
-    using System.Windows.Input;
 
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Menu;
 
     using SharpDX;
-    using SharpDX.Direct3D9;
-
-    using unitDB = Ensage.Common.UnitDatabase;
 
     internal class UrsaRage
     {
         #region Static Fields
 
-        private static Item abyssalBlade;
+        private static readonly Menu Menu = new Menu("UrsaRage", "ursaRage", true);
 
-        private static Item scytheOfVyse;
+        private static Item abyssalBlade;
 
         private static Item blink;
 
@@ -39,17 +37,21 @@
 
         private static Hero me;
 
+        private static AbilityToggler menuValue;
+
+        private static bool menuvalueSet;
+
         private static Vector3 mePosition;
 
         private static Ability overpower;
 
         private static double overpowerCastPoint;
 
+        private static Item scytheOfVyse;
+
         private static Hero target;
 
         private static float targetDistance;
-
-        private static Font text;
 
         private static double turnTime;
 
@@ -59,6 +61,24 @@
 
         public static void Init()
         {
+            var dict = new Dictionary<string, bool>
+                           {
+                               { "ursa_enrage", true }, { "ursa_overpower", true }, { "ursa_earthshock", true },
+                               { "item_sheepstick", true }, { "item_abyssal_blade", true }, { "item_blink", true }
+                           };
+            Menu.AddItem(new MenuItem("enabledAbilities", "Abilities:").SetValue(new AbilityToggler(dict)));
+            Menu.AddItem(
+                new MenuItem("manaSlider", "Minimum mana for combo:").SetValue(new Slider(0, 0, 500))
+                    .SetTooltip("Only for abilities that require mana to be casted!"));
+            Menu.AddItem(
+                new MenuItem("targetSelecting", "Target selection:").SetValue(
+                    new StringList(new[] { "FastestKillable", "ClosestToMouse" })));
+            Menu.AddItem(
+                new MenuItem("lockTarget", "Lock on target when they become not visible:").SetValue(true)
+                    .SetTooltip(
+                        "It will not chase to fog, but it wont change target if current target just ran into fog, you can reset target by stopping holding the key"));
+            Menu.AddItem(new MenuItem("comboKey", "Combo Key").SetValue(new KeyBind(32, KeyBindType.Press)));
+            Menu.AddToMainMenu();
             Game.OnUpdate += Game_OnUpdate;
             loaded = false;
             me = null;
@@ -69,18 +89,7 @@
             abyssalBlade = null;
             scytheOfVyse = null;
             blink = null;
-            text = new Font(
-                Drawing.Direct3DDevice9,
-                new FontDescription
-                    {
-                        FaceName = "Tahoma", Height = 13, OutputPrecision = FontPrecision.Default,
-                        Quality = FontQuality.Default
-                    });
-
-            Drawing.OnPreReset += Drawing_OnPreReset;
-            Drawing.OnPostReset += Drawing_OnPostReset;
-            Drawing.OnEndScene += Drawing_OnEndScene;
-            AppDomain.CurrentDomain.DomainUnload += CurrentDomainDomainUnload;
+            menuvalueSet = false;
             Game.OnWndProc += Game_OnWndProc;
             Orbwalking.Load();
         }
@@ -94,12 +103,13 @@
             var canCancel = (Orbwalking.CanCancelAnimation()
                              && (Orbwalking.AttackOnCooldown(target) || !me.IsAttacking()))
                             || (!Orbwalking.AttackOnCooldown(target) && targetDistance > 250);
+            var manaCheck = Menu.Item("manaSlider").GetValue<Slider>().Value < me.Mana;
             if (!Utils.SleepCheck("casting") || !me.CanCast() || !target.IsVisible || !canCancel)
             {
                 return false;
             }
-            if (abyssalBlade != null && abyssalBlade.CanBeCasted() && targetDistance <= (350 + hullsum)
-                && Utils.SleepCheck("abyssal"))
+            if (manaCheck && abyssalBlade != null && menuValue.IsEnabled(abyssalBlade.Name)
+                && abyssalBlade.CanBeCasted() && targetDistance <= (350 + hullsum) && Utils.SleepCheck("abyssal"))
             {
                 var canUse = Utils.ChainStun(target, turnTime + 0.1 + Game.Ping / 1000, null, false);
                 if (canUse)
@@ -115,7 +125,8 @@
                     return true;
                 }
             }
-            if (scytheOfVyse != null && scytheOfVyse.CanBeCasted() && targetDistance <= (scytheOfVyse.CastRange + hullsum)
+            if (manaCheck && scytheOfVyse != null && menuValue.IsEnabled(scytheOfVyse.Name)
+                && scytheOfVyse.CanBeCasted() && targetDistance <= (scytheOfVyse.CastRange + hullsum)
                 && Utils.SleepCheck("hex"))
             {
                 var canUse = Utils.ChainStun(target, turnTime + 0.1 + Game.Ping / 1000, null, false);
@@ -132,10 +143,10 @@
                     return true;
                 }
             }
-            if (earthshock.CanBeCasted() && Utils.SleepCheck("Q") && enableQ
-                && ((me.Mana - earthshock.ManaCost) > overpower.ManaCost || !overpower.CanBeCasted()))
+            if (manaCheck && menuValue.IsEnabled(earthshock.Name) && earthshock.CanBeCasted() && Utils.SleepCheck("Q")
+                && enableQ && ((me.Mana - earthshock.ManaCost) > overpower.ManaCost || !overpower.CanBeCasted()))
             {
-                var radius = earthshock.AbilityData.FirstOrDefault(x => x.Name == "shock_radius").GetValue(0);
+                var radius = earthshock.GetAbilityData("shock_radius");
                 var pos = target.Position
                           + target.Vector3FromPolarAngle() * ((Game.Ping / 1000 + 0.3f) * target.MovementSpeed);
 
@@ -163,7 +174,7 @@
                     return true;
                 }
             }
-            if (blink != null && blink.CanBeCasted() && targetDistance > 400
+            if (blink != null && menuValue.IsEnabled(blink.Name) && blink.CanBeCasted() && targetDistance > 400
                 && targetDistance < (blinkRange + hullsum * 2 + me.AttackRange) && Utils.SleepCheck("blink"))
             {
                 var position = target.Position;
@@ -193,7 +204,7 @@
             {
                 return false;
             }
-            if (overpower.CanBeCasted() && Utils.SleepCheck("W")
+            if (manaCheck && menuValue.IsEnabled(overpower.Name) && overpower.CanBeCasted() && Utils.SleepCheck("W")
                 && !(earthshock.CanBeCasted() && enableQ && Utils.ChainStun(target, 0.3 + Game.Ping / 1000, null, false)))
             {
                 if (mePosition.Distance2D(target) <= (Radius + hullsum))
@@ -204,7 +215,7 @@
                     return true;
                 }
             }
-            if (!enrage.CanBeCasted() || !Utils.SleepCheck("R"))
+            if (!menuValue.IsEnabled(enrage.Name) || !enrage.CanBeCasted() || !Utils.SleepCheck("R"))
             {
                 return false;
             }
@@ -216,42 +227,6 @@
             Utils.Sleep(100 + Game.Ping, "R");
             Utils.Sleep(100, "casting");
             return true;
-        }
-
-        private static void CurrentDomainDomainUnload(object sender, EventArgs e)
-        {
-            text.Dispose();
-        }
-
-        private static void Drawing_OnEndScene(EventArgs args)
-        {
-            if (Drawing.Direct3DDevice9 == null || Drawing.Direct3DDevice9.IsDisposed || !Game.IsInGame)
-            {
-                return;
-            }
-
-            var player = ObjectMgr.LocalPlayer;
-            if (player == null || player.Team == Team.Observer)
-            {
-                return;
-            }
-
-            text.DrawText(
-                null,
-                enableQ ? "UrsaRage: Q - ENABLED! | [G] for toggle" : "UrsaRage: Q - DISABLED! | [G] for toggle",
-                5,
-                96,
-                Color.IndianRed);
-        }
-
-        private static void Drawing_OnPostReset(EventArgs args)
-        {
-            text.OnResetDevice();
-        }
-
-        private static void Drawing_OnPreReset(EventArgs args)
-        {
-            text.OnLostDevice();
         }
 
         private static void Game_OnUpdate(EventArgs args)
@@ -286,6 +261,13 @@
                 scytheOfVyse = null;
                 blink = null;
                 return;
+            }
+
+            if (!menuvalueSet)
+            {
+                menuValue = Menu.Item("enabledAbilities").GetValue<AbilityToggler>();
+                menuvalueSet = true;
+                //Utils.Sleep(100000, "updateMenuValue");
             }
 
             if (Game.IsPaused)
@@ -331,7 +313,7 @@
                 enrage = me.FindSpell("ursa_enrage");
             }
 
-            if (!Game.IsKeyDown(Key.Space) || Game.IsChatOpen)
+            if (!Menu.Item("comboKey").GetValue<KeyBind>().Active || Game.IsChatOpen)
             {
                 target = null;
                 return;
@@ -340,7 +322,9 @@
             {
                 mePosition = me.Position;
             }
-            if (earthshock.IsInAbilityPhase && (target == null || !target.IsAlive || target.Distance2D(me) > earthshock.AbilityData.FirstOrDefault(x => x.Name == "shock_radius").GetValue(0)))
+            if (earthshock.IsInAbilityPhase
+                && (target == null || !target.IsAlive
+                    || target.Distance2D(me) > earthshock.GetAbilityData("shock_radius")))
             {
                 me.Stop();
                 if (target != null)
@@ -370,19 +354,23 @@
             {
                 if (target != null && !target.IsVisible)
                 {
-                    var closestToMouse = me.ClosestToMouseTarget(128);
-                    if (closestToMouse != null)
+                    if (!Menu.Item("lockTarget").GetValue<bool>())
                     {
-                        target = me.ClosestToMouseTarget(range);
+                        var closestToMouse = me.ClosestToMouseTarget(128);
+                        if (closestToMouse != null)
+                        {
+                            target = me.ClosestToMouseTarget(range);
+                        }
                     }
                 }
                 else
                 {
-                    target = me.ClosestToMouseTarget(range);
-                }       
+                    var index = Menu.Item("targetSelecting").GetValue<StringList>().SelectedIndex;
+                    target = index == 0 ? me.BestAATarget() : me.ClosestToMouseTarget();
+                }
             }
-            if (target == null || !target.IsAlive || ((!target.IsVisible
-                   || target.Distance2D(mousePosition) > target.Distance2D(me) + 1000) && canCancel))
+            if (target == null || !target.IsAlive
+                || ((!target.IsVisible || target.Distance2D(mousePosition) > target.Distance2D(me) + 1000) && canCancel))
             {
                 if (!Utils.SleepCheck("move"))
                 {
@@ -434,7 +422,8 @@
                 return;
             }
 
-            var canMove = (canCancel && Orbwalking.AttackOnCooldown(target)) || (!Orbwalking.AttackOnCooldown(target) && targetDistance > 350);
+            var canMove = (canCancel && Orbwalking.AttackOnCooldown(target))
+                          || (!Orbwalking.AttackOnCooldown(target) && targetDistance > 350);
             if (!Utils.SleepCheck("move") || !canMove)
             {
                 return;
@@ -444,12 +433,15 @@
             {
                 var pos = target.Position
                           + target.Vector3FromPolarAngle()
-                          * (float)Math.Max((Game.Ping / 1000 + (targetDistance / me.MovementSpeed) + turnTime) * target.MovementSpeed, 500);
+                          * (float)
+                            Math.Max(
+                                (Game.Ping / 1000 + (targetDistance / me.MovementSpeed) + turnTime)
+                                * target.MovementSpeed,
+                                500);
 
                 //Console.WriteLine(pos.Distance(me.Position) + " " + target.Distance2D(pos));
                 if (pos.Distance(me.Position) > target.Distance2D(pos) - 80)
                 {
-
                     me.Move(pos);
                 }
                 else
