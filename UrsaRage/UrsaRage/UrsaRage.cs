@@ -15,7 +15,7 @@
     {
         #region Static Fields
 
-        private static readonly Menu Menu = new Menu("UrsaRage", "ursaRage", true);
+        private static readonly Menu Menu = new Menu("UrsaRage", "ursaRage", true, "npc_dota_hero_ursa", true);
 
         private static Item abyssalBlade;
 
@@ -171,6 +171,7 @@
                     return true;
                 }
             }
+            //Console.WriteLine(blink != null);
             if (blink != null && menuValue.IsEnabled(blink.Name) && blink.CanBeCasted() && targetDistance > 400
                 && targetDistance < (blinkRange + hullsum * 2 + me.AttackRange) && Utils.SleepCheck("blink"))
             {
@@ -242,6 +243,9 @@
                 abyssalBlade = me.FindItem("item_abyssal_blade");
                 scytheOfVyse = me.FindItem("item_sheepstick");
                 loaded = true;
+                Game.PrintMessage(
+                    "<font color='#3377ff'>UrsaRage</font>: loaded! <font face='Tahoma' size='9'>(by MOON<font color='#ff9900'>ES</font>)</font>",
+                    MessageType.ChatMessage);
             }
 
             if (!Game.IsInGame || me == null)
@@ -363,7 +367,7 @@
                 else
                 {
                     var index = Menu.Item("targetSelecting").GetValue<StringList>().SelectedIndex;
-                    target = index == 0 ? me.BestAATarget() : me.ClosestToMouseTarget();
+                    target = index == 0 ? me.BestAATarget(blinkRange) : me.ClosestToMouseTarget();
                 }
             }
             if (target == null || !target.IsAlive

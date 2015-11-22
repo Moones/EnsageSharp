@@ -17,7 +17,7 @@
     {
         #region Static Fields
 
-        private static readonly Menu Menu = new Menu("#TECHIES", "techies", true);
+        private static readonly Menu Menu = new Menu("#TECHIES", "techies", true, "npc_dota_hero_techies", true);
 
         private static readonly Dictionary<ClassID, double> RemoteMinesHeroDmg = new Dictionary<ClassID, double>();
 
@@ -399,7 +399,7 @@
                     ObjectMgr.GetEntities<Player>()
                         .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam());
                 Game.PrintMessage(
-                    "<font face='Tahoma'><font color='#ff1111'>#TECHIES</font> by MOON<font color='#ff9900'>ES</font> loaded!</font> ",
+                    "<font face='Tahoma'><font color='#993311'>#TECHIES</font> by MOON<font color='#ff9900'>ES</font> loaded!</font> ",
                     MessageType.LogMessage);
             }
             if (!Game.IsInGame || me == null || me.ClassID != ClassID.CDOTA_Unit_Hero_Techies)
