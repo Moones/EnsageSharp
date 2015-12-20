@@ -107,8 +107,15 @@
                     Utils.Sleep(250, "UpdateTarget");
                 }
                 var selectedCombo = MainMenu.ComboKeysMenu.Item("abilityComboType").GetValue<StringList>().SelectedIndex;
-                if (!FullCombo.Execute(target, enemyHeroes, ping, selectedCombo == 2, selectedCombo == 1, Me)
-                    && Utils.SleepCheck("cancelorder"))
+                if (
+                    !FullCombo.Execute(
+                        target,
+                        enemyHeroes,
+                        ping,
+                        selectedCombo == 2,
+                        selectedCombo == 1,
+                        Me,
+                        meModifiers) && Utils.SleepCheck("casting"))
                 {
                     Orbwalking.Orbwalk(target);
                 }

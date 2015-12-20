@@ -633,7 +633,7 @@
                 }
                 if (category == "shield"
                     && MainMenu.Menu.Item("shieldsToggler").GetValue<AbilityToggler>().IsEnabled(name) && canHit
-                    && (!(!ability.IsAbilityBehavior(AbilityBehavior.NoTarget)
+                    && (!(!ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name)
                           || (name == "item_pipe" || name == "item_buckler" || name == "omniknight_guardian_angel"
                               || name == "item_crimson_guard"))
                         || (Shields.ShieldsMenuDictionary[name].Item(name + "useonallies")
@@ -678,13 +678,15 @@
             float ping,
             bool onlyDamage,
             bool onlyDisable,
-            Hero me)
+            Hero me,
+            List<Modifier> meModifiers)
         {
             if (Utils.SleepCheck("UpdateCombo"))
             {
                 var toggler = MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>();
                 MyAbilities.Combo =
-                    MyAbilities.OffensiveAbilities.Where(x => toggler.IsEnabled(NameManager.Name(x.Value)))
+                    MyAbilities.OffensiveAbilities.Where(
+                        x => x.Value.IsValid && x.Value.Owner.Equals(me) && toggler.IsEnabled(NameManager.Name(x.Value)))
                         .OrderBy(x => ComboOrder.GetComboOrder(x.Value, onlyDisable));
                 Utils.Sleep(500, "UpdateCombo");
             }
@@ -692,7 +694,8 @@
             {
                 if (target != null)
                 {
-                    if (Dictionaries.HitDamageDictionary[target.Handle] * 1.5 >= target.Health
+                    if (Dictionaries.HitDamageDictionary.ContainsKey(target.Handle)
+                        && Dictionaries.HitDamageDictionary[target.Handle] * 1.5 >= target.Health
                         && target.Distance2D(MyHeroInfo.Position) <= me.GetAttackRange() + 150)
                     {
                         return false;
@@ -724,6 +727,7 @@
                         MyAbilities.Combo.Where(
                             x =>
                             x.Value.IsValid && x.Value.CanBeCasted()
+                            && !x.Value.IsAbilityBehavior(AbilityBehavior.Hidden)
                             && ((x.Value is Item && me.CanUseItems()) || (!(x.Value is Item) && me.CanCast()))
                             && (Utils.SleepCheck(x.Value.Handle.ToString())
                                 || (!x.Value.IsInAbilityPhase && x.Value.FindCastPoint() > 0))))
@@ -752,7 +756,7 @@
                         {
                             continue;
                         }
-                        if (!ability.CanHit(target, MyHeroInfo.Position, name))
+                        if (!ability.CanHit(target, MyHeroInfo.Position, name) && category != "buff")
                         {
                             dealtDamage = 0;
                             if (name == "templar_assassin_meld")
@@ -760,18 +764,20 @@
                                 AbilityMain.Me.Move(Game.MousePosition);
                                 return true;
                             }
-                            if (target.Distance2D(MyHeroInfo.Position) > ability.GetCastRange(name) + 300)
+                            if (target.Distance2D(MyHeroInfo.Position) > ability.GetCastRange(name) + 500)
                             {
                                 continue;
                             }
                             return false;
                         }
                         if (category == "nuke"
-                            && (((target.Health - dealtDamage) > 0
-                                 && (target.Health - dealtDamage)
-                                 < Nukes.NukesMenuDictionary[name].Item(name + "minhealthslider")
-                                       .GetValue<Slider>()
-                                       .Value)
+                            && MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
+                            && (!CastingChecks.Killsteal(ability, target, name)
+                                || ((target.Health - dealtDamage) > 0
+                                    && (target.Health - dealtDamage)
+                                    < Nukes.NukesMenuDictionary[name].Item(name + "minhealthslider")
+                                          .GetValue<Slider>()
+                                          .Value)
                                 || (name == "zuus_thundergods_wrath"
                                     && (1
                                         + enemyHeroes.Count(
@@ -782,25 +788,35 @@
                                           .GetValue<Slider>()
                                           .Value) || !Nuke.Cast(ability, target, name)))
                         {
-                            return false;
+                            continue;
                         }
                         if (category == "disable" && !Disable.Cast(ability, target, name))
                         {
-                            return false;
+                            continue;
                         }
                         if (category == "slow" && !Slow.Cast(ability, target, name))
                         {
-                            return false;
+                            continue;
                         }
                         if (category == "harras" && !Harras.Cast(ability, target, name))
                         {
-                            return false;
+                            continue;
+                        }
+                        if (category == "silence" && !Silence.Cast(ability, target, name))
+                        {
+                            continue;
+                        }
+                        if (category == "buff"
+                            && (name == "item_armlet" || name == "item_satanic"
+                                || !Buff.Cast(ability, target, me, name, meModifiers)))
+                        {
+                            continue;
                         }
                         if (Utils.SleepCheck(ability.Handle.ToString()))
                         {
                             dealtDamage += AbilityDamage.CalculateDamage(ability, me, target);
                         }
-                        var delay = ability.GetCastDelay(me, target, abilityName: name) * 1000;
+                        var delay = Math.Max(ability.GetCastDelay(me, target, abilityName: name), 0.2) * 1000;
                         if (name == "riki_blink_strike")
                         {
                             Utils.Sleep(MyHeroInfo.AttackRate() * 1000, handleString);
@@ -846,7 +862,8 @@
                         Utils.Sleep(delay, "GlobalCasting");
                         Utils.Sleep(ability.GetHitDelay(target, name) * 1000, "calculate");
                         Utils.Sleep(
-                            ability.GetCastDelay(me, target, useCastPoint: false, abilityName: name) * 1000,
+                            Math.Max(ability.GetCastDelay(me, target, useCastPoint: false, abilityName: name), 0.15)
+                            * 1000 + Game.Ping,
                             //+ (Math.Max(me.Distance2D(target) - ability.GetCastRange(name) - 50, 0)
                             //   / me.MovementSpeed) * 1000,
                             "casting");

@@ -56,18 +56,17 @@
                     }
                     var cd = CdDictionary[name];
                     if ((ability.Cooldown > 0
-                         || (ability.IsAbilityBehavior(AbilityBehavior.Toggle) && ability.IsToggled)) && !cd)
+                         || (ability.IsAbilityBehavior(AbilityBehavior.Toggle, name) && ability.IsToggled)) && !cd)
                     {
                         CdDictionary[name] = true;
                         LastCastedDictionary[heroName] = ability;
                     }
                     if ((ability.Cooldown <= 0
-                         || (ability.IsAbilityBehavior(AbilityBehavior.Toggle) && !ability.IsToggled)) && cd)
+                         || (ability.IsAbilityBehavior(AbilityBehavior.Toggle, name) && !ability.IsToggled)) && cd)
                     {
                         CdDictionary[name] = false;
                     }
-                    if (ability.IsAbilityBehavior(AbilityBehavior.Passive)
-                        || ability.IsAbilityBehavior(AbilityBehavior.NotLearnable) || name == "invoker_invoke"
+                    if (ability.IsAbilityBehavior(AbilityBehavior.Passive, name) || name == "invoker_invoke"
                         || name == "invoker_quas" || name == "invoker_wex" || name == "invoker_exort")
                     {
                         continue;

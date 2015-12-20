@@ -35,7 +35,7 @@
                 ability.ToggleAbility();
                 return true;
             }
-            if (!(buffTarget.Distance2D(target) < MyHeroInfo.AttackRange() + 50))
+            if (!(buffTarget.Distance2D(target) < MyHeroInfo.AttackRange() + 150))
             {
                 return false;
             }

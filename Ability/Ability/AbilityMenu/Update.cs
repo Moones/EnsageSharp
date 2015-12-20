@@ -146,32 +146,52 @@
                         if (data.IsSlow)
                         {
                             AddNewSlow(item);
+                            MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                .GetValue<AbilityToggler>()
+                                .Add(item.Name);
                         }
                         if (data.IsHarras)
                         {
                             AddNewHarras(item);
+                            MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                .GetValue<AbilityToggler>()
+                                .Add(item.Name);
                         }
                         if (data.IsBuff)
                         {
                             AddNewBuff(item);
+                            MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                .GetValue<AbilityToggler>()
+                                .Add(item.Name);
                         }
                         if (data.IsSilence)
                         {
                             AddNewSilence(item);
+                            MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                .GetValue<AbilityToggler>()
+                                .Add(item.Name);
                         }
                         if (data.TrueSight || data.WeakensEnemy || data.IsPurge)
                         {
                             AddNewSpecial(item, data);
+                            MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                .GetValue<AbilityToggler>()
+                                .Add(item.Name);
                         }
                         if (data.IsDisable)
                         {
                             AddNewDisable(item);
+                            MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                .GetValue<AbilityToggler>()
+                                .Add(item.Name);
                         }
                         if (data.IsNuke)
                         {
                             AddNewNuke(item);
+                            MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                .GetValue<AbilityToggler>()
+                                .Add(item.Name);
                         }
-                        MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(item.Name);
                     }
                     //Console.WriteLine(!MyAbilities.DeffensiveAbilities.ContainsValue(item) + " " + NameManager.Name(item) + " " + data.IsHeal);
                     if (!MyAbilities.DeffensiveAbilities.ContainsValue(item))
@@ -202,34 +222,52 @@
                             if (data.IsSlow)
                             {
                                 AddNewSlow(item);
+                                MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                    .GetValue<AbilityToggler>()
+                                    .Add(item.Name);
                             }
                             if (data.IsHarras)
                             {
                                 AddNewHarras(item);
+                                MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                    .GetValue<AbilityToggler>()
+                                    .Add(item.Name);
                             }
                             if (data.IsBuff)
                             {
                                 AddNewBuff(item);
+                                MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                    .GetValue<AbilityToggler>()
+                                    .Add(item.Name);
                             }
                             if (data.IsSilence)
                             {
                                 AddNewSilence(item);
+                                MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                    .GetValue<AbilityToggler>()
+                                    .Add(item.Name);
                             }
                             if (data.TrueSight || data.WeakensEnemy || data.IsPurge)
                             {
                                 AddNewSpecial(item, data);
+                                MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                    .GetValue<AbilityToggler>()
+                                    .Add(item.Name);
                             }
                             if (data.IsDisable)
                             {
                                 AddNewDisable(item);
+                                MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                    .GetValue<AbilityToggler>()
+                                    .Add(item.Name);
                             }
                             if (data.IsNuke)
                             {
                                 AddNewNuke(item);
+                                MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
+                                    .GetValue<AbilityToggler>()
+                                    .Add(item.Name);
                             }
-                            MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
-                                .GetValue<AbilityToggler>()
-                                .Add(item.Name);
                         }
                         //Console.WriteLine(!MyAbilities.DeffensiveAbilities.ContainsValue(item) + " " + NameManager.Name(item) + " " + data.IsHeal);
                         if (!MyAbilities.DeffensiveAbilities.ContainsValue(item))

@@ -43,8 +43,8 @@
 
         public static bool Attacking(Hero target, Hero me)
         {
-            return me.IsAttacking() && me.Distance2D(target) <= MyHeroInfo.AttackRange() + 100
-                   && me.GetTurnTime(target.Position) < 0.09;
+            return me.IsAttacking() && me.Distance2D(target) <= MyHeroInfo.AttackRange() + 150
+                   && me.GetTurnTime(target.Position) < 0.1;
         }
 
         public static bool Cast(Hero target, Ability ability)

@@ -298,8 +298,8 @@
                           + new Vector2((ItemBoxSizeX / 2 - textSize.X / 2), (ItemBoxSizeY / 2) - (textSize.Y / 2));
                 Drawing.DrawText(h, pos, new Vector2(HpBar.SizeY - 2, 1), Color.LightBlue, FontFlags.AntiAlias);
             }
-            if (ability.IsRequiringCharges || ability.Name == "item_ward_dispenser"
-                || ability.Name == "item_ward_observer" || ability.Name == "item_ward_sentry")
+            if (ability.IsRequiringCharges || NameManager.Name(ability) == "item_ward_dispenser"
+                || NameManager.Name(ability) == "item_ward_observer" || NameManager.Name(ability) == "item_ward_sentry")
             {
                 var s = ability.CurrentCharges.ToString();
                 var tSize = new Vector2(HpBar.SizeY, 1);
