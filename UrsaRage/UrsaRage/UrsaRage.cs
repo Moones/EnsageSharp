@@ -105,7 +105,7 @@
             {
                 return false;
             }
-            if (manaCheck && abyssalBlade != null && menuValue.IsEnabled(abyssalBlade.Name)
+            if (manaCheck && abyssalBlade != null && abyssalBlade.IsValid && menuValue.IsEnabled(abyssalBlade.Name)
                 && abyssalBlade.CanBeCasted() && targetDistance <= (350 + hullsum) && Utils.SleepCheck("abyssal"))
             {
                 var canUse = Utils.ChainStun(target, turnTime + 0.1 + Game.Ping / 1000, null, false);
@@ -122,7 +122,7 @@
                     return true;
                 }
             }
-            if (manaCheck && scytheOfVyse != null && menuValue.IsEnabled(scytheOfVyse.Name)
+            if (manaCheck && scytheOfVyse != null && scytheOfVyse.IsValid && menuValue.IsEnabled(scytheOfVyse.Name)
                 && scytheOfVyse.CanBeCasted() && targetDistance <= (scytheOfVyse.CastRange + hullsum)
                 && Utils.SleepCheck("hex"))
             {
@@ -276,19 +276,19 @@
                 return;
             }
 
-            if (blink == null)
+            if (blink == null || !blink.IsValid)
             {
                 blink = me.FindItem("item_blink");
             }
 
-            if (abyssalBlade == null)
+            if (abyssalBlade == null || !abyssalBlade.IsValid)
             {
                 abyssalBlade = me.FindItem("item_abyssal_blade");
             }
 
-            if (abyssalBlade == null)
+            if (scytheOfVyse == null || !scytheOfVyse.IsValid)
             {
-                abyssalBlade = me.FindItem("item_sheepstick");
+                scytheOfVyse = me.FindItem("item_sheepstick");
             }
 
             if (earthshock == null)
