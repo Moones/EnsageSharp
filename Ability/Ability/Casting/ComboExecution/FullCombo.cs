@@ -730,7 +730,7 @@
                             && !x.Value.IsAbilityBehavior(AbilityBehavior.Hidden)
                             && ((x.Value is Item && me.CanUseItems()) || (!(x.Value is Item) && me.CanCast()))
                             && (Utils.SleepCheck(x.Value.Handle.ToString())
-                                || (!x.Value.IsInAbilityPhase && x.Value.FindCastPoint() > 0))))
+                                || (!x.Value.IsInAbilityPhase && x.Value.FindCastPoint() > 0))).OrderBy(x => ComboOrder.GetComboOrder(x.Value, onlyDisable)))
                     {
                         var ability = data.Value;
                         var name = NameManager.Name(ability);
@@ -752,7 +752,7 @@
                             continue;
                         }
                         var handleString = ability.Handle.ToString();
-                        if (etherealHitTime + ping >= (Environment.TickCount + ability.GetHitDelay(target, name) * 1000))
+                        if (etherealHitTime >= (Environment.TickCount + ability.GetHitDelay(target, name) * 1000))
                         {
                             continue;
                         }
@@ -771,10 +771,8 @@
                             return false;
                         }
                         if (category == "nuke"
-                            && MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
-                            && (!CastingChecks.Killsteal(ability, target, name)
-                                || ((target.Health - dealtDamage) > 0
-                                    && (target.Health - dealtDamage)
+                            && ((name == "axe_culling_blade" && !CastingChecks.Killsteal(ability, target, name))
+                                || (target.Health
                                     < Nukes.NukesMenuDictionary[name].Item(name + "minhealthslider")
                                           .GetValue<Slider>()
                                           .Value)
@@ -803,6 +801,10 @@
                             continue;
                         }
                         if (category == "silence" && !Silence.Cast(ability, target, name))
+                        {
+                            continue;
+                        }
+                        if (category == "special" && !Special.Cast(ability, target, name))
                         {
                             continue;
                         }
@@ -841,8 +843,7 @@
                             etherealHitTime =
                                 (float)
                                 (Environment.TickCount + me.GetTurnTime(target) * 1000
-                                 + Prediction.CalculateReachTime(target, 1200, target.Position - MyHeroInfo.Position)
-                                 + ping);
+                                 + Prediction.CalculateReachTime(target, 1200, target.Position - MyHeroInfo.Position));
                             Utils.Sleep(
                                 me.GetTurnTime(target) * 1000 + 100
                                 + (MyHeroInfo.Position.Distance2D(target) / 1200) * 1000 + ping,
