@@ -730,7 +730,7 @@
                             && !x.Value.IsAbilityBehavior(AbilityBehavior.Hidden)
                             && ((x.Value is Item && me.CanUseItems()) || (!(x.Value is Item) && me.CanCast()))
                             && (Utils.SleepCheck(x.Value.Handle.ToString())
-                                || (!x.Value.IsInAbilityPhase && x.Value.FindCastPoint() > 0))).OrderBy(x => ComboOrder.GetComboOrder(x.Value, onlyDisable)))
+                                || (!x.Value.IsInAbilityPhase && x.Value.FindCastPoint() > 0))))
                     {
                         var ability = data.Value;
                         var name = NameManager.Name(ability);
@@ -843,7 +843,7 @@
                             etherealHitTime =
                                 (float)
                                 (Environment.TickCount + me.GetTurnTime(target) * 1000
-                                 + Prediction.CalculateReachTime(target, 1200, target.Position - MyHeroInfo.Position));
+                                 + Prediction.CalculateReachTime(target, 1200, target.Position - me.Position) + ping * 2);
                             Utils.Sleep(
                                 me.GetTurnTime(target) * 1000 + 100
                                 + (MyHeroInfo.Position.Distance2D(target) / 1200) * 1000 + ping,

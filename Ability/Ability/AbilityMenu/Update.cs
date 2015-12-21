@@ -271,9 +271,9 @@
                 }
                 Utils.Sleep(1000, "checkitems");
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Console.WriteLine(e.GetBaseException());
+                //
             }
         }
 
