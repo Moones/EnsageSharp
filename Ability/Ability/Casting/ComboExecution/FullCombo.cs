@@ -900,7 +900,7 @@
                     {
                         var name = NameManager.Name(ability);
                         var handleString = ability.Handle.ToString();
-                        if (etherealHitTime + ping
+                        if (etherealHitTime
                             >= (Environment.TickCount + ability.GetHitDelay(possibleTarget, name) * 1000))
                         {
                             continue;
@@ -955,7 +955,7 @@
                                  + Prediction.CalculateReachTime(
                                      possibleTarget,
                                      1200,
-                                     possibleTarget.Position - MyHeroInfo.Position) + ping);
+                                     possibleTarget.Position - me.Position) + ping * 2);
                             Utils.Sleep(
                                 me.GetTurnTime(possibleTarget) * 1000 + 100
                                 + (MyHeroInfo.Position.Distance2D(possibleTarget) / 1200) * 1000 + ping,

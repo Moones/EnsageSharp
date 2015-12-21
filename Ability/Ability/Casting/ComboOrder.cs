@@ -23,7 +23,7 @@
                                                                                 { "morphling_waveform", 3 },
                                                                                 { "necrolyte_death_pulse", 1 },
                                                                                 { "item_shivas_guard", 1 },
-                                                                                { "tinker_laser", 4 }, { "pudge_rot", 3 },
+                                                                                { "tinker_heat_seeking_missile", 3 }, { "pudge_rot", 3 },
                                                                                 { "axe_culling_blade", 10 },
                                                                                 { "item_cyclone", 0 },
                                                                                 { "leshrac_lightning_storm", 0 },
