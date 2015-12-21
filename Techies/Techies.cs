@@ -9,6 +9,7 @@
     using Ensage.Common;
     using Ensage.Common.Extensions;
     using Ensage.Common.Menu;
+    using Ensage.Common.Objects;
 
     using SharpDX;
     using SharpDX.Direct3D9;
@@ -22,6 +23,8 @@
         private static readonly Dictionary<ClassID, double> RemoteMinesHeroDmg = new Dictionary<ClassID, double>();
 
         private static bool aghanims;
+
+        private static List<Creep> creeps;
 
         private static Dictionary<ClassID, bool> enabledHeroes = new Dictionary<ClassID, bool>();
 
@@ -45,7 +48,7 @@
 
         private static Font panelText;
 
-        private static IEnumerable<Player> players;
+        private static List<Hero> players;
 
         //private static IEnumerable<Hero> enemyHeroes;
 
@@ -167,14 +170,11 @@
             {
                 if (players == null || players.Count() < 5)
                 {
-                    players =
-                        ObjectMgr.GetEntities<Player>()
-                            .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam());
+                    players = Heroes.GetByTeam(me.GetEnemyTeam());
                 }
-                var enumerable = players as Player[] ?? players.ToArray();
+                //var enumerable = players as Hero[] ?? players.ToArray();
                 //Console.WriteLine(enumerable.Count());
-                foreach (var hero in
-                    enumerable.Select(x => x.Hero))
+                foreach (var hero in players)
                 {
                     var classId = hero.ClassID;
                     bool enabled;
@@ -300,9 +300,7 @@
             }
             catch (Exception)
             {
-                players =
-                    ObjectMgr.GetEntities<Player>()
-                        .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam());
+                //
             }
         }
 
@@ -395,9 +393,7 @@
                 //enemyHeroes =
                 //    ObjectMgr.GetEntities<Hero>()
                 //        .Where(x => x != null && x.IsValid && x.Team == me.GetEnemyTeam() && !x.IsIllusion);
-                players =
-                    ObjectMgr.GetEntities<Player>()
-                        .Where(x => x != null && x.Hero != null && x.Hero.Team == me.GetEnemyTeam());
+                players = Heroes.GetByTeam(me.GetEnemyTeam());
                 Game.PrintMessage(
                     "<font face='Tahoma'><font color='#993311'>#TECHIES</font> by MOON<font color='#ff9900'>ES</font> loaded!</font> ",
                     MessageType.LogMessage);
@@ -491,13 +487,11 @@
                     && x.Key.Spellbook.Spell1.CanBeCasted() && x.Key.IsAlive);
             var bombsArray = bombs as KeyValuePair<Unit, float>[] ?? bombs.ToArray();
             var eHeroes =
-                ObjectMgr.GetEntities<Hero>()
-                    .Where(
-                        x =>
-                        x != null && x.IsValid && !x.IsIllusion && x.Team == me.GetEnemyTeam() && x.IsAlive
-                        && x.IsVisible && !x.IsMagicImmune()
-                        && x.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
-                        && Utils.SleepCheck(x.ClassID.ToString()));
+                players.Where(
+                    x =>
+                    x != null && x.IsValid && !x.IsIllusion && x.Team == me.GetEnemyTeam() && x.IsAlive && x.IsVisible
+                    && !x.IsMagicImmune() && x.Modifiers.All(y => y.Name != "modifier_abaddon_borrowed_time")
+                    && Utils.SleepCheck(x.ClassID.ToString()));
             try
             {
                 foreach (var hero in
@@ -577,22 +571,27 @@
             {
                 return;
             }
-            var creeps =
-                ObjectMgr.GetEntities<Creep>()
-                    .Where(
-                        x =>
-                        (x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Lane || x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Siege)
-                        && x.IsAlive && x.IsVisible && x.IsSpawned && x.Team == me.GetEnemyTeam());
-            var enumerable = creeps as Creep[] ?? creeps.ToArray();
+            if (Utils.SleepCheck("Techies.GetCreeps") || creeps == null)
+            {
+                creeps =
+                    ObjectMgr.GetEntities<Creep>()
+                        .Where(
+                            x =>
+                            (x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Lane
+                             || x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Siege) && x.IsAlive && x.IsVisible
+                            && x.IsSpawned && x.Team == me.GetEnemyTeam())
+                        .ToList();
+                Utils.Sleep(250, "Techies.GetCreeps");
+            }
 
-            foreach (var data in (from creep in enumerable
+            foreach (var data in (from creep in creeps
                                   let nearbyBombs =
                                       bombsArray.Any(x => x.Key.Distance2D(creep) <= remoteMinesRadius + 500)
                                   where nearbyBombs
                                   let detonatableBombs = FindDetonatableBombs(creep, creep.Position, bombsArray)
                                   where detonatableBombs != null
                                   let nearbyCreeps =
-                                      enumerable.Count(
+                                      creeps.Count(
                                           x =>
                                           x.Distance2D(creep) <= remoteMinesRadius
                                           && CheckBombDamage(x, x.Position, bombsArray) >= x.Health)
@@ -616,7 +615,7 @@
             {
                 foreach (var hero in
                     from play in players
-                    select play.Hero
+                    select play
                     into hero
                     let sizeX = (float)HUDInfo.GetTopPanelSizeX(hero)
                     let x = HUDInfo.GetTopPanelPosition(hero).X
