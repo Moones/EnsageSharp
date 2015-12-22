@@ -58,69 +58,69 @@
             AllyHeroes.Items = new List<Item>();
             EnemyHeroes.Items = new List<Item>();
             Manage.SubscribeAllEvents();
-            var id = AbilityMain.Me.ClassID;
-            var msg = "Fully supported";
-            var color = "#009900";
-            if (id == ClassID.CDOTA_Unit_Hero_Invoker)
-            {
-                msg = "Partially supported (only currently invoked spells will be used)";
-                color = "#999900";
-            }
-            else if (id == ClassID.CDOTA_Unit_Hero_EarthSpirit)
-            {
-                msg = "Not supported (only items will be used)";
-                color = "#990000";
-            }
-            else if (id == ClassID.CDOTA_Unit_Hero_EmberSpirit)
-            {
-                msg = "Not supported (only items will be used)";
-                color = "#990000";
-            }
-            else if (id == ClassID.CDOTA_Unit_Hero_Shredder)
-            {
-                msg = "Not supported (only items will be used)";
-                color = "#990000";
-            }
-            else if (id == ClassID.CDOTA_Unit_Hero_Wisp)
-            {
-                msg = "Not supported (only items will be used)";
-                color = "#990000";
-            }
-            else if (id == ClassID.CDOTA_Unit_Hero_Meepo)
-            {
-                msg = "Not supported (only items will be used)";
-                color = "#990000";
-            }
-            else if (id == ClassID.CDOTA_Unit_Hero_AncientApparition)
-            {
-                msg = "Partially supported (will not use ultimate)";
-                color = "#999900";
-            }
-            else if (id == ClassID.CDOTA_Unit_Hero_Obsidian_Destroyer)
-            {
-                msg = "Partially supported (will not use ultimate)";
-                color = "#999900";
-            }
-            else if (id == ClassID.CDOTA_Unit_Hero_Chen)
-            {
-                msg = "Partially supported (will not control creeps)";
-                color = "#999900";
-            }
-            else if (id == ClassID.CDOTA_Unit_Hero_Warlock)
-            {
-                msg = "Partially supported (will not use ultimate)";
-                color = "#999900";
-            }
-            else if (id == ClassID.CDOTA_Unit_Hero_StormSpirit)
-            {
-                msg = "Partially supported (will not use ultimate)";
-                color = "#999900";
-            }
-            Game.PrintMessage(
-                "<font face='Tahoma'><font color='#ff6600'>ABILITY#</font> - loaded - hero "
-                + id.ToString().Substring("CDOTA_Unit_Hero_".Length) + " is <font color='" + color + "'>" + msg
-                + "</font></font>",
-                MessageType.ChatMessage);
+            //var id = AbilityMain.Me.ClassID;
+            //var msg = "Fully supported";
+            //var color = "#009900";
+            //if (id == ClassID.CDOTA_Unit_Hero_Invoker)
+            //{
+            //    msg = "Partially supported (only currently invoked spells will be used)";
+            //    color = "#999900";
+            //}
+            //else if (id == ClassID.CDOTA_Unit_Hero_EarthSpirit)
+            //{
+            //    msg = "Not supported (only items will be used)";
+            //    color = "#990000";
+            //}
+            //else if (id == ClassID.CDOTA_Unit_Hero_EmberSpirit)
+            //{
+            //    msg = "Not supported (only items will be used)";
+            //    color = "#990000";
+            //}
+            //else if (id == ClassID.CDOTA_Unit_Hero_Shredder)
+            //{
+            //    msg = "Not supported (only items will be used)";
+            //    color = "#990000";
+            //}
+            //else if (id == ClassID.CDOTA_Unit_Hero_Wisp)
+            //{
+            //    msg = "Not supported (only items will be used)";
+            //    color = "#990000";
+            //}
+            //else if (id == ClassID.CDOTA_Unit_Hero_Meepo)
+            //{
+            //    msg = "Not supported (only items will be used)";
+            //    color = "#990000";
+            //}
+            //else if (id == ClassID.CDOTA_Unit_Hero_AncientApparition)
+            //{
+            //    msg = "Partially supported (will not use ultimate)";
+            //    color = "#999900";
+            //}
+            //else if (id == ClassID.CDOTA_Unit_Hero_Obsidian_Destroyer)
+            //{
+            //    msg = "Partially supported (will not use ultimate)";
+            //    color = "#999900";
+            //}
+            //else if (id == ClassID.CDOTA_Unit_Hero_Chen)
+            //{
+            //    msg = "Partially supported (will not control creeps)";
+            //    color = "#999900";
+            //}
+            //else if (id == ClassID.CDOTA_Unit_Hero_Warlock)
+            //{
+            //    msg = "Partially supported (will not use ultimate)";
+            //    color = "#999900";
+            //}
+            //else if (id == ClassID.CDOTA_Unit_Hero_StormSpirit)
+            //{
+            //    msg = "Partially supported (will not use ultimate)";
+            //    color = "#999900";
+            //}
+            //Game.PrintMessage(
+            //    "<font face='Tahoma'><font color='#ff6600'>ABILITY#</font> - loaded - hero "
+            //    + id.ToString().Substring("CDOTA_Unit_Hero_".Length) + " is <font color='" + color + "'>" + msg
+            //    + "</font></font>",
+            //    MessageType.ChatMessage);
         }
 
         #endregion

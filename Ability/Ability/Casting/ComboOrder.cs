@@ -2,6 +2,8 @@
 {
     using System.Collections.Generic;
 
+    using Ability.ObjectManager;
+
     using Ensage;
 
     internal class ComboOrder
@@ -78,27 +80,49 @@
                                                                                 { "zuus_thundergods_wrath", 10 }
                                                                             };
 
+        public static Dictionary<string, Dictionary<string, uint>> CustomHeroOrderDictionary =
+            new Dictionary<string, Dictionary<string, uint>>
+                {
+                    {
+                        "npc_dota_hero_ancient_apparition",
+                        new Dictionary<string, uint> { { "ancient_apparition_cold_feet", 0 }, { "item_cyclone", 1 } }
+                    }
+                };
+
         #endregion
 
         #region Public Methods and Operators
 
         public static long GetAbilityOrder(Ability ability)
         {
-            return !AbilityOrderDictionary.ContainsKey(ability.Name) ? 4 : AbilityOrderDictionary[ability.Name];
+            return !AbilityOrderDictionary.ContainsKey(NameManager.Name(ability))
+                       ? 4
+                       : AbilityOrderDictionary[NameManager.Name(ability)];
         }
 
         public static long GetComboOrder(Ability ability, bool disable)
         {
+            if (CustomHeroOrderDictionary.ContainsKey(NameManager.Name(AbilityMain.Me))
+                && CustomHeroOrderDictionary[NameManager.Name(AbilityMain.Me)].ContainsKey(NameManager.Name(ability)))
+            {
+                return CustomHeroOrderDictionary[NameManager.Name(AbilityMain.Me)][NameManager.Name(ability)];
+            }
             if (disable)
             {
-                return !DisableOrderDictionary.ContainsKey(ability.Name) ? 4 : DisableOrderDictionary[ability.Name];
+                return !DisableOrderDictionary.ContainsKey(NameManager.Name(ability))
+                           ? 4
+                           : DisableOrderDictionary[NameManager.Name(ability)];
             }
-            return !AbilityOrderDictionary.ContainsKey(ability.Name) ? 4 : AbilityOrderDictionary[ability.Name];
+            return !AbilityOrderDictionary.ContainsKey(NameManager.Name(ability))
+                       ? 4
+                       : AbilityOrderDictionary[NameManager.Name(ability)];
         }
 
         public static long GetDamageOrder(Ability ability)
         {
-            return !DamageOrderDictionary.ContainsKey(ability.Name) ? 3 : DamageOrderDictionary[ability.Name];
+            return !DamageOrderDictionary.ContainsKey(NameManager.Name(ability))
+                       ? 3
+                       : DamageOrderDictionary[NameManager.Name(ability)];
         }
 
         #endregion
