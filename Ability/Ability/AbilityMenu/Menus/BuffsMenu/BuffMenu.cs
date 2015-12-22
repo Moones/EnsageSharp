@@ -25,7 +25,7 @@
                 menu.AddItem(
                     new MenuItem(name + "armletdelay", "Toggles delay: ").SetValue(new Slider(1300, 500, 2500)));
                 menu.AddItem(
-                    new MenuItem(name + "alwaystoggle", "Toggle always: ").SetValue(true)
+                    new MenuItem(name + "alwaystoggle", "Toggle always: ").SetValue(false)
                         .SetTooltip("Toggle armlet always when HP goes below specified treshold"));
             }
             if (name == "item_satanic")
