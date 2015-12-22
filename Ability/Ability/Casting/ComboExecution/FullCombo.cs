@@ -421,7 +421,8 @@
                             }
                             if (Buffs.BuffsMenuDictionary[name].Item(name + "alwaystoggle").GetValue<bool>()
                                 && Buffs.BuffsMenuDictionary[name].Item(name + "belowhpslider").GetValue<Slider>().Value
-                                > me.Health && Buff.Cast(ability, hero, me, name, meModifiers, true))
+                                > me.Health && AbilityMain.Me.Distance2D(Base.Position()) > 1300
+                                && Buff.Cast(ability, hero, me, name, meModifiers, true))
                             {
                                 Utils.Sleep(
                                     Buffs.BuffsMenuDictionary[name].Item(name + "armletdelay").GetValue<Slider>().Value,
