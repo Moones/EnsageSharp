@@ -32,6 +32,8 @@
 
         private static float etherealHitTime;
 
+        private static float coldFeetLastUse;
+
         #endregion
 
         #region Public Methods and Operators
@@ -409,11 +411,24 @@
                     if (category == "buff"
                         && MainMenu.Menu.Item("buffsToggler").GetValue<AbilityToggler>().IsEnabled(name))
                     {
-                        if (name == "item_armlet"
-                            && Buffs.BuffsMenuDictionary[name].Item(name + "belowhpslider").GetValue<Slider>().Value
-                            < me.Health)
+                        if (name == "item_armlet")
                         {
-                            continue;
+                            if (ability.IsToggled
+                                && Buffs.BuffsMenuDictionary[name].Item(name + "belowhpslider").GetValue<Slider>().Value
+                                < me.Health)
+                            {
+                                continue;
+                            }
+                            if (Buffs.BuffsMenuDictionary[name].Item(name + "alwaystoggle").GetValue<bool>()
+                                && Buff.Cast(ability, hero, me, name, meModifiers, true))
+                            {
+                                Utils.Sleep(
+                                    Buffs.BuffsMenuDictionary[name].Item(name + "armletdelay").GetValue<Slider>().Value,
+                                    handleString);
+                                Utils.Sleep(ping + 200, "GlobalCasting");
+                                Utils.Sleep(ping + 200, "casting");
+                                return true;
+                            }
                         }
                         if (name == "item_satanic"
                             && Buffs.BuffsMenuDictionary[name].Item(name + "missinghpslider").GetValue<Slider>().Value
@@ -456,13 +471,24 @@
                                 .IsEnabled(heroName) && canHit && CastingChecks.Attacking(hero, me)
                             && Buff.Cast(ability, hero, me, name, meModifiers))
                         {
+                            if (name == "item_armlet")
+                            {
+                                Utils.Sleep(
+                                    Buffs.BuffsMenuDictionary[name].Item(name + "armletdelay").GetValue<Slider>().Value,
+                                    handleString);
+                                Utils.Sleep(ping + 200, "GlobalCasting");
+                                Utils.Sleep(ping + 200, "casting");
+                            }
+                            else
+                            {
+                                Utils.Sleep(
+                                    ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                    handleString);
+                            }
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                             }
-                            Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
-                                handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
@@ -734,7 +760,7 @@
                     {
                         var ability = data.Value;
                         var name = NameManager.Name(ability);
-                        var category = data.Key.Substring(name.Length);
+                        var category = (name == "lion_impale") ? "disable" : data.Key.Substring(name.Length);
                         //if (category == "special" || category == "buff")
                         //{
                         //    continue;
@@ -764,11 +790,20 @@
                                 AbilityMain.Me.Move(Game.MousePosition);
                                 return true;
                             }
-                            if (target.Distance2D(MyHeroInfo.Position) > ability.GetCastRange(name) + 500)
+                            if (name == "pudge_rot")
+                            {
+                                continue;
+                            }
+                            if (target.Distance2D(MyHeroInfo.Position) > ability.GetCastRange(name) + 425)
                             {
                                 continue;
                             }
                             return false;
+                        }
+                        if (name == "item_cyclone" && coldFeetLastUse - Environment.TickCount < 2500
+                            && coldFeetLastUse - Environment.TickCount > -1000)
+                        {
+                            continue;
                         }
                         if (category == "nuke"
                             && ((name == "axe_culling_blade" && !CastingChecks.Killsteal(ability, target, name))
@@ -819,45 +854,40 @@
                             dealtDamage += AbilityDamage.CalculateDamage(ability, me, target);
                         }
                         var delay = Math.Max(ability.GetCastDelay(me, target, abilityName: name), 0.2) * 1000;
-                        if (name == "riki_blink_strike")
+                        switch (name)
                         {
-                            Utils.Sleep(MyHeroInfo.AttackRate() * 1000, handleString);
-                        }
-                        if (name == "necrolyte_reapers_scythe")
-                        {
-                            Utils.Sleep(delay + ping + 1500, "calculate");
-                        }
-                        if (name == "necrolyte_death_pulse")
-                        {
-                            Utils.Sleep(delay + ping + 200, "calculate");
-                        }
-                        if (name == "item_ethereal_blade")
-                        {
-                            //Utils.Sleep(
-                            //    me.GetTurnTime(target) * 1000
-                            //    + Prediction.CalculateReachTime(
-                            //        target,
-                            //        1200,
-                            //        target.Position - MyHeroInfo.Position),
-                            //    "casting");
-                            etherealHitTime =
-                                (float)
-                                (Environment.TickCount + me.GetTurnTime(target) * 1000
-                                 + Prediction.CalculateReachTime(target, 1200, target.Position - me.Position) + ping * 2);
-                            Utils.Sleep(
-                                me.GetTurnTime(target) * 1000 + 100
-                                + (MyHeroInfo.Position.Distance2D(target) / 1200) * 1000 + ping,
-                                "calculate");
-                        }
-                        if (name == "tusk_snowball")
-                        {
-                            Utils.Sleep(
-                                me.GetTurnTime(target) * 1000 + (MyHeroInfo.Position.Distance2D(target) / 675) * 1000,
-                                "GlobalCasting");
+                            case "riki_blink_strike":
+                                Utils.Sleep(MyHeroInfo.AttackRate() * 1000, handleString);
+                                break;
+                            case "necrolyte_reapers_scythe":
+                                Utils.Sleep(delay + ping + 1500, "calculate");
+                                break;
+                            case "necrolyte_death_pulse":
+                                Utils.Sleep(delay + ping + 200, "calculate");
+                                break;
+                            case "item_ethereal_blade":
+                                etherealHitTime =
+                                    (float)
+                                    (Environment.TickCount + me.GetTurnTime(target) * 1000
+                                     + Prediction.CalculateReachTime(target, 1200, target.Position - me.Position) + ping * 2);
+                                Utils.Sleep(
+                                    me.GetTurnTime(target) * 1000 + 100
+                                    + (MyHeroInfo.Position.Distance2D(target) / 1200) * 1000 + ping,
+                                    "calculate");
+                                break;
+                            case "tusk_snowball":
+                                Utils.Sleep(
+                                    me.GetTurnTime(target) * 1000 + (MyHeroInfo.Position.Distance2D(target) / 675) * 1000,
+                                    "GlobalCasting");
+                                break;
+                            case "ancient_apparition_cold_feet":
+                                coldFeetLastUse = Environment.TickCount+4000;
+                                break;
                         }
                         if (ability.ChannelTime(name) > 0)
                         {
                             Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                            Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 4, "casting");
                         }
                         Utils.Sleep(delay, handleString);
                         Utils.Sleep(delay, "GlobalCasting");

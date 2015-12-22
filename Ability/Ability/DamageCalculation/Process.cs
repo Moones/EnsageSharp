@@ -58,10 +58,16 @@
                     var minusMagicResistancePerc = 0f;
                     var tempList = new List<Ability>();
                     float[] outtakenDamage = { 0 };
+                    var manaLeft = AbilityMain.Me.Mana;
                     foreach (var ability in
                         enumerable.Where(ability => (ability.Value.CanBeCasted() || ability.Value.IsInAbilityPhase))
                             .Select(data => data.Value))
                     {
+                        if (manaLeft < ability.ManaCost)
+                        {
+                            continue;
+                        }
+                        manaLeft -= ability.ManaCost;
                         if (DamageAmps.IsDamageAmp(ability))
                         {
                             minusMagicResistancePerc += DamageAmps.DamageAmpValue(ability);

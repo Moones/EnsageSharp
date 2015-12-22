@@ -48,7 +48,7 @@
             var allyHeroes = AllyHeroes.UsableHeroes;
             GankDamage.UpdateDamage(enemyHeroes, allyHeroes);
             if (!Me.IsAlive
-                || (Me.IsInvisible() && !Me.IsVisibleToEnemies
+                || (Me.IsInvisible() && !Me.IsVisibleToEnemies && Me.ClassID != ClassID.CDOTA_Unit_Hero_Riki
                     && (Me.Modifiers.All(x => x.Name != "modifier_templar_assassin_meld")
                         || !Orbwalking.CanCancelAnimation())) || Me.IsChanneling())
             {
@@ -107,15 +107,15 @@
                     Utils.Sleep(250, "UpdateTarget");
                 }
                 var selectedCombo = MainMenu.ComboKeysMenu.Item("abilityComboType").GetValue<StringList>().SelectedIndex;
-                if (
-                    !FullCombo.Execute(
+                if (Utils.SleepCheck("casting")
+                    && !FullCombo.Execute(
                         target,
                         enemyHeroes,
                         ping,
                         selectedCombo == 2,
                         selectedCombo == 1,
                         Me,
-                        meModifiers) && Utils.SleepCheck("casting"))
+                        meModifiers))
                 {
                     Orbwalking.Orbwalk(target);
                 }

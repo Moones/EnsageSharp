@@ -10,7 +10,11 @@
 
         public static bool Cast(Ability ability, Unit target, string name)
         {
-            var casted = ability.CastStun(target, 1, abilityName: name);
+            var casted = ability.CastStun(
+                target,
+                1,
+                abilityName: name,
+                useSleep: (name != "ancient_apparition_cold_feet" && name != "rattletrap_battery_assault"));
             if (casted && AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Pudge && name == "pudge_dismember"
                 && Utils.SleepCheck("rotToggle"))
             {

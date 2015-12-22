@@ -36,6 +36,10 @@
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
                 ManageAutoAttack.CurrentValue = true;
+                if (name == "omniknight_purification")
+                {
+                    ability.UseAbility(AbilityMain.Me);
+                }
                 ability.UseAbility(target);
                 return true;
             }

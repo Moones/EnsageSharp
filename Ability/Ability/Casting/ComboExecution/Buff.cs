@@ -14,11 +14,11 @@
     {
         #region Public Methods and Operators
 
-        public static bool Cast(Ability ability, Unit target, Unit buffTarget, string name, List<Modifier> modifiers)
+        public static bool Cast(Ability ability, Unit target, Unit buffTarget, string name, List<Modifier> modifiers, bool togglearmlet = false)
         {
             if (name == "item_armlet")
             {
-                if (buffTarget.Distance2D(target) > Math.Max(target.GetAttackRange(), 500))
+                if (!togglearmlet && buffTarget.Distance2D(target) > Math.Max(target.GetAttackRange(), 500))
                 {
                     return false;
                 }

@@ -25,7 +25,9 @@
                                                                                 { "morphling_waveform", 3 },
                                                                                 { "necrolyte_death_pulse", 1 },
                                                                                 { "item_shivas_guard", 1 },
-                                                                                { "tinker_heat_seeking_missile", 3 }, { "pudge_rot", 3 },
+                                                                                { "tinker_heat_seeking_missile", 3 },
+                                                                                { "pudge_meat_hook", 2 },
+                                                                                { "pudge_rot", 3 },
                                                                                 { "axe_culling_blade", 10 },
                                                                                 { "item_cyclone", 0 },
                                                                                 { "leshrac_lightning_storm", 0 },
@@ -85,7 +87,14 @@
                 {
                     {
                         "npc_dota_hero_ancient_apparition",
-                        new Dictionary<string, uint> { { "ancient_apparition_cold_feet", 0 }, { "item_cyclone", 1 } }
+                        new Dictionary<string, uint>
+                            { { "ancient_apparition_cold_feet", 0 }, { "item_cyclone", 1 }, { "item_rod_of_atos", 2 } }
+                    },
+                    {
+                        "npc_dota_hero_chaos_knight", new Dictionary<string, uint> { { "chaos_knight_reality_rift", 3 } }
+                    },
+                    {
+                        "npc_dota_hero_naga_siren", new Dictionary<string, uint> { { "naga_siren_ensnare", 3 } }
                     }
                 };
 

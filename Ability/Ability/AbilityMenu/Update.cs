@@ -128,7 +128,7 @@
                 {
                     if (MyAbilities.Blink == null && NameManager.Name(item) == "item_blink")
                     {
-                        MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(item.Name);
+                        //MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(item.Name);
                         BlinkMenu.Create(item);
                         MyAbilities.Blink = item;
                         continue;
@@ -181,9 +181,7 @@
                         }
                         if (added)
                         {
-                            MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
-                                .GetValue<AbilityToggler>()
-                                .Add(item.Name);
+                            ComboMenu.AddAbility(item.Name);
                         }
                     }
                     //Console.WriteLine(!MyAbilities.DeffensiveAbilities.ContainsValue(item) + " " + NameManager.Name(item) + " " + data.IsHeal);
@@ -250,9 +248,7 @@
                             }
                             if (added)
                             {
-                                MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler")
-                                    .GetValue<AbilityToggler>()
-                                    .Add(item.Name);
+                                ComboMenu.AddAbility(item.Name);
                             }
                         }
                         //Console.WriteLine(!MyAbilities.DeffensiveAbilities.ContainsValue(item) + " " + NameManager.Name(item) + " " + data.IsHeal);

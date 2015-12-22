@@ -43,7 +43,7 @@
                 Heroes = Heroes.Where(x => x.IsValid).ToList();
                 var heroes = new List<Hero>(Heroes).Where(x => x.IsValid && x.Health > 0 && x.IsAlive && x.IsVisible);
                 UsableHeroes = heroes as Hero[] ?? heroes.ToArray();
-                Utils.Sleep(1000, "allyHeroesCheckValid");
+                Utils.Sleep(2000, "allyHeroesCheckValid");
                 var itemList = new List<Item>(Items);
                 foreach (var hero in UsableHeroes)
                 {

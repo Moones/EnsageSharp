@@ -18,6 +18,10 @@
 
         public static Dictionary<string, Ability> OffensiveAbilities;
 
+        public static Ability SoulRing;
+
+        public static Ability PowerTreads;
+
         #endregion
     }
 }

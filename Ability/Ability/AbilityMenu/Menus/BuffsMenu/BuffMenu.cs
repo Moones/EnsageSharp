@@ -24,6 +24,7 @@
                         new Slider(350, 100, 1000)));
                 menu.AddItem(
                     new MenuItem(name + "armletdelay", "Toggles delay: ").SetValue(new Slider(1300, 500, 2500)));
+                menu.AddItem(new MenuItem(name + "alwaystoggle", "Toggle always: ").SetValue(true));
             }
             if (name == "item_satanic")
             {

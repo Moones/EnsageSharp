@@ -65,11 +65,15 @@
             MainMenu.AbilityOverlayMenu.AddItem(
                 new MenuItem("enableSpellOverlayAlly", "Enable for allies: ").SetValue(true));
             MainMenu.AbilityOverlayMenu.AddItem(
+                new MenuItem("sizeSliderSpell", "Increase the size: ").SetValue(new Slider(0, 0, 25)));
+            MainMenu.AbilityOverlayMenu.AddItem(
                 new MenuItem("itemOverlay", "ITEMS OVERLAY:").SetFontStyle(fontColor: Color.White));
             MainMenu.AbilityOverlayMenu.AddItem(
                 new MenuItem("enableItemOverlayEnemy", "Enable for enemies: ").SetValue(true));
             MainMenu.AbilityOverlayMenu.AddItem(
                 new MenuItem("enableItemOverlayAlly", "Enable for allies: ").SetValue(true));
+            MainMenu.AbilityOverlayMenu.AddItem(
+                new MenuItem("sizeSliderItem", "Increase the size: ").SetValue(new Slider(0,0,25)));
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("abilityKey1", "Combo Key"))
                 .SetValue(new KeyBind('G', KeyBindType.Press));
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("abilityComboType", "Combo Order"))
@@ -85,7 +89,7 @@
                         || data.IsSlow || data.IsSilence)
                 select spell)
             {
-                MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(spell.Name);
+                ComboMenu.AddAbility(spell.Name);
             }
             foreach (var spell in
                 from spell in myItems1
@@ -96,12 +100,12 @@
                         || data.IsSlow || data.IsSilence)
                 select spell)
             {
-                MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(spell.Name);
+                ComboMenu.AddAbility(spell.Name);
             }
-            if (blink != null)
-            {
-                MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(blink.Name);
-            }
+            //if (blink != null)
+            //{
+            //    MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(blink.Name);
+            //}
             MainMenu.OptionsMenu.AddSubMenu(MainMenu.ComboKeysMenu);
             MainMenu.OptionsMenu.AddSubMenu(MainMenu.DrawingsMenu);
             MainMenu.Menu.AddSubMenu(MainMenu.OptionsMenu);

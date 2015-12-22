@@ -80,6 +80,7 @@
     <Compile Include="AbilityEvents\OnLoad.cs" />
     <Compile Include="AbilityMain.cs" />
     <Compile Include="AbilityMenu\BlinkMenu.cs" />
+    <Compile Include="AbilityMenu\ComboMenu.cs" />
     <Compile Include="AbilityMenu\Items\Sliders.cs" />
     <Compile Include="AbilityMenu\Items\Togglers.cs" />
     <Compile Include="AbilityMenu\MenuInit.cs" />

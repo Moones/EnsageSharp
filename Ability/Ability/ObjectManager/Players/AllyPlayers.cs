@@ -31,7 +31,7 @@
             }
             if (All.Count < 5)
             {
-                All = ObjectMgr.GetEntities<Player>().Where(x => x.Team == AbilityMain.Me.Team).ToList();
+                All = Ensage.Common.Objects.Players.All.Where(x => x.Team == AbilityMain.Me.Team).ToList();
             }
             Utils.Sleep(1000, "Players.Update.Ally");
         }
