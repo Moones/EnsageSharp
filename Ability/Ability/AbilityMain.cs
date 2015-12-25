@@ -119,7 +119,7 @@
                         meModifiers,
                         meMana))
                 {
-                    Orbwalking.Orbwalk(target);
+                    Orbwalking.Orbwalk(target, attackmodifiers: true);
                 }
             }
         }
