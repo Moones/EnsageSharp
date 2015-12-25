@@ -1,5 +1,7 @@
 ﻿namespace Ability.Casting.ComboExecution
 {
+    using Ability.ObjectManager;
+
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
@@ -14,7 +16,8 @@
                 target,
                 1,
                 abilityName: name,
-                useSleep: (name != "ancient_apparition_cold_feet" && name != "rattletrap_battery_assault"));
+                useSleep: (name != "ancient_apparition_cold_feet" && name != "rattletrap_battery_assault"),
+                soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
             if (casted && AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Pudge && name == "pudge_dismember"
                 && Utils.SleepCheck("rotToggle"))
             {

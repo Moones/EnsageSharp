@@ -63,7 +63,10 @@
                         enumerable.Where(ability => (ability.Value.CanBeCasted() || ability.Value.IsInAbilityPhase))
                             .Select(data => data.Value))
                     {
-                        if (manaLeft < ability.ManaCost)
+                        var name = NameManager.Name(ability);
+                        if (manaLeft < ability.ManaCost
+                            || manaLeft
+                            < Nukes.NukesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value)
                         {
                             continue;
                         }

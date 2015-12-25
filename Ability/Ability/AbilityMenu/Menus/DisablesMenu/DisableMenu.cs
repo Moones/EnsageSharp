@@ -16,6 +16,8 @@
             menu.AddItem(Togglers.OnChannel(name));
             menu.AddItem(Togglers.OnChainStun(name));
             menu.AddItem(Togglers.OnCast(name));
+            menu.AddItem(Sliders.MinManaCheck(name));
+            menu.AddItem(Sliders.MinManaCheck(name, true));
             return menu;
         }
 

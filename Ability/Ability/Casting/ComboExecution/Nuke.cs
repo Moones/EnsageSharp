@@ -36,6 +36,7 @@
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
                 ManageAutoAttack.CurrentValue = true;
+                SoulRing.Cast(ability);
                 if (name == "omniknight_purification")
                 {
                     ability.UseAbility(AbilityMain.Me);
@@ -49,7 +50,7 @@
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
                 ManageAutoAttack.CurrentValue = true;
-                return ability.CastSkillShot(target, name);
+                return ability.CastSkillShot(target, name, SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
             }
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))
             {
@@ -72,6 +73,7 @@
                     ManageAutoAttack.CurrentValue = true;
                     return ability.CastSkillShot(target, name);
                 }
+                SoulRing.Cast(ability);
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
                 ManageAutoAttack.CurrentValue = true;
                 ability.UseAbility();

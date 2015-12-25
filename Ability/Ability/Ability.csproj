@@ -54,16 +54,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ensage">
-      <HintPath>C:\PlaySharp1\System\Ensage.dll</HintPath>
+      <HintPath>C:\PlaySharp\System\Ensage.dll</HintPath>
     </Reference>
     <Reference Include="Ensage.Common">
-      <HintPath>C:\PlaySharp1\System\Ensage.Common.dll</HintPath>
+      <HintPath>C:\PlaySharp\System\Ensage.Common.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\PlaySharp1\System\SharpDX.dll</HintPath>
+      <HintPath>C:\PlaySharp\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>C:\PlaySharp1\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>C:\PlaySharp\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -115,6 +115,7 @@
     <Compile Include="Casting\ComboExecution\Shield.cs" />
     <Compile Include="Casting\ComboExecution\Silence.cs" />
     <Compile Include="Casting\ComboExecution\Slow.cs" />
+    <Compile Include="Casting\ComboExecution\SoulRing.cs" />
     <Compile Include="Casting\ComboExecution\Special.cs" />
     <Compile Include="Casting\ComboOrder.cs" />
     <Compile Include="Casting\Rubick.cs" />

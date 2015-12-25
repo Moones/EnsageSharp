@@ -20,6 +20,9 @@
     {
         #region Static Fields
 
+        private static readonly Dictionary<string, DotaTexture> TextureDictionary =
+            new Dictionary<string, DotaTexture>();
+
         private static float boxSizeX;
 
         private static float boxSizeY;
@@ -27,9 +30,6 @@
         private static float itemBoxSizeX;
 
         private static float itemBoxSizeY;
-
-        private static readonly Dictionary<string, DotaTexture> TextureDictionary =
-            new Dictionary<string, DotaTexture>();
 
         #endregion
 
@@ -88,7 +88,8 @@
                             x => (int)x.AbilitySlot >= 0 && (int)x.AbilitySlot <= 5).OrderBy(x => (int)x.AbilitySlot);
                     var defaultPos = hpbarpos
                                      + new Vector2(
-                                           HpBar.SizeX / 2 - Math.Max((abilities.Count() / 2) * boxSizeX, HpBar.SizeX / 2),
+                                           HpBar.SizeX / 2
+                                           - Math.Max((abilities.Count() / 2) * boxSizeX, HpBar.SizeX / 2),
                                            HpBar.SizeY + size.Y + 3);
                     var position = defaultPos;
 
@@ -105,7 +106,8 @@
                         var items = EnemyHeroes.ItemDictionary[heroName].Where(ability => ability.IsValid).ToList();
                         var itemPos = hpbarpos
                                       - new Vector2(
-                                            -HpBar.SizeX / 2 + Math.Max((items.Count / 2) * itemBoxSizeX, HpBar.SizeX / 2),
+                                            -HpBar.SizeX / 2
+                                            + Math.Max((items.Count / 2) * itemBoxSizeX, HpBar.SizeX / 2),
                                             itemBoxSizeY);
                         foreach (var ability in items)
                         {
@@ -137,7 +139,8 @@
                             x => (int)x.AbilitySlot >= 0 && (int)x.AbilitySlot <= 5).OrderBy(x => (int)x.AbilitySlot);
                     var defaultPos = hpbarpos
                                      + new Vector2(
-                                           HpBar.SizeX / 2 - Math.Max((abilities.Count() / 2) * boxSizeX, HpBar.SizeX / 2),
+                                           HpBar.SizeX / 2
+                                           - Math.Max((abilities.Count() / 2) * boxSizeX, HpBar.SizeX / 2),
                                            HpBar.SizeY + size.Y + 3);
                     if (hero.Equals(AbilityMain.Me))
                     {
@@ -156,7 +159,10 @@
                     {
                         var items = AllyHeroes.ItemDictionary[heroName].Where(ability => ability.IsValid).ToList();
                         var itemPos = hpbarpos
-                                      - new Vector2(-HpBar.SizeX / 2 + Math.Max((items.Count / 2) * itemBoxSizeX, HpBar.SizeX / 2), itemBoxSizeY);
+                                      - new Vector2(
+                                            -HpBar.SizeX / 2
+                                            + Math.Max((items.Count / 2) * itemBoxSizeX, HpBar.SizeX / 2),
+                                            itemBoxSizeY);
                         if (hero.Equals(AbilityMain.Me))
                         {
                             itemPos += new Vector2(-3, 1);
@@ -223,7 +229,7 @@
                 Drawing.DrawText(
                     s,
                     position + new Vector2(1, 0),
-                    new Vector2(boxSizeX/2, 1),
+                    new Vector2(boxSizeX / 2, 1),
                     color,
                     FontFlags.AntiAlias | FontFlags.StrikeOut);
             }
@@ -321,10 +327,11 @@
                 Drawing.DrawText(h, pos, new Vector2(itemBoxSizeY - 2, 1), Color.LightBlue, FontFlags.AntiAlias);
             }
             if ((ability.IsRequiringCharges || NameManager.Name(ability) == "item_ward_dispenser"
-                || NameManager.Name(ability) == "item_ward_observer" || NameManager.Name(ability) == "item_ward_sentry") && cooldown <= 0)
+                 || NameManager.Name(ability) == "item_ward_observer" || NameManager.Name(ability) == "item_ward_sentry")
+                && cooldown <= 0)
             {
                 var s = ability.CurrentCharges.ToString();
-                var tSize = new Vector2(itemBoxSizeY-2, 1);
+                var tSize = new Vector2(itemBoxSizeY - 2, 1);
                 var textSize = Drawing.MeasureText(s, "Arial", tSize, FontFlags.AntiAlias);
                 var tPos = position + new Vector2(itemBoxSizeX - textSize.X - 2, itemBoxSizeY - textSize.Y - 1);
                 Drawing.DrawRect(
@@ -337,7 +344,7 @@
                 {
                     tPos = position + new Vector2(2, itemBoxSizeY - textSize.Y - 1);
                     s = secondcharges.ToString();
-                    tSize = new Vector2(itemBoxSizeY-2, 1);
+                    tSize = new Vector2(itemBoxSizeY - 2, 1);
                     var textSize1 = Drawing.MeasureText(s, "Arial", tSize, FontFlags.AntiAlias);
                     Drawing.DrawRect(
                         tPos - new Vector2(1, 0),

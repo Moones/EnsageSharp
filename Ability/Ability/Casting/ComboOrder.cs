@@ -40,6 +40,20 @@
                                                                                 { "templar_assassin_psionic_trap", 2 }
                                                                             };
 
+        public static Dictionary<string, Dictionary<string, uint>> CustomHeroOrderDictionary =
+            new Dictionary<string, Dictionary<string, uint>>
+                {
+                    {
+                        "npc_dota_hero_ancient_apparition",
+                        new Dictionary<string, uint>
+                            { { "ancient_apparition_cold_feet", 0 }, { "item_cyclone", 1 }, { "item_rod_of_atos", 2 } }
+                    },
+                    {
+                        "npc_dota_hero_chaos_knight", new Dictionary<string, uint> { { "chaos_knight_reality_rift", 3 } }
+                    },
+                    { "npc_dota_hero_naga_siren", new Dictionary<string, uint> { { "naga_siren_ensnare", 3 } } }
+                };
+
         public static Dictionary<string, uint> DamageOrderDictionary = new Dictionary<string, uint>
                                                                            {
                                                                                { "necrolyte_reapers_scythe", 10 },
@@ -81,22 +95,6 @@
                                                                                 { "zuus_lightning_bolt", 4 },
                                                                                 { "zuus_thundergods_wrath", 10 }
                                                                             };
-
-        public static Dictionary<string, Dictionary<string, uint>> CustomHeroOrderDictionary =
-            new Dictionary<string, Dictionary<string, uint>>
-                {
-                    {
-                        "npc_dota_hero_ancient_apparition",
-                        new Dictionary<string, uint>
-                            { { "ancient_apparition_cold_feet", 0 }, { "item_cyclone", 1 }, { "item_rod_of_atos", 2 } }
-                    },
-                    {
-                        "npc_dota_hero_chaos_knight", new Dictionary<string, uint> { { "chaos_knight_reality_rift", 3 } }
-                    },
-                    {
-                        "npc_dota_hero_naga_siren", new Dictionary<string, uint> { { "naga_siren_ensnare", 3 } }
-                    }
-                };
 
         #endregion
 

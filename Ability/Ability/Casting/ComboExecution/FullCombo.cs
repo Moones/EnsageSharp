@@ -28,11 +28,11 @@
     {
         #region Static Fields
 
+        private static float coldFeetLastUse;
+
         private static float dealtDamage;
 
         private static float etherealHitTime;
-
-        private static float coldFeetLastUse;
 
         #endregion
 
@@ -44,7 +44,8 @@
             float meMissingHp,
             List<Modifier> meModifiers,
             float ping,
-            Hero me)
+            Hero me,
+            float mana)
         {
             var hero = enemyHero;
             var heroName = NameManager.Name(hero);
@@ -90,6 +91,7 @@
                     var delay = ability.GetCastDelay(me, hero, useCastPoint: false, abilityName: name) * 1000;
                     var canHit = ability.CanHit(hero, MyHeroInfo.Position, name);
                     if (category == "nuke"
+                        && Nukes.NukesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value < mana
                         && MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
                         && Nukes.NukesMenuDictionary[name].Item(name + "herotoggler")
                                .GetValue<HeroToggler>()
@@ -147,7 +149,8 @@
                         continue;
                     }
                     if (category == "disable"
-                        && MainMenu.Menu.Item("disablesToggler").GetValue<AbilityToggler>().IsEnabled(name))
+                        && Disables.DisablesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value
+                        < mana && MainMenu.Menu.Item("disablesToggler").GetValue<AbilityToggler>().IsEnabled(name))
                     {
                         if (
                             Disables.DisablesMenuDictionary[name].Item(name + "onsighttoggler")
@@ -235,6 +238,7 @@
                         continue;
                     }
                     if (category == "slow"
+                        && Slows.SlowsMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value < mana
                         && MainMenu.Menu.Item("slowsToggler").GetValue<AbilityToggler>().IsEnabled(name))
                     {
                         if (
@@ -322,7 +326,8 @@
                         continue;
                     }
                     if (category == "special"
-                        && MainMenu.Menu.Item("specialsToggler").GetValue<AbilityToggler>().IsEnabled(name))
+                        && Specials.SpecialsMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value
+                        < mana && MainMenu.Menu.Item("specialsToggler").GetValue<AbilityToggler>().IsEnabled(name))
                     {
                         if (name == "rubick_spell_steal")
                         {
@@ -409,6 +414,7 @@
                         continue;
                     }
                     if (category == "buff"
+                        && Buffs.BuffsMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value < mana
                         && MainMenu.Menu.Item("buffsToggler").GetValue<AbilityToggler>().IsEnabled(name))
                     {
                         if (name == "item_armlet")
@@ -498,7 +504,8 @@
                         continue;
                     }
                     if (category == "silence"
-                        && MainMenu.Menu.Item("silencesToggler").GetValue<AbilityToggler>().IsEnabled(name))
+                        && Silences.SilencesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value
+                        < mana && MainMenu.Menu.Item("silencesToggler").GetValue<AbilityToggler>().IsEnabled(name))
                     {
                         if (
                             Silences.SilencesMenuDictionary[name].Item(name + "onsighttoggler")
@@ -553,7 +560,8 @@
                         continue;
                     }
                     if (category == "harras"
-                        && MainMenu.Menu.Item("harrasesToggler").GetValue<AbilityToggler>().IsEnabled(name))
+                        && Harrases.HarrasesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value
+                        < mana && MainMenu.Menu.Item("harrasesToggler").GetValue<AbilityToggler>().IsEnabled(name))
                     {
                         if (
                             Harrases.HarrasesMenuDictionary[name].Item(name + "onsighttoggler")
@@ -601,6 +609,8 @@
             //var heroDistance = position.Distance2D(hero);
             var modifiers = hero.Modifiers.ToList();
             var heroMissingHp = hero.MaximumHealth - hero.Health;
+            var heroMissingMana = hero.MaximumMana - hero.Mana;
+            var heroManaPercentage = (hero.Mana / hero.MaximumMana) * 100;
             var heroHpPercentage = ((float)hero.Health / hero.MaximumHealth) * 100;
             foreach (var data in
                 MyAbilities.DeffensiveAbilities.Where(
@@ -612,6 +622,10 @@
             {
                 var ability = data.Value;
                 var name = NameManager.Name(ability);
+                if (name == "item_soul_ring")
+                {
+                    continue;
+                }
                 var category = data.Key.Substring(name.Length);
                 var handleString = ability.Handle.ToString();
                 if (!CastingChecks.All(name, hero, modifiers))
@@ -620,28 +634,63 @@
                 }
                 var delay = ability.GetCastDelay(me, hero, abilityName: name) * 1000;
                 var canHit = ability.CanHit(hero, MyHeroInfo.Position, name);
-                if (category == "heal" && MainMenu.Menu.Item("healsToggler").GetValue<AbilityToggler>().IsEnabled(name)
-                    && Heals.HealsMenuDictionary[name].Item(name + "useonallies")
-                           .GetValue<HeroToggler>()
-                           .IsEnabled(heroName) && canHit
-                    && Heals.HealsMenuDictionary[name].Item(name + "missinghpmin").GetValue<Slider>().Value
-                    < (heroMissingHp)
-                    && Heals.HealsMenuDictionary[name].Item(name + "hppercentbelow").GetValue<Slider>().Value
-                    > (heroHpPercentage)
-                    && (enemyHeroes.Count(
-                        x =>
-                        (!Heals.HealsMenuDictionary[name].Item(name + "usenearbool").GetValue<bool>()
-                         || Heals.HealsMenuDictionary[name].Item(name + "usenear")
+                if (category == "heal" && hero.Modifiers.All(x => x.Name != "modifier_ice_blast")
+                    && MainMenu.Menu.Item("healsToggler").GetValue<AbilityToggler>().IsEnabled(name)
+                    && ((!(name == "item_soul_ring" || name == "item_magic_wand" || name == "item_magic_stick")
+                         && Heals.HealsMenuDictionary[name].Item(name + "useonallies")
                                 .GetValue<HeroToggler>()
-                                .IsEnabled(NameManager.Name(x)))
-                        && (x.Distance2D(hero) < (Math.Max(x.GetAttackRange(), 700)))) - 1)
-                    >= Heals.HealsMenuDictionary[name].Item(name + "minenemiesaround")
-                           .GetValue<StringList>()
-                           .SelectedIndex
+                                .IsEnabled(heroName)) || hero.Equals(AbilityMain.Me)) && canHit
+                    && ((name == "item_arcane_boots")
+                            ? (Heals.HealsMenuDictionary[name].Item(name + "missingmanamin").GetValue<Slider>().Value
+                               < (heroMissingMana)
+                               && Heals.HealsMenuDictionary[name].Item(name + "manapercentbelow")
+                                      .GetValue<Slider>()
+                                      .Value > (heroManaPercentage)
+                               && (!AllyHeroes.Heroes.Any(
+                                   x =>
+                                   !x.Equals(hero)
+                                   && Heals.HealsMenuDictionary[name].Item(name + "useonallies")
+                                          .GetValue<HeroToggler>()
+                                          .IsEnabled(x.Name)
+                                   && x.Distance2D(AbilityMain.Me)
+                                   < Heals.HealsMenuDictionary[name].Item(name + "waitrange").GetValue<Slider>().Value
+                                   && !ability.CanHit(x, MyHeroInfo.Position))))
+                            : (Heals.HealsMenuDictionary[name].Item(name + "missinghpmin").GetValue<Slider>().Value
+                               < (heroMissingHp)
+                               && Heals.HealsMenuDictionary[name].Item(name + "hppercentbelow").GetValue<Slider>().Value
+                               > (heroHpPercentage)))
+                    && (name == "item_urn_of_shadows"
+                            ? (!enemyHeroes.Any(x => x.Distance2D(hero) < Math.Max(x.GetAttackRange(), 500))
+                               && !hero.Modifiers.Any(
+                                   x =>
+                                   x.Name == "modifier_doom_bringer_doom" || x.Name == "modifier_axe_battle_hunger"
+                                   || x.Name == "modifier_queenofpain_shadow_strike"
+                                   || x.Name == "modifier_phoenix_fire_spirit_burn"
+                                   || x.Name == "modifier_venomancer_poison_nova"
+                                   || x.Name == "modifier_venomancer_venomous_gale"))
+                            : ((enemyHeroes.Count(
+                                x =>
+                                (!Heals.HealsMenuDictionary[name].Item(name + "usenearbool").GetValue<bool>()
+                                 || Heals.HealsMenuDictionary[name].Item(name + "usenear")
+                                        .GetValue<HeroToggler>()
+                                        .IsEnabled(NameManager.Name(x)))
+                                && (x.Distance2D(hero) < (Math.Max(x.GetAttackRange(), 700)))) - 1)
+                               >= Heals.HealsMenuDictionary[name].Item(name + "minenemiesaround")
+                                      .GetValue<StringList>()
+                                      .SelectedIndex))
                     && (!(name == "item_mekansm" || name == "item_guardian_greaves" || name == "chen_hand_of_god")
-                        || (Heals.HealsMenuDictionary[name].Item(name + "minalliesheal")
-                                .GetValue<StringList>()
-                                .SelectedIndex
+                        || ((!AllyHeroes.Heroes.Any(
+                            x =>
+                            !x.Equals(hero)
+                            && Heals.HealsMenuDictionary[name].Item(name + "useonallies")
+                                   .GetValue<HeroToggler>()
+                                   .IsEnabled(x.Name)
+                            && x.Distance2D(AbilityMain.Me)
+                            < Heals.HealsMenuDictionary[name].Item(name + "waitrange").GetValue<Slider>().Value
+                            && !ability.CanHit(x, MyHeroInfo.Position)))
+                            && Heals.HealsMenuDictionary[name].Item(name + "minalliesheal")
+                                   .GetValue<StringList>()
+                                   .SelectedIndex
                             <= (AllyHeroes.Heroes.Count(
                                 x =>
                                 !x.Equals(me) && ability.CanHit(x, MyHeroInfo.Position, name)
@@ -707,7 +756,8 @@
             bool onlyDamage,
             bool onlyDisable,
             Hero me,
-            List<Modifier> meModifiers)
+            List<Modifier> meModifiers,
+            float mana)
         {
             if (Utils.SleepCheck("UpdateCombo"))
             {
@@ -775,7 +825,7 @@
                         //{
                         //    continue;
                         //}
-                        if (!CastingChecks.All(name, target, modifiers))
+                        if (!CastingChecks.All(name, target, modifiers, ability))
                         {
                             continue;
                         }
@@ -808,6 +858,8 @@
                             continue;
                         }
                         if (category == "nuke"
+                            && Nukes.NukesMenuDictionary[name].Item(name + "minManaCheckCombo").GetValue<Slider>().Value
+                            < mana
                             && ((name == "axe_culling_blade" && !CastingChecks.Killsteal(ability, target, name))
                                 || (target.Health
                                     < Nukes.NukesMenuDictionary[name].Item(name + "minhealthslider")
@@ -825,27 +877,43 @@
                         {
                             continue;
                         }
-                        if (category == "disable" && !Disable.Cast(ability, target, name))
+                        if (category == "disable"
+                            && Disables.DisablesMenuDictionary[name].Item(name + "minManaCheckCombo")
+                                   .GetValue<Slider>()
+                                   .Value < mana && !Disable.Cast(ability, target, name))
                         {
                             continue;
                         }
-                        if (category == "slow" && !Slow.Cast(ability, target, name))
+                        if (category == "slow"
+                            && Slows.SlowsMenuDictionary[name].Item(name + "minManaCheckCombo").GetValue<Slider>().Value
+                            < mana && !Slow.Cast(ability, target, name))
                         {
                             continue;
                         }
-                        if (category == "harras" && !Harras.Cast(ability, target, name))
+                        if (category == "harras"
+                            && Harrases.HarrasesMenuDictionary[name].Item(name + "minManaCheckCombo")
+                                   .GetValue<Slider>()
+                                   .Value < mana && !Harras.Cast(ability, target, name))
                         {
                             continue;
                         }
-                        if (category == "silence" && !Silence.Cast(ability, target, name))
+                        if (category == "silence"
+                            && Silences.SilencesMenuDictionary[name].Item(name + "minManaCheckCombo")
+                                   .GetValue<Slider>()
+                                   .Value < mana && !Silence.Cast(ability, target, name))
                         {
                             continue;
                         }
-                        if (category == "special" && !Special.Cast(ability, target, name))
+                        if (category == "special"
+                            && Specials.SpecialsMenuDictionary[name].Item(name + "minManaCheckCombo")
+                                   .GetValue<Slider>()
+                                   .Value < mana && !Special.Cast(ability, target, name))
                         {
                             continue;
                         }
                         if (category == "buff"
+                            && Buffs.BuffsMenuDictionary[name].Item(name + "minManaCheckCombo").GetValue<Slider>().Value
+                            < mana
                             && (name == "item_armlet" || name == "item_satanic"
                                 || !Buff.Cast(ability, target, me, name, meModifiers)))
                         {
@@ -871,7 +939,8 @@
                                 etherealHitTime =
                                     (float)
                                     (Environment.TickCount + me.GetTurnTime(target) * 1000
-                                     + Prediction.CalculateReachTime(target, 1200, target.Position - me.Position) + ping * 2);
+                                     + Prediction.CalculateReachTime(target, 1200, target.Position - me.Position)
+                                     + ping * 2);
                                 Utils.Sleep(
                                     me.GetTurnTime(target) * 1000 + 100
                                     + (MyHeroInfo.Position.Distance2D(target) / 1200) * 1000 + ping,
@@ -879,11 +948,12 @@
                                 break;
                             case "tusk_snowball":
                                 Utils.Sleep(
-                                    me.GetTurnTime(target) * 1000 + (MyHeroInfo.Position.Distance2D(target) / 675) * 1000,
+                                    me.GetTurnTime(target) * 1000
+                                    + (MyHeroInfo.Position.Distance2D(target) / 675) * 1000,
                                     "GlobalCasting");
                                 break;
                             case "ancient_apparition_cold_feet":
-                                coldFeetLastUse = Environment.TickCount+4000;
+                                coldFeetLastUse = Environment.TickCount + 4000;
                                 break;
                         }
                         if (ability.ChannelTime(name) > 0)

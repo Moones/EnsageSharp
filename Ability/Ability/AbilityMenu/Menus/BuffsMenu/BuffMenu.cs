@@ -37,6 +37,8 @@
                 menu.AddItem(
                     new MenuItem(name + "belowhpslider", "Use when HP is below: ").SetValue(new Slider(1000, 500, 5000)));
             }
+            menu.AddItem(Sliders.MinManaCheck(name));
+            menu.AddItem(Sliders.MinManaCheck(name, true));
             return menu;
         }
 

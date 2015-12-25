@@ -8,6 +8,7 @@
 
     using Ensage;
     using Ensage.Common;
+    using Ensage.Common.Objects;
 
     internal class AllyPlayers
     {
@@ -31,7 +32,7 @@
             }
             if (All.Count < 5)
             {
-                All = Ensage.Common.Objects.Players.All.Where(x => x.Team == AbilityMain.Me.Team).ToList();
+                All = Players.All.Where(x => x.Team == AbilityMain.Me.Team).ToList();
             }
             Utils.Sleep(1000, "Players.Update.Ally");
         }

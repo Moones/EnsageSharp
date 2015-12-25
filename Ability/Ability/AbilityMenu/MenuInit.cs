@@ -31,6 +31,7 @@
             var spells = mySpells as Ability[] ?? mySpells.ToArray();
             var myItems1 = myItems as Item[] ?? myItems.ToArray();
             var blink = myItems1.FirstOrDefault(x => x.Name == "item_blink");
+            MyAbilities.SoulRing = myItems1.FirstOrDefault(x => x.Name == "item_soul_ring");
             if (blink != null)
             {
                 MyAbilities.Blink = blink;
@@ -57,6 +58,8 @@
                 new MenuItem("abilityDamageIndicatorDrawDamage", "Draw Damage").SetValue(true));
             MainMenu.DamageIndicatorMenu.AddItem(
                 new MenuItem("abilityDamageIndicatorDrawHits", "Draw hits").SetValue(true));
+            MainMenu.DamageIndicatorMenu.AddItem(
+                new MenuItem("abilityDamageIndicatorTextSize", "Increase text size").SetValue(new Slider(0, 0, 5)));
             MainMenu.DrawingsMenu.AddSubMenu(MainMenu.AbilityOverlayMenu);
             MainMenu.AbilityOverlayMenu.AddItem(
                 new MenuItem("spellOverlay", "SPELLS OVERLAY:").SetFontStyle(fontColor: Color.White));
@@ -73,7 +76,10 @@
             MainMenu.AbilityOverlayMenu.AddItem(
                 new MenuItem("enableItemOverlayAlly", "Enable for allies: ").SetValue(true));
             MainMenu.AbilityOverlayMenu.AddItem(
-                new MenuItem("sizeSliderItem", "Increase the size: ").SetValue(new Slider(0,0,25)));
+                new MenuItem("sizeSliderItem", "Increase the size: ").SetValue(new Slider(0, 0, 25)));
+            MainMenu.ComboKeysMenu.AddItem(new MenuItem("unfinishedFeature", "This feature is currently unfinished!"))
+                .SetFontStyle(fontColor: Color.OrangeRed)
+                .SetTooltip("Contains unfinished stuff, not all combos are tweaked/in right order.");
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("abilityKey1", "Combo Key"))
                 .SetValue(new KeyBind('G', KeyBindType.Press));
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("abilityComboType", "Combo Order"))
@@ -89,7 +95,8 @@
                         || data.IsSlow || data.IsSilence)
                 select spell)
             {
-                ComboMenu.AddAbility(spell.Name);
+                var dv = spell.AbilityType != AbilityType.Ultimate;
+                ComboMenu.AddAbility(spell.Name, dv);
             }
             foreach (var spell in
                 from spell in myItems1

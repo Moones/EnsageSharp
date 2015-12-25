@@ -14,6 +14,8 @@
             menu.AddItem(Togglers.OnSight(name));
             menu.AddItem(Togglers.OnInvisible(name));
             menu.AddItem(Togglers.OnCast(name));
+            menu.AddItem(Sliders.MinManaCheck(name));
+            menu.AddItem(Sliders.MinManaCheck(name, true));
             return menu;
         }
 

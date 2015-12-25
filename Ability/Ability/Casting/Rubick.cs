@@ -20,9 +20,16 @@
 
         public static Dictionary<string, Ability> LastCastedDictionary = new Dictionary<string, Ability>();
 
+        public static Dictionary<string, float> MyCdDictionary = new Dictionary<string, float>();
+
         #endregion
 
         #region Public Methods and Operators
+
+        public static bool Cooldown(string name)
+        {
+            return !MyCdDictionary.ContainsKey(name) || MyCdDictionary[name] < Environment.TickCount;
+        }
 
         public static void Game_OnUpdate(EventArgs args)
         {

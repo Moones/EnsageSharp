@@ -15,7 +15,11 @@
             {
                 return false;
             }
-            return ability.CastStun(target, MyHeroInfo.Position, 1);
+            return ability.CastStun(
+                target,
+                MyHeroInfo.Position,
+                1,
+                soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
         }
 
         #endregion

@@ -24,7 +24,10 @@
                             RangeDrawing.AddRange(blink, 1200);
                         }
                     };
-            RangeDrawing.AddRange(blink, 1200);
+            if (menu.Item("abilityMenuShowBlinkRange").GetValue<bool>())
+            {
+                RangeDrawing.AddRange(blink, 1200);
+            }
             MainMenu.OptionsMenu.AddSubMenu(menu);
         }
 

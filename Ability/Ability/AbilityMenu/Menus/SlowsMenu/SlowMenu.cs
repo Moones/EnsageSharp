@@ -14,6 +14,8 @@
             menu.AddItem(Togglers.OnSight(name));
             menu.AddItem(Togglers.UnderTower(name));
             menu.AddItem(Togglers.OnChainStun(name));
+            menu.AddItem(Sliders.MinManaCheck(name));
+            menu.AddItem(Sliders.MinManaCheck(name, true));
             return menu;
         }
 

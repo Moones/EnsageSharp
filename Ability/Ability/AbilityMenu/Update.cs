@@ -36,11 +36,18 @@
                 }
                 var name = NameManager.Name(a);
                 var data = AbilityDatabase.Find(name);
-                if (data == null || !a.Owner.Equals(AbilityMain.Me))
+                if (data == null || a.Owner == null || !a.Owner.Equals(AbilityMain.Me))
                 {
                     return;
                 }
                 MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Remove(name);
+                //if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
+                //{
+                //    if (!Rubick.MyCdDictionary.ContainsKey(name))
+                //    {
+                //        Rubick.MyCdDictionary.Add(name, Environment.TickCount + ((a as Ability).Cooldown * 1000));
+                //    }
+                //}
                 if (data.IsPurge || data.WeakensEnemy || data.TrueSight)
                 {
                     MainMenu.Menu.Item("specialsToggler").GetValue<AbilityToggler>().Remove(name);
@@ -107,7 +114,7 @@
             }
             catch (Exception)
             {
-                //
+                //e.GetBaseException();
             }
         }
 
@@ -134,6 +141,10 @@
                         continue;
                     }
 
+                    if (NameManager.Name(item) == "item_soul_ring")
+                    {
+                        MyAbilities.SoulRing = item;
+                    }
                     var data = AbilityDatabase.Find(NameManager.Name(item));
 
                     if (data == null)

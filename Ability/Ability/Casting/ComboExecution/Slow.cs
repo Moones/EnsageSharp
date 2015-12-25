@@ -46,7 +46,11 @@
                 }
                 return ability.CastSkillShot(target, MyHeroInfo.Position, name);
             }
-            return ability.CastStun(target, 1, abilityName: name);
+            return ability.CastStun(
+                target,
+                1,
+                abilityName: name,
+                soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
         }
 
         #endregion

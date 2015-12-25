@@ -15,6 +15,7 @@
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
                 ManageAutoAttack.CurrentValue = true;
+                SoulRing.Cast(ability);
                 ability.UseAbility();
                 return true;
             }
@@ -22,6 +23,7 @@
             {
                 return false;
             }
+            SoulRing.Cast(ability);
             Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
             ManageAutoAttack.CurrentValue = true;
             ability.UseAbility(target);

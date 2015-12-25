@@ -14,10 +14,20 @@
     {
         #region Public Methods and Operators
 
-        public static bool Cast(Ability ability, Unit target, Unit buffTarget, string name, List<Modifier> modifiers, bool togglearmlet = false)
+        public static bool Cast(
+            Ability ability,
+            Unit target,
+            Unit buffTarget,
+            string name,
+            List<Modifier> modifiers,
+            bool togglearmlet = false)
         {
             if (name == "item_armlet")
             {
+                if (buffTarget.Modifiers.Any(x => x.Name == "modifier_ice_blast"))
+                {
+                    return false;
+                }
                 if (!togglearmlet && buffTarget.Distance2D(target) > Math.Max(target.GetAttackRange(), 500))
                 {
                     return false;
@@ -39,6 +49,7 @@
             {
                 return false;
             }
+            SoulRing.Cast(ability);
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");

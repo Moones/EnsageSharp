@@ -9,6 +9,7 @@
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Objects;
 
     internal class EnemyPlayers
     {
@@ -32,7 +33,7 @@
             }
             if (All.Count < 5)
             {
-                All = Ensage.Common.Objects.Players.All.Where(x => x.Team == AbilityMain.Me.GetEnemyTeam()).ToList();
+                All = Players.All.Where(x => x.Team == AbilityMain.Me.GetEnemyTeam()).ToList();
             }
             Utils.Sleep(1000, "Players.Update");
         }

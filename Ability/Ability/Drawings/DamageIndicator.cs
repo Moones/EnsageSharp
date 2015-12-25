@@ -11,6 +11,7 @@
 
     using Ensage;
     using Ensage.Common;
+    using Ensage.Common.Menu;
 
     using SharpDX;
 
@@ -95,7 +96,13 @@
                     var hpbarpositionX = HUDInfo.GetHPbarPosition(hero).X;
                     var s = ((hits > 0) ? textt : "KILL");
                     var h = "(" + Math.Floor(hero.Health - dmg - outdmg) + ")";
-                    var textSize = Drawing.MeasureText(s, "Arial", new Vector2(hpbary + 4, 1), FontFlags.AntiAlias);
+                    var isi =
+                        MainMenu.DamageIndicatorMenu.Item("abilityDamageIndicatorTextSize").GetValue<Slider>().Value;
+                    var textSize = Drawing.MeasureText(
+                        s,
+                        "Arial",
+                        new Vector2(hpbary + 4 + isi, 1),
+                        FontFlags.AntiAlias);
                     var textPos =
                         new Vector2(
                             (int)
@@ -105,13 +112,13 @@
                     Drawing.DrawText(
                         s,
                         textPos,
-                        new Vector2(hpbary + 4, 1),
+                        new Vector2(hpbary + 4 + isi, 1),
                         (hits > 0) ? Color.White : new Color(100, 225, 110),
                         FontFlags.AntiAlias);
                     Drawing.DrawText(
                         h,
                         textPos + new Vector2(textSize.X + 2, 1),
-                        new Vector2(hpbary + 2, 1),
+                        new Vector2(hpbary + 2 + isi, 1),
                         (hits > 0) ? Color.LightGoldenrodYellow : Color.YellowGreen,
                         FontFlags.AntiAlias);
                 }

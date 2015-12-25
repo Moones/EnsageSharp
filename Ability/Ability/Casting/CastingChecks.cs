@@ -15,7 +15,7 @@
     {
         #region Public Methods and Operators
 
-        public static bool All(string name, Unit hero, List<Modifier> modifiers)
+        public static bool All(string name, Unit hero, List<Modifier> modifiers, Ability ability = null)
         {
             if ((name == "item_diffusal_blade" || name == "item_diffusal_blade_2")
                 && modifiers.Any(x => x.Name == "modifier_item_diffusal_blade_slow"))
@@ -37,6 +37,14 @@
             if (name == "bounty_hunter_track" && modifiers.Any(x => x.Name == "modifier_bounty_hunter_track"))
             {
                 return false;
+            }
+            if (name == "visage_soul_assumption" && ability != null)
+            {
+                var modif = AbilityMain.Me.Modifiers.FirstOrDefault(x => x.Name == "modifier_visage_soul_assumption");
+                if (modif == null || modif.StackCount < ability.GetAbilityData("stack_limit"))
+                {
+                    return false;
+                }
             }
             return true;
         }

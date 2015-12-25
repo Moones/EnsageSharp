@@ -36,8 +36,12 @@
             GankDamage.IncomingDamages = new Dictionary<string, float>();
             HpBar.HpBarPositionDictionary = new Dictionary<string, Vector2>();
             NameManager.NameDictionary = new Dictionary<float, string>();
-            Rubick.CdDictionary = new Dictionary<string, bool>();
-            Rubick.LastCastedDictionary = new Dictionary<string, Ability>();
+            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
+            {
+                Rubick.CdDictionary = new Dictionary<string, bool>();
+                Rubick.LastCastedDictionary = new Dictionary<string, Ability>();
+                Rubick.MyCdDictionary = new Dictionary<string, float>();
+            }
             MyAbilities.Blink = null;
             Dictionaries.Init();
             MainMenu.InitializeMenu();

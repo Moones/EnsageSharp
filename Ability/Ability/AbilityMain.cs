@@ -89,9 +89,10 @@
                 }
             }
             var meMissingHp = Me.MaximumHealth - Me.Health;
+            var meMana = Me.Mana;
             if (
                 enemyHeroes.Any(
-                    enemyHero => FullCombo.AutoUsage(enemyHero, enemyHeroes, meMissingHp, meModifiers, ping, Me)))
+                    enemyHero => FullCombo.AutoUsage(enemyHero, enemyHeroes, meMissingHp, meModifiers, ping, Me, meMana)))
             {
                 return;
             }
@@ -115,7 +116,8 @@
                         selectedCombo == 2,
                         selectedCombo == 1,
                         Me,
-                        meModifiers))
+                        meModifiers,
+                        meMana))
                 {
                     Orbwalking.Orbwalk(target);
                 }

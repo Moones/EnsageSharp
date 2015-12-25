@@ -33,6 +33,8 @@
                     menu.AddItem(Togglers.OnAttack(name));
                 }
             }
+            menu.AddItem(Sliders.MinManaCheck(name));
+            menu.AddItem(Sliders.MinManaCheck(name, true));
             return menu;
         }
 

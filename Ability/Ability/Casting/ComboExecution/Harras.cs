@@ -1,6 +1,7 @@
 ﻿namespace Ability.Casting.ComboExecution
 {
     using Ability.AutoAttack;
+    using Ability.ObjectManager;
 
     using Ensage;
     using Ensage.Common;
@@ -16,6 +17,7 @@
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
                 ManageAutoAttack.CurrentValue = true;
+                SoulRing.Cast(ability);
                 ability.UseAbility(target);
                 return true;
             }
@@ -25,10 +27,11 @@
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
                 ManageAutoAttack.CurrentValue = true;
-                return ability.CastSkillShot(target, name);
+                return ability.CastSkillShot(target, name, SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
             }
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))
             {
+                SoulRing.Cast(ability);
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
                 ManageAutoAttack.CurrentValue = true;
                 ability.UseAbility();
