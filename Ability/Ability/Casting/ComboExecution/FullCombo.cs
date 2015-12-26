@@ -326,8 +326,8 @@
                         continue;
                     }
                     if (category == "special"
-                        && Specials.SpecialsMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value
-                        < mana && MainMenu.Menu.Item("specialsToggler").GetValue<AbilityToggler>().IsEnabled(name))
+                        && (name == "rubick_spell_steal" || Specials.SpecialsMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value
+                        < mana) && MainMenu.Menu.Item("specialsToggler").GetValue<AbilityToggler>().IsEnabled(name))
                     {
                         if (name == "rubick_spell_steal")
                         {
