@@ -75,7 +75,7 @@
                 lastOrderPosition = Game.MousePosition;
             }
             var meModifiers = Me.Modifiers.ToList();
-            var ping = Game.Ping;  
+            var ping = Game.Ping;
             if (LaunchSnowball(meModifiers))
             {
                 return;

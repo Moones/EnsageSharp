@@ -18,7 +18,8 @@
                 defaultValue = 80;
             }
             return
-                new MenuItem(name + "hppercentbelow", "Use when their HP % goes below: ").SetValue(new Slider(defaultValue, 10))
+                new MenuItem(name + "hppercentbelow", "Use when their HP % goes below: ").SetValue(
+                    new Slider(defaultValue, 10))
                     .SetTooltip(
                         "Ally hero/or your health percentage have to be below the specified value in order to use this ability");
         }

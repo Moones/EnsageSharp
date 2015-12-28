@@ -30,11 +30,11 @@
 
         public static Menu GankDamageMenu;
 
-        public static Menu RangeDrawingMenu;
-
         public static Menu Menu;
 
         public static Menu OptionsMenu;
+
+        public static Menu RangeDrawingMenu;
 
         #endregion
 

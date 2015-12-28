@@ -2,13 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Security.Cryptography;
 
     using Ability.AbilityMenu;
     using Ability.ObjectManager;
 
     using Ensage;
-    using Ensage.Common;
     using Ensage.Common.Extensions;
     using Ensage.Common.Menu;
 
@@ -51,12 +49,11 @@
             //var list = new[] { "selected_ring", "drag_selected_ring", "hero_underglow" };
             var menu = new Menu(name, name + "range", false, name);
             menu.AddItem(new MenuItem(name + "rangeenable", "Show range")).SetValue(false).ValueChanged +=
-                (sender, args) =>
-                    {
-                        RangeVisible(ability, args.GetNewValue<bool>());
-                    };
-            menu.AddItem(new MenuItem(name + "red", "Red:")).SetFontStyle(fontColor: Color.Red).SetValue(new Slider(100, 0, 255)).ValueChanged +=
-                (sender, args) =>
+                (sender, args) => { RangeVisible(ability, args.GetNewValue<bool>()); };
+            menu.AddItem(new MenuItem(name + "red", "Red:"))
+                .SetFontStyle(fontColor: Color.Red)
+                .SetValue(new Slider(100, 0, 255))
+                .ValueChanged += (sender, args) =>
                     {
                         if (RangesDictionary.ContainsKey(ability))
                         {
@@ -68,8 +65,10 @@
                                     menu.Item(name + "blue").GetValue<Slider>().Value));
                         }
                     };
-            menu.AddItem(new MenuItem(name + "green", "Green:")).SetFontStyle(fontColor: Color.Green).SetValue(new Slider(100, 0, 255)).ValueChanged +=
-                (sender, args) =>
+            menu.AddItem(new MenuItem(name + "green", "Green:"))
+                .SetFontStyle(fontColor: Color.Green)
+                .SetValue(new Slider(100, 0, 255))
+                .ValueChanged += (sender, args) =>
                     {
                         if (RangesDictionary.ContainsKey(ability))
                         {
@@ -81,8 +80,10 @@
                                     menu.Item(name + "blue").GetValue<Slider>().Value));
                         }
                     };
-            menu.AddItem(new MenuItem(name + "blue", "Blue:")).SetFontStyle(fontColor: Color.Blue).SetValue(new Slider(100, 0, 255)).ValueChanged +=
-                (sender, args) =>
+            menu.AddItem(new MenuItem(name + "blue", "Blue:"))
+                .SetFontStyle(fontColor: Color.Blue)
+                .SetValue(new Slider(100, 0, 255))
+                .ValueChanged += (sender, args) =>
                     {
                         if (RangesDictionary.ContainsKey(ability))
                         {
@@ -115,25 +116,12 @@
             RangesDictionary.Add(ability, range);
         }
 
-        public static void Update()
-        {
-            if (ALensUpdated)
-            {
-                return;
-            }
-            ALensUpdated = true;
-            foreach (var particleEffect in RangesDictionary)
-            {
-                RangeVisible(particleEffect.Key, false);
-                RangeVisible(particleEffect.Key, true);
-            }
-        }
-
         public static void RangeVisible(Ability ability, bool visible, float crange = 0)
         {
             var name = NameManager.Name(ability);
             ParticleEffect range;
-            if (!RangesDictionary.TryGetValue(ability, out range) || RangesDictionary[ability] == null || RangesDictionary[ability].IsDestroyed)
+            if (!RangesDictionary.TryGetValue(ability, out range) || RangesDictionary[ability] == null
+                || RangesDictionary[ability].IsDestroyed)
             {
                 range = AbilityMain.Me.AddParticleEffect(@"particles\ui_mouseactions\drag_selected_ring.vpcf");
                 if (!RangesDictionary.ContainsKey(ability))
@@ -184,6 +172,20 @@
             RangesDictionary[ability].Dispose();
             RangesValueDictionary.Remove(ability.Name);
             RangesDictionary.Remove(ability);
+        }
+
+        public static void Update()
+        {
+            if (ALensUpdated)
+            {
+                return;
+            }
+            ALensUpdated = true;
+            foreach (var particleEffect in RangesDictionary)
+            {
+                RangeVisible(particleEffect.Key, false);
+                RangeVisible(particleEffect.Key, true);
+            }
         }
 
         #endregion

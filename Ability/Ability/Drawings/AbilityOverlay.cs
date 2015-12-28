@@ -11,7 +11,6 @@
 
     using Ensage;
     using Ensage.Common;
-    using Ensage.Common.Extensions;
     using Ensage.Common.Menu;
 
     using SharpDX;

@@ -10,6 +10,18 @@
 
     internal class SoulRing
     {
+        #region Public Properties
+
+        public static float ManaGained
+        {
+            get
+            {
+                return MyAbilities.SoulRing != null ? MyAbilities.SoulRing.GetAbilityData("mana_gain") : 0;
+            }
+        }
+
+        #endregion
+
         #region Public Methods and Operators
 
         public static bool Cast(Ability ability)
@@ -29,14 +41,6 @@
                    && Heals.HealsMenuDictionary["item_soul_ring"].Item("item_soul_ringuseBeforeCast").GetValue<bool>()
                    && Heals.HealsMenuDictionary["item_soul_ring"].Item("item_soul_ringminHp").GetValue<Slider>().Value
                    < AbilityMain.Me.Health;
-        }
-
-        public static float ManaGained 
-        {
-            get
-            {
-                return MyAbilities.SoulRing != null ? MyAbilities.SoulRing.GetAbilityData("mana_gain") : 0;
-            }
         }
 
         #endregion

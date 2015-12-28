@@ -341,8 +341,11 @@
                         continue;
                     }
                     if (category == "special"
-                        && (name == "rubick_spell_steal" || Specials.SpecialsMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value
-                        < mana) && MainMenu.Menu.Item("specialsToggler").GetValue<AbilityToggler>().IsEnabled(name))
+                        && (name == "rubick_spell_steal"
+                            || Specials.SpecialsMenuDictionary[name].Item(name + "minManaCheck")
+                                   .GetValue<Slider>()
+                                   .Value < mana)
+                        && MainMenu.Menu.Item("specialsToggler").GetValue<AbilityToggler>().IsEnabled(name))
                     {
                         if (name == "rubick_spell_steal")
                         {
@@ -703,16 +706,17 @@
                                    || x.Name == "modifier_phoenix_fire_spirit_burn"
                                    || x.Name == "modifier_venomancer_poison_nova"
                                    || x.Name == "modifier_venomancer_venomous_gale"))
-                            : (name == "item_arcane_boots" || (enemyHeroes.Count(
-                                x =>
-                                (!Heals.HealsMenuDictionary[name].Item(name + "usenearbool").GetValue<bool>()
-                                 || Heals.HealsMenuDictionary[name].Item(name + "usenear")
-                                        .GetValue<HeroToggler>()
-                                        .IsEnabled(NameManager.Name(x)))
-                                && (x.Distance2D(hero) < (Math.Max(x.GetAttackRange(), 700)))) - 1
-                               >= Heals.HealsMenuDictionary[name].Item(name + "minenemiesaround")
-                                      .GetValue<StringList>()
-                                      .SelectedIndex)))
+                            : (name == "item_arcane_boots"
+                               || (enemyHeroes.Count(
+                                   x =>
+                                   (!Heals.HealsMenuDictionary[name].Item(name + "usenearbool").GetValue<bool>()
+                                    || Heals.HealsMenuDictionary[name].Item(name + "usenear")
+                                           .GetValue<HeroToggler>()
+                                           .IsEnabled(NameManager.Name(x)))
+                                   && (x.Distance2D(hero) < (Math.Max(x.GetAttackRange(), 700)))) - 1
+                                   >= Heals.HealsMenuDictionary[name].Item(name + "minenemiesaround")
+                                          .GetValue<StringList>()
+                                          .SelectedIndex)))
                     && (!(name == "item_mekansm" || name == "item_guardian_greaves" || name == "chen_hand_of_god")
                         || ((!AllyHeroes.Heroes.Any(
                             x =>
@@ -839,8 +843,9 @@
                     foreach (var data in
                         MyAbilities.Combo.Where(
                             x =>
-                            x.Value.IsValid && (x.Value.CanBeCasted()
-                            || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value)))
+                            x.Value.IsValid
+                            && (x.Value.CanBeCasted()
+                                || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value)))
                             && !x.Value.IsAbilityBehavior(AbilityBehavior.Hidden)
                             && ((x.Value is Item && me.CanUseItems()) || (!(x.Value is Item) && me.CanCast()))
                             && (Utils.SleepCheck(x.Value.Handle.ToString())
@@ -1037,7 +1042,8 @@
                                             where
                                                 ability != null
                                                 && (ability.CanBeCasted()
-                            || (ability.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(ability)))
+                                                    || (ability.CanBeCasted(SoulRing.ManaGained)
+                                                        && SoulRing.Check(ability)))
                                                 && (Utils.SleepCheck(ability.Handle.ToString())
                                                     || (!ability.IsInAbilityPhase && ability.FindCastPoint() > 0))
                                             select ability)

@@ -5,7 +5,6 @@
     using System.Linq;
 
     using Ability.Casting;
-    using Ability.ObjectManager.Players;
     using Ability.OnUpdate;
 
     using Ensage;
