@@ -12,6 +12,7 @@
     using Ability.AbilityMenu.Menus.SilencesMenu;
     using Ability.AbilityMenu.Menus.SlowsMenu;
     using Ability.AbilityMenu.Menus.SpecialsMenu;
+    using Ability.Drawings;
     using Ability.ObjectManager;
     using Ability.ObjectManager.Heroes;
     using Ability.OnUpdate;
@@ -48,6 +49,7 @@
                 //        Rubick.MyCdDictionary.Add(name, Environment.TickCount + ((a as Ability).Cooldown * 1000));
                 //    }
                 //}
+                RangeDrawing.RemoveRange(a as Ability);
                 if (data.IsPurge || data.WeakensEnemy || data.TrueSight)
                 {
                     MainMenu.Menu.Item("specialsToggler").GetValue<AbilityToggler>().Remove(name);
@@ -145,6 +147,10 @@
                     {
                         MyAbilities.SoulRing = item;
                     }
+                    if (NameManager.Name(item) == "item_aether_lens")
+                    {
+                        RangeDrawing.Update();
+                    }
                     var data = AbilityDatabase.Find(NameManager.Name(item));
 
                     if (data == null)
@@ -192,6 +198,7 @@
                         }
                         if (added)
                         {
+                            RangeDrawing.AddRange(item);
                             ComboMenu.AddAbility(item.Name);
                         }
                     }

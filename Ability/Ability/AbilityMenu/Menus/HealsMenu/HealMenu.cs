@@ -54,7 +54,7 @@
             {
                 menu.AddItem(
                     new MenuItem(name + "minenemiesaround", "Minimum of enemies near: ").SetValue(
-                        new StringList(new[] { "1", "2", "3", "4", "5" }, 1)));
+                        new StringList(new[] { "1", "2", "3", "4", "5" })));
                 menu.AddItem(
                     new MenuItem(name + "usenearbool", "Use when near selected enemy: ").SetValue(true)
                         .SetTooltip("Use the ability only when affected target is near selected enemy"));

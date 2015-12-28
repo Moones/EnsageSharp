@@ -33,9 +33,9 @@
             }
             if (All.Count < 5)
             {
-                All = Players.All.Where(x => x.Team == AbilityMain.Me.GetEnemyTeam()).ToList();
+                All = Players.All.Where(x => x.Hero != null && x.Team == AbilityMain.Me.GetEnemyTeam()).ToList();
             }
-            Utils.Sleep(1000, "Players.Update");
+            Utils.Sleep(2000, "Players.Update");
         }
 
         #endregion

@@ -1,6 +1,7 @@
 ﻿namespace Ability.AbilityMenu.Items
 {
     using System.Collections.Generic;
+    using System.ComponentModel;
 
     using Ensage.Common.Menu;
 
@@ -48,47 +49,47 @@
 
         #region Public Methods and Operators
 
-        public static MenuItem OnAttack(string name)
+        public static MenuItem OnAttack(string name, bool defaultValue = true)
         {
             return
                 new MenuItem(name + OnAttackName, OnAttackDisplayName).SetValue(
-                    new HeroToggler(new Dictionary<string, bool>(), true));
+                    new HeroToggler(new Dictionary<string, bool>(), true, defaultValues: defaultValue));
         }
 
-        public static MenuItem OnCast(string name)
+        public static MenuItem OnCast(string name, bool defaultValue = true)
         {
-            var defaultValue = !(name == "necrolyte_reapers_scythe" || name == "legion_commander_duel");
+            defaultValue = defaultValue && !(name == "necrolyte_reapers_scythe" || name == "legion_commander_duel");
             return
                 new MenuItem(name + OnCastName, OnCastDisplayName).SetValue(
                     new HeroToggler(new Dictionary<string, bool>(), true, defaultValues: defaultValue));
         }
 
-        public static MenuItem OnChainStun(string name)
+        public static MenuItem OnChainStun(string name, bool defaultValue = true)
         {
             return
                 new MenuItem(name + OnChainStunName, OnChainStunDisplayName).SetValue(
-                    new HeroToggler(new Dictionary<string, bool>(), true));
+                    new HeroToggler(new Dictionary<string, bool>(), true, defaultValues: defaultValue));
         }
 
-        public static MenuItem OnChannel(string name)
+        public static MenuItem OnChannel(string name, bool defaultValue = true)
         {
             return
                 new MenuItem(name + OnChannelName, OnChannelDisplayName).SetValue(
-                    new HeroToggler(new Dictionary<string, bool>(), true));
+                    new HeroToggler(new Dictionary<string, bool>(), true,defaultValues: defaultValue));
         }
 
-        public static MenuItem OnInvisible(string name)
+        public static MenuItem OnInvisible(string name, bool defaultValue = true)
         {
             return
                 new MenuItem(name + "oninvistoggler", "OnInvisible: ").SetValue(
-                    new HeroToggler(new Dictionary<string, bool>(), true));
+                    new HeroToggler(new Dictionary<string, bool>(), true,defaultValues:defaultValue));
         }
 
-        public static MenuItem OnPurgable(string name)
+        public static MenuItem OnPurgable(string name, bool defaultValue = true)
         {
             return
                 new MenuItem(name + OnPurgableName, OnPurgableDisplayName).SetValue(
-                    new HeroToggler(new Dictionary<string, bool>(), true));
+                    new HeroToggler(new Dictionary<string, bool>(), true,defaultValues:defaultValue));
         }
 
         public static MenuItem OnSight(string name)
@@ -98,32 +99,32 @@
                     new HeroToggler(new Dictionary<string, bool>(), true, defaultValues: false));
         }
 
-        public static MenuItem UnderTower(string name)
+        public static MenuItem UnderTower(string name, bool defaultValue = true)
         {
             return
                 new MenuItem(name + UnderTowerName, UnderTowerDisplayName).SetValue(
-                    new HeroToggler(new Dictionary<string, bool>(), true));
+                new HeroToggler(new Dictionary<string, bool>(), true,defaultValues: defaultValue));
         }
 
-        public static MenuItem UseNear(string name)
+        public static MenuItem UseNear(string name, bool defaultValue = true)
         {
             return
                 new MenuItem(name + "usenear", "Use when near: ").SetValue(
-                    new HeroToggler(new Dictionary<string, bool>(), true));
+                    new HeroToggler(new Dictionary<string, bool>(), true,defaultValues:defaultValue));
         }
 
-        public static MenuItem UseOn(string name)
+        public static MenuItem UseOn(string name, bool defaultValue = true)
         {
             return
                 new MenuItem(name + UseOnName, UseOnDisplayName).SetValue(
-                    new HeroToggler(new Dictionary<string, bool>(), true));
+                    new HeroToggler(new Dictionary<string, bool>(), true,defaultValues:defaultValue));
         }
 
-        public static MenuItem UseOnAllies(string name)
+        public static MenuItem UseOnAllies(string name, bool defaultValue = true)
         {
             return
                 new MenuItem(name + "useonallies", "Use on: ").SetValue(
-                    new HeroToggler(new Dictionary<string, bool>(), false, true));
+                    new HeroToggler(new Dictionary<string, bool>(), false, true,defaultValue));
         }
 
         #endregion

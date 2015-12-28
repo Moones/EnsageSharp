@@ -39,7 +39,7 @@
             }
             foreach (var hero in EnemyHeroes.Heroes)
             {
-                var heroName = hero.Name;
+                var heroName = NameManager.Name(hero);
                 if (!LastCastedDictionary.ContainsKey(heroName))
                 {
                     LastCastedDictionary.Add(heroName, null);

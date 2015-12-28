@@ -22,7 +22,7 @@
 
         public static void Event(object sender, EventArgs e)
         {
-            if (Manage.Loaded)
+            if (Manage.Loaded || ObjectMgr.LocalHero == null)
             {
                 return;
             }
@@ -31,7 +31,7 @@
             MainMenu.RestartMenu();
             MyAbilities.OffensiveAbilities = new Dictionary<string, Ability>();
             MyAbilities.DeffensiveAbilities = new Dictionary<string, Ability>();
-            RangeDrawing.RangesDictionary = new Dictionary<string, ParticleEffect>();
+            RangeDrawing.RangesDictionary = new Dictionary<Ability, ParticleEffect>();
             RangeDrawing.RangesValueDictionary = new Dictionary<string, float>();
             GankDamage.IncomingDamages = new Dictionary<string, float>();
             HpBar.HpBarPositionDictionary = new Dictionary<string, Vector2>();

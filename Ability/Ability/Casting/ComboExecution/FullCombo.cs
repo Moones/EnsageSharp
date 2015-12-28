@@ -74,7 +74,9 @@
                 foreach (var data in
                     MyAbilities.OffensiveAbilities.Where(
                         x =>
-                        x.Value.IsValid && x.Value.CanBeCasted()
+                        x.Value.IsValid
+                        && (x.Value.CanBeCasted()
+                            || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value)))
                         && ((x.Value is Item && me.CanUseItems()) || (!(x.Value is Item) && me.CanCast()))
                         && (Utils.SleepCheck(x.Value.Handle.ToString())
                             || (!x.Value.IsInAbilityPhase && x.Value.FindCastPoint() > 0)))
@@ -84,6 +86,10 @@
                     var name = NameManager.Name(ability);
                     var category = data.Key.Substring(name.Length);
                     var handleString = ability.Handle.ToString();
+                    if (category != "buff" && hero.IsMagicImmune() && ability.ImmunityType != (ImmunityType)3)
+                    {
+                        continue;
+                    }
                     if (!CastingChecks.All(name, hero, modifiers))
                     {
                         continue;
@@ -132,6 +138,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -160,6 +167,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -177,6 +185,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -193,6 +202,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -210,6 +220,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -227,6 +238,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -249,6 +261,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -277,6 +290,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             if (name == "item_ethereal_blade")
                             {
@@ -304,6 +318,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             if (name == "item_ethereal_blade")
                             {
@@ -326,13 +341,18 @@
                         continue;
                     }
                     if (category == "special"
-                        && Specials.SpecialsMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value
-                        < mana && MainMenu.Menu.Item("specialsToggler").GetValue<AbilityToggler>().IsEnabled(name))
+                        && (name == "rubick_spell_steal" || Specials.SpecialsMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value
+                        < mana) && MainMenu.Menu.Item("specialsToggler").GetValue<AbilityToggler>().IsEnabled(name))
                     {
                         if (name == "rubick_spell_steal")
                         {
                             var spell4 = me.Spellbook.Spell4;
-                            if ((!spell4.CanBeCasted() || spell4 == null) && Rubick.LastCasted(heroName) != null
+                            if ((!spell4.CanBeCasted()
+                                 || (spell4 != null
+                                     && !Specials.SpecialsMenuDictionary[name].Item(heroName)
+                                             .GetValue<AbilityToggler>()
+                                             .IsEnabled(NameManager.Name(spell4))) || spell4 == null)
+                                && Rubick.LastCasted(heroName) != null
                                 && NameManager.Name(spell4) != NameManager.Name(Rubick.LastCasted(heroName))
                                 && Specials.SpecialsMenuDictionary[name].Item(heroName)
                                        .GetValue<AbilityToggler>()
@@ -356,6 +376,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -373,6 +394,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -390,6 +412,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -468,6 +491,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
@@ -496,6 +520,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
@@ -515,6 +540,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -532,6 +558,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -549,6 +576,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -571,6 +599,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -588,6 +617,7 @@
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                                Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
                             Utils.Sleep(
                                 ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
@@ -615,7 +645,8 @@
             foreach (var data in
                 MyAbilities.DeffensiveAbilities.Where(
                     x =>
-                    (x.Value.IsValid && x.Value.CanBeCasted()
+                    (x.Value.IsValid
+                     && (x.Value.CanBeCasted() || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value)))
                      && ((x.Value is Item && me.CanUseItems()) || (!(x.Value is Item) && me.CanCast()))
                      && (Utils.SleepCheck(x.Value.Handle.ToString())
                          || (!x.Value.IsInAbilityPhase && x.Value.FindCastPoint() > 0)))))
@@ -623,6 +654,10 @@
                 var ability = data.Value;
                 var name = NameManager.Name(ability);
                 if (name == "item_soul_ring")
+                {
+                    continue;
+                }
+                if (hero.IsMagicImmune() && ability.ImmunityType != (ImmunityType)1)
                 {
                     continue;
                 }
@@ -640,7 +675,7 @@
                          && Heals.HealsMenuDictionary[name].Item(name + "useonallies")
                                 .GetValue<HeroToggler>()
                                 .IsEnabled(heroName)) || hero.Equals(AbilityMain.Me)) && canHit
-                    && ((name == "item_arcane_boots")
+                    && (name == "item_arcane_boots"
                             ? (Heals.HealsMenuDictionary[name].Item(name + "missingmanamin").GetValue<Slider>().Value
                                < (heroMissingMana)
                                && Heals.HealsMenuDictionary[name].Item(name + "manapercentbelow")
@@ -668,16 +703,16 @@
                                    || x.Name == "modifier_phoenix_fire_spirit_burn"
                                    || x.Name == "modifier_venomancer_poison_nova"
                                    || x.Name == "modifier_venomancer_venomous_gale"))
-                            : ((enemyHeroes.Count(
+                            : (name == "item_arcane_boots" || (enemyHeroes.Count(
                                 x =>
                                 (!Heals.HealsMenuDictionary[name].Item(name + "usenearbool").GetValue<bool>()
                                  || Heals.HealsMenuDictionary[name].Item(name + "usenear")
                                         .GetValue<HeroToggler>()
                                         .IsEnabled(NameManager.Name(x)))
-                                && (x.Distance2D(hero) < (Math.Max(x.GetAttackRange(), 700)))) - 1)
+                                && (x.Distance2D(hero) < (Math.Max(x.GetAttackRange(), 700)))) - 1
                                >= Heals.HealsMenuDictionary[name].Item(name + "minenemiesaround")
                                       .GetValue<StringList>()
-                                      .SelectedIndex))
+                                      .SelectedIndex)))
                     && (!(name == "item_mekansm" || name == "item_guardian_greaves" || name == "chen_hand_of_god")
                         || ((!AllyHeroes.Heroes.Any(
                             x =>
@@ -804,7 +839,8 @@
                     foreach (var data in
                         MyAbilities.Combo.Where(
                             x =>
-                            x.Value.IsValid && x.Value.CanBeCasted()
+                            x.Value.IsValid && (x.Value.CanBeCasted()
+                            || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value)))
                             && !x.Value.IsAbilityBehavior(AbilityBehavior.Hidden)
                             && ((x.Value is Item && me.CanUseItems()) || (!(x.Value is Item) && me.CanCast()))
                             && (Utils.SleepCheck(x.Value.Handle.ToString())
@@ -825,6 +861,10 @@
                         //{
                         //    continue;
                         //}
+                        if (category != "buff" && target.IsMagicImmune() && ability.ImmunityType != (ImmunityType)3)
+                        {
+                            continue;
+                        }
                         if (!CastingChecks.All(name, target, modifiers, ability))
                         {
                             continue;
@@ -846,7 +886,7 @@
                             {
                                 continue;
                             }
-                            if (target.Distance2D(MyHeroInfo.Position) > ability.GetCastRange(name) + 425)
+                            if (target.Distance2D(MyHeroInfo.Position) > ability.GetCastRange(name) + 250)
                             {
                                 continue;
                             }
@@ -993,12 +1033,14 @@
             {
                 if (Dictionaries.InDamageDictionary[possibleTarget.Handle] >= possibleTarget.Health)
                 {
-                    foreach (var ability in (from ability in MyAbilities.NukesCombo.OrderBy(ComboOrder.GetAbilityOrder)
-                                             where
-                                                 ability != null && ability.CanBeCasted()
-                                                 && (Utils.SleepCheck(ability.Handle.ToString())
-                                                     || (!ability.IsInAbilityPhase && ability.FindCastPoint() > 0))
-                                             select ability))
+                    foreach (var ability in from ability in MyAbilities.NukesCombo.OrderBy(ComboOrder.GetAbilityOrder)
+                                            where
+                                                ability != null
+                                                && (ability.CanBeCasted()
+                            || (ability.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(ability)))
+                                                && (Utils.SleepCheck(ability.Handle.ToString())
+                                                    || (!ability.IsInAbilityPhase && ability.FindCastPoint() > 0))
+                                            select ability)
                     {
                         var name = NameManager.Name(ability);
                         var handleString = ability.Handle.ToString();

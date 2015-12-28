@@ -38,11 +38,15 @@
             {
                 return;
             }
-            if (Utils.SleepCheck("allyHeroesUsable"))
+            if (Utils.SleepCheck("getallyheroes") && Heroes.Count(x => x.IsValid) < 5)
             {
-                Heroes = Heroes.Where(x => x.IsValid).ToList();
-                var heroes = new List<Hero>(Heroes).Where(x => x.IsValid && x.Health > 0 && x.IsAlive && x.IsVisible);
-                UsableHeroes = heroes as Hero[] ?? heroes.ToArray();
+                UpdateHeroes();
+                Utils.Sleep(1000, "getallyheroes");
+            }
+            Heroes = Heroes.Where(x => x.IsValid).ToList();
+            UsableHeroes = Heroes.Where(x => x.Health > 0 && x.IsAlive && x.IsVisible).ToArray();
+            if (Utils.SleepCheck("allyHeroesCheckValid"))
+            {
                 Utils.Sleep(2000, "allyHeroesCheckValid");
                 var itemList = new List<Item>(Items);
                 foreach (var hero in UsableHeroes)
@@ -69,22 +73,15 @@
                     ItemDictionary.Add(name, itemlist);
                 }
             }
-            if (!Utils.SleepCheck("getallyheroes") || Heroes.Count(x => x.IsValid) >= 5)
-            {
-                return;
-            }
-            UpdateHeroes();
-            Utils.Sleep(1000, "getallyheroes");
         }
 
         public static void UpdateHeroes()
         {
-            var list = new List<Player>(AllyPlayers.All);
+            var list = Ensage.Common.Objects.Heroes.GetByTeam(AbilityMain.Me.Team);
             var herolist = new List<Hero>(Heroes);
             var abilityList = new List<Ability>(Abilities.Where(x => x.IsValid));
-            foreach (var p in list.Where(x => x.Hero != null && x.Hero.IsVisible))
+            foreach (var hero in list.Where(x => x.IsValid && x.IsVisible))
             {
-                var hero = p.Hero;
                 var name = NameManager.Name(hero);
                 var spells = hero.Spellbook.Spells.ToList();
                 if (!herolist.Contains(hero))

@@ -32,9 +32,9 @@
             }
             if (All.Count < 5)
             {
-                All = Players.All.Where(x => x.Team == AbilityMain.Me.Team).ToList();
+                All = Players.All.Where(x => x.Hero != null && x.Team == AbilityMain.Me.Team).ToList();
             }
-            Utils.Sleep(1000, "Players.Update.Ally");
+            Utils.Sleep(2000, "Players.Update.Ally");
         }
 
         #endregion

@@ -83,6 +83,10 @@
                     Drawing.DrawRect(start, size + new Vector2(1, 1), new Color(0, 0, 50, 150));
                     Drawing.DrawRect(start, new Vector2(size.X * manaperc, size.Y), new Color(70, 120, 220));
                     Drawing.DrawRect(start + new Vector2(-1, -1), size + new Vector2(3, 3), Color.Black, true);
+                    if (!EnemyHeroes.AbilityDictionary.ContainsKey(heroName))
+                    {
+                        continue;
+                    }
                     var abilities =
                         EnemyHeroes.AbilityDictionary[heroName].Where(
                             x => (int)x.AbilitySlot >= 0 && (int)x.AbilitySlot <= 5).OrderBy(x => (int)x.AbilitySlot);
@@ -103,6 +107,10 @@
                     }
                     if (MainMenu.AbilityOverlayMenu.Item("enableItemOverlayEnemy").GetValue<bool>())
                     {
+                        if (!EnemyHeroes.ItemDictionary.ContainsKey(heroName))
+                        {
+                            continue;
+                        }
                         var items = EnemyHeroes.ItemDictionary[heroName].Where(ability => ability.IsValid).ToList();
                         var itemPos = hpbarpos
                                       - new Vector2(
@@ -134,6 +142,10 @@
                     {
                         continue;
                     }
+                    if (!AllyHeroes.AbilityDictionary.ContainsKey(heroName))
+                    {
+                        continue;
+                    }
                     var abilities =
                         AllyHeroes.AbilityDictionary[heroName].Where(
                             x => (int)x.AbilitySlot >= 0 && (int)x.AbilitySlot <= 5).OrderBy(x => (int)x.AbilitySlot);
@@ -157,6 +169,10 @@
                     }
                     if (MainMenu.AbilityOverlayMenu.Item("enableItemOverlayAlly").GetValue<bool>())
                     {
+                        if (!AllyHeroes.ItemDictionary.ContainsKey(heroName))
+                        {
+                            continue;
+                        }
                         var items = AllyHeroes.ItemDictionary[heroName].Where(ability => ability.IsValid).ToList();
                         var itemPos = hpbarpos
                                       - new Vector2(
@@ -202,13 +218,14 @@
                 TextureDictionary.Add(name, texture);
             }
             Drawing.DrawRect(position + new Vector2(1, 0), new Vector2(boxSizeX, boxSizeY), texture);
-            if (!ability.CanBeCasted())
+            var cooldown = Math.Ceiling(ability.Cooldown);
+            if (cooldown > 0 || !enoughMana || level <= 0)
             {
                 Drawing.DrawRect(
                     position + new Vector2(1, 0),
                     new Vector2(boxSizeX - 1, boxSizeY),
                     level <= 0
-                        ? new Color(10, 10, 10, 243)
+                        ? new Color(10, 10, 10, 210)
                         : (enoughMana ? new Color(40, 40, 40, 180) : new Color(25, 25, 130, 190)));
             }
             else
@@ -233,7 +250,6 @@
                     color,
                     FontFlags.AntiAlias | FontFlags.StrikeOut);
             }
-            var cooldown = Math.Ceiling(ability.Cooldown);
             if (cooldown > 0)
             {
                 var h = Math.Min(cooldown, 99).ToString(CultureInfo.InvariantCulture);
@@ -280,7 +296,6 @@
         private static void DrawItemOverlay(Item ability, Vector2 position, float mana)
         {
             var name = NameManager.Name(ability);
-            var level = ability.Level;
             var enoughMana = mana >= ability.ManaCost;
             DotaTexture texture;
             if (!TextureDictionary.TryGetValue(name, out texture))
@@ -292,14 +307,13 @@
                 position + new Vector2(1, 0),
                 new Vector2((float)(itemBoxSizeX + itemBoxSizeX / 2.6), itemBoxSizeY),
                 texture);
-            if (!ability.CanBeCasted())
+            var cooldown = Math.Ceiling(ability.Cooldown);
+            if (cooldown > 0 || !enoughMana)
             {
                 Drawing.DrawRect(
                     position + new Vector2(1, 0),
                     new Vector2(itemBoxSizeX - 1, itemBoxSizeY),
-                    level <= 0
-                        ? new Color(10, 10, 10, 243)
-                        : (enoughMana ? new Color(40, 40, 40, 180) : new Color(25, 25, 130, 190)));
+                    enoughMana ? new Color(40, 40, 40, 180) : new Color(25, 25, 130, 190));
             }
             else
             {
@@ -308,7 +322,6 @@
                     new Vector2(itemBoxSizeX - 1, itemBoxSizeY),
                     new Color(0, 0, 0, 100));
             }
-            var cooldown = Math.Ceiling(ability.Cooldown);
             if (cooldown > 0)
             {
                 var h = Math.Min(cooldown, 99).ToString(CultureInfo.InvariantCulture);

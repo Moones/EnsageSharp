@@ -12,14 +12,15 @@
     {
         #region Public Methods and Operators
 
-        public static void Cast(Ability ability)
+        public static bool Cast(Ability ability)
         {
             if (!Check(ability))
             {
-                return;
+                return true;
             }
             MyAbilities.SoulRing.UseAbility();
             Utils.Sleep(250, "Ability.SoulRing");
+            return false;
         }
 
         public static bool Check(Ability ability)
@@ -28,6 +29,14 @@
                    && Heals.HealsMenuDictionary["item_soul_ring"].Item("item_soul_ringuseBeforeCast").GetValue<bool>()
                    && Heals.HealsMenuDictionary["item_soul_ring"].Item("item_soul_ringminHp").GetValue<Slider>().Value
                    < AbilityMain.Me.Health;
+        }
+
+        public static float ManaGained 
+        {
+            get
+            {
+                return MyAbilities.SoulRing != null ? MyAbilities.SoulRing.GetAbilityData("mana_gain") : 0;
+            }
         }
 
         #endregion

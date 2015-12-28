@@ -12,6 +12,7 @@
     using Ability.AbilityMenu.Menus.SilencesMenu;
     using Ability.AbilityMenu.Menus.SlowsMenu;
     using Ability.AbilityMenu.Menus.SpecialsMenu;
+    using Ability.Drawings;
     using Ability.ObjectManager;
 
     using Ensage;
@@ -116,6 +117,7 @@
             MainMenu.OptionsMenu.AddSubMenu(MainMenu.ComboKeysMenu);
             MainMenu.OptionsMenu.AddSubMenu(MainMenu.DrawingsMenu);
             MainMenu.Menu.AddSubMenu(MainMenu.OptionsMenu);
+            MainMenu.Menu.AddSubMenu(MainMenu.RangeDrawingMenu);
         }
 
         #endregion

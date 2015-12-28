@@ -58,12 +58,24 @@
             {
                 if (lastOrderPosition != Vector3.Zero)
                 {
-                    Me.Move(lastOrderPosition);
+                    var ctarget = TargetSelector.ClosestToMouse(Me, 150);
+                    if (ctarget != null)
+                    {
+                        Me.Attack(ctarget);
+                    }
+                    else
+                    {
+                        Me.Attack(lastOrderPosition);
+                    }
                     lastOrderPosition = Vector3.Zero;
                 }
             }
+            else
+            {
+                lastOrderPosition = Game.MousePosition;
+            }
             var meModifiers = Me.Modifiers.ToList();
-            var ping = Game.Ping;
+            var ping = Game.Ping;  
             if (LaunchSnowball(meModifiers))
             {
                 return;
@@ -128,10 +140,10 @@
         {
             Events.OnLoad += OnLoad.Event;
             Events.OnClose += OnClose.Event;
-            if (Game.IsInGame)
-            {
-                OnLoad.Event(null, null);
-            }
+            //if (Game.IsInGame && ObjectMgr.LocalHero != null)
+            //{
+            //    OnLoad.Event(null, null);
+            //}
         }
 
         public static void Player_OnExecuteOrder(Player sender, ExecuteOrderEventArgs args)
@@ -184,11 +196,11 @@
 
         private static bool LaunchSnowball(IEnumerable<Modifier> modifiers)
         {
-            if (modifiers.All(x => x.Name != "modifier_tusk_snowball_movement"))
+            if (Me.ClassID != ClassID.CDOTA_Unit_Hero_Tusk || !Utils.SleepCheck("snowball"))
             {
                 return false;
             }
-            if (Me.ClassID != ClassID.CDOTA_Unit_Hero_Tusk || !Utils.SleepCheck("snowball"))
+            if (modifiers.All(x => x.Name != "modifier_tusk_snowball_movement"))
             {
                 return false;
             }

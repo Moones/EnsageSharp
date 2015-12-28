@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Ability.Drawings;
     using Ability.ObjectManager;
 
     using Ensage;
@@ -36,6 +37,7 @@
                 select spell)
             {
                 AddSpecial(spell);
+                RangeDrawing.AddRange(spell);
             }
             foreach (var spell in
                 from spell in myItems1
@@ -44,6 +46,7 @@
                 select spell)
             {
                 AddSpecial(spell);
+                RangeDrawing.AddRange(spell);
             }
             if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
             {
@@ -51,6 +54,7 @@
                 if (spellSteal != null)
                 {
                     AddSpecial(spellSteal);
+                    RangeDrawing.AddRange(spellSteal);
                 }
             }
             if (SpecialsTogglerCreated)

@@ -15,18 +15,11 @@
             menu.AddItem(new MenuItem("abilityMenuShowBlinkRange", "Show Range").SetValue(true)).ValueChanged +=
                 delegate(object sender, OnValueChangeEventArgs eventArgs)
                     {
-                        if (!eventArgs.GetNewValue<bool>())
-                        {
-                            RangeDrawing.RemoveRange(blink);
-                        }
-                        else
-                        {
-                            RangeDrawing.AddRange(blink, 1200);
-                        }
+                        RangeDrawing.RangeVisible(blink, eventArgs.GetNewValue<bool>());
                     };
             if (menu.Item("abilityMenuShowBlinkRange").GetValue<bool>())
             {
-                RangeDrawing.AddRange(blink, 1200);
+                RangeDrawing.AddRange(blink);
             }
             MainMenu.OptionsMenu.AddSubMenu(menu);
         }

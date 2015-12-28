@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Ability.Drawings;
     using Ability.ObjectManager;
 
     using Ensage;
@@ -35,6 +36,7 @@
                 select spell)
             {
                 AddSilence(spell);
+                RangeDrawing.AddRange(spell);
             }
             foreach (var spell in
                 from spell in myItems1
@@ -43,6 +45,7 @@
                 select spell)
             {
                 AddSilence(spell);
+                RangeDrawing.AddRange(spell);
             }
             if (SilencesTogglerCreated)
             {

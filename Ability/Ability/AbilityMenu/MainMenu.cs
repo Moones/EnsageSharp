@@ -30,6 +30,8 @@
 
         public static Menu GankDamageMenu;
 
+        public static Menu RangeDrawingMenu;
+
         public static Menu Menu;
 
         public static Menu OptionsMenu;
@@ -57,6 +59,7 @@
             GankDamageMenu = new Menu("GankDamage", "abilityGankDamage");
             AbilityOverlayMenu = new Menu("Ability Overlay", "abilityOverlayMenu");
             ComboKeysMenu = new Menu("Combo Keys", "comboKeysMenu");
+            RangeDrawingMenu = new Menu("Ability Ranges", "Ability.RangeMenu");
             Menu.AddToMainMenu();
             Nukes.NukesMenuDictionary = new Dictionary<string, Menu>();
             Disables.DisablesMenuDictionary = new Dictionary<string, Menu>();
