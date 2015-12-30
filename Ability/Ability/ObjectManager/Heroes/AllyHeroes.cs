@@ -88,7 +88,7 @@
                     if (name == "npc_dota_hero_ogre_magi")
                     {
                         Game.PrintMessage(
-                            "[ABILITY#]: SpellOverlay is temporary disabled due to Ensage.Core issues",
+                            "[ABILITY#]: SpellOverlay is temporary disabled for OgreMagi due to Ensage.Core issues",
                             MessageType.ChatMessage);
                     }
                     Heroes.Add(hero);
