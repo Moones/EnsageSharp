@@ -717,6 +717,9 @@
                                    >= Heals.HealsMenuDictionary[name].Item(name + "minenemiesaround")
                                           .GetValue<StringList>()
                                           .SelectedIndex)))
+                    && (name != "omniknight_purification" || hero.Health < hero.MaximumHealth*0.3
+                        || enemyHeroes.Any(
+                            x => x.Predict(Game.Ping).Distance2D(hero.Predict(Game.Ping)) <= ability.GetRadius(name)))
                     && (!(name == "item_mekansm" || name == "item_guardian_greaves" || name == "chen_hand_of_god")
                         || ((!AllyHeroes.Heroes.Any(
                             x =>
@@ -822,22 +825,10 @@
                     {
                         var r = MyAbilities.Combo.FirstOrDefault(x => x.Key == "templar_assassin_psionic_trapslow");
                         var modifier =
-                            target.Modifiers.FirstOrDefault(x => x.Name == "modifier_templar_assassin_trap_slow");
+                            modifiers.FirstOrDefault(x => x.Name == "modifier_templar_assassin_trap_slow");
                         if (modifier == null || modifier.RemainingTime < (r.Value.GetHitDelay(target)))
                         {
-                            var closestTrap =
-                                ObjectMgr.GetEntities<Unit>()
-                                    .Where(
-                                        x =>
-                                        x.ClassID == ClassID.CDOTA_BaseNPC_Additive && x.Team == AbilityMain.Me.Team
-                                        && x.IsAlive && x.IsVisible && x.Distance2D(target) < 400
-                                        && x.FindSpell("templar_assassin_self_trap") != null
-                                        && x.FindSpell("templar_assassin_self_trap").CanBeCasted())
-                                    .MinOrDefault(x => x.Distance2D(target));
-                            if (closestTrap != null)
-                            {
-                                closestTrap.FindSpell("templar_assassin_self_trap").CastStun(target, 1);
-                            }
+                            Slow.TemplarAssasinUseTrap(target);
                         }
                     }
                     foreach (var data in
@@ -884,7 +875,12 @@
                             dealtDamage = 0;
                             if (name == "templar_assassin_meld")
                             {
-                                AbilityMain.Me.Move(Game.MousePosition);
+                                if (!Nuke.Cast(ability, target, name) && Utils.SleepCheck("Ability.Move"))
+                                {
+                                    AbilityMain.Me.Move(Game.MousePosition);
+                                    Utils.Sleep(100, "Ability.Move");
+                                }
+                                Utils.Sleep(200, "GlobalCasting");
                                 return true;
                             }
                             if (name == "pudge_rot")
@@ -1004,6 +1000,7 @@
                         if (ability.ChannelTime(name) > 0)
                         {
                             Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
+                            Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 4, "GlobalCasting");
                             Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 4, "casting");
                         }
                         Utils.Sleep(delay, handleString);

@@ -1,6 +1,8 @@
 ﻿namespace Ability.Casting.ComboExecution
 {
+    using System;
     using System.Linq;
+    using System.Threading;
 
     using Ability.ObjectManager;
 
@@ -31,7 +33,38 @@
                 {
                     return false;
                 }
-                var closestTrap =
+                if (TemplarAssasinUseTrap(target))
+                {
+                    return false;
+                }
+                var casted = ability.CastSkillShot(target, MyHeroInfo.Position, name);
+                if (casted)
+                {
+                    DelayAction.Add(
+                        new DelayActionItem(
+                            (int)ability.GetHitDelay(target, name) * 1000 + 700,
+                            delegate
+                                {
+                                    TemplarAssasinUseTrap(target);
+                                },
+                            CancellationToken.None));
+                }
+                return casted;
+            }
+            return ability.CastStun(
+                target,
+                1,
+                abilityName: name,
+                soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
+        }
+
+        public static bool TemplarAssasinUseTrap(Unit target)
+        {
+            if (!Utils.SleepCheck("Ability.TemplarTrap"))
+            {
+                return false;
+            }
+            var closestTrap =
                     ObjectMgr.GetEntities<Unit>()
                         .Where(
                             x =>
@@ -40,17 +73,11 @@
                             && x.FindSpell("templar_assassin_self_trap") != null
                             && x.FindSpell("templar_assassin_self_trap").CanBeCasted())
                         .MinOrDefault(x => x.Distance2D(target));
-                if (closestTrap != null)
-                {
-                    return closestTrap.FindSpell("templar_assassin_self_trap").CastStun(target, 1);
-                }
-                return ability.CastSkillShot(target, MyHeroInfo.Position, name);
+            if (closestTrap != null)
+            {
+                Utils.Sleep(250,"Ability.TemplarTrap");
             }
-            return ability.CastStun(
-                target,
-                1,
-                abilityName: name,
-                soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
+            return closestTrap != null && closestTrap.FindSpell("templar_assassin_self_trap").CastStun(target, 1);
         }
 
         #endregion

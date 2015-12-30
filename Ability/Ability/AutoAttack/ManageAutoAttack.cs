@@ -7,7 +7,7 @@
     {
         #region Static Fields
 
-        public static bool CurrentValue;
+        public static bool AutoAttackDisabled;
 
         #endregion
 
@@ -15,15 +15,15 @@
 
         public static void UpdateAutoAttack()
         {
-            if (Utils.SleepCheck("GlobalCasting") && !CurrentValue)
+            if (Utils.SleepCheck("GlobalCasting") && AutoAttackDisabled)
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
-                CurrentValue = true;
+                AutoAttackDisabled = false;
             }
-            else if (!Utils.SleepCheck("GlobalCasting") && CurrentValue)
+            else if (!Utils.SleepCheck("GlobalCasting") && !AutoAttackDisabled)
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
-                CurrentValue = false;
+                AutoAttackDisabled = true;
             }
         }
 

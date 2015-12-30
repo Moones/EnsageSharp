@@ -3,11 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
 
     using Ability.AutoAttack;
     using Ability.ObjectManager;
 
     using Ensage;
+    using Ensage.Common;
     using Ensage.Common.Extensions;
 
     internal class Buff
@@ -34,8 +36,8 @@
                 }
                 var armlettoggled = modifiers.Any(x => x.Name == "modifier_item_armlet_unholy_strength")
                                     && ability.IsToggled;
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
-                ManageAutoAttack.CurrentValue = true;
+                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                ManageAutoAttack.AutoAttackDisabled = true;
                 if (armlettoggled)
                 {
                     ability.ToggleAbility();
@@ -50,15 +52,50 @@
                 return false;
             }
             SoulRing.Cast(ability);
+            if (ability.Name == "templar_assassin_refraction")
+            {
+                var meld = AbilityMain.Me.Spellbook.Spell2;
+                if (meld != null && meld.CanBeCasted())
+                {
+                    if (
+                        !(target.Distance2D(MyHeroInfo.Position)
+                          < (AbilityMain.Me.GetAttackRange() + 50 + target.HullRadius + AbilityMain.Me.HullRadius))
+                        || Orbwalking.AttackOnCooldown(target) || AbilityMain.Me.IsAttacking()
+                        || (target.Predict(Game.Ping).Distance2D(MyHeroInfo.Position)
+                            > (AbilityMain.Me.GetAttackRange() + 50 + target.HullRadius + AbilityMain.Me.HullRadius))
+                        || !Utils.SleepCheck("GlobalCasting"))
+                    {
+                        return false;
+                    }
+                    Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                    ManageAutoAttack.AutoAttackDisabled = true;
+                    ability.UseAbility();
+                    if (Nuke.Cast(meld, target, NameManager.Name(meld)))
+                    {
+                        DelayAction.Add(
+                            new DelayActionItem(
+                                (int)meld.GetCastDelay(AbilityMain.Me, target) * 1000 + 100,
+                                () =>
+                                    {
+                                        AbilityMain.Me.Attack(target);
+                                    },
+                                CancellationToken.None));
+                    }
+                    Utils.Sleep(meld.GetCastDelay(AbilityMain.Me,target)*1000, "GlobalCasting");
+                    Utils.Sleep(meld.GetHitDelay(target, name) * 1000 + 200, "casting");
+                    Utils.Sleep(meld.GetHitDelay(target, name) * 1000 + 200, ability.Handle.ToString());
+                    return true;
+                }
+            }
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))
             {
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
-                ManageAutoAttack.CurrentValue = true;
+                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                ManageAutoAttack.AutoAttackDisabled = true;
                 ability.UseAbility();
                 return true;
             }
-            Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
-            ManageAutoAttack.CurrentValue = true;
+            Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+            ManageAutoAttack.AutoAttackDisabled = true;
             ability.UseAbility(buffTarget);
             return true;
         }

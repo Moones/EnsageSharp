@@ -51,7 +51,11 @@
                     {
                         "npc_dota_hero_chaos_knight", new Dictionary<string, uint> { { "chaos_knight_reality_rift", 3 } }
                     },
-                    { "npc_dota_hero_naga_siren", new Dictionary<string, uint> { { "naga_siren_ensnare", 3 } } }
+                    { "npc_dota_hero_naga_siren", new Dictionary<string, uint> { { "naga_siren_ensnare", 3 } } },
+                    {
+                        "npc_dota_hero_templar_assassin",
+                        new Dictionary<string, uint> { { "templar_assassin_refraction", 3 } }
+                    }
                 };
 
         public static Dictionary<string, uint> DamageOrderDictionary = new Dictionary<string, uint>

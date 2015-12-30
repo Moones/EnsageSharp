@@ -1,6 +1,7 @@
 ﻿namespace Ability.Casting.ComboExecution
 {
     using System.Linq;
+    using System.Threading;
 
     using Ability.AutoAttack;
     using Ability.ObjectManager;
@@ -34,8 +35,8 @@
             }
             if (ability.IsAbilityBehavior(AbilityBehavior.UnitTarget, name) && ability.Name != "lion_impale")
             {
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
-                ManageAutoAttack.CurrentValue = true;
+                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                ManageAutoAttack.AutoAttackDisabled = true;
                 SoulRing.Cast(ability);
                 if (name == "omniknight_purification")
                 {
@@ -48,34 +49,49 @@
                  || ability.IsAbilityBehavior(AbilityBehavior.Point, name))
                 && (Prediction.StraightTime(target) > 1000 || target.MovementSpeed < 200))
             {
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
-                ManageAutoAttack.CurrentValue = true;
+                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                ManageAutoAttack.AutoAttackDisabled = true;
                 return ability.CastSkillShot(target, name, SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
             }
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))
             {
                 if (ability.Name == "templar_assassin_meld")
                 {
-                    if (!(target.Distance2D(MyHeroInfo.Position) < (AbilityMain.Me.GetAttackRange() + 50))
-                        || Orbwalking.AttackOnCooldown(target))
+                    if (
+                        !(target.Distance2D(MyHeroInfo.Position)
+                          < (AbilityMain.Me.GetAttackRange() + 50 + target.HullRadius + AbilityMain.Me.HullRadius))
+                        || Orbwalking.AttackOnCooldown(target) || AbilityMain.Me.IsAttacking()
+                        || (target.Predict(Game.Ping).Distance2D(MyHeroInfo.Position)
+                            > (AbilityMain.Me.GetAttackRange() + 50 + target.HullRadius + AbilityMain.Me.HullRadius))
+                        || !Utils.SleepCheck("GlobalCasting"))
                     {
                         return false;
                     }
-                    Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
-                    ManageAutoAttack.CurrentValue = true;
+                    Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                    ManageAutoAttack.AutoAttackDisabled = true;
                     ability.UseAbility();
-                    AbilityMain.Me.Attack(target);
+                    DelayAction.Add(
+                        new DelayActionItem(
+                            (int)ability.GetCastDelay(AbilityMain.Me, target)*1000,
+                            () =>
+                                {
+                                    AbilityMain.Me.Attack(target);
+                                },
+                            CancellationToken.None));
+                    Utils.Sleep(ability.GetCastDelay(AbilityMain.Me, target) * 1000, "GlobalCasting");
+                    Utils.Sleep(ability.GetCastDelay(AbilityMain.Me, target) * 1000 + 200, "casting");
+                    Utils.Sleep(ability.GetCastDelay(AbilityMain.Me, target) * 1000 + 200, "Ability.Move");
                     return true;
                 }
                 if (ability.Name.Contains("nevermore_shadowraze"))
                 {
-                    Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
-                    ManageAutoAttack.CurrentValue = true;
+                    Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                    ManageAutoAttack.AutoAttackDisabled = true;
                     return ability.CastSkillShot(target, name);
                 }
                 SoulRing.Cast(ability);
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
-                ManageAutoAttack.CurrentValue = true;
+                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                ManageAutoAttack.AutoAttackDisabled = true;
                 ability.UseAbility();
                 return true;
             }

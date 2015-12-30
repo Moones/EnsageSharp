@@ -32,7 +32,7 @@
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
-                ManageAutoAttack.CurrentValue = true;
+                ManageAutoAttack.AutoAttackDisabled = true;
                 SoulRing.Cast(ability);
                 ability.UseAbility();
                 return true;
@@ -43,7 +43,7 @@
             }
             SoulRing.Cast(ability);
             Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
-            ManageAutoAttack.CurrentValue = true;
+            ManageAutoAttack.AutoAttackDisabled = true;
             ability.UseAbility(target);
             return true;
         }

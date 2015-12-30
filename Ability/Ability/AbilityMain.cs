@@ -8,6 +8,7 @@
     using Ability.AbilityMenu;
     using Ability.AutoAttack;
     using Ability.Casting.ComboExecution;
+    using Ability.DamageCalculation;
     using Ability.Drawings;
     using Ability.ObjectManager;
     using Ability.ObjectManager.Heroes;
@@ -17,6 +18,7 @@
     using Ensage.Common;
     using Ensage.Common.Extensions;
     using Ensage.Common.Menu;
+    using Ensage.Common.Objects;
 
     using SharpDX;
 
@@ -90,7 +92,26 @@
 
             if (!MyAbilities.OffensiveAbilities.Any())
             {
-                return;
+                if (Game.IsChatOpen)
+                {
+                    return;
+                }
+                if (Game.IsKeyDown(MainMenu.ComboKeysMenu.Item("abilityKey1").GetValue<KeyBind>().Key))
+                {
+                    if (Utils.SleepCheck("UpdateTarget"))
+                    {
+                        target = TargetSelector.ClosestToMouse(Me, 2000);
+                        Utils.Sleep(250, "UpdateTarget");
+                    }
+                    if (target != null && !target.IsValid)
+                    {
+                        target = null;
+                    }
+                    if (Utils.SleepCheck("GlobalCasting"))
+                    {
+                        Orbwalking.Orbwalk(target, attackmodifiers: true);
+                    }
+                }
             }
 
             if (Utils.SleepCheck("casting"))
@@ -119,9 +140,14 @@
                     target = TargetSelector.ClosestToMouse(Me, 2000);
                     Utils.Sleep(250, "UpdateTarget");
                 }
+                if (target != null && !target.IsValid)
+                {
+                    target = null;
+                }
                 var selectedCombo = MainMenu.ComboKeysMenu.Item("abilityComboType").GetValue<StringList>().SelectedIndex;
-                if (Utils.SleepCheck("casting")
-                    && !FullCombo.Execute(
+                if (target != null && Utils.SleepCheck("Orbwalk.Attack"))
+                {
+                    FullCombo.Execute(
                         target,
                         enemyHeroes,
                         ping,
@@ -129,7 +155,24 @@
                         selectedCombo == 1,
                         Me,
                         meModifiers,
-                        meMana))
+                        meMana);
+                }
+                if (Me.ClassID == ClassID.CDOTA_Unit_Hero_TemplarAssassin && target != null && target.IsVisible)
+                {
+                    var meld = Me.Spellbook.SpellW;
+                    if (meld.ManaCost <= meMana && meld.Cooldown >= 0 && meld.Cooldown < UnitDatabase.GetAttackRate(Me)
+                        && target.Health > Dictionaries.HitDamageDictionary[target.Handle] * 2)
+                    {
+                        if (!Utils.SleepCheck("Ability.Move"))
+                        {
+                            return;
+                        }
+                        Me.Move(Game.MousePosition);
+                        Utils.Sleep(100, "Ability.Move");
+                        return;
+                    }
+                }
+                if (Utils.SleepCheck("GlobalCasting"))
                 {
                     Orbwalking.Orbwalk(target, attackmodifiers: true);
                 }

@@ -46,7 +46,9 @@
         {
             if (Utils.SleepCheck("mePosition"))
             {
-                Position = Prediction.PredictedXYZ(AbilityMain.Me, Game.Ping);
+                Position = AbilityMain.Me.IsMoving
+                               ? Prediction.InFront(AbilityMain.Me, AbilityMain.Me.MovementSpeed * (Game.Ping / 1000))
+                               : AbilityMain.Me.Position;
             }
         }
 

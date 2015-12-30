@@ -118,7 +118,13 @@
                         IncomingDamages.Add(heroName, 0);
                     }
                     var tempDmg = 0f;
-                    foreach (var allyHero in allyHeroes.Where(x => x.Distance2D(hero) < 1700))
+                    foreach (
+                        var allyHero in
+                            allyHeroes.Where(
+                                x =>
+                                AllyHeroes.AbilityDictionary.ContainsKey(NameManager.Name(x))
+                                && AllyHeroes.ItemDictionary.ContainsKey(NameManager.Name(x))
+                                && x.Distance2D(hero) < 1700))
                     {
                         var abilities = AllyHeroes.AbilityDictionary[NameManager.Name(allyHero)];
                         var items = AllyHeroes.ItemDictionary[NameManager.Name(allyHero)].Where(x => x.IsValid).ToList();
@@ -146,7 +152,13 @@
                     IncomingDamages.Add(heroName, 0);
                 }
                 var tempDmg = 0f;
-                foreach (var enemyHero in enemyHeroes.Where(x => x.Distance2D(hero) < 1700))
+                foreach (
+                    var enemyHero in
+                        enemyHeroes.Where(
+                            x =>
+                            EnemyHeroes.AbilityDictionary.ContainsKey(NameManager.Name(x))
+                            && EnemyHeroes.ItemDictionary.ContainsKey(NameManager.Name(x)) && x.Distance2D(hero) < 1700)
+                    )
                 {
                     var abilities = EnemyHeroes.AbilityDictionary[NameManager.Name(enemyHero)];
                     var items = EnemyHeroes.ItemDictionary[NameManager.Name(enemyHero)].Where(x => x.IsValid).ToList();

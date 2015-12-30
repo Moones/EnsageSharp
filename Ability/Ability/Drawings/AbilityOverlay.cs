@@ -82,22 +82,17 @@
                     Drawing.DrawRect(start, size + new Vector2(1, 1), new Color(0, 0, 50, 150));
                     Drawing.DrawRect(start, new Vector2(size.X * manaperc, size.Y), new Color(70, 120, 220));
                     Drawing.DrawRect(start + new Vector2(-1, -1), size + new Vector2(3, 3), Color.Black, true);
-                    if (!EnemyHeroes.AbilityDictionary.ContainsKey(heroName))
+                    if (EnemyHeroes.AbilityDictionary.ContainsKey(heroName) && spellOverlayEnabledEnemy)
                     {
-                        continue;
-                    }
-                    var abilities =
+                        var abilities =
                         EnemyHeroes.AbilityDictionary[heroName].Where(
                             x => (int)x.AbilitySlot >= 0 && (int)x.AbilitySlot <= 5).OrderBy(x => (int)x.AbilitySlot);
-                    var defaultPos = hpbarpos
-                                     + new Vector2(
-                                           HpBar.SizeX / 2
-                                           - Math.Max((abilities.Count() / 2) * boxSizeX, HpBar.SizeX / 2),
-                                           HpBar.SizeY + size.Y + 3);
-                    var position = defaultPos;
-
-                    if (spellOverlayEnabledEnemy)
-                    {
+                        var defaultPos = hpbarpos
+                                         + new Vector2(
+                                               HpBar.SizeX / 2
+                                               - Math.Max((abilities.Count() / 2) * boxSizeX, HpBar.SizeX / 2),
+                                               HpBar.SizeY + size.Y + 3);
+                        var position = defaultPos;
                         foreach (var ability in abilities)
                         {
                             DrawAbilityOverlay(ability, position, heroName, mana);
@@ -141,25 +136,22 @@
                     {
                         continue;
                     }
-                    if (!AllyHeroes.AbilityDictionary.ContainsKey(heroName))
+                    if (spellOverlayEnabledAlly && AllyHeroes.AbilityDictionary.ContainsKey(heroName))
                     {
-                        continue;
-                    }
-                    var abilities =
-                        AllyHeroes.AbilityDictionary[heroName].Where(
-                            x => (int)x.AbilitySlot >= 0 && (int)x.AbilitySlot <= 5).OrderBy(x => (int)x.AbilitySlot);
-                    var defaultPos = hpbarpos
-                                     + new Vector2(
-                                           HpBar.SizeX / 2
-                                           - Math.Max((abilities.Count() / 2) * boxSizeX, HpBar.SizeX / 2),
-                                           HpBar.SizeY + size.Y + 3);
-                    if (hero.Equals(AbilityMain.Me))
-                    {
-                        defaultPos += new Vector2(-3, 3);
-                    }
-                    var position = defaultPos;
-                    if (spellOverlayEnabledAlly)
-                    {
+                        var abilities =
+                            AllyHeroes.AbilityDictionary[heroName].Where(
+                                x => (int)x.AbilitySlot >= 0 && (int)x.AbilitySlot <= 5)
+                                .OrderBy(x => (int)x.AbilitySlot);
+                        var defaultPos = hpbarpos
+                                         + new Vector2(
+                                               HpBar.SizeX / 2
+                                               - Math.Max((abilities.Count() / 2) * boxSizeX, HpBar.SizeX / 2),
+                                               HpBar.SizeY + size.Y + 3);
+                        if (hero.Equals(AbilityMain.Me))
+                        {
+                            defaultPos += new Vector2(-3, 3);
+                        }
+                        var position = defaultPos;
                         foreach (var ability in abilities)
                         {
                             DrawAbilityOverlay(ability, position, heroName, mana);

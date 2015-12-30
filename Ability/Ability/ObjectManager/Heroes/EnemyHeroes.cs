@@ -87,7 +87,17 @@
                 var spells = hero.Spellbook.Spells.ToList();
                 if (!herolist.Contains(hero))
                 {
+                    if (name == "npc_dota_hero_ogre_magi")
+                    {
+                        Game.PrintMessage(
+                            "<font face='Calibri'>[ABILITY#]: SpellOverlay is temporary disabled for OgreMagi due to Ensage.Core issues</font>",
+                            MessageType.ChatMessage);
+                    }
                     Heroes.Add(hero);
+                }
+                if (name == "npc_dota_hero_ogre_magi")
+                {
+                    continue;
                 }
                 foreach (var ability in
                     spells.Where(x => !abilityList.Contains(x) && AbilityDatabase.Find(NameManager.Name(x)) != null)
