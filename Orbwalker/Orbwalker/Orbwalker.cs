@@ -89,18 +89,30 @@
 
             if (rangeDisplay == null)
             {
-                rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\range_display.vpcf");
-                lastRange = me.GetAttackRange() + me.HullRadius + 25;
-                rangeDisplay.SetControlPoint(1, new Vector3(lastRange, 0, 0));
+                if (me.IsAlive)
+                {
+                    rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\drag_selected_ring.vpcf");
+                    rangeDisplay.SetControlPoint(1, new Vector3(255, 80, 50));
+                    rangeDisplay.SetControlPoint(3, new Vector3(20, 0, 0));
+                    lastRange = me.GetAttackRange() + me.HullRadius + 25;
+                    rangeDisplay.SetControlPoint(2, new Vector3(lastRange, 255, 0));
+                }
             }
             else
             {
-                if (lastRange != (me.GetAttackRange() + me.HullRadius + 25))
+                if (!me.IsAlive)
+                {
+                    rangeDisplay.Dispose();
+                    rangeDisplay = null;
+                }
+                else if (lastRange != (me.GetAttackRange() + me.HullRadius + 25))
                 {
                     lastRange = me.GetAttackRange() + me.HullRadius + 25;
                     rangeDisplay.Dispose();
-                    rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\range_display.vpcf");
-                    rangeDisplay.SetControlPoint(1, new Vector3(lastRange, 0, 0));
+                    rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\drag_selected_ring.vpcf");
+                    rangeDisplay.SetControlPoint(1, new Vector3(255, 80, 50));
+                    rangeDisplay.SetControlPoint(3, new Vector3(15, 0, 0));
+                    rangeDisplay.SetControlPoint(2, new Vector3(lastRange, 255, 0));
                 }
             }
             if (target != null && (!target.IsValid || !target.IsVisible || !target.IsAlive || target.Health <= 0))
