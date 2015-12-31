@@ -64,6 +64,7 @@
                     return;
                 }
                 loaded = true;
+                target = null;
                 Game.PrintMessage(
                     "<font face='Tahoma'><font color='#000000'>[--</font> <font color='#33ff66'>Orbwalker</font> by <font color='#999999'>MOON</font><font color='#ff9900'>ES</font> loaded! <font color='#000000'>--]</font></font>",
                     MessageType.LogMessage);
@@ -78,6 +79,7 @@
                 {
                     return;
                 }
+                target = null;
                 rangeDisplay = null;
                 return;
             }
