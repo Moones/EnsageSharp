@@ -65,6 +65,7 @@
                 }
                 loaded = true;
                 target = null;
+                rangeDisplay = null;
                 Game.PrintMessage(
                     "<font face='Tahoma'><font color='#000000'>[--</font> <font color='#33ff66'>Orbwalker</font> by <font color='#999999'>MOON</font><font color='#ff9900'>ES</font> loaded! <font color='#000000'>--]</font></font>",
                     MessageType.LogMessage);
@@ -96,7 +97,7 @@
                     rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\drag_selected_ring.vpcf");
                     rangeDisplay.SetControlPoint(1, new Vector3(255, 80, 50));
                     rangeDisplay.SetControlPoint(3, new Vector3(20, 0, 0));
-                    lastRange = me.GetAttackRange() + me.HullRadius + 25;
+                    lastRange = me.GetAttackRange() + me.HullRadius + 70;
                     rangeDisplay.SetControlPoint(2, new Vector3(lastRange, 255, 0));
                 }
             }
@@ -107,9 +108,9 @@
                     rangeDisplay.Dispose();
                     rangeDisplay = null;
                 }
-                else if (lastRange != (me.GetAttackRange() + me.HullRadius + 25))
+                else if (lastRange != (me.GetAttackRange() + me.HullRadius + 70))
                 {
-                    lastRange = me.GetAttackRange() + me.HullRadius + 25;
+                    lastRange = me.GetAttackRange() + me.HullRadius + 70;
                     rangeDisplay.Dispose();
                     rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\drag_selected_ring.vpcf");
                     rangeDisplay.SetControlPoint(1, new Vector3(255, 80, 50));
