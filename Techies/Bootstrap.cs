@@ -38,10 +38,7 @@
 
             Variables.Techies = hero;
 
-            if (this.Techies == null)
-            {
-                this.Techies = new Techies();
-            }
+            this.Techies = new Techies();
 
             PrintOnLoadMessage();
         }

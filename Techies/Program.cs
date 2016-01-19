@@ -55,6 +55,14 @@
         private static void Events_OnLoad(object sender, EventArgs e)
         {
             Variables.Instance = new Bootstrap();
+            foreach (var module in Variables.Modules)
+            {
+                module.OnLoad();
+            }
+
+            Game.OnUpdate += Variables.Instance.Techies.Game_OnUpdate;
+            Drawing.OnDraw += Variables.Instance.Techies.Drawing_OnDraw;
+            Game.OnWndProc += Variables.Instance.Techies.Game_OnWndProc;
         }
 
         /// <summary>

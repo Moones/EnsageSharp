@@ -68,15 +68,6 @@
 
             this.EnabledHeroes = new Dictionary<ClassID, bool>();
             this.heroTopPanel = new Dictionary<ClassID, double[]>();
-
-            foreach (var module in Variables.Modules)
-            {
-                module.OnLoad();
-            }
-
-            Game.OnUpdate += this.Game_OnUpdate;
-            Drawing.OnDraw += this.Drawing_OnDraw;
-            Game.OnWndProc += this.Game_OnWndProc;
         }
 
         #endregion
@@ -158,7 +149,7 @@
                 module.Execute();
             }
 
-            foreach (var hero in Heroes.GetByTeam(Variables.EnemyTeam))
+            foreach (var hero in Heroes.GetByTeam(Variables.EnemyTeam).Where(x => x.IsAlive && x.IsVisible))
             {
                 foreach (
                     var module in Variables.Modules.Where(x => x.CanBeExecuted()).Where(module => module.IsHeroLoop()))
