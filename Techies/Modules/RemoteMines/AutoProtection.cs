@@ -50,7 +50,10 @@
             }
 
             foreach (var mine in
-                nearestStack.RemoteMines.Where(x => x.Entity.IsValid && x.Entity.IsVisibleForTeam(Variables.EnemyTeam)))
+                nearestStack.RemoteMines.Where(
+                    x =>
+                    x.Entity.IsValid && x.Entity.IsAlive && x.Entity.IsVisible
+                    && x.Entity.IsVisibleForTeam(Variables.EnemyTeam)))
             {
                 if (item != null && item.CanHit(mine.Entity))
                 {
