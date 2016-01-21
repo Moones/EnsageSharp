@@ -38,6 +38,7 @@
                 AddDisable(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             foreach (var spell in
                 from spell in myItems1
                 let data = AbilityDatabase.Find(spell.Name)
@@ -47,6 +48,7 @@
                 AddDisable(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             if (DisablesTogglerCreated)
             {
                 MainMenu.Menu.AddItem(
@@ -71,6 +73,7 @@
             {
                 DisablesToggler.Add(spell.Name, true);
             }
+
             var menu = DisableMenu.Create(spell.Name);
             DisablesMenuDictionary.Add(spell.Name, menu);
             DisablesMenu.AddSubMenu(menu);

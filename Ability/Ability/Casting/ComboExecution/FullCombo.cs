@@ -15,6 +15,7 @@
     using Ability.AbilityMenu.Menus.SlowsMenu;
     using Ability.AbilityMenu.Menus.SpecialsMenu;
     using Ability.DamageCalculation;
+    using Ability.Extensions;
     using Ability.ObjectManager;
     using Ability.ObjectManager.Heroes;
 
@@ -39,12 +40,12 @@
         #region Public Methods and Operators
 
         public static bool AutoUsage(
-            Hero enemyHero,
-            Hero[] enemyHeroes,
-            float meMissingHp,
-            List<Modifier> meModifiers,
-            float ping,
-            Hero me,
+            Hero enemyHero, 
+            Hero[] enemyHeroes, 
+            float meMissingHp, 
+            List<Modifier> meModifiers, 
+            float ping, 
+            Hero me, 
             float mana)
         {
             var hero = enemyHero;
@@ -63,6 +64,7 @@
                     {
                         return false;
                     }
+
                     Utils.Sleep(100 + me.GetTurnTime(hero) * 1000 + ping, "tusk_snowball");
                     Utils.Sleep(me.GetTurnTime(hero) * 1000 + (heroDistance / 675) * 1000 + 100, "GlobalCasting");
                     Utils.Sleep(me.GetTurnTime(hero) * 1000 + (heroDistance / 675) * 1000 + 100, "calculate");
@@ -90,12 +92,51 @@
                     {
                         continue;
                     }
+
                     if (!CastingChecks.All(name, hero, modifiers))
                     {
                         continue;
                     }
+
                     var delay = ability.GetCastDelay(me, hero, useCastPoint: false, abilityName: name) * 1000;
                     var canHit = ability.CanHit(hero, MyHeroInfo.Position, name);
+                    if (name == "omniknight_purification")
+                    {
+                        if (Nukes.NukesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value < mana
+                            && MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
+                            && Nukes.NukesMenuDictionary[name].Item(name + "herotoggler")
+                                   .GetValue<HeroToggler>()
+                                   .IsEnabled(heroName)
+                            && (etherealHitTime < (Environment.TickCount + ability.GetHitDelay(hero, name) * 1000))
+                            && hero.Health
+                            > Nukes.NukesMenuDictionary[name].Item(NameManager.Name(ability) + "minhealthslider")
+                                  .GetValue<Slider>()
+                                  .Value && CastingChecks.Killsteal(ability, hero, name))
+                        {
+                            var target =
+                                AllyHeroes.UsableHeroes.Where(x => !x.IsMagicImmune())
+                                    .MinOrDefault(x => x.Distance2D(hero));
+                            if (target != null
+                                && target.PredictedPosition().Distance2D(hero.PredictedPosition())
+                                < ability.GetRadius(name))
+                            {
+                                if (Nuke.Cast(ability, target, name))
+                                {
+                                    Utils.Sleep(
+                                        ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
+                                        handleString);
+                                    Utils.Sleep(delay, "GlobalCasting");
+                                    Utils.Sleep(delay, "cancelorder");
+
+                                    // Utils.Sleep(ping, "killsteal");
+                                    return true;
+                                }
+                            }
+                        }
+
+                        return false;
+                    }
+
                     if (category == "nuke"
                         && Nukes.NukesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value < mana
                         && MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
@@ -119,12 +160,13 @@
                             {
                                 Utils.Sleep(MyHeroInfo.AttackRate() * 1000 + ping + 100, handleString);
                             }
+
                             if (name == "item_ethereal_blade")
                             {
-                                //Utils.Sleep(
-                                //    me.GetTurnTime(hero) * 1000
-                                //    + Prediction.CalculateReachTime(hero, 1200, hero.Position - MyHeroInfo.Position),
-                                //    "casting");
+                                // Utils.Sleep(
+                                // me.GetTurnTime(hero) * 1000
+                                // + Prediction.CalculateReachTime(hero, 1200, hero.Position - MyHeroInfo.Position),
+                                // "casting");
                                 etherealHitTime =
                                     (float)
                                     (Environment.TickCount + me.GetTurnTime(hero) * 1000
@@ -132,29 +174,35 @@
                                      + ping);
                                 Utils.Sleep(
                                     me.GetTurnTime(hero) * 1000 + 100
-                                    + (MyHeroInfo.Position.Distance2D(hero) / 1200) * 1000 + ping,
+                                    + (MyHeroInfo.Position.Distance2D(hero) / 1200) * 1000 + ping, 
                                     "calculate");
                             }
+
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
-                            //Utils.Sleep(ping, "killsteal");
+
+                            // Utils.Sleep(ping, "killsteal");
                             return true;
                         }
+
                         continue;
                     }
+
                     if (Dictionaries.InDamageDictionary.ContainsKey(hero.Handle)
                         && Dictionaries.InDamageDictionary[hero.Handle] >= hero.Health)
                     {
                         continue;
                     }
+
                     if (category == "disable"
                         && Disables.DisablesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value
                         < mana && MainMenu.Menu.Item("disablesToggler").GetValue<AbilityToggler>().IsEnabled(name))
@@ -169,13 +217,15 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         if (
                             Disables.DisablesMenuDictionary[name].Item(name + "onchainstuntoggler")
                                 .GetValue<HeroToggler>()
@@ -187,13 +237,15 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         if (CastingChecks.UnderTower(ability, hero)
                             && Disables.DisablesMenuDictionary[name].Item(name + "undertowertoggler")
                                    .GetValue<HeroToggler>()
@@ -204,13 +256,15 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         if (
                             Disables.DisablesMenuDictionary[name].Item(name + "onchanneltoggler")
                                 .GetValue<HeroToggler>()
@@ -222,13 +276,15 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         if (
                             Disables.DisablesMenuDictionary[name].Item(name + "oncasttoggler")
                                 .GetValue<HeroToggler>()
@@ -240,15 +296,18 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         continue;
                     }
+
                     if (category == "slow"
                         && Slows.SlowsMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value < mana
                         && MainMenu.Menu.Item("slowsToggler").GetValue<AbilityToggler>().IsEnabled(name))
@@ -263,24 +322,27 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             if (name == "item_ethereal_blade")
                             {
                                 Utils.Sleep(
                                     me.GetTurnTime(hero) * 1000
-                                    + Prediction.CalculateReachTime(hero, 1200, hero.Position - MyHeroInfo.Position),
+                                    + Prediction.CalculateReachTime(hero, 1200, hero.Position - MyHeroInfo.Position), 
                                     "casting");
                                 Utils.Sleep(
                                     me.GetTurnTime(hero) * 1000 + 100
-                                    + (MyHeroInfo.Position.Distance2D(hero) / 1200) * 1000 + ping,
+                                    + (MyHeroInfo.Position.Distance2D(hero) / 1200) * 1000 + ping, 
                                     "calculate");
                             }
+
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         if (
                             Slows.SlowsMenuDictionary[name].Item(name + "onchainstuntoggler")
                                 .GetValue<HeroToggler>()
@@ -292,24 +354,27 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             if (name == "item_ethereal_blade")
                             {
                                 Utils.Sleep(
                                     me.GetTurnTime(hero) * 1000
-                                    + Prediction.CalculateReachTime(hero, 1200, hero.Position - MyHeroInfo.Position),
+                                    + Prediction.CalculateReachTime(hero, 1200, hero.Position - MyHeroInfo.Position), 
                                     "casting");
                                 Utils.Sleep(
                                     me.GetTurnTime(hero) * 1000 + 100
-                                    + (MyHeroInfo.Position.Distance2D(hero) / 1200) * 1000 + ping,
+                                    + (MyHeroInfo.Position.Distance2D(hero) / 1200) * 1000 + ping, 
                                     "calculate");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         if (CastingChecks.UnderTower(ability, hero)
                             && Slows.SlowsMenuDictionary[name].Item(name + "undertowertoggler")
                                    .GetValue<HeroToggler>()
@@ -320,26 +385,30 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             if (name == "item_ethereal_blade")
                             {
                                 Utils.Sleep(
                                     me.GetTurnTime(hero) * 1000
-                                    + Prediction.CalculateReachTime(hero, 1200, hero.Position - MyHeroInfo.Position),
+                                    + Prediction.CalculateReachTime(hero, 1200, hero.Position - MyHeroInfo.Position), 
                                     "casting");
                                 Utils.Sleep(
                                     me.GetTurnTime(hero) * 1000 + 100
-                                    + (MyHeroInfo.Position.Distance2D(hero) / 1200) * 1000 + ping,
+                                    + (MyHeroInfo.Position.Distance2D(hero) / 1200) * 1000 + ping, 
                                     "calculate");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         continue;
                     }
+
                     if (category == "special"
                         && (name == "rubick_spell_steal"
                             || Specials.SpecialsMenuDictionary[name].Item(name + "minManaCheck")
@@ -350,12 +419,7 @@
                         if (name == "rubick_spell_steal")
                         {
                             var spell4 = me.Spellbook.Spell4;
-                            if ((!spell4.CanBeCasted()
-                                 || (spell4 != null
-                                     && !Specials.SpecialsMenuDictionary[name].Item(heroName)
-                                             .GetValue<AbilityToggler>()
-                                             .IsEnabled(NameManager.Name(spell4))) || spell4 == null)
-                                && Rubick.LastCasted(heroName) != null
+                            if ((!spell4.CanBeCasted()) && Rubick.LastCasted(heroName) != null
                                 && NameManager.Name(spell4) != NameManager.Name(Rubick.LastCasted(heroName))
                                 && Specials.SpecialsMenuDictionary[name].Item(heroName)
                                        .GetValue<AbilityToggler>()
@@ -363,14 +427,16 @@
                                 && Special.Cast(ability, hero, name))
                             {
                                 Utils.Sleep(
-                                    ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                    ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                     handleString);
                                 Utils.Sleep(delay, "GlobalCasting");
                                 Utils.Sleep(delay, "cancelorder");
                                 return true;
                             }
+
                             continue;
                         }
+
                         if (
                             Specials.SpecialsMenuDictionary[name].Item(name + "onsighttoggler")
                                 .GetValue<HeroToggler>()
@@ -381,13 +447,15 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         if (Specials.SpecialsMenuDictionary[name].Item(name + "onpurgetoggler") != null
                             && Specials.SpecialsMenuDictionary[name].Item(name + "onpurgetoggler")
                                    .GetValue<HeroToggler>()
@@ -399,13 +467,15 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         if (Specials.SpecialsMenuDictionary[name].Item(name + "oninvistoggler") != null
                             && Specials.SpecialsMenuDictionary[name].Item(name + "oninvistoggler")
                                    .GetValue<HeroToggler>()
@@ -417,13 +487,15 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         if (Specials.SpecialsMenuDictionary[name].Item(name + "onattacktoggler") != null
                             && Specials.SpecialsMenuDictionary[name].Item(name + "onattacktoggler")
                                    .GetValue<HeroToggler>()
@@ -431,14 +503,16 @@
                             && Special.Cast(ability, hero, name))
                         {
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         continue;
                     }
+
                     if (category == "buff"
                         && Buffs.BuffsMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value < mana
                         && MainMenu.Menu.Item("buffsToggler").GetValue<AbilityToggler>().IsEnabled(name))
@@ -451,19 +525,21 @@
                             {
                                 continue;
                             }
+
                             if (Buffs.BuffsMenuDictionary[name].Item(name + "alwaystoggle").GetValue<bool>()
                                 && Buffs.BuffsMenuDictionary[name].Item(name + "belowhpslider").GetValue<Slider>().Value
                                 > me.Health && AbilityMain.Me.Distance2D(Base.Position()) > 1300
                                 && Buff.Cast(ability, hero, me, name, meModifiers, true))
                             {
                                 Utils.Sleep(
-                                    Buffs.BuffsMenuDictionary[name].Item(name + "armletdelay").GetValue<Slider>().Value,
+                                    Buffs.BuffsMenuDictionary[name].Item(name + "armletdelay").GetValue<Slider>().Value, 
                                     handleString);
                                 Utils.Sleep(ping + 200, "GlobalCasting");
                                 Utils.Sleep(ping + 200, "casting");
                                 return true;
                             }
                         }
+
                         if (name == "item_satanic"
                             && Buffs.BuffsMenuDictionary[name].Item(name + "missinghpslider").GetValue<Slider>().Value
                             > meMissingHp
@@ -472,6 +548,7 @@
                         {
                             continue;
                         }
+
                         if (
                             Buffs.BuffsMenuDictionary[name].Item(name + "onsighttoggler")
                                 .GetValue<HeroToggler>()
@@ -480,7 +557,7 @@
                             if (name == "item_armlet")
                             {
                                 Utils.Sleep(
-                                    Buffs.BuffsMenuDictionary[name].Item(name + "armletdelay").GetValue<Slider>().Value,
+                                    Buffs.BuffsMenuDictionary[name].Item(name + "armletdelay").GetValue<Slider>().Value, 
                                     handleString);
                                 Utils.Sleep(ping + 200, "GlobalCasting");
                                 Utils.Sleep(ping + 200, "casting");
@@ -488,18 +565,21 @@
                             else
                             {
                                 Utils.Sleep(
-                                    ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                    ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                     handleString);
                             }
+
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         if (
                             Buffs.BuffsMenuDictionary[name].Item(name + "onattacktoggler")
                                 .GetValue<HeroToggler>()
@@ -509,7 +589,7 @@
                             if (name == "item_armlet")
                             {
                                 Utils.Sleep(
-                                    Buffs.BuffsMenuDictionary[name].Item(name + "armletdelay").GetValue<Slider>().Value,
+                                    Buffs.BuffsMenuDictionary[name].Item(name + "armletdelay").GetValue<Slider>().Value, 
                                     handleString);
                                 Utils.Sleep(ping + 200, "GlobalCasting");
                                 Utils.Sleep(ping + 200, "casting");
@@ -517,20 +597,24 @@
                             else
                             {
                                 Utils.Sleep(
-                                    ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                    ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                     handleString);
                             }
+
                             if (ability.ChannelTime(name) > 0)
                             {
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         continue;
                     }
+
                     if (category == "silence"
                         && Silences.SilencesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value
                         < mana && MainMenu.Menu.Item("silencesToggler").GetValue<AbilityToggler>().IsEnabled(name))
@@ -545,13 +629,15 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         if (
                             Silences.SilencesMenuDictionary[name].Item(name + "oncasttoggler")
                                 .GetValue<HeroToggler>()
@@ -563,13 +649,15 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         if (
                             Silences.SilencesMenuDictionary[name].Item(name + "oninvistoggler")
                                 .GetValue<HeroToggler>()
@@ -581,15 +669,18 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         continue;
                     }
+
                     if (category == "harras"
                         && Harrases.HarrasesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value
                         < mana && MainMenu.Menu.Item("harrasesToggler").GetValue<AbilityToggler>().IsEnabled(name))
@@ -604,13 +695,15 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
                             return true;
                         }
+
                         if (
                             Harrases.HarrasesMenuDictionary[name].Item(name + "onattacktoggler")
                                 .GetValue<HeroToggler>()
@@ -622,8 +715,9 @@
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                                 Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "casting");
                             }
+
                             Utils.Sleep(
-                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
+                                ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
                                 handleString);
                             Utils.Sleep(delay, "GlobalCasting");
                             Utils.Sleep(delay, "cancelorder");
@@ -632,6 +726,7 @@
                     }
                 }
             }
+
             return false;
         }
 
@@ -639,7 +734,8 @@
         {
             var hero = allyHero;
             var heroName = NameManager.Name(hero);
-            //var heroDistance = position.Distance2D(hero);
+
+            // var heroDistance = position.Distance2D(hero);
             var modifiers = hero.Modifiers.ToList();
             var heroMissingHp = hero.MaximumHealth - hero.Health;
             var heroMissingMana = hero.MaximumMana - hero.Mana;
@@ -660,16 +756,19 @@
                 {
                     continue;
                 }
+
                 if (hero.IsMagicImmune() && ability.ImmunityType != (ImmunityType)1)
                 {
                     continue;
                 }
+
                 var category = data.Key.Substring(name.Length);
                 var handleString = ability.Handle.ToString();
                 if (!CastingChecks.All(name, hero, modifiers))
                 {
                     continue;
                 }
+
                 var delay = ability.GetCastDelay(me, hero, abilityName: name) * 1000;
                 var canHit = ability.CanHit(hero, MyHeroInfo.Position, name);
                 if (category == "heal" && hero.Modifiers.All(x => x.Name != "modifier_ice_blast")
@@ -680,10 +779,10 @@
                                 .IsEnabled(heroName)) || hero.Equals(AbilityMain.Me)) && canHit
                     && (name == "item_arcane_boots"
                             ? (Heals.HealsMenuDictionary[name].Item(name + "missingmanamin").GetValue<Slider>().Value
-                               < (heroMissingMana)
+                               < heroMissingMana
                                && Heals.HealsMenuDictionary[name].Item(name + "manapercentbelow")
                                       .GetValue<Slider>()
-                                      .Value > (heroManaPercentage)
+                                      .Value > heroManaPercentage
                                && (!AllyHeroes.Heroes.Any(
                                    x =>
                                    !x.Equals(hero)
@@ -694,9 +793,9 @@
                                    < Heals.HealsMenuDictionary[name].Item(name + "waitrange").GetValue<Slider>().Value
                                    && !ability.CanHit(x, MyHeroInfo.Position))))
                             : (Heals.HealsMenuDictionary[name].Item(name + "missinghpmin").GetValue<Slider>().Value
-                               < (heroMissingHp)
+                               < heroMissingHp
                                && Heals.HealsMenuDictionary[name].Item(name + "hppercentbelow").GetValue<Slider>().Value
-                               > (heroHpPercentage)))
+                               > heroHpPercentage))
                     && (name == "item_urn_of_shadows"
                             ? (!enemyHeroes.Any(x => x.Distance2D(hero) < Math.Max(x.GetAttackRange(), 500))
                                && !hero.Modifiers.Any(
@@ -713,11 +812,11 @@
                                     || Heals.HealsMenuDictionary[name].Item(name + "usenear")
                                            .GetValue<HeroToggler>()
                                            .IsEnabled(NameManager.Name(x)))
-                                   && (x.Distance2D(hero) < (Math.Max(x.GetAttackRange(), 700)))) - 1
+                                   && (x.Distance2D(hero) < Math.Max(x.GetAttackRange(), 700))) - 1
                                    >= Heals.HealsMenuDictionary[name].Item(name + "minenemiesaround")
                                           .GetValue<StringList>()
                                           .SelectedIndex)))
-                    && (name != "omniknight_purification" || hero.Health < hero.MaximumHealth*0.3
+                    && (name != "omniknight_purification" || hero.Health < hero.MaximumHealth * 0.2
                         || enemyHeroes.Any(
                             x => x.Predict(Game.Ping).Distance2D(hero.Predict(Game.Ping)) <= ability.GetRadius(name)))
                     && (!(name == "item_mekansm" || name == "item_guardian_greaves" || name == "chen_hand_of_god")
@@ -733,11 +832,11 @@
                             && Heals.HealsMenuDictionary[name].Item(name + "minalliesheal")
                                    .GetValue<StringList>()
                                    .SelectedIndex
-                            <= (AllyHeroes.Heroes.Count(
+                            <= AllyHeroes.Heroes.Count(
                                 x =>
                                 !x.Equals(me) && ability.CanHit(x, MyHeroInfo.Position, name)
                                 && (x.MaximumHealth - x.Health)
-                                > Heals.HealsMenuDictionary[name].Item(name + "missinghpmin").GetValue<Slider>().Value))
+                                > Heals.HealsMenuDictionary[name].Item(name + "missinghpmin").GetValue<Slider>().Value)
                             - 1)) && Heal.Cast(ability, hero, name))
                 {
                     Utils.Sleep(ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, handleString);
@@ -745,30 +844,35 @@
                     {
                         Utils.Sleep(16000, handleString);
                     }
+
                     Utils.Sleep(delay, "GlobalCasting");
                     Utils.Sleep(delay, "casting");
                     Utils.Sleep(delay, "cancelorder");
                     return true;
                 }
+
                 if (category == "shield"
                     && MainMenu.Menu.Item("shieldsToggler").GetValue<AbilityToggler>().IsEnabled(name) && canHit
                     && (!(!ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name)
                           || (name == "item_pipe" || name == "item_buckler" || name == "omniknight_guardian_angel"
                               || name == "item_crimson_guard"))
-                        || (Shields.ShieldsMenuDictionary[name].Item(name + "useonallies")
+                        || Shields.ShieldsMenuDictionary[name].Item(name + "useonallies")
                                .GetValue<HeroToggler>()
-                               .IsEnabled(heroName)))
-                    && Shields.ShieldsMenuDictionary[name].Item(name + "missinghpmin").GetValue<Slider>().Value
-                    < (heroMissingHp)
-                    && Shields.ShieldsMenuDictionary[name].Item(name + "hppercentbelow").GetValue<Slider>().Value
-                    > (heroHpPercentage)
+                               .IsEnabled(heroName))
+                    && (Shields.ShieldsMenuDictionary[name].Item(name + "missinghpmin").GetValue<Slider>().Value
+                        < heroMissingHp
+                        && Shields.ShieldsMenuDictionary[name].Item(name + "hppercentbelow").GetValue<Slider>().Value
+                        > heroHpPercentage
+                        || Shields.ShieldsMenuDictionary[name].Item(name + "ondisabletoggler")
+                               .GetValue<HeroToggler>()
+                               .IsEnabled(heroName) && CastingChecks.DisabledAlly(hero))
                     && (enemyHeroes.Count(
                         x =>
                         (!Shields.ShieldsMenuDictionary[name].Item(name + "usenearbool").GetValue<bool>()
                          || Shields.ShieldsMenuDictionary[name].Item(name + "usenear")
                                 .GetValue<HeroToggler>()
                                 .IsEnabled(NameManager.Name(x)))
-                        && (x.Distance2D(hero) < (Math.Max(x.GetAttackRange(), 700)))) - 1)
+                        && (x.Distance2D(hero) < Math.Max(x.GetAttackRange(), 700))) - 1)
                     >= Shields.ShieldsMenuDictionary[name].Item(name + "minenemiesaround")
                            .GetValue<StringList>()
                            .SelectedIndex
@@ -788,17 +892,18 @@
                     return true;
                 }
             }
+
             return false;
         }
 
         public static bool Execute(
-            Hero target,
-            Hero[] enemyHeroes,
-            float ping,
-            bool onlyDamage,
-            bool onlyDisable,
-            Hero me,
-            List<Modifier> meModifiers,
+            Hero target, 
+            Hero[] enemyHeroes, 
+            float ping, 
+            bool onlyDamage, 
+            bool onlyDisable, 
+            Hero me, 
+            List<Modifier> meModifiers, 
             float mana)
         {
             if (Utils.SleepCheck("UpdateCombo"))
@@ -810,6 +915,7 @@
                         .OrderBy(x => ComboOrder.GetComboOrder(x.Value, onlyDisable));
                 Utils.Sleep(500, "UpdateCombo");
             }
+
             if (Utils.SleepCheck("casting") && MyAbilities.Combo != null)
             {
                 if (target != null)
@@ -820,17 +926,18 @@
                     {
                         return false;
                     }
+
                     var modifiers = target.Modifiers.ToList();
                     if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_TemplarAssassin)
                     {
                         var r = MyAbilities.Combo.FirstOrDefault(x => x.Key == "templar_assassin_psionic_trapslow");
-                        var modifier =
-                            modifiers.FirstOrDefault(x => x.Name == "modifier_templar_assassin_trap_slow");
-                        if (modifier == null || modifier.RemainingTime < (r.Value.GetHitDelay(target)))
+                        var modifier = modifiers.FirstOrDefault(x => x.Name == "modifier_templar_assassin_trap_slow");
+                        if (modifier == null || modifier.RemainingTime < r.Value.GetHitDelay(target))
                         {
                             Slow.TemplarAssasinUseTrap(target);
                         }
                     }
+
                     foreach (var data in
                         MyAbilities.Combo.Where(
                             x =>
@@ -845,31 +952,84 @@
                         var ability = data.Value;
                         var name = NameManager.Name(ability);
                         var category = (name == "lion_impale") ? "disable" : data.Key.Substring(name.Length);
-                        //if (category == "special" || category == "buff")
-                        //{
-                        //    continue;
-                        //}
-                        //if (onlyDamage && (category == "disable" || category == "slow" || category == "silence"))
-                        //{
-                        //    continue;
-                        //}
-                        //if (onlyDisable && (category == "nuke" || category == "harras"))
-                        //{
-                        //    continue;
-                        //}
+
+                        // if (category == "special" || category == "buff")
+                        // {
+                        // continue;
+                        // }
+                        // if (onlyDamage && (category == "disable" || category == "slow" || category == "silence"))
+                        // {
+                        // continue;
+                        // }
+                        // if (onlyDisable && (category == "nuke" || category == "harras"))
+                        // {
+                        // continue;
+                        // }
                         if (category != "buff" && target.IsMagicImmune() && ability.ImmunityType != (ImmunityType)3)
                         {
                             continue;
                         }
+
                         if (!CastingChecks.All(name, target, modifiers, ability))
                         {
                             continue;
                         }
+
                         var handleString = ability.Handle.ToString();
                         if (etherealHitTime >= (Environment.TickCount + ability.GetHitDelay(target, name) * 1000))
                         {
                             continue;
                         }
+
+                        if (name == "omniknight_purification")
+                        {
+                            if (Nukes.NukesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value
+                                < mana && MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
+                                && Nukes.NukesMenuDictionary[name].Item(name + "herotoggler")
+                                       .GetValue<HeroToggler>()
+                                       .IsEnabled(NameManager.Name(target))
+                                && (etherealHitTime < (Environment.TickCount + ability.GetHitDelay(target, name) * 1000))
+                                && target.Health
+                                > Nukes.NukesMenuDictionary[name].Item(NameManager.Name(ability) + "minhealthslider")
+                                      .GetValue<Slider>()
+                                      .Value)
+                            {
+                                var target1 =
+                                    AllyHeroes.UsableHeroes.Where(x => !x.IsMagicImmune())
+                                        .MinOrDefault(x => x.Distance2D(target));
+                                if (target1 != null
+                                    && target1.PredictedPosition().Distance2D(target.PredictedPosition())
+                                    < ability.GetRadius(name))
+                                {
+                                    if (Nuke.Cast(ability, target1, name))
+                                    {
+                                        Utils.Sleep(
+                                            Math.Max(ability.GetCastDelay(me, target1, abilityName: name), 0.2) * 1000, 
+                                            "GlobalCasting");
+                                        Utils.Sleep(ability.GetHitDelay(target1, name) * 1000, "calculate");
+                                        Utils.Sleep(
+                                            Math.Max(
+                                                ability.GetCastDelay(
+                                                    me, 
+                                                    target1, 
+                                                    useCastPoint: false, 
+                                                    abilityName: name), 
+                                                0.15) * 1000 + Game.Ping, 
+
+                                            // + (Math.Max(me.Distance2D(target) - ability.GetCastRange(name) - 50, 0)
+                                            // / me.MovementSpeed) * 1000,
+                                            "casting");
+                                        Utils.Sleep(
+                                            Math.Max(ability.GetCastDelay(me, target1, abilityName: name), 0.2) * 1000, 
+                                            "cancelorder");
+                                        return true;
+                                    }
+                                }
+                            }
+
+                            return false;
+                        }
+
                         if (!ability.CanHit(target, MyHeroInfo.Position, name) && category != "buff")
                         {
                             dealtDamage = 0;
@@ -880,24 +1040,30 @@
                                     AbilityMain.Me.Move(Game.MousePosition);
                                     Utils.Sleep(100, "Ability.Move");
                                 }
+
                                 Utils.Sleep(200, "GlobalCasting");
                                 return true;
                             }
+
                             if (name == "pudge_rot")
                             {
                                 continue;
                             }
+
                             if (target.Distance2D(MyHeroInfo.Position) > ability.GetCastRange(name) + 250)
                             {
                                 continue;
                             }
+
                             return false;
                         }
+
                         if (name == "item_cyclone" && coldFeetLastUse - Environment.TickCount < 2500
                             && coldFeetLastUse - Environment.TickCount > -1000)
                         {
                             continue;
                         }
+
                         if (category == "nuke"
                             && Nukes.NukesMenuDictionary[name].Item(name + "minManaCheckCombo").GetValue<Slider>().Value
                             < mana
@@ -918,6 +1084,7 @@
                         {
                             continue;
                         }
+
                         if (category == "disable"
                             && Disables.DisablesMenuDictionary[name].Item(name + "minManaCheckCombo")
                                    .GetValue<Slider>()
@@ -925,12 +1092,14 @@
                         {
                             continue;
                         }
+
                         if (category == "slow"
                             && Slows.SlowsMenuDictionary[name].Item(name + "minManaCheckCombo").GetValue<Slider>().Value
                             < mana && !Slow.Cast(ability, target, name))
                         {
                             continue;
                         }
+
                         if (category == "harras"
                             && Harrases.HarrasesMenuDictionary[name].Item(name + "minManaCheckCombo")
                                    .GetValue<Slider>()
@@ -938,6 +1107,7 @@
                         {
                             continue;
                         }
+
                         if (category == "silence"
                             && Silences.SilencesMenuDictionary[name].Item(name + "minManaCheckCombo")
                                    .GetValue<Slider>()
@@ -945,6 +1115,7 @@
                         {
                             continue;
                         }
+
                         if (category == "special"
                             && Specials.SpecialsMenuDictionary[name].Item(name + "minManaCheckCombo")
                                    .GetValue<Slider>()
@@ -952,6 +1123,7 @@
                         {
                             continue;
                         }
+
                         if (category == "buff"
                             && Buffs.BuffsMenuDictionary[name].Item(name + "minManaCheckCombo").GetValue<Slider>().Value
                             < mana
@@ -960,10 +1132,12 @@
                         {
                             continue;
                         }
+
                         if (Utils.SleepCheck(ability.Handle.ToString()))
                         {
                             dealtDamage += AbilityDamage.CalculateDamage(ability, me, target);
                         }
+
                         var delay = Math.Max(ability.GetCastDelay(me, target, abilityName: name), 0.2) * 1000;
                         switch (name)
                         {
@@ -984,43 +1158,48 @@
                                      + ping * 2);
                                 Utils.Sleep(
                                     me.GetTurnTime(target) * 1000 + 100
-                                    + (MyHeroInfo.Position.Distance2D(target) / 1200) * 1000 + ping,
+                                    + (MyHeroInfo.Position.Distance2D(target) / 1200) * 1000 + ping, 
                                     "calculate");
                                 break;
                             case "tusk_snowball":
                                 Utils.Sleep(
                                     me.GetTurnTime(target) * 1000
-                                    + (MyHeroInfo.Position.Distance2D(target) / 675) * 1000,
+                                    + (MyHeroInfo.Position.Distance2D(target) / 675) * 1000, 
                                     "GlobalCasting");
                                 break;
                             case "ancient_apparition_cold_feet":
                                 coldFeetLastUse = Environment.TickCount + 4000;
                                 break;
                         }
+
                         if (ability.ChannelTime(name) > 0)
                         {
                             Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 3, "cancelorder");
                             Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 4, "GlobalCasting");
                             Utils.Sleep(delay + (ability.ChannelTime(name) * 1000) / 4, "casting");
                         }
+
                         Utils.Sleep(delay, handleString);
                         Utils.Sleep(delay, "GlobalCasting");
                         Utils.Sleep(ability.GetHitDelay(target, name) * 1000, "calculate");
                         Utils.Sleep(
                             Math.Max(ability.GetCastDelay(me, target, useCastPoint: false, abilityName: name), 0.15)
-                            * 1000 + Game.Ping,
-                            //+ (Math.Max(me.Distance2D(target) - ability.GetCastRange(name) - 50, 0)
-                            //   / me.MovementSpeed) * 1000,
+                            * 1000 + Game.Ping, 
+
+                            // + (Math.Max(me.Distance2D(target) - ability.GetCastRange(name) - 50, 0)
+                            // / me.MovementSpeed) * 1000,
                             "casting");
                         Utils.Sleep(delay, "cancelorder");
                         if (name == "pudge_rot")
                         {
                             continue;
                         }
+
                         return true;
                     }
                 }
             }
+
             return false;
         }
 
@@ -1052,6 +1231,60 @@
                         {
                             continue;
                         }
+
+                        if (name == "omniknight_purification")
+                        {
+                            if (MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
+                                && Nukes.NukesMenuDictionary[name].Item(name + "herotoggler")
+                                       .GetValue<HeroToggler>()
+                                       .IsEnabled(NameManager.Name(possibleTarget))
+                                && (etherealHitTime
+                                    < (Environment.TickCount + ability.GetHitDelay(possibleTarget, name) * 1000))
+                                && possibleTarget.Health
+                                > Nukes.NukesMenuDictionary[name].Item(NameManager.Name(ability) + "minhealthslider")
+                                      .GetValue<Slider>()
+                                      .Value)
+                            {
+                                var target =
+                                    AllyHeroes.UsableHeroes.Where(x => !x.IsMagicImmune())
+                                        .MinOrDefault(x => x.Distance2D(possibleTarget));
+                                if (target != null
+                                    && target.PredictedPosition().Distance2D(possibleTarget.PredictedPosition())
+                                    < ability.GetRadius(name))
+                                {
+                                    if (Nuke.Cast(ability, target, name))
+                                    {
+                                        Utils.Sleep(
+                                            ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000 + ping
+                                            + 100, 
+                                            handleString);
+                                        Utils.Sleep(
+                                            ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000, 
+                                            "GlobalCasting");
+                                        Utils.Sleep(ability.GetHitDelay(possibleTarget, name) * 1000, "calculate");
+                                        Utils.Sleep(
+                                            ability.GetCastDelay(
+                                                me, 
+                                                possibleTarget, 
+                                                useCastPoint: false, 
+                                                abilityName: name) * 1000, 
+
+                                            // + (Math.Max(Me.Distance2D(possibleTarget) - ability.GetCastRange(name) - 50, 0)
+                                            // / Me.MovementSpeed) * 1000,
+                                            "casting");
+                                        Utils.Sleep(
+                                            ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000, 
+                                            "cancelorder");
+
+                                        // Utils.Sleep(ping, "killsteal");
+                                        return true;
+                                    }
+                                }
+                            }
+
+                            return false;
+                        }
+
                         if (!ability.CanHit(possibleTarget, MyHeroInfo.Position, name)
                             || ((possibleTarget.Health - dealtDamage) > 0
                                 && (possibleTarget.Health - dealtDamage)
@@ -1065,63 +1298,75 @@
                                         !x.Equals(possibleTarget)
                                         && x.Health <= AbilityDamage.CalculateDamage(ability, me, x)))
                                 < Nukes.NukesMenuDictionary[name].Item(name + "minenemykill").GetValue<Slider>().Value)
-                            || !Nuke.Cast(ability, possibleTarget, name))
+                            || !Nuke.Cast(ability, possibleTarget, name)
+                            || !MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
+                            || !Nukes.NukesMenuDictionary[name].Item(name + "herotoggler")
+                                    .GetValue<HeroToggler>()
+                                    .IsEnabled(NameManager.Name(possibleTarget)))
                         {
                             dealtDamage = 0;
                             return false;
                         }
+
                         if (Utils.SleepCheck(ability.Handle.ToString()))
                         {
                             dealtDamage += AbilityDamage.CalculateDamage(ability, me, possibleTarget);
                         }
+
                         var delay = ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000;
                         if (name == "riki_blink_strike")
                         {
                             Utils.Sleep(MyHeroInfo.AttackRate() * 1000, handleString);
                         }
+
                         if (name == "necrolyte_reapers_scythe")
                         {
                             Utils.Sleep(delay + ping + 1500, "calculate");
                         }
+
                         if (name == "necrolyte_death_pulse")
                         {
                             Utils.Sleep(delay + ping + 200, "calculate");
                         }
+
                         if (name == "item_ethereal_blade")
                         {
-                            //Utils.Sleep(
-                            //    Me.GetTurnTime(possibleTarget) * 1000
-                            //    + Prediction.CalculateReachTime(
-                            //        possibleTarget,
-                            //        1200,
-                            //        possibleTarget.Position - MyHeroInfo.Position),
-                            //    "casting");
+                            // Utils.Sleep(
+                            // Me.GetTurnTime(possibleTarget) * 1000
+                            // + Prediction.CalculateReachTime(
+                            // possibleTarget,
+                            // 1200,
+                            // possibleTarget.Position - MyHeroInfo.Position),
+                            // "casting");
                             etherealHitTime =
                                 (float)
                                 (Environment.TickCount + me.GetTurnTime(possibleTarget) * 1000
                                  + Prediction.CalculateReachTime(
-                                     possibleTarget,
-                                     1200,
+                                     possibleTarget, 
+                                     1200, 
                                      possibleTarget.Position - me.Position) + ping * 2);
                             Utils.Sleep(
                                 me.GetTurnTime(possibleTarget) * 1000 + 100
-                                + (MyHeroInfo.Position.Distance2D(possibleTarget) / 1200) * 1000 + ping,
+                                + (MyHeroInfo.Position.Distance2D(possibleTarget) / 1200) * 1000 + ping, 
                                 "calculate");
                         }
+
                         if (name == "tusk_snowball")
                         {
                             Utils.Sleep(
                                 me.GetTurnTime(possibleTarget) * 1000
-                                + (MyHeroInfo.Position.Distance2D(possibleTarget) / 675) * 1000,
+                                + (MyHeroInfo.Position.Distance2D(possibleTarget) / 675) * 1000, 
                                 "GlobalCasting");
                         }
+
                         Utils.Sleep(delay, handleString);
                         Utils.Sleep(delay, "GlobalCasting");
                         Utils.Sleep(ability.GetHitDelay(possibleTarget, name) * 1000, "calculate");
                         Utils.Sleep(
-                            ability.GetCastDelay(me, possibleTarget, useCastPoint: false, abilityName: name) * 1000,
-                            //+ (Math.Max(Me.Distance2D(possibleTarget) - ability.GetCastRange(name) - 50, 0)
-                            //   / Me.MovementSpeed) * 1000,
+                            ability.GetCastDelay(me, possibleTarget, useCastPoint: false, abilityName: name) * 1000, 
+
+                            // + (Math.Max(Me.Distance2D(possibleTarget) - ability.GetCastRange(name) - 50, 0)
+                            // / Me.MovementSpeed) * 1000,
                             "casting");
                         Utils.Sleep(delay, "cancelorder");
                         return true;
@@ -1132,6 +1377,7 @@
             {
                 MyAbilities.NukesCombo = new List<Ability>();
             }
+
             return false;
         }
 

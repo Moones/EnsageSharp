@@ -26,6 +26,7 @@
             {
                 return attackRange;
             }
+
             attackRange = AbilityMain.Me.GetAttackRange();
             Utils.Sleep(1000, "MyHeroInfo.AttackRange");
             return attackRange;
@@ -37,6 +38,7 @@
             {
                 return attackRate;
             }
+
             attackRate = UnitDatabase.GetAttackRate(AbilityMain.Me);
             Utils.Sleep(500, "MyAttackRate");
             return attackRate;

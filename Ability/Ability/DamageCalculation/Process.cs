@@ -27,10 +27,12 @@
             {
                 return;
             }
+
             if (!Utils.SleepCheck("DamageUpdate") || !Utils.SleepCheck("GlobalCasting"))
             {
                 return;
             }
+
             Utils.Sleep(100, "DamageUpdate");
             foreach (var hero in
                 new List<Hero>(EnemyHeroes.Heroes).Where(x => x != null && x.IsValid && x.IsAlive && x.IsVisible))
@@ -70,19 +72,21 @@
                         {
                             continue;
                         }
+
                         manaLeft -= ability.ManaCost;
                         if (DamageAmps.IsDamageAmp(ability))
                         {
                             minusMagicResistancePerc += DamageAmps.DamageAmpValue(ability);
                         }
+
                         float tempdmg;
                         if (ability.CanHit(hero, MyHeroInfo.Position))
                         {
                             tempdmg = AbilityDamage.CalculateDamage(
-                                ability,
-                                AbilityMain.Me,
-                                hero,
-                                minusHealth: intakenDamage[0] + outtakenDamage[0],
+                                ability, 
+                                AbilityMain.Me, 
+                                hero, 
+                                minusHealth: intakenDamage[0] + outtakenDamage[0], 
                                 minusMagicResistancePerc: minusMagicResistancePerc);
                             intakenDamage[0] += tempdmg;
                             tempList.Add(ability);
@@ -94,6 +98,7 @@
                             {
                                 Dictionaries.InDamageDictionary[heroHandle] = intakenDamage[0];
                             }
+
                             if (intakenDamage[0] >= hero.Health)
                             {
                                 MyAbilities.NukesCombo = tempList;
@@ -104,10 +109,10 @@
                         else
                         {
                             tempdmg = AbilityDamage.CalculateDamage(
-                                ability,
-                                AbilityMain.Me,
-                                hero,
-                                minusHealth: outtakenDamage[0] + intakenDamage[0],
+                                ability, 
+                                AbilityMain.Me, 
+                                hero, 
+                                minusHealth: outtakenDamage[0] + intakenDamage[0], 
                                 minusMagicResistancePerc: minusMagicResistancePerc);
                             outtakenDamage[0] += tempdmg;
                         }
@@ -131,37 +136,41 @@
                         Dictionaries.InDamageDictionary[heroHandle] = intakenDamage[0];
                     }
                 }
+
                 float dmg;
                 if (!Dictionaries.InDamageDictionary.TryGetValue(heroHandle, out dmg))
                 {
                     dmg = 0;
                 }
+
                 float outdmg;
                 if (!Dictionaries.OutDamageDictionary.TryGetValue(heroHandle, out outdmg))
                 {
                     outdmg = 0;
                 }
+
                 var hp = Math.Max(hero.Health - dmg, 0);
                 var lhp = Math.Max(hp - outdmg, 0);
                 float hitDmg;
                 if (!Dictionaries.HitDamageDictionary.TryGetValue(heroHandle, out hitDmg))
                 {
                     hitDmg = hero.DamageTaken(
-                        MyDamage.BonusDamage + MyDamage.MinDamage,
-                        DamageType.Physical,
+                        MyDamage.BonusDamage + MyDamage.MinDamage, 
+                        DamageType.Physical, 
                         AbilityMain.Me);
                     Dictionaries.HitDamageDictionary.Add(heroHandle, hitDmg);
                 }
                 else
                 {
                     hitDmg = hero.DamageTaken(
-                        MyDamage.BonusDamage + MyDamage.MinDamage,
-                        DamageType.Physical,
+                        MyDamage.BonusDamage + MyDamage.MinDamage, 
+                        DamageType.Physical, 
                         AbilityMain.Me);
                     Dictionaries.HitDamageDictionary[heroHandle] = hitDmg;
                     Utils.Sleep(250, heroHandle + "updatehitdamage");
                 }
-                var currentHits = (lhp / hitDmg);
+
+                var currentHits = lhp / hitDmg;
                 double hits;
                 if (!Dictionaries.HitsDictionary.TryGetValue(heroHandle.ToString(), out hits))
                 {

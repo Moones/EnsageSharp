@@ -37,6 +37,7 @@
             {
                 return;
             }
+
             if (MainMenu.GankDamageMenu.Item("enableGankDamageAllies").GetValue<bool>())
             {
                 foreach (var ally in allies.Where(x => x != null && IncomingDamages.ContainsKey(NameManager.Name(x))))
@@ -54,20 +55,23 @@
                     {
                         continue;
                     }
+
                     var hpvarx = HpBar.SizeX;
                     var hpbary = HpBar.SizeY;
                     var position = hbarpos + new Vector2(hpvarx * hpperc, 0);
                     Drawing.DrawRect(
-                        position,
-                        new Vector2(hpvarx * dmgperc, (float)(hpbary * 0.4)),
+                        position, 
+                        new Vector2(hpvarx * dmgperc, (float)(hpbary * 0.4)), 
                         (hpleft > 0) ? new Color(190, 150, 130, 100) : new Color(225, 70, 70, 200));
                     Drawing.DrawRect(position, new Vector2(hpvarx * dmgperc, (float)(hpbary * 0.4)), Color.Black, true);
                 }
             }
+
             if (!MainMenu.GankDamageMenu.Item("enableGankDamageEnemies").GetValue<bool>())
             {
                 return;
             }
+
             foreach (var enemy in enemies.Where(x => x != null && IncomingDamages.ContainsKey(NameManager.Name(x))))
             {
                 var health = enemy.Health;
@@ -83,12 +87,13 @@
                 {
                     continue;
                 }
+
                 var hpvarx = HpBar.SizeX;
                 var hpbary = HpBar.SizeY;
                 var position = hbarpos + new Vector2(hpvarx * hpperc, 0);
                 Drawing.DrawRect(
-                    position,
-                    new Vector2(hpvarx * dmgperc, (float)(hpbary * 0.4)),
+                    position, 
+                    new Vector2(hpvarx * dmgperc, (float)(hpbary * 0.4)), 
                     (hpleft > 0) ? new Color(150, 225, 150, 80) : new Color(70, 225, 150, 225));
                 Drawing.DrawRect(position, new Vector2(hpvarx * dmgperc, (float)(hpbary * 0.4)), Color.Black, true);
             }
@@ -100,10 +105,12 @@
             {
                 return;
             }
+
             if (!OnUpdateChecks.CanUpdate() || !MainMenu.GankDamageMenu.Item("enableGankDamage").GetValue<bool>())
             {
                 return;
             }
+
             enemies = enemyHeroes;
             allies = allyHeroes;
             Utils.Sleep(1000, "GankDamage.Update");
@@ -117,14 +124,13 @@
                     {
                         IncomingDamages.Add(heroName, 0);
                     }
+
                     var tempDmg = 0f;
-                    foreach (
-                        var allyHero in
-                            allyHeroes.Where(
-                                x =>
-                                AllyHeroes.AbilityDictionary.ContainsKey(NameManager.Name(x))
-                                && AllyHeroes.ItemDictionary.ContainsKey(NameManager.Name(x))
-                                && x.Distance2D(hero) < 1700))
+                    foreach (var allyHero in
+                        allyHeroes.Where(
+                            x =>
+                            AllyHeroes.AbilityDictionary.ContainsKey(NameManager.Name(x))
+                            && AllyHeroes.ItemDictionary.ContainsKey(NameManager.Name(x)) && x.Distance2D(hero) < 1700))
                     {
                         var abilities = AllyHeroes.AbilityDictionary[NameManager.Name(allyHero)];
                         var items = AllyHeroes.ItemDictionary[NameManager.Name(allyHero)].Where(x => x.IsValid).ToList();
@@ -135,6 +141,7 @@
                             list.Where(x => x.CanBeCasted())
                                 .Sum(ability => AbilityDamage.CalculateDamage(ability, allyHero, hero));
                     }
+
                     IncomingDamages[heroName] = tempDmg;
                 }
             }
@@ -143,6 +150,7 @@
             {
                 return;
             }
+
             foreach (var allyHero in allyHeroes)
             {
                 var hero = allyHero;
@@ -151,14 +159,13 @@
                 {
                     IncomingDamages.Add(heroName, 0);
                 }
+
                 var tempDmg = 0f;
-                foreach (
-                    var enemyHero in
-                        enemyHeroes.Where(
-                            x =>
-                            EnemyHeroes.AbilityDictionary.ContainsKey(NameManager.Name(x))
-                            && EnemyHeroes.ItemDictionary.ContainsKey(NameManager.Name(x)) && x.Distance2D(hero) < 1700)
-                    )
+                foreach (var enemyHero in
+                    enemyHeroes.Where(
+                        x =>
+                        EnemyHeroes.AbilityDictionary.ContainsKey(NameManager.Name(x))
+                        && EnemyHeroes.ItemDictionary.ContainsKey(NameManager.Name(x)) && x.Distance2D(hero) < 1700))
                 {
                     var abilities = EnemyHeroes.AbilityDictionary[NameManager.Name(enemyHero)];
                     var items = EnemyHeroes.ItemDictionary[NameManager.Name(enemyHero)].Where(x => x.IsValid).ToList();
@@ -169,6 +176,7 @@
                         list.Where(x => x.CanBeCasted())
                             .Sum(ability => AbilityDamage.CalculateDamage(ability, enemyHero, hero));
                 }
+
                 IncomingDamages[heroName] = tempDmg;
             }
         }

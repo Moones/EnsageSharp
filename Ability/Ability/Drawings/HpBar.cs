@@ -60,7 +60,8 @@
             {
                 return;
             }
-            //Utils.Sleep(1, "HpBar.Update");
+
+            // Utils.Sleep(1, "HpBar.Update");
             foreach (var enemyHero in EnemyHeroes.UsableHeroes)
             {
                 var name = NameManager.Name(enemyHero);

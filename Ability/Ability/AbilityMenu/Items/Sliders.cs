@@ -17,6 +17,7 @@
             {
                 defaultValue = 80;
             }
+
             return
                 new MenuItem(name + "hppercentbelow", "Use when their HP % goes below: ").SetValue(
                     new Slider(defaultValue, 10))
@@ -43,7 +44,7 @@
 
         public static MenuItem MinManaCheck(string name, bool combo = false)
         {
-            //var defaultValue = 150;
+            // var defaultValue = 150;
             return combo
                        ? new MenuItem(name + "minManaCheckCombo", "Minimum mana to use when holding key: ").SetValue(
                            new Slider(0, 0, 1000))

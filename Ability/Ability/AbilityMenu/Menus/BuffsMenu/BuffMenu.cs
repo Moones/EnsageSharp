@@ -28,6 +28,7 @@
                     new MenuItem(name + "alwaystoggle", "Toggle always: ").SetValue(false)
                         .SetTooltip("Toggle armlet always when HP goes below specified treshold"));
             }
+
             if (name == "item_satanic")
             {
                 menu.AddItem(
@@ -37,6 +38,7 @@
                 menu.AddItem(
                     new MenuItem(name + "belowhpslider", "Use when HP is below: ").SetValue(new Slider(1000, 500, 5000)));
             }
+
             menu.AddItem(Sliders.MinManaCheck(name));
             menu.AddItem(Sliders.MinManaCheck(name, true));
             return menu;

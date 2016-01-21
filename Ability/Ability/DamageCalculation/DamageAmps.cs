@@ -11,7 +11,7 @@
 
         public static Dictionary<string, float> MultiplierDictionary = new Dictionary<string, float>
                                                                            {
-                                                                               { "item_ethereal_blade", 40 },
+                                                                               { "item_ethereal_blade", 40 }, 
                                                                                { "item_veil_of_discord", 25 }
                                                                            };
 

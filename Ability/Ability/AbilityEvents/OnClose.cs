@@ -19,6 +19,7 @@
                     particleEffect.Value.Dispose();
                 }
             }
+
             Manage.UnsubscribeAllEvents();
             MainMenu.RestartMenu();
             Manage.Loaded = false;

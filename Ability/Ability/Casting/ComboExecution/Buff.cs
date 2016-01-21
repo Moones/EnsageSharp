@@ -17,11 +17,11 @@
         #region Public Methods and Operators
 
         public static bool Cast(
-            Ability ability,
-            Unit target,
-            Unit buffTarget,
-            string name,
-            List<Modifier> modifiers,
+            Ability ability, 
+            Unit target, 
+            Unit buffTarget, 
+            string name, 
+            List<Modifier> modifiers, 
             bool togglearmlet = false)
         {
             if (name == "item_armlet")
@@ -30,10 +30,12 @@
                 {
                     return false;
                 }
+
                 if (!togglearmlet && buffTarget.Distance2D(target) > Math.Max(target.GetAttackRange(), 500))
                 {
                     return false;
                 }
+
                 var armlettoggled = modifiers.Any(x => x.Name == "modifier_item_armlet_unholy_strength")
                                     && ability.IsToggled;
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
@@ -44,13 +46,16 @@
                     ability.ToggleAbility();
                     return true;
                 }
+
                 ability.ToggleAbility();
                 return true;
             }
+
             if (!(buffTarget.Distance2D(target) < MyHeroInfo.AttackRange() + 150))
             {
                 return false;
             }
+
             SoulRing.Cast(ability);
             if (ability.Name == "templar_assassin_refraction")
             {
@@ -67,6 +72,7 @@
                     {
                         return false;
                     }
+
                     Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
                     ManageAutoAttack.AutoAttackDisabled = true;
                     ability.UseAbility();
@@ -74,19 +80,19 @@
                     {
                         DelayAction.Add(
                             new DelayActionItem(
-                                (int)meld.GetCastDelay(AbilityMain.Me, target) * 1000 + 100,
-                                () =>
-                                    {
-                                        AbilityMain.Me.Attack(target);
-                                    },
+                                (int)meld.GetCastDelay(AbilityMain.Me, target) * 1000 + 100, 
+                                () => { AbilityMain.Me.Attack(target); }, 
                                 CancellationToken.None));
                     }
-                    Utils.Sleep(meld.GetCastDelay(AbilityMain.Me,target)*1000, "GlobalCasting");
+
+                    Utils.Sleep(meld.GetCastDelay(AbilityMain.Me, target) * 1000, "GlobalCasting");
                     Utils.Sleep(meld.GetHitDelay(target, name) * 1000 + 200, "casting");
                     Utils.Sleep(meld.GetHitDelay(target, name) * 1000 + 200, ability.Handle.ToString());
+                    Utils.Sleep(meld.GetCastDelay(AbilityMain.Me, target) * 1000 + 200, "cancelorder");
                     return true;
                 }
             }
+
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
@@ -94,6 +100,7 @@
                 ability.UseAbility();
                 return true;
             }
+
             Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
             ManageAutoAttack.AutoAttackDisabled = true;
             ability.UseAbility(buffTarget);

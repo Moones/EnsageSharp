@@ -26,6 +26,7 @@
             {
                 return;
             }
+
             AbilityMain.Me = ObjectMgr.LocalHero;
             Manage.Loaded = true;
             MainMenu.RestartMenu();
@@ -42,6 +43,7 @@
                 Rubick.LastCastedDictionary = new Dictionary<string, Ability>();
                 Rubick.MyCdDictionary = new Dictionary<string, float>();
             }
+
             MyAbilities.Blink = null;
             Dictionaries.Init();
             MainMenu.InitializeMenu();
@@ -120,15 +122,16 @@
                 msg = "Partially supported (will not use ultimate)";
                 color = "#997700";
             }
+
             Game.PrintMessage(
                 "<font face='Tahoma'><font color='#ff6600'>A</font><font color='#ffffff'>BILITY</font><font color='#ffff00'>#</font> loaded - hero <font color='#4488ff'>"
                 + id.ToString().Substring("CDOTA_Unit_Hero_".Length) + "</font>: <font color='" + color + "'>" + msg
-                + "</font></font>",
+                + "</font></font>", 
                 MessageType.LogMessage);
         }
 
         #endregion
 
-        //public static bool heroSupported;
+        // public static bool heroSupported;
     }
 }

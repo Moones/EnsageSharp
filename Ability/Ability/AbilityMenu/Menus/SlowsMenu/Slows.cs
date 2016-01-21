@@ -38,6 +38,7 @@
                 AddSlow(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             foreach (var spell in
                 from spell in myItems1
                 let data = AbilityDatabase.Find(spell.Name)
@@ -47,6 +48,7 @@
                 AddSlow(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             if (SlowsTogglerCreated)
             {
                 MainMenu.Menu.AddItem(new MenuItem("slowsToggler", "Slows:").SetValue(new AbilityToggler(SlowsToggler)));
@@ -70,6 +72,7 @@
             {
                 SlowsToggler.Add(spell.Name, true);
             }
+
             var menu = SlowMenu.Create(spell.Name);
             SlowsMenuDictionary.Add(spell.Name, menu);
             SlowsMenu.AddSubMenu(menu);

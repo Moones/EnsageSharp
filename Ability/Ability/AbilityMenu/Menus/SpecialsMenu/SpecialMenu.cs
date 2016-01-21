@@ -16,6 +16,7 @@
             {
                 return menu;
             }
+
             menu.AddItem(Togglers.OnSight(name));
             var data = AbilityDatabase.Find(name);
             if (data != null)
@@ -24,15 +25,18 @@
                 {
                     menu.AddItem(Togglers.OnInvisible(name));
                 }
+
                 if (data.IsPurge)
                 {
                     menu.AddItem(Togglers.OnPurgable(name));
                 }
+
                 if (data.WeakensEnemy)
                 {
                     menu.AddItem(Togglers.OnAttack(name));
                 }
             }
+
             menu.AddItem(Sliders.MinManaCheck(name));
             menu.AddItem(Sliders.MinManaCheck(name, true));
             return menu;

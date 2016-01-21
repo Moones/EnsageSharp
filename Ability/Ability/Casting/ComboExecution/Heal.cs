@@ -13,22 +13,24 @@
         {
             if (name == "item_tango" || name == "item_tango_single")
             {
+                // if (!target.Equals(AbilityMain.Me))
+                // {
+                // return false;
+                // }
+                // var closestTree =
+                // ObjectMgr.GetEntities<Entity>()
+                // .Where(x => x.Name == "ent_dota_tree" && x.Distance2D(target) < 250)
+                // .MinOrDefault(x => x.Distance2D(target));
+                // Console.WriteLine(closestTree is Rune);
+                // if (closestTree == null)
+                // {
+                // return false;
+                // }
                 return false;
-                //if (!target.Equals(AbilityMain.Me))
-                //{
-                //    return false;
-                //}
-                //var closestTree =
-                //    ObjectMgr.GetEntities<Entity>()
-                //        .Where(x => x.Name == "ent_dota_tree" && x.Distance2D(target) < 250)
-                //        .MinOrDefault(x => x.Distance2D(target)) as Tree;
-                //if (closestTree == null)
-                //{
-                //    return false;
-                //}
-                //Player.UseAbility(AbilityMain.Me,ability,closestTree);
-                //ability.UseAbility(closestTree as Unit);
+
+                // ability.UseAbility(closestTree);
             }
+
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
@@ -37,10 +39,12 @@
                 ability.UseAbility();
                 return true;
             }
+
             if (name == "abaddon_death_coil" && target.Equals(AbilityMain.Me))
             {
                 return false;
             }
+
             SoulRing.Cast(ability);
             Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
             ManageAutoAttack.AutoAttackDisabled = true;

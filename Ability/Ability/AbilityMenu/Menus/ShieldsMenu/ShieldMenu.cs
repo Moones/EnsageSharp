@@ -19,6 +19,7 @@
             {
                 menu.AddItem(Togglers.UseOnAllies(name));
             }
+
             menu.AddItem(Sliders.MissingHpMin(name));
             menu.AddItem(Sliders.HpPercentBelow(name));
             if (name == "item_pipe" || name == "item_buckler" || name == "omniknight_guardian_angel"
@@ -28,6 +29,7 @@
                     new MenuItem(name + "minalliesaffect", "Minimum affected allies: ").SetValue(
                         new StringList(new[] { "1", "2", "3", "4" }, 1)));
             }
+
             menu.AddItem(
                 new MenuItem(name + "minenemiesaround", "Minimum of enemies near: ").SetValue(
                     new StringList(new[] { "1", "2", "3", "4", "5" })));
@@ -35,6 +37,7 @@
                 new MenuItem(name + "usenearbool", "Use when near selected enemy: ").SetValue(true)
                     .SetTooltip("Use the ability only when affected target is near selected enemy"));
             menu.AddItem(Togglers.UseNear(name));
+            menu.AddItem(Togglers.OnDisableAlly(name));
             return menu;
         }
 

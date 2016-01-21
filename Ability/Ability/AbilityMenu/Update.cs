@@ -35,20 +35,23 @@
                 {
                     return;
                 }
+
                 var name = NameManager.Name(a);
                 var data = AbilityDatabase.Find(name);
                 if (data == null || a.Owner == null || !a.Owner.Equals(AbilityMain.Me))
                 {
                     return;
                 }
+
                 MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Remove(name);
-                //if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
-                //{
-                //    if (!Rubick.MyCdDictionary.ContainsKey(name))
-                //    {
-                //        Rubick.MyCdDictionary.Add(name, Environment.TickCount + ((a as Ability).Cooldown * 1000));
-                //    }
-                //}
+
+                // if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
+                // {
+                // if (!Rubick.MyCdDictionary.ContainsKey(name))
+                // {
+                // Rubick.MyCdDictionary.Add(name, Environment.TickCount + ((a as Ability).Cooldown * 1000));
+                // }
+                // }
                 RangeDrawing.RemoveRange(a as Ability);
                 if (data.IsPurge || data.WeakensEnemy || data.TrueSight)
                 {
@@ -57,6 +60,7 @@
                     Specials.SpecialsMenu.RemoveSubMenu(name);
                     MyAbilities.OffensiveAbilities.Remove(name + "special");
                 }
+
                 if (data.IsBuff)
                 {
                     MainMenu.Menu.Item("buffsToggler").GetValue<AbilityToggler>().Remove(name);
@@ -64,6 +68,7 @@
                     Buffs.BuffsMenu.RemoveSubMenu(name);
                     MyAbilities.OffensiveAbilities.Remove(name + "buff");
                 }
+
                 if (data.IsNuke)
                 {
                     MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().Remove(name);
@@ -71,6 +76,7 @@
                     Nukes.NukesMenu.RemoveSubMenu(name);
                     MyAbilities.OffensiveAbilities.Remove(name + "nuke");
                 }
+
                 if (data.IsDisable)
                 {
                     MainMenu.Menu.Item("disablesToggler").GetValue<AbilityToggler>().Remove(name);
@@ -78,6 +84,7 @@
                     Disables.DisablesMenu.RemoveSubMenu(name);
                     MyAbilities.OffensiveAbilities.Remove(name + "disable");
                 }
+
                 if (data.IsSlow)
                 {
                     MainMenu.Menu.Item("slowsToggler").GetValue<AbilityToggler>().Remove(name);
@@ -85,6 +92,7 @@
                     Slows.SlowsMenu.RemoveSubMenu(name);
                     MyAbilities.OffensiveAbilities.Remove(name + "slow");
                 }
+
                 if (data.IsHarras)
                 {
                     MainMenu.Menu.Item("harrasesToggler").GetValue<AbilityToggler>().Remove(name);
@@ -92,6 +100,7 @@
                     Harrases.HarrasesMenu.RemoveSubMenu(name);
                     MyAbilities.OffensiveAbilities.Remove(name + "harras");
                 }
+
                 if (data.IsSilence)
                 {
                     MainMenu.Menu.Item("silencesToggler").GetValue<AbilityToggler>().Remove(name);
@@ -99,6 +108,7 @@
                     Silences.SilencesMenu.RemoveSubMenu(name);
                     MyAbilities.OffensiveAbilities.Remove(name + "silence");
                 }
+
                 if (data.IsHeal)
                 {
                     MainMenu.Menu.Item("healsToggler").GetValue<AbilityToggler>().Remove(name);
@@ -106,6 +116,7 @@
                     Heals.HealsMenu.RemoveSubMenu(name);
                     MyAbilities.DeffensiveAbilities.Remove(name + "heal");
                 }
+
                 if (data.IsShield)
                 {
                     MainMenu.Menu.Item("shieldsToggler").GetValue<AbilityToggler>().Remove(name);
@@ -116,7 +127,7 @@
             }
             catch (Exception)
             {
-                //e.GetBaseException();
+                // e.GetBaseException();
             }
         }
 
@@ -126,18 +137,20 @@
             {
                 return;
             }
+
             try
             {
                 if (!Utils.SleepCheck("checkitems"))
                 {
                     return;
                 }
+
                 foreach (var item in
                     AbilityMain.Me.Inventory.Items)
                 {
                     if (MyAbilities.Blink == null && NameManager.Name(item) == "item_blink")
                     {
-                        //MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(item.Name);
+                        // MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(item.Name);
                         BlinkMenu.Create(item);
                         MyAbilities.Blink = item;
                         continue;
@@ -147,10 +160,12 @@
                     {
                         MyAbilities.SoulRing = item;
                     }
+
                     if (NameManager.Name(item) == "item_aether_lens")
                     {
                         RangeDrawing.Update();
                     }
+
                     var data = AbilityDatabase.Find(NameManager.Name(item));
 
                     if (data == null)
@@ -166,55 +181,65 @@
                             AddNewSlow(item);
                             added = true;
                         }
+
                         if (data.IsHarras)
                         {
                             AddNewHarras(item);
                             added = true;
                         }
+
                         if (data.IsBuff)
                         {
                             AddNewBuff(item);
                             added = true;
                         }
+
                         if (data.IsSilence)
                         {
                             AddNewSilence(item);
                             added = true;
                         }
+
                         if (data.TrueSight || data.WeakensEnemy || data.IsPurge)
                         {
                             AddNewSpecial(item, data);
                             added = true;
                         }
+
                         if (data.IsDisable)
                         {
                             AddNewDisable(item);
                             added = true;
                         }
+
                         if (data.IsNuke)
                         {
                             AddNewNuke(item);
                             added = true;
                         }
+
                         if (added)
                         {
                             RangeDrawing.AddRange(item);
                             ComboMenu.AddAbility(item.Name);
                         }
                     }
-                    //Console.WriteLine(!MyAbilities.DeffensiveAbilities.ContainsValue(item) + " " + NameManager.Name(item) + " " + data.IsHeal);
+
+                    // Console.WriteLine(!MyAbilities.DeffensiveAbilities.ContainsValue(item) + " " + NameManager.Name(item) + " " + data.IsHeal);
                     if (!MyAbilities.DeffensiveAbilities.ContainsValue(item))
                     {
                         if (data.IsHeal)
                         {
                             AddNewHeal(item);
                         }
+
                         if (data.IsShield)
                         {
                             AddNewShield(item);
                         }
                     }
                 }
+
                 if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
                 {
                     foreach (var item in AllyHeroes.AbilityDictionary[NameManager.Name(AbilityMain.Me)])
@@ -234,48 +259,57 @@
                                 AddNewSlow(item);
                                 added = true;
                             }
+
                             if (data.IsHarras)
                             {
                                 AddNewHarras(item);
                                 added = true;
                             }
+
                             if (data.IsBuff)
                             {
                                 AddNewBuff(item);
                                 added = true;
                             }
+
                             if (data.IsSilence)
                             {
                                 AddNewSilence(item);
                                 added = true;
                             }
+
                             if (data.TrueSight || data.WeakensEnemy || data.IsPurge)
                             {
                                 AddNewSpecial(item, data);
                                 added = true;
                             }
+
                             if (data.IsDisable)
                             {
                                 AddNewDisable(item);
                                 added = true;
                             }
+
                             if (data.IsNuke)
                             {
                                 AddNewNuke(item);
                                 added = true;
                             }
+
                             if (added)
                             {
                                 ComboMenu.AddAbility(item.Name);
                             }
                         }
-                        //Console.WriteLine(!MyAbilities.DeffensiveAbilities.ContainsValue(item) + " " + NameManager.Name(item) + " " + data.IsHeal);
+
+                        // Console.WriteLine(!MyAbilities.DeffensiveAbilities.ContainsValue(item) + " " + NameManager.Name(item) + " " + data.IsHeal);
                         if (!MyAbilities.DeffensiveAbilities.ContainsValue(item))
                         {
                             if (data.IsHeal)
                             {
                                 AddNewHeal(item);
                             }
+
                             if (data.IsShield)
                             {
                                 AddNewShield(item);
@@ -283,11 +317,11 @@
                         }
                     }
                 }
+
                 Utils.Sleep(1000, "checkitems");
             }
             catch (Exception)
             {
-                //
             }
         }
 
@@ -310,6 +344,7 @@
             {
                 MainMenu.Menu.Item("buffsToggler").GetValue<AbilityToggler>().Add(NameManager.Name(item));
             }
+
             var menu = BuffMenu.Create(NameManager.Name(item));
             Buffs.BuffsMenuDictionary.Add(NameManager.Name(item), menu);
             Buffs.BuffsMenu.AddSubMenu(menu);
@@ -331,6 +366,7 @@
             {
                 MainMenu.Menu.Item("disablesToggler").GetValue<AbilityToggler>().Add(NameManager.Name(item));
             }
+
             var menu = DisableMenu.Create(NameManager.Name(item));
             Disables.DisablesMenuDictionary.Add(NameManager.Name(item), menu);
             Disables.DisablesMenu.AddSubMenu(menu);
@@ -352,6 +388,7 @@
             {
                 MainMenu.Menu.Item("harrasesToggler").GetValue<AbilityToggler>().Add(NameManager.Name(item));
             }
+
             var menu = HarrasMenu.Create(NameManager.Name(item));
             Harrases.HarrasesMenuDictionary.Add(NameManager.Name(item), menu);
             Harrases.HarrasesMenu.AddSubMenu(menu);
@@ -372,6 +409,7 @@
             {
                 MainMenu.Menu.Item("healsToggler").GetValue<AbilityToggler>().Add(NameManager.Name(item));
             }
+
             var menu = HealMenu.Create(NameManager.Name(item));
             Heals.HealsMenuDictionary.Add(NameManager.Name(item), menu);
             Heals.HealsMenu.AddSubMenu(menu);
@@ -392,6 +430,7 @@
             {
                 MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().Add(NameManager.Name(item));
             }
+
             var menu = NukeMenu.Create(NameManager.Name(item));
             Nukes.NukesMenuDictionary.Add(NameManager.Name(item), menu);
             Nukes.NukesMenu.AddSubMenu(menu);
@@ -413,6 +452,7 @@
             {
                 MainMenu.Menu.Item("shieldsToggler").GetValue<AbilityToggler>().Add(NameManager.Name(item));
             }
+
             var menu = ShieldMenu.Create(NameManager.Name(item), item);
             Shields.ShieldsMenuDictionary.Add(NameManager.Name(item), menu);
             Shields.ShieldsMenu.AddSubMenu(menu);
@@ -434,6 +474,7 @@
             {
                 MainMenu.Menu.Item("silencesToggler").GetValue<AbilityToggler>().Add(NameManager.Name(item));
             }
+
             var menu = SilenceMenu.Create(NameManager.Name(item));
             Silences.SilencesMenuDictionary.Add(NameManager.Name(item), menu);
             Silences.SilencesMenu.AddSubMenu(menu);
@@ -454,6 +495,7 @@
             {
                 MainMenu.Menu.Item("slowsToggler").GetValue<AbilityToggler>().Add(NameManager.Name(item));
             }
+
             var menu = SlowMenu.Create(NameManager.Name(item));
             Slows.SlowsMenuDictionary.Add(NameManager.Name(item), menu);
             Slows.SlowsMenu.AddSubMenu(menu);
@@ -475,6 +517,7 @@
             {
                 MainMenu.Menu.Item("specialsToggler").GetValue<AbilityToggler>().Add(NameManager.Name(item));
             }
+
             var menu = SpecialMenu.Create(NameManager.Name(item));
             Specials.SpecialsMenuDictionary.Add(NameManager.Name(item), menu);
             Specials.SpecialsMenu.AddSubMenu(menu);

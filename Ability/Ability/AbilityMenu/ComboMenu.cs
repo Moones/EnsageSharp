@@ -12,6 +12,7 @@
             {
                 return;
             }
+
             MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(name, defaultValue);
         }
 

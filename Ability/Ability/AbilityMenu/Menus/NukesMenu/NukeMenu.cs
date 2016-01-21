@@ -18,6 +18,7 @@
                 menu.AddItem(
                     new MenuItem(name + "minenemykill", "Minimum heroes to kill: ").SetValue(new Slider(1, 1, 5)));
             }
+
             menu.AddItem(
                 new MenuItem(name + "combo", "Use in combo: ").SetValue(true)
                     .SetTooltip("Allows the ability to be used along with other nukes in combo when killstealing"));

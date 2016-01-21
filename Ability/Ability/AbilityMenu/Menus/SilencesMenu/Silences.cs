@@ -38,6 +38,7 @@
                 AddSilence(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             foreach (var spell in
                 from spell in myItems1
                 let data = AbilityDatabase.Find(spell.Name)
@@ -47,6 +48,7 @@
                 AddSilence(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             if (SilencesTogglerCreated)
             {
                 MainMenu.Menu.AddItem(
@@ -71,6 +73,7 @@
             {
                 silencesToggler.Add(spell.Name, true);
             }
+
             var menu = SilenceMenu.Create(spell.Name);
             SilencesMenuDictionary.Add(spell.Name, menu);
             SilencesMenu.AddSubMenu(menu);

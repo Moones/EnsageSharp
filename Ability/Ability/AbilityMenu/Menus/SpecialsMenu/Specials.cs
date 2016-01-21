@@ -39,6 +39,7 @@
                 AddSpecial(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             foreach (var spell in
                 from spell in myItems1
                 let data = AbilityDatabase.Find(spell.Name)
@@ -48,6 +49,7 @@
                 AddSpecial(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
             {
                 var spellSteal = AbilityMain.Me.FindSpell("rubick_spell_steal");
@@ -57,6 +59,7 @@
                     RangeDrawing.AddRange(spellSteal);
                 }
             }
+
             if (SpecialsTogglerCreated)
             {
                 MainMenu.Menu.AddItem(
@@ -77,6 +80,7 @@
             {
                 specialsToggler.Add(spell.Name, true);
             }
+
             var menu = SpecialMenu.Create(spell.Name);
             SpecialsMenuDictionary.Add(spell.Name, menu);
             SpecialsMenu.AddSubMenu(menu);

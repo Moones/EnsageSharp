@@ -131,6 +131,7 @@
     <Compile Include="Drawings\GankDamage.cs" />
     <Compile Include="Drawings\HpBar.cs" />
     <Compile Include="Drawings\RangeDrawing.cs" />
+    <Compile Include="Extensions\UnitExtensions.cs" />
     <Compile Include="ObjectManager\Base.cs" />
     <Compile Include="ObjectManager\Heroes\AllyHeroes.cs" />
     <Compile Include="ObjectManager\Heroes\EnemyHeroes.cs" />

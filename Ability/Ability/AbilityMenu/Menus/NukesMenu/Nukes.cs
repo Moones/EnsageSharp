@@ -38,6 +38,7 @@
                 AddNuke(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             foreach (var spell in
                 from spell in myItems1
                 let data = AbilityDatabase.Find(spell.Name)
@@ -47,6 +48,7 @@
                 AddNuke(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             if (NukesTogglerCreated)
             {
                 MainMenu.Menu.AddItem(new MenuItem("nukesToggler", "Nukes:").SetValue(new AbilityToggler(NukesToggler)));
@@ -70,6 +72,7 @@
             {
                 NukesToggler.Add(spell.Name, true);
             }
+
             var menu = NukeMenu.Create(spell.Name);
             NukesMenuDictionary.Add(spell.Name, menu);
             NukesMenu.AddSubMenu(menu);

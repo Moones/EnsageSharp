@@ -24,6 +24,7 @@
                     ObjectMgr.GetEntities<Unit>()
                         .FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Unit_Fountain && x.Team == AbilityMain.Me.Team);
             }
+
             return baseEntity != null ? baseEntity.Position : Vector3.Zero;
         }
 

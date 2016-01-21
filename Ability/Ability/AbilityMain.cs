@@ -18,7 +18,6 @@
     using Ensage.Common;
     using Ensage.Common.Extensions;
     using Ensage.Common.Menu;
-    using Ensage.Common.Objects;
 
     using SharpDX;
 
@@ -29,6 +28,8 @@
         public static float DealtDamage;
 
         public static Hero Me;
+
+        private static NetworkActivity lastActivity;
 
         private static Vector3 lastOrderPosition;
 
@@ -44,6 +45,7 @@
             {
                 return;
             }
+
             MyHeroInfo.UpdatePosition();
             ManageAutoAttack.UpdateAutoAttack();
             var enemyHeroes = EnemyHeroes.UsableHeroes;
@@ -56,9 +58,10 @@
             {
                 return;
             }
+
             if (Utils.SleepCheck("cancelorder"))
             {
-                if (lastOrderPosition != Vector3.Zero)
+                if (lastOrderPosition != Vector3.Zero && lastActivity == NetworkActivity.Move)
                 {
                     var ctarget = TargetSelector.ClosestToMouse(Me, 150);
                     if (ctarget != null)
@@ -69,19 +72,23 @@
                     {
                         Me.Attack(lastOrderPosition);
                     }
+
                     lastOrderPosition = Vector3.Zero;
                 }
             }
             else
             {
+                lastActivity = Me.NetworkActivity;
                 lastOrderPosition = Game.MousePosition;
             }
+
             var meModifiers = Me.Modifiers.ToList();
             var ping = Game.Ping;
             if (LaunchSnowball(meModifiers))
             {
                 return;
             }
+
             if (MyAbilities.DeffensiveAbilities.Any() && Utils.SleepCheck("casting"))
             {
                 if (allyHeroes.Any(allyHero => FullCombo.DeffensiveAutoUsage(allyHero, Me, enemyHeroes, ping)))
@@ -96,6 +103,7 @@
                 {
                     return;
                 }
+
                 if (Game.IsKeyDown(MainMenu.ComboKeysMenu.Item("abilityKey1").GetValue<KeyBind>().Key))
                 {
                     if (Utils.SleepCheck("UpdateTarget"))
@@ -103,10 +111,12 @@
                         target = TargetSelector.ClosestToMouse(Me, 2000);
                         Utils.Sleep(250, "UpdateTarget");
                     }
+
                     if (target != null && !target.IsValid)
                     {
                         target = null;
                     }
+
                     if (Utils.SleepCheck("GlobalCasting"))
                     {
                         Orbwalking.Orbwalk(target, attackmodifiers: true);
@@ -121,6 +131,7 @@
                     return;
                 }
             }
+
             var meMissingHp = Me.MaximumHealth - Me.Health;
             var meMana = Me.Mana;
             if (
@@ -129,10 +140,12 @@
             {
                 return;
             }
+
             if (Game.IsChatOpen)
             {
                 return;
             }
+
             if (Game.IsKeyDown(MainMenu.ComboKeysMenu.Item("abilityKey1").GetValue<KeyBind>().Key))
             {
                 if (Utils.SleepCheck("UpdateTarget"))
@@ -140,23 +153,26 @@
                     target = TargetSelector.ClosestToMouse(Me, 2000);
                     Utils.Sleep(250, "UpdateTarget");
                 }
+
                 if (target != null && !target.IsValid)
                 {
                     target = null;
                 }
+
                 var selectedCombo = MainMenu.ComboKeysMenu.Item("abilityComboType").GetValue<StringList>().SelectedIndex;
                 if (target != null && Utils.SleepCheck("Orbwalk.Attack"))
                 {
                     FullCombo.Execute(
-                        target,
-                        enemyHeroes,
-                        ping,
-                        selectedCombo == 2,
-                        selectedCombo == 1,
-                        Me,
-                        meModifiers,
+                        target, 
+                        enemyHeroes, 
+                        ping, 
+                        selectedCombo == 2, 
+                        selectedCombo == 1, 
+                        Me, 
+                        meModifiers, 
                         meMana);
                 }
+
                 if (Me.ClassID == ClassID.CDOTA_Unit_Hero_TemplarAssassin && target != null && target.IsVisible)
                 {
                     var meld = Me.Spellbook.SpellW;
@@ -167,11 +183,13 @@
                         {
                             return;
                         }
+
                         Me.Move(Game.MousePosition);
                         Utils.Sleep(100, "Ability.Move");
                         return;
                     }
                 }
+
                 if (Utils.SleepCheck("GlobalCasting"))
                 {
                     Orbwalking.Orbwalk(target, attackmodifiers: true);
@@ -183,10 +201,11 @@
         {
             Events.OnLoad += OnLoad.Event;
             Events.OnClose += OnClose.Event;
-            //if (Game.IsInGame && ObjectMgr.LocalHero != null)
-            //{
-            //    OnLoad.Event(null, null);
-            //}
+
+            // if (Game.IsInGame && ObjectMgr.LocalHero != null)
+            // {
+            // OnLoad.Event(null, null);
+            // }
         }
 
         public static void Player_OnExecuteOrder(Player sender, ExecuteOrderEventArgs args)
@@ -197,12 +216,14 @@
                 var blinkPos = args.TargetPosition;
                 if (Me.Distance2D(blinkPos) > 1200)
                 {
-                    blinkPos = (blinkPos - Me.Position) * (1200) / blinkPos.Distance2D(Me) + Me.Position;
+                    blinkPos = (blinkPos - Me.Position) * 1200 / blinkPos.Distance2D(Me) + Me.Position;
                 }
+
                 MyHeroInfo.Position = blinkPos;
                 Utils.Sleep(Game.Ping + Me.GetTurnTime(MyHeroInfo.Position) + 100, "mePosition");
                 return;
             }
+
             if (ability != null && NameManager.Name(ability) != null)
             {
                 var hero = args.Target as Hero;
@@ -212,24 +233,29 @@
                     Utils.Sleep(ability.GetCastDelay(Me, hero) * 1000, "casting");
                     return;
                 }
+
                 if (args.TargetPosition != Vector3.Zero
                     && (ability.GetCastRange() <= Me.Distance2D(args.TargetPosition)))
                 {
                     Utils.Sleep(
-                        ability.FindCastPoint() * 1000 + Me.GetTurnTime(args.TargetPosition) * 1000,
+                        ability.FindCastPoint() * 1000 + Me.GetTurnTime(args.TargetPosition) * 1000, 
                         "GlobalCasting");
                     Utils.Sleep(ability.FindCastPoint() * 1000 + Me.GetTurnTime(args.TargetPosition) * 1000, "casting");
                     return;
                 }
             }
-            if (Utils.SleepCheck("cancelorder")) // && !MyHeroInfo.IsChanneling())
+
+            if (Utils.SleepCheck("cancelorder"))
             {
+                // && !MyHeroInfo.IsChanneling())
                 return;
             }
+
             if (args.TargetPosition != Vector3.Zero && args.Order == Order.MoveLocation)
             {
                 lastOrderPosition = args.TargetPosition;
             }
+
             args.Process = false;
         }
 
@@ -243,10 +269,12 @@
             {
                 return false;
             }
+
             if (modifiers.All(x => x.Name != "modifier_tusk_snowball_movement"))
             {
                 return false;
             }
+
             Me.FindSpell("tusk_launch_snowball").UseAbility();
             Utils.Sleep(1000, "snowball");
             return true;

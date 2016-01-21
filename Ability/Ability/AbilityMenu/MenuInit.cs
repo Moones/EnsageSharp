@@ -37,6 +37,7 @@
                 MyAbilities.Blink = blink;
                 BlinkMenu.Create(blink);
             }
+
             Nukes.AddAllNukes(spells, myItems1);
             Disables.AddAllDisables(spells, myItems1);
             Slows.AddAllSlows(spells, myItems1);
@@ -95,9 +96,10 @@
                         || data.IsSlow || data.IsSilence)
                 select spell)
             {
-                var dv = spell.AbilityType != AbilityType.Ultimate;
+                var dv = spell.AbilityType != AbilityType.Ultimate || spell.Name == "templar_assassin_psionic_trap";
                 ComboMenu.AddAbility(spell.Name, dv);
             }
+
             foreach (var spell in
                 from spell in myItems1
                 let data = AbilityDatabase.Find(spell.Name)
@@ -109,10 +111,11 @@
             {
                 ComboMenu.AddAbility(spell.Name);
             }
-            //if (blink != null)
-            //{
-            //    MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(blink.Name);
-            //}
+
+            // if (blink != null)
+            // {
+            // MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(blink.Name);
+            // }
             MainMenu.OptionsMenu.AddSubMenu(MainMenu.ComboKeysMenu);
             MainMenu.OptionsMenu.AddSubMenu(MainMenu.DrawingsMenu);
             MainMenu.Menu.AddSubMenu(MainMenu.OptionsMenu);

@@ -77,6 +77,13 @@
                     new HeroToggler(new Dictionary<string, bool>(), true, defaultValues: defaultValue));
         }
 
+        public static MenuItem OnDisableAlly(string name, bool defaultValue = false)
+        {
+            return
+                new MenuItem(name + "ondisabletoggler", "OnDisabled").SetValue(
+                    new HeroToggler(new Dictionary<string, bool>(), useAllyHeroes: true, defaultValues: defaultValue));
+        }
+
         public static MenuItem OnInvisible(string name, bool defaultValue = true)
         {
             return

@@ -39,6 +39,7 @@
                 {
                     return closestTower;
                 }
+
                 closestTower =
                     Towers.FirstOrDefault(x => x.IsValid && x.IsAlive && x.Distance2D(MyHeroInfo.Position) < 1500);
                 Utils.Sleep(250, "GetClosestTower");

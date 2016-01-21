@@ -22,6 +22,7 @@
             {
                 return name;
             }
+
             name = entity.Name;
             NameDictionary.Add(handle, name);
             return name;

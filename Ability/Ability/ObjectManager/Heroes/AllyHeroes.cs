@@ -37,11 +37,13 @@
             {
                 return;
             }
+
             if (Utils.SleepCheck("getallyheroes") && Heroes.Count(x => x.IsValid) < 5)
             {
                 UpdateHeroes();
                 Utils.Sleep(1000, "getallyheroes");
             }
+
             Heroes = Heroes.Where(x => x.IsValid).ToList();
             UsableHeroes = Heroes.Where(x => x.Health > 0 && x.IsAlive && x.IsVisible).ToArray();
             if (Utils.SleepCheck("allyHeroesCheckValid"))
@@ -58,6 +60,7 @@
                     {
                         Items.Add(ability);
                     }
+
                     if (ItemDictionary.ContainsKey(name))
                     {
                         ItemDictionary[name] =
@@ -66,6 +69,7 @@
                                 .ToList();
                         continue;
                     }
+
                     var itemlist =
                         items.Where(x => x.AbilityType != AbilityType.Attribute && x.AbilityType != AbilityType.Hidden)
                             .ToList();
@@ -85,24 +89,26 @@
                 var spells = hero.Spellbook.Spells.ToList();
                 if (!herolist.Contains(hero))
                 {
-                    if (name == "npc_dota_hero_ogre_magi")
-                    {
-                        Game.PrintMessage(
-                            "[ABILITY#]: SpellOverlay is temporary disabled for OgreMagi due to Ensage.Core issues",
-                            MessageType.ChatMessage);
-                    }
+                    // if (name == "npc_dota_hero_ogre_magi")
+                    // {
+                    // Game.PrintMessage(
+                    // "[ABILITY#]: SpellOverlay is temporary disabled for OgreMagi due to Ensage.Core issues",
+                    // MessageType.ChatMessage);
+                    // }
                     Heroes.Add(hero);
                 }
-                if (name == "npc_dota_hero_ogre_magi")
-                {
-                    continue;
-                }
+
+                // if (name == "npc_dota_hero_ogre_magi")
+                // {
+                // continue;
+                // }
                 foreach (var ability in
                     spells.Where(x => !abilityList.Contains(x) && AbilityDatabase.Find(NameManager.Name(x)) != null)
                         .OrderBy(ComboOrder.GetAbilityOrder))
                 {
                     Abilities.Add(ability);
                 }
+
                 var abilitylist =
                     spells.Where(x => x.AbilityType != AbilityType.Attribute && x.AbilityType != AbilityType.Hidden)
                         .ToList();
@@ -111,6 +117,7 @@
                     AbilityDictionary[name] = abilitylist;
                     continue;
                 }
+
                 AbilityDictionary.Add(name, abilitylist);
             }
         }

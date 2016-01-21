@@ -23,11 +23,12 @@
                     Utils.Sleep(500, "rotToggle");
                 }
             }
+
             var casted = ability.CastStun(
-                target,
-                1,
-                abilityName: name,
-                useSleep: (name != "ancient_apparition_cold_feet" && name != "rattletrap_battery_assault"),
+                target, 
+                1, 
+                abilityName: name, 
+                useSleep: name != "ancient_apparition_cold_feet" && name != "rattletrap_battery_assault", 
                 soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
             return casted;
         }

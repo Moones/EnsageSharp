@@ -27,6 +27,7 @@
                 menu.AddItem(Togglers.OnChainStun(name, false));
                 menu.AddItem(Togglers.OnCast(name, false));
             }
+
             menu.AddItem(Sliders.MinManaCheck(name));
             menu.AddItem(Sliders.MinManaCheck(name, true));
             return menu;

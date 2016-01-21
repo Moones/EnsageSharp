@@ -30,6 +30,7 @@
             {
                 return true;
             }
+
             MyAbilities.SoulRing.UseAbility();
             Utils.Sleep(250, "Ability.SoulRing");
             return false;

@@ -37,6 +37,7 @@
             {
                 return;
             }
+
             foreach (var hero in EnemyHeroes.Heroes)
             {
                 var heroName = NameManager.Name(hero);
@@ -44,16 +45,19 @@
                 {
                     LastCastedDictionary.Add(heroName, null);
                 }
+
                 if (Specials.SpecialsMenuDictionary["rubick_spell_steal"].Item(heroName) == null)
                 {
                     Specials.SpecialsMenuDictionary["rubick_spell_steal"].AddItem(
                         new MenuItem(heroName, hero.ClassID.ToString().Substring("CDOTA_Unit_Hero_".Length) + ":")
                             .SetValue(new AbilityToggler(new Dictionary<string, bool>())));
                 }
+
                 if (!EnemyHeroes.AbilityDictionary.ContainsKey(heroName))
                 {
                     continue;
                 }
+
                 foreach (var ability in EnemyHeroes.AbilityDictionary[heroName])
                 {
                     var name = NameManager.Name(ability);
@@ -61,6 +65,7 @@
                     {
                         CdDictionary.Add(name, false);
                     }
+
                     var cd = CdDictionary[name];
                     if ((ability.Cooldown > 0
                          || (ability.IsAbilityBehavior(AbilityBehavior.Toggle, name) && ability.IsToggled)) && !cd)
@@ -68,16 +73,19 @@
                         CdDictionary[name] = true;
                         LastCastedDictionary[heroName] = ability;
                     }
+
                     if ((ability.Cooldown <= 0
                          || (ability.IsAbilityBehavior(AbilityBehavior.Toggle, name) && !ability.IsToggled)) && cd)
                     {
                         CdDictionary[name] = false;
                     }
+
                     if (ability.IsAbilityBehavior(AbilityBehavior.Passive, name) || name == "invoker_invoke"
                         || name == "invoker_quas" || name == "invoker_wex" || name == "invoker_exort")
                     {
                         continue;
                     }
+
                     var d =
                         Specials.SpecialsMenuDictionary["rubick_spell_steal"].Item(heroName).GetValue<AbilityToggler>();
                     if (!d.Dictionary.ContainsKey(name))

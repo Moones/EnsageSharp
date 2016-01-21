@@ -21,6 +21,7 @@
             {
                 RangeDrawing.AddRange(blink);
             }
+
             MainMenu.OptionsMenu.AddSubMenu(menu);
         }
 

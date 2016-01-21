@@ -22,22 +22,27 @@
             {
                 return false;
             }
+
             if (name == "slardar_amplify_damage" && modifiers.Any(x => x.Name == "modifier_slardar_amplify_damage"))
             {
                 return false;
             }
+
             if (name == "bloodseeker_bloodrage" && modifiers.Any(x => x.Name == "modifier_bloodseeker_bloodrage"))
             {
                 return false;
             }
+
             if (name == "axe_battle_hunger" && modifiers.Any(x => x.Name == "modifier_axe_battle_hunger"))
             {
                 return false;
             }
+
             if (name == "bounty_hunter_track" && modifiers.Any(x => x.Name == "modifier_bounty_hunter_track"))
             {
                 return false;
             }
+
             if (name == "visage_soul_assumption" && ability != null)
             {
                 var modif = AbilityMain.Me.Modifiers.FirstOrDefault(x => x.Name == "modifier_visage_soul_assumption");
@@ -46,6 +51,7 @@
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -58,8 +64,8 @@
         public static bool Cast(Hero target, Ability ability)
         {
             return
-                (target.Spellbook.Spells.Any(x => x.IsInAbilityPhase && x.FindCastPoint() > ability.GetHitDelay(target))
-                 || (target.IsChanneling() && !target.GetChanneledAbility().Name.Contains("item")));
+                target.Spellbook.Spells.Any(x => x.IsInAbilityPhase && x.FindCastPoint() > ability.GetHitDelay(target))
+                 || (target.IsChanneling() && !target.GetChanneledAbility().Name.Contains("item"));
         }
 
         public static bool ChainStun(Ability ability, Hero target, string name)
@@ -70,6 +76,11 @@
         public static bool Channel(Hero target)
         {
             return target.IsChanneling();
+        }
+
+        public static bool DisabledAlly(Hero target)
+        {
+            return target.IsStunned() || target.IsHexed() || target.IsRooted();
         }
 
         public static bool Invisible(Hero target)
@@ -92,9 +103,9 @@
         public static bool UnderTower(Ability ability, Hero target)
         {
             var closestTower = EnemyTowers.GetClosest;
-            return (closestTower != null
+            return closestTower != null
                     && target.Distance2D(closestTower)
-                    < (closestTower.AttackRange + closestTower.HullRadius + target.HullRadius));
+                    < (closestTower.AttackRange + closestTower.HullRadius + target.HullRadius);
         }
 
         #endregion

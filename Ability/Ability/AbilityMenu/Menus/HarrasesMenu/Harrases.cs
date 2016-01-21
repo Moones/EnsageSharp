@@ -38,6 +38,7 @@
                 AddHarras(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             foreach (var spell in
                 from spell in myItems1
                 let data = AbilityDatabase.Find(spell.Name)
@@ -47,6 +48,7 @@
                 AddHarras(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             if (HarrasesTogglerCreated)
             {
                 MainMenu.Menu.AddItem(
@@ -71,6 +73,7 @@
             {
                 harrasesToggler.Add(spell.Name, true);
             }
+
             var menu = HarrasMenu.Create(spell.Name);
             HarrasesMenuDictionary.Add(spell.Name, menu);
             HarrasesMenu.AddSubMenu(menu);

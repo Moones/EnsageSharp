@@ -64,6 +64,7 @@
             {
                 Game.OnUpdate -= Rubick.Game_OnUpdate;
             }
+
             rubick = false;
         }
 

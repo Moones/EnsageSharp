@@ -33,11 +33,13 @@
             {
                 return;
             }
+
             var castrange = crange;
             if (castrange == 0)
             {
                 castrange = ability.GetCastRange();
             }
+
             if (!ability.IsAbilityBehavior(AbilityBehavior.NoTarget))
             {
                 castrange += Math.Max(castrange / 9, 80);
@@ -46,7 +48,8 @@
             {
                 castrange += Math.Max(castrange / 7, 40);
             }
-            //var list = new[] { "selected_ring", "drag_selected_ring", "hero_underglow" };
+
+            // var list = new[] { "selected_ring", "drag_selected_ring", "hero_underglow" };
             var menu = new Menu(name, name + "range", false, name);
             menu.AddItem(new MenuItem(name + "rangeenable", "Show range")).SetValue(false).ValueChanged +=
                 (sender, args) => { RangeVisible(ability, args.GetNewValue<bool>()); };
@@ -58,10 +61,10 @@
                         if (RangesDictionary.ContainsKey(ability))
                         {
                             RangesDictionary[ability].SetControlPoint(
-                                1,
+                                1, 
                                 new Vector3(
-                                    args.GetNewValue<Slider>().Value,
-                                    menu.Item(name + "green").GetValue<Slider>().Value,
+                                    args.GetNewValue<Slider>().Value, 
+                                    menu.Item(name + "green").GetValue<Slider>().Value, 
                                     menu.Item(name + "blue").GetValue<Slider>().Value));
                         }
                     };
@@ -73,10 +76,10 @@
                         if (RangesDictionary.ContainsKey(ability))
                         {
                             RangesDictionary[ability].SetControlPoint(
-                                1,
+                                1, 
                                 new Vector3(
-                                    menu.Item(name + "red").GetValue<Slider>().Value,
-                                    args.GetNewValue<Slider>().Value,
+                                    menu.Item(name + "red").GetValue<Slider>().Value, 
+                                    args.GetNewValue<Slider>().Value, 
                                     menu.Item(name + "blue").GetValue<Slider>().Value));
                         }
                     };
@@ -88,10 +91,10 @@
                         if (RangesDictionary.ContainsKey(ability))
                         {
                             RangesDictionary[ability].SetControlPoint(
-                                1,
+                                1, 
                                 new Vector3(
-                                    menu.Item(name + "red").GetValue<Slider>().Value,
-                                    menu.Item(name + "green").GetValue<Slider>().Value,
+                                    menu.Item(name + "red").GetValue<Slider>().Value, 
+                                    menu.Item(name + "green").GetValue<Slider>().Value, 
                                     args.GetNewValue<Slider>().Value));
                         }
                     };
@@ -100,10 +103,10 @@
             if (menu.Item(name + "rangeenable").GetValue<bool>())
             {
                 range.SetControlPoint(
-                    1,
+                    1, 
                     new Vector3(
-                        menu.Item(name + "red").GetValue<Slider>().Value,
-                        menu.Item(name + "green").GetValue<Slider>().Value,
+                        menu.Item(name + "red").GetValue<Slider>().Value, 
+                        menu.Item(name + "green").GetValue<Slider>().Value, 
                         menu.Item(name + "blue").GetValue<Slider>().Value));
                 range.SetControlPoint(2, new Vector3(castrange, 255, 0));
                 range.SetControlPoint(3, new Vector3(10, 0, 0));
@@ -112,6 +115,7 @@
             {
                 range.Dispose();
             }
+
             RangesValueDictionary.Add(name, castrange);
             RangesDictionary.Add(ability, range);
         }
@@ -133,11 +137,13 @@
                     RangesDictionary[ability] = range;
                 }
             }
+
             var castrange = crange;
             if (castrange == 0)
             {
                 castrange = ability.GetCastRange();
             }
+
             if (!ability.IsAbilityBehavior(AbilityBehavior.NoTarget))
             {
                 castrange += Math.Max(castrange / 9, 80);
@@ -146,19 +152,21 @@
             {
                 castrange += Math.Max(castrange / 7, 40);
             }
+
             if (visible)
             {
                 var menu = MainMenu.RangeDrawingMenu.SubMenu(name + "range");
                 range.SetControlPoint(
-                    1,
+                    1, 
                     new Vector3(
-                        menu.Item(name + "red").GetValue<Slider>().Value,
-                        menu.Item(name + "green").GetValue<Slider>().Value,
+                        menu.Item(name + "red").GetValue<Slider>().Value, 
+                        menu.Item(name + "green").GetValue<Slider>().Value, 
                         menu.Item(name + "blue").GetValue<Slider>().Value));
                 range.SetControlPoint(2, new Vector3(castrange, 255, 0));
                 range.SetControlPoint(3, new Vector3(10, 0, 0));
                 return;
             }
+
             RangesDictionary[ability].Dispose();
         }
 
@@ -168,6 +176,7 @@
             {
                 return;
             }
+
             MainMenu.RangeDrawingMenu.RemoveSubMenu(ability.Name + "range");
             RangesDictionary[ability].Dispose();
             RangesValueDictionary.Remove(ability.Name);
@@ -180,6 +189,7 @@
             {
                 return;
             }
+
             ALensUpdated = true;
             foreach (var particleEffect in RangesDictionary)
             {

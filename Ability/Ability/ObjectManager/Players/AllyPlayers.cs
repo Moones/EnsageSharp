@@ -26,14 +26,19 @@
             {
                 return;
             }
+
             if (!Utils.SleepCheck("Players.Update.Ally"))
             {
                 return;
             }
+
             if (All.Count < 5)
             {
-                All = Players.All.Where(x => x.Hero != null && x.Team == AbilityMain.Me.Team).ToList();
+                All =
+                    Players.All.Where(
+                        x => x != null && x.Hero != null && x.Hero.IsValid && x.Team == AbilityMain.Me.Team).ToList();
             }
+
             Utils.Sleep(2000, "Players.Update.Ally");
         }
 

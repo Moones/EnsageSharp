@@ -38,6 +38,7 @@
                 AddHeal(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             foreach (var spell in
                 from spell in myItems1
                 let data = AbilityDatabase.Find(spell.Name)
@@ -47,6 +48,7 @@
                 AddHeal(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             if (HealsTogglerCreated)
             {
                 MainMenu.Menu.AddItem(new MenuItem("healsToggler", "Heals:").SetValue(new AbilityToggler(HealsToggler)));
@@ -70,6 +72,7 @@
             {
                 HealsToggler.Add(spell.Name, true);
             }
+
             var menu = HealMenu.Create(spell.Name);
             HealsMenuDictionary.Add(spell.Name, menu);
             HealsMenu.AddSubMenu(menu);

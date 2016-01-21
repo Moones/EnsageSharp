@@ -38,6 +38,7 @@
                 AddShield(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             foreach (var spell in
                 from spell in myItems1
                 let data = AbilityDatabase.Find(spell.Name)
@@ -47,6 +48,7 @@
                 AddShield(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             if (ShieldsTogglerCreated)
             {
                 MainMenu.Menu.AddItem(
@@ -71,6 +73,7 @@
             {
                 ShieldsToggler.Add(spell.Name, true);
             }
+
             var menu = ShieldMenu.Create(spell.Name, spell);
             ShieldsMenuDictionary.Add(spell.Name, menu);
             ShieldsMenu.AddSubMenu(menu);

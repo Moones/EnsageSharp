@@ -38,6 +38,7 @@
                 AddBuff(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             foreach (var spell in
                 from spell in myItems1
                 let data = AbilityDatabase.Find(spell.Name)
@@ -47,6 +48,7 @@
                 AddBuff(spell);
                 RangeDrawing.AddRange(spell);
             }
+
             if (BuffsTogglerCreated)
             {
                 MainMenu.Menu.AddItem(new MenuItem("buffsToggler", "Buffs:").SetValue(new AbilityToggler(buffsToggler)));
@@ -70,6 +72,7 @@
             {
                 buffsToggler.Add(spell.Name, true);
             }
+
             var menu = BuffMenu.Create(spell.Name);
             BuffsMenuDictionary.Add(spell.Name, menu);
             BuffsMenu.AddSubMenu(menu);

@@ -24,10 +24,12 @@
             {
                 return;
             }
+
             if (!OnUpdateChecks.CanUpdate())
             {
                 return;
             }
+
             MinDamage = AbilityMain.Me.MinimumDamage;
             BonusDamage = AbilityMain.Me.BonusDamage;
             Utils.Sleep(500, "MyDamage.OnUpdate");

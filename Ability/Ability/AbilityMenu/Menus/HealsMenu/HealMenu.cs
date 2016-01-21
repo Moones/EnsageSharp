@@ -19,10 +19,12 @@
                     .SetTooltip("If your HP is below specified value, ability will not be used");
                 return menu;
             }
+
             if (!(name == "item_magic_wand" || name == "item_magic_stick"))
             {
                 menu.AddItem(Togglers.UseOnAllies(name));
             }
+
             if (name == "item_arcane_boots")
             {
                 menu.AddItem(Sliders.MissingManaMin(name));
@@ -33,6 +35,7 @@
                 menu.AddItem(Sliders.MissingHpMin(name));
                 menu.AddItem(Sliders.HpPercentBelow(name));
             }
+
             if (name == "item_mekansm" || name == "item_guardian_greaves" || name == "chen_hand_of_god")
             {
                 menu.AddItem(
@@ -43,6 +46,7 @@
                         .SetTooltip(
                             "If theres enabled ally hero in specified range, Ability# will wait for this hero to come in heal range"));
             }
+
             if (name == "item_arcane_boots")
             {
                 menu.AddItem(
@@ -60,6 +64,7 @@
                         .SetTooltip("Use the ability only when affected target is near selected enemy"));
                 menu.AddItem(Togglers.UseNear(name));
             }
+
             return menu;
         }
 

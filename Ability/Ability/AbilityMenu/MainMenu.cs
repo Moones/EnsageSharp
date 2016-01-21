@@ -87,6 +87,7 @@
             {
                 return;
             }
+
             Menu.RemoveFromMainMenu();
             Menu = null;
         }
