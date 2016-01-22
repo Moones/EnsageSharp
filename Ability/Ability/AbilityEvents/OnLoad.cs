@@ -45,6 +45,8 @@
             }
 
             MyAbilities.Blink = null;
+            MyAbilities.SoulRing = null;
+            MyAbilities.TinkerRearm = null;
             Dictionaries.Init();
             MainMenu.InitializeMenu();
             MenuInit.AddAllToMenu();

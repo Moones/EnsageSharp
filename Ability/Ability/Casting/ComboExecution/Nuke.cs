@@ -1,5 +1,6 @@
 ﻿namespace Ability.Casting.ComboExecution
 {
+    using System;
     using System.Linq;
     using System.Threading;
 
@@ -42,16 +43,42 @@
                 ManageAutoAttack.AutoAttackDisabled = true;
                 SoulRing.Cast(ability);
                 ability.UseAbility(target);
+                DelayAction.Add(
+                    new DelayActionItem(300, () => { AbilityMain.LaunchSnowball(); }, CancellationToken.None));
                 return true;
             }
 
             if ((ability.IsAbilityBehavior(AbilityBehavior.AreaOfEffect, name)
                  || ability.IsAbilityBehavior(AbilityBehavior.Point, name))
-                && (Prediction.StraightTime(target) > 1000 || target.MovementSpeed < 200))
+                && (Prediction.StraightTime(target) > 600 || target.MovementSpeed < 200))
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
-                return ability.CastSkillShot(target, name, SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
+                var casted = ability.CastSkillShot(target, name, SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
+                if (casted)
+                {
+                    if (Utils.SleepCheck(ability.Handle.ToString())
+                        && ability.GetCastDelay(AbilityMain.Me, target, true) * 1000 - Game.Ping > 0.1)
+                    {
+                        DelayAction.Add(
+                            new DelayActionItem(
+                                (int)
+                                (ability.GetCastDelay(AbilityMain.Me, target, true) * 1000 - Math.Max(50, Game.Ping)), 
+                                () =>
+                                    {
+                                        if (Prediction.StraightTime(target)
+                                            < (600
+                                               + (ability.GetCastDelay(AbilityMain.Me, target, true) * 1000
+                                                  - Math.Max(50, Game.Ping))) && target.MovementSpeed > 200)
+                                        {
+                                            AbilityMain.Me.Stop();
+                                        }
+                                    }, 
+                                CancellationToken.None));
+                    }
+                }
+
+                return casted;
             }
 
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))

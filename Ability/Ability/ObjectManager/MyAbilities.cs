@@ -22,6 +22,8 @@
 
         public static Ability SoulRing;
 
+        public static Ability TinkerRearm;
+
         #endregion
     }
 }

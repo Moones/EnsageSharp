@@ -85,18 +85,29 @@
                 .SetValue(new KeyBind('G', KeyBindType.Press));
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("abilityComboType", "Combo Order"))
                 .SetValue(new StringList(new[] { "Normal", "Maximum Disable", "Maximum Damage" }));
+            MainMenu.ComboKeysMenu.AddItem(new MenuItem("Ability.KeyCombo.Mode", "Move mode"))
+                .SetValue(new StringList(new[] { "Orbwalk", "Move to mouse", "Attack target", "Do nothing" }));
+            MainMenu.ComboKeysMenu.AddItem(new MenuItem("Ability.KeyCombo.NoMoveRange", "No move range"))
+                .SetValue(new Slider(0, 0, 300))
+                .SetTooltip("Your hero will not move if you put your mouse near your hero in the selected range");
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("comboAbilitiesToggler", "Abilities in combo: "))
                 .SetValue(new AbilityToggler(new Dictionary<string, bool>()));
+
             foreach (var spell in
                 from spell in spells
                 let data = AbilityDatabase.Find(spell.Name)
                 where
-                    data != null
-                    && (data.IsNuke || data.IsDisable || data.IsHarras || data.IsBuff || data.WeakensEnemy
-                        || data.IsSlow || data.IsSilence)
+                    (data != null
+                     && (data.IsNuke || data.IsDisable || data.IsHarras || data.IsBuff || data.WeakensEnemy
+                         || data.IsSlow || data.IsSilence)) || spell.Name == "tinker_rearm"
                 select spell)
             {
                 var dv = spell.AbilityType != AbilityType.Ultimate || spell.Name == "templar_assassin_psionic_trap";
+                if (NameManager.Name(spell) == "tinker_rearm")
+                {
+                    MyAbilities.TinkerRearm = spell;
+                }
+
                 ComboMenu.AddAbility(spell.Name, dv);
             }
 

@@ -1,7 +1,6 @@
 ﻿namespace Ability
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
 
     using Ability.AbilityEvents;
@@ -84,10 +83,6 @@
 
             var meModifiers = Me.Modifiers.ToList();
             var ping = Game.Ping;
-            if (LaunchSnowball(meModifiers))
-            {
-                return;
-            }
 
             if (MyAbilities.DeffensiveAbilities.Any() && Utils.SleepCheck("casting"))
             {
@@ -190,9 +185,41 @@
                     }
                 }
 
-                if (Utils.SleepCheck("GlobalCasting"))
+                if (Utils.SleepCheck("GlobalCasting")
+                    && (Game.MousePosition.Distance2D(Me)
+                        > MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value
+                        || (target != null
+                            && Me.Distance2D(target)
+                            <= MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value)))
                 {
-                    Orbwalking.Orbwalk(target, attackmodifiers: true);
+                    var mode = MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Mode").GetValue<StringList>().SelectedIndex;
+                    switch (mode)
+                    {
+                        case 0:
+
+                            Orbwalking.Orbwalk(target, attackmodifiers: true);
+                            break;
+                        case 1:
+                            if (!Utils.SleepCheck("Ability.Move"))
+                            {
+                                return;
+                            }
+
+                            Me.Move(Game.MousePosition);
+                            Utils.Sleep(100, "Ability.Move");
+                            break;
+                        case 2:
+                            if (!Utils.SleepCheck("Ability.Move") || target == null)
+                            {
+                                return;
+                            }
+
+                            Me.Attack(target);
+                            Utils.Sleep(100, "Ability.Move");
+                            break;
+                        case 3:
+                            return;
+                    }
                 }
             }
         }
@@ -206,6 +233,17 @@
             // {
             // OnLoad.Event(null, null);
             // }
+        }
+
+        public static bool LaunchSnowball()
+        {
+            if (Me.ClassID != ClassID.CDOTA_Unit_Hero_Tusk)
+            {
+                return false;
+            }
+
+            Me.FindSpell("tusk_launch_snowball").UseAbility();
+            return true;
         }
 
         public static void Player_OnExecuteOrder(Player sender, ExecuteOrderEventArgs args)
@@ -257,27 +295,6 @@
             }
 
             args.Process = false;
-        }
-
-        #endregion
-
-        #region Methods
-
-        private static bool LaunchSnowball(IEnumerable<Modifier> modifiers)
-        {
-            if (Me.ClassID != ClassID.CDOTA_Unit_Hero_Tusk || !Utils.SleepCheck("snowball"))
-            {
-                return false;
-            }
-
-            if (modifiers.All(x => x.Name != "modifier_tusk_snowball_movement"))
-            {
-                return false;
-            }
-
-            Me.FindSpell("tusk_launch_snowball").UseAbility();
-            Utils.Sleep(1000, "snowball");
-            return true;
         }
 
         #endregion

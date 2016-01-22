@@ -57,15 +57,16 @@
 
         public static bool Attacking(Hero target, Hero me)
         {
-            return me.IsAttacking() && me.Distance2D(target) <= MyHeroInfo.AttackRange() + 150
-                   && me.GetTurnTime(target.Position) < 0.1;
+            var attacking = me.IsAttacking() && me.Distance2D(target) <= MyHeroInfo.AttackRange() + 150
+                            && me.GetTurnTime(target.Position) < 0.1;
+            return attacking;
         }
 
         public static bool Cast(Hero target, Ability ability)
         {
             return
                 target.Spellbook.Spells.Any(x => x.IsInAbilityPhase && x.FindCastPoint() > ability.GetHitDelay(target))
-                 || (target.IsChanneling() && !target.GetChanneledAbility().Name.Contains("item"));
+                || (target.IsChanneling() && !target.GetChanneledAbility().Name.Contains("item"));
         }
 
         public static bool ChainStun(Ability ability, Hero target, string name)
@@ -104,8 +105,8 @@
         {
             var closestTower = EnemyTowers.GetClosest;
             return closestTower != null
-                    && target.Distance2D(closestTower)
-                    < (closestTower.AttackRange + closestTower.HullRadius + target.HullRadius);
+                   && target.Distance2D(closestTower)
+                   < (closestTower.AttackRange + closestTower.HullRadius + target.HullRadius);
         }
 
         #endregion

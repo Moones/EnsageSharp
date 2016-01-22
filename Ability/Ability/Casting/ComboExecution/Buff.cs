@@ -31,7 +31,7 @@
                     return false;
                 }
 
-                if (!togglearmlet && buffTarget.Distance2D(target) > Math.Max(target.GetAttackRange(), 500))
+                if (!togglearmlet && buffTarget.Distance2D(target) > Math.Max(buffTarget.GetAttackRange() + 150, 500))
                 {
                     return false;
                 }

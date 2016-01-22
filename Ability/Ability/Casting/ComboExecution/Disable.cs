@@ -1,5 +1,7 @@
 ﻿namespace Ability.Casting.ComboExecution
 {
+    using System.Threading;
+
     using Ability.ObjectManager;
 
     using Ensage;
@@ -30,6 +32,12 @@
                 abilityName: name, 
                 useSleep: name != "ancient_apparition_cold_feet" && name != "rattletrap_battery_assault", 
                 soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
+            if (casted)
+            {
+                DelayAction.Add(
+                    new DelayActionItem(300, () => { AbilityMain.LaunchSnowball(); }, CancellationToken.None));
+            }
+
             return casted;
         }
 

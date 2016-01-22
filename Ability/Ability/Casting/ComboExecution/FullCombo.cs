@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
 
     using Ability.AbilityMenu;
     using Ability.AbilityMenu.Menus.BuffsMenu;
@@ -25,6 +26,9 @@
     using Ensage.Common.Extensions;
     using Ensage.Common.Menu;
 
+    /// <summary>
+    ///     The full combo.
+    /// </summary>
     internal class FullCombo
     {
         #region Static Fields
@@ -65,6 +69,8 @@
                         return false;
                     }
 
+                    DelayAction.Add(
+                        new DelayActionItem(300, () => { AbilityMain.LaunchSnowball(); }, CancellationToken.None));
                     Utils.Sleep(100 + me.GetTurnTime(hero) * 1000 + ping, "tusk_snowball");
                     Utils.Sleep(me.GetTurnTime(hero) * 1000 + (heroDistance / 675) * 1000 + 100, "GlobalCasting");
                     Utils.Sleep(me.GetTurnTime(hero) * 1000 + (heroDistance / 675) * 1000 + 100, "calculate");
@@ -116,7 +122,7 @@
                             var target =
                                 AllyHeroes.UsableHeroes.Where(x => !x.IsMagicImmune())
                                     .MinOrDefault(x => x.Distance2D(hero));
-                            if (target != null
+                            if (target != null && ability.CanHit(target, MyHeroInfo.Position, name)
                                 && target.PredictedPosition().Distance2D(hero.PredictedPosition())
                                 < ability.GetRadius(name))
                             {
@@ -156,6 +162,25 @@
                     {
                         if (Nuke.Cast(ability, hero, name))
                         {
+                            if (Utils.SleepCheck(handleString)
+                                && ability.GetCastDelay(AbilityMain.Me, hero, true) * 1000 - Game.Ping > 0.1)
+                            {
+                                DelayAction.Add(
+                                    new DelayActionItem(
+                                        (int)
+                                        (ability.GetCastDelay(AbilityMain.Me, hero, true) * 1000
+                                         - Math.Max(50, Game.Ping)), 
+                                        () =>
+                                            {
+                                                if (!CastingChecks.Killsteal(ability, hero, name) || !hero.IsAlive
+                                                    || hero.Health <= 0)
+                                                {
+                                                    AbilityMain.Me.Stop();
+                                                }
+                                            }, 
+                                        CancellationToken.None));
+                            }
+
                             if (name == "riki_blink_strike")
                             {
                                 Utils.Sleep(MyHeroInfo.AttackRate() * 1000 + ping + 100, handleString);
@@ -816,7 +841,7 @@
                                    >= Heals.HealsMenuDictionary[name].Item(name + "minenemiesaround")
                                           .GetValue<StringList>()
                                           .SelectedIndex)))
-                    && (name != "omniknight_purification" || hero.Health < hero.MaximumHealth * 0.2
+                    && (name != "omniknight_purification" || hero.Health < hero.MaximumHealth * 0.22
                         || enemyHeroes.Any(
                             x => x.Predict(Game.Ping).Distance2D(hero.Predict(Game.Ping)) <= ability.GetRadius(name)))
                     && (!(name == "item_mekansm" || name == "item_guardian_greaves" || name == "chen_hand_of_god")
@@ -906,9 +931,9 @@
             List<Modifier> meModifiers, 
             float mana)
         {
+            var toggler = MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>();
             if (Utils.SleepCheck("UpdateCombo"))
             {
-                var toggler = MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>();
                 MyAbilities.Combo =
                     MyAbilities.OffensiveAbilities.Where(
                         x => x.Value.IsValid && x.Value.Owner.Equals(me) && toggler.IsEnabled(NameManager.Name(x.Value)))
@@ -936,6 +961,33 @@
                         {
                             Slow.TemplarAssasinUseTrap(target);
                         }
+                    }
+
+                    if (me.ClassID == ClassID.CDOTA_Unit_Hero_Tinker && toggler.IsEnabled("tinker_rearm")
+                        && MyAbilities.TinkerRearm.CanBeCasted() && Utils.SleepCheck("Ability.TinkerRearm")
+                        && !MyAbilities.Combo.Any(
+                            x =>
+                            x.Value.CanBeCasted()
+                            || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value))))
+                    {
+                        MyAbilities.TinkerRearm.UseAbility();
+                        Utils.Sleep(
+                            MyAbilities.TinkerRearm.FindCastPoint() * 1000 + Game.Ping
+                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000 + 500, 
+                            "Ability.TinkerRearm");
+                        Utils.Sleep(
+                            MyAbilities.TinkerRearm.FindCastPoint() * 1000 + Game.Ping
+                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000, 
+                            "GlobalCasting");
+                        Utils.Sleep(
+                            MyAbilities.TinkerRearm.FindCastPoint() * 1000 + Game.Ping
+                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000, 
+                            "casting");
+                        Utils.Sleep(
+                            MyAbilities.TinkerRearm.FindCastPoint() * 1000 + Game.Ping
+                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000, 
+                            "cancelorder");
+                        return true;
                     }
 
                     foreach (var data in
@@ -997,7 +1049,7 @@
                                 var target1 =
                                     AllyHeroes.UsableHeroes.Where(x => !x.IsMagicImmune())
                                         .MinOrDefault(x => x.Distance2D(target));
-                                if (target1 != null
+                                if (target1 != null && ability.CanHit(target1, MyHeroInfo.Position, name)
                                     && target1.PredictedPosition().Distance2D(target.PredictedPosition())
                                     < ability.GetRadius(name))
                                 {
