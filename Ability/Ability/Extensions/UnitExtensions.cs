@@ -1,6 +1,8 @@
 ﻿namespace Ability.Extensions
 {
+    using System;
     using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
 
     using Ensage;
     using Ensage.Common;
@@ -17,25 +19,25 @@
 
         #region Public Methods and Operators
 
-        public static Vector3 PredictedPosition(this Unit unit, float bonusDelay = 0)
+        public static Vector3 PredictedPosition(this Unit unit, double bonusDelay = 0)
         {
             Vector3 position;
             var handle = unit.Handle;
-            if (!PositionDictionary.TryGetValue(handle, out position) || Utils.SleepCheck(handle + "PredictedPosition"))
+            if (!PositionDictionary.TryGetValue((float)(handle + bonusDelay), out position) || Utils.SleepCheck(handle + bonusDelay + "PredictedPosition"))
             {
-                position = unit.IsMoving
-                               ? Prediction.InFront(unit, unit.MovementSpeed * (Game.Ping / 1000) + bonusDelay)
+                position = unit.NetworkActivity == NetworkActivity.Move
+                               ? Prediction.InFront(unit, (float)(unit.MovementSpeed * (Game.Ping / 1000 + bonusDelay)))
                                : unit.Position;
-                if (PositionDictionary.ContainsKey(handle))
+                if (PositionDictionary.ContainsKey((float)(handle + bonusDelay)))
                 {
-                    PositionDictionary[handle] = position;
+                    PositionDictionary[(float)(handle + bonusDelay)] = position;
                 }
                 else
                 {
-                    PositionDictionary.Add(handle, position);
+                    PositionDictionary.Add((float)(handle + bonusDelay), position);
                 }
 
-                Utils.Sleep(5, handle + "PredictedPosition");
+                Utils.Sleep(5, handle + bonusDelay + "PredictedPosition");
             }
 
             return position;

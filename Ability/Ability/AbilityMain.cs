@@ -86,7 +86,8 @@
 
             if (MyAbilities.DeffensiveAbilities.Any() && Utils.SleepCheck("casting"))
             {
-                if (allyHeroes.Any(allyHero => FullCombo.DeffensiveAutoUsage(allyHero, Me, enemyHeroes, ping)))
+                if (Utils.SleepCheck("Orbwalk.Attack")
+                    && allyHeroes.Any(allyHero => FullCombo.DeffensiveAutoUsage(allyHero, Me, enemyHeroes, ping)))
                 {
                     return;
                 }
@@ -112,14 +113,46 @@
                         target = null;
                     }
 
-                    if (Utils.SleepCheck("GlobalCasting"))
+                    if (Utils.SleepCheck("GlobalCasting")
+                    && (Game.MousePosition.Distance2D(Me)
+                        > MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value
+                        || (target != null
+                            && Me.Distance2D(target)
+                            <= MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value)))
                     {
-                        Orbwalking.Orbwalk(target, attackmodifiers: true);
+                        var mode = MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Mode").GetValue<StringList>().SelectedIndex;
+                        switch (mode)
+                        {
+                            case 0:
+
+                                Orbwalking.Orbwalk(target, attackmodifiers: true);
+                                break;
+                            case 1:
+                                if (!Utils.SleepCheck("Ability.Move"))
+                                {
+                                    return;
+                                }
+
+                                Me.Move(Game.MousePosition);
+                                Utils.Sleep(100, "Ability.Move");
+                                break;
+                            case 2:
+                                if (!Utils.SleepCheck("Ability.Move") || target == null)
+                                {
+                                    return;
+                                }
+
+                                Me.Attack(target);
+                                Utils.Sleep(100, "Ability.Move");
+                                break;
+                            case 3:
+                                return;
+                        }
                     }
                 }
             }
 
-            if (Utils.SleepCheck("casting"))
+            if (Utils.SleepCheck("casting") && Utils.SleepCheck("Orbwalk.Attack"))
             {
                 if (FullCombo.KillSteal(enemyHeroes, ping, Me))
                 {
@@ -129,8 +162,8 @@
 
             var meMissingHp = Me.MaximumHealth - Me.Health;
             var meMana = Me.Mana;
-            if (
-                enemyHeroes.Any(
+            if (Utils.SleepCheck("Orbwalk.Attack")
+                && enemyHeroes.Any(
                     enemyHero => FullCombo.AutoUsage(enemyHero, enemyHeroes, meMissingHp, meModifiers, ping, Me, meMana)))
             {
                 return;

@@ -49,6 +49,7 @@
                 {
                     continue;
                 }
+
                 AddHeal(spell);
                 RangeDrawing.AddRange(spell);
             }

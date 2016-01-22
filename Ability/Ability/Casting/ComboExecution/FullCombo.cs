@@ -25,6 +25,7 @@
     using Ensage.Common.AbilityInfo;
     using Ensage.Common.Extensions;
     using Ensage.Common.Menu;
+    using Ensage.Common.Objects;
 
     /// <summary>
     ///     The full combo.
@@ -119,17 +120,19 @@
                                   .GetValue<Slider>()
                                   .Value && CastingChecks.Killsteal(ability, hero, name))
                         {
-                            var target =
-                                AllyHeroes.UsableHeroes.Where(x => !x.IsMagicImmune())
-                                    .MinOrDefault(x => x.Distance2D(hero));
+                            var target = FindPurificationTarget(hero); 
                             if (target != null && ability.CanHit(target, MyHeroInfo.Position, name)
                                 && target.PredictedPosition().Distance2D(hero.PredictedPosition())
+                                < ability.GetRadius(name)
+                                && target.PredictedPosition()
+                                       .Distance2D(
+                                           hero.PredictedPosition(ability.FindCastPoint(NameManager.Name(ability))))
                                 < ability.GetRadius(name))
                             {
                                 if (Nuke.Cast(ability, target, name))
                                 {
                                     Utils.Sleep(
-                                        ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, 
+                                        ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100,
                                         handleString);
                                     Utils.Sleep(delay, "GlobalCasting");
                                     Utils.Sleep(delay, "cancelorder");
@@ -1051,31 +1054,47 @@
                                         .MinOrDefault(x => x.Distance2D(target));
                                 if (target1 != null && ability.CanHit(target1, MyHeroInfo.Position, name)
                                     && target1.PredictedPosition().Distance2D(target.PredictedPosition())
+                                    < ability.GetRadius(name)
+                                    && target1.PredictedPosition()
+                                           .Distance2D(
+                                               target.PredictedPosition(
+                                                   ability.FindCastPoint(NameManager.Name(ability))))
                                     < ability.GetRadius(name))
                                 {
                                     if (Nuke.Cast(ability, target1, name))
                                     {
                                         Utils.Sleep(
-                                            Math.Max(ability.GetCastDelay(me, target1, abilityName: name), 0.2) * 1000, 
+                                            Math.Max(ability.GetCastDelay(me, target1, abilityName: name), 0.2) * 1000,
                                             "GlobalCasting");
                                         Utils.Sleep(ability.GetHitDelay(target1, name) * 1000, "calculate");
                                         Utils.Sleep(
                                             Math.Max(
                                                 ability.GetCastDelay(
-                                                    me, 
-                                                    target1, 
-                                                    useCastPoint: false, 
-                                                    abilityName: name), 
-                                                0.15) * 1000 + Game.Ping, 
+                                                    me,
+                                                    target1,
+                                                    useCastPoint: false,
+                                                    abilityName: name),
+                                                0.15) * 1000 + Game.Ping,
 
                                             // + (Math.Max(me.Distance2D(target) - ability.GetCastRange(name) - 50, 0)
                                             // / me.MovementSpeed) * 1000,
                                             "casting");
                                         Utils.Sleep(
-                                            Math.Max(ability.GetCastDelay(me, target1, abilityName: name), 0.2) * 1000, 
+                                            Math.Max(ability.GetCastDelay(me, target1, abilityName: name), 0.2) * 1000,
                                             "cancelorder");
                                         return true;
                                     }
+                                }
+                                else if (target1 != null && target1.Equals(me))
+                                {
+                                    if (Utils.SleepCheck("Ability.Move"))
+                                    {
+                                        me.Move(Game.MousePosition);
+                                        Utils.Sleep(100, "Ability.Move");
+                                    }
+
+                                    Utils.Sleep(200, "GlobalCasting");
+                                    return true;
                                 }
                             }
 
@@ -1100,6 +1119,19 @@
                             if (name == "pudge_rot")
                             {
                                 continue;
+                            }
+
+                            if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, NameManager.Name(ability))
+                                && target.PredictedPosition().Distance2D(MyHeroInfo.Position) < ability.GetRadius() + 150)
+                            {
+                                if (Utils.SleepCheck("Ability.Move"))
+                                {
+                                    me.Move(Game.MousePosition);
+                                    Utils.Sleep(100, "Ability.Move");
+                                }
+
+                                Utils.Sleep(200, "GlobalCasting");
+                                return true;
                             }
 
                             if (target.Distance2D(MyHeroInfo.Position) > ability.GetCastRange(name) + 250)
@@ -1297,35 +1329,38 @@
                                       .GetValue<Slider>()
                                       .Value)
                             {
-                                var target =
-                                    AllyHeroes.UsableHeroes.Where(x => !x.IsMagicImmune())
-                                        .MinOrDefault(x => x.Distance2D(possibleTarget));
+                                var target = FindPurificationTarget(possibleTarget);
                                 if (target != null
                                     && target.PredictedPosition().Distance2D(possibleTarget.PredictedPosition())
+                                    < ability.GetRadius(name)
+                                    && target.PredictedPosition()
+                                           .Distance2D(
+                                               possibleTarget.PredictedPosition(
+                                                   ability.FindCastPoint(NameManager.Name(ability))))
                                     < ability.GetRadius(name))
                                 {
                                     if (Nuke.Cast(ability, target, name))
                                     {
                                         Utils.Sleep(
                                             ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000 + ping
-                                            + 100, 
+                                            + 100,
                                             handleString);
                                         Utils.Sleep(
-                                            ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000, 
+                                            ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000,
                                             "GlobalCasting");
                                         Utils.Sleep(ability.GetHitDelay(possibleTarget, name) * 1000, "calculate");
                                         Utils.Sleep(
                                             ability.GetCastDelay(
-                                                me, 
-                                                possibleTarget, 
-                                                useCastPoint: false, 
-                                                abilityName: name) * 1000, 
+                                                me,
+                                                possibleTarget,
+                                                useCastPoint: false,
+                                                abilityName: name) * 1000,
 
                                             // + (Math.Max(Me.Distance2D(possibleTarget) - ability.GetCastRange(name) - 50, 0)
                                             // / Me.MovementSpeed) * 1000,
                                             "casting");
                                         Utils.Sleep(
-                                            ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000, 
+                                            ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000,
                                             "cancelorder");
 
                                         // Utils.Sleep(ping, "killsteal");
@@ -1431,6 +1466,15 @@
             }
 
             return false;
+        }
+
+        public static Unit FindPurificationTarget(Hero hero)
+        {
+            var target = AllyHeroes.UsableHeroes.Where(x => !x.IsMagicImmune()).MinOrDefault(x => x.Distance2D(hero));
+            var creep = Creeps.All.Where(x => x.Team == AbilityMain.Me.Team).MinOrDefault(x => x.Distance2D(hero));
+            return target != null && (creep == null || target.Distance2D(hero) < creep.Distance2D(hero))
+                       ? (Unit)target
+                       : creep;
         }
 
         #endregion
