@@ -45,6 +45,10 @@
                 where data != null && data.IsHeal
                 select spell)
             {
+                if (MyAbilities.DeffensiveAbilities.ContainsKey(spell.Name + "heal"))
+                {
+                    continue;
+                }
                 AddHeal(spell);
                 RangeDrawing.AddRange(spell);
             }
