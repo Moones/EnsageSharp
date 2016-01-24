@@ -1,8 +1,6 @@
 ﻿namespace Ability.Extensions
 {
-    using System;
     using System.Collections.Generic;
-    using System.Runtime.CompilerServices;
 
     using Ensage;
     using Ensage.Common;
@@ -23,7 +21,8 @@
         {
             Vector3 position;
             var handle = unit.Handle;
-            if (!PositionDictionary.TryGetValue((float)(handle + bonusDelay), out position) || Utils.SleepCheck(handle + bonusDelay + "PredictedPosition"))
+            if (!PositionDictionary.TryGetValue((float)(handle + bonusDelay), out position)
+                || Utils.SleepCheck(handle + bonusDelay + "PredictedPosition"))
             {
                 position = unit.NetworkActivity == NetworkActivity.Move
                                ? Prediction.InFront(unit, (float)(unit.MovementSpeed * (Game.Ping / 1000 + bonusDelay)))

@@ -148,22 +148,27 @@
                 foreach (var item in
                     AbilityMain.Me.Inventory.Items)
                 {
-                    if (MyAbilities.Blink == null && NameManager.Name(item) == "item_blink")
+                    switch (NameManager.Name(item))
                     {
-                        // MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(item.Name);
-                        BlinkMenu.Create(item);
-                        MyAbilities.Blink = item;
-                        continue;
-                    }
+                        case "item_gem":
+                            continue;
+                        case "item_soul_ring":
+                            MyAbilities.SoulRing = item;
+                            break;
+                        case "item_aether_lens":
 
-                    if (NameManager.Name(item) == "item_soul_ring")
-                    {
-                        MyAbilities.SoulRing = item;
-                    }
+                            RangeDrawing.Update();
+                            break;
+                        case "item_blink":
+                            if (MyAbilities.Blink == null)
+                            {
+                                // MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(item.Name);
+                                BlinkMenu.Create(item);
+                                MyAbilities.Blink = item;
+                                continue;
+                            }
 
-                    if (NameManager.Name(item) == "item_aether_lens")
-                    {
-                        RangeDrawing.Update();
+                            break;
                     }
 
                     var data = AbilityDatabase.Find(NameManager.Name(item));
@@ -518,7 +523,7 @@
                 MainMenu.Menu.Item("specialsToggler").GetValue<AbilityToggler>().Add(NameManager.Name(item));
             }
 
-            var menu = SpecialMenu.Create(NameManager.Name(item));
+            var menu = SpecialMenu.Create(NameManager.Name(item), item);
             Specials.SpecialsMenuDictionary.Add(NameManager.Name(item), menu);
             Specials.SpecialsMenu.AddSubMenu(menu);
         }

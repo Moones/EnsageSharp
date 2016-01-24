@@ -57,14 +57,10 @@
             EnemyPlayers.All = new List<Player>();
             AllyPlayers.All = new List<Player>();
             EnemyTowers.Towers = new List<Building>();
-            AllyHeroes.Abilities = new List<Ability>();
-            EnemyHeroes.Abilities = new List<Ability>();
             AllyHeroes.AbilityDictionary = new Dictionary<string, List<Ability>>();
             EnemyHeroes.AbilityDictionary = new Dictionary<string, List<Ability>>();
             AllyHeroes.ItemDictionary = new Dictionary<string, List<Item>>();
             EnemyHeroes.ItemDictionary = new Dictionary<string, List<Item>>();
-            AllyHeroes.Items = new List<Item>();
-            EnemyHeroes.Items = new List<Item>();
             Manage.SubscribeAllEvents();
             var id = AbilityMain.Me.ClassID;
             var msg = "Fully supported";

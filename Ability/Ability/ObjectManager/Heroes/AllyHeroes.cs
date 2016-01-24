@@ -4,26 +4,20 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Ability.Casting;
     using Ability.OnUpdate;
 
     using Ensage;
     using Ensage.Common;
-    using Ensage.Common.AbilityInfo;
 
     internal class AllyHeroes
     {
         #region Static Fields
-
-        public static List<Ability> Abilities;
 
         public static Dictionary<string, List<Ability>> AbilityDictionary;
 
         public static List<Hero> Heroes;
 
         public static Dictionary<string, List<Item>> ItemDictionary;
-
-        public static List<Item> Items;
 
         public static Hero[] UsableHeroes;
 
@@ -49,17 +43,10 @@
             if (Utils.SleepCheck("allyHeroesCheckValid"))
             {
                 Utils.Sleep(2000, "allyHeroesCheckValid");
-                var itemList = new List<Item>(Items);
                 foreach (var hero in UsableHeroes)
                 {
                     var name = NameManager.Name(hero);
                     var items = hero.Inventory.Items.ToList();
-                    foreach (var ability in
-                        items.Where(x => !itemList.Contains(x) && AbilityDatabase.Find(NameManager.Name(x)) != null)
-                            .OrderBy(ComboOrder.GetAbilityOrder))
-                    {
-                        Items.Add(ability);
-                    }
 
                     if (ItemDictionary.ContainsKey(name))
                     {
@@ -82,7 +69,6 @@
         {
             var list = Ensage.Common.Objects.Heroes.GetByTeam(AbilityMain.Me.Team);
             var herolist = new List<Hero>(Heroes);
-            var abilityList = new List<Ability>(Abilities.Where(x => x.IsValid));
             foreach (var hero in list.Where(x => x.IsValid && x.IsVisible))
             {
                 var name = NameManager.Name(hero);
@@ -102,13 +88,6 @@
                 // {
                 // continue;
                 // }
-                foreach (var ability in
-                    spells.Where(x => !abilityList.Contains(x) && AbilityDatabase.Find(NameManager.Name(x)) != null)
-                        .OrderBy(ComboOrder.GetAbilityOrder))
-                {
-                    Abilities.Add(ability);
-                }
-
                 var abilitylist =
                     spells.Where(x => x.AbilityType != AbilityType.Attribute && x.AbilityType != AbilityType.Hidden)
                         .ToList();

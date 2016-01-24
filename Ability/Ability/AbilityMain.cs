@@ -114,13 +114,14 @@
                     }
 
                     if (Utils.SleepCheck("GlobalCasting")
-                    && (Game.MousePosition.Distance2D(Me)
-                        > MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value
-                        || (target != null
-                            && Me.Distance2D(target)
-                            <= MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value)))
+                        && (Game.MousePosition.Distance2D(Me)
+                            > MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value
+                            || (target != null
+                                && Me.Distance2D(target)
+                                <= MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value)))
                     {
-                        var mode = MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Mode").GetValue<StringList>().SelectedIndex;
+                        var mode =
+                            MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Mode").GetValue<StringList>().SelectedIndex;
                         switch (mode)
                         {
                             case 0:

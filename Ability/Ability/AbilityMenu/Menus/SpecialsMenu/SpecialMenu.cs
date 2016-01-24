@@ -2,6 +2,7 @@
 {
     using Ability.AbilityMenu.Items;
 
+    using Ensage;
     using Ensage.Common.AbilityInfo;
     using Ensage.Common.Menu;
 
@@ -9,7 +10,7 @@
     {
         #region Public Methods and Operators
 
-        public static Menu Create(string name)
+        public static Menu Create(string name, Ability ability)
         {
             var menu = new Menu(name, name, textureName: name);
             if (name == "rubick_spell_steal")
@@ -19,21 +20,22 @@
 
             menu.AddItem(Togglers.OnSight(name));
             var data = AbilityDatabase.Find(name);
+            var defaultValue = ability.AbilityType != AbilityType.Ultimate;
             if (data != null)
             {
                 if (data.TrueSight)
                 {
-                    menu.AddItem(Togglers.OnInvisible(name));
+                    menu.AddItem(Togglers.OnInvisible(name, defaultValue));
                 }
 
                 if (data.IsPurge)
                 {
-                    menu.AddItem(Togglers.OnPurgable(name));
+                    menu.AddItem(Togglers.OnPurgable(name, defaultValue));
                 }
 
                 if (data.WeakensEnemy)
                 {
-                    menu.AddItem(Togglers.OnAttack(name));
+                    menu.AddItem(Togglers.OnAttack(name, defaultValue));
                 }
             }
 

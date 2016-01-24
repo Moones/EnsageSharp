@@ -43,7 +43,7 @@
             foreach (var spell in
                 from spell in myItems1
                 let data = AbilityDatabase.Find(spell.Name)
-                where data != null && (data.TrueSight || data.WeakensEnemy || data.IsPurge)
+                where spell.Name != "item_gem" && data != null && (data.TrueSight || data.WeakensEnemy || data.IsPurge)
                 select spell)
             {
                 AddSpecial(spell);
@@ -81,7 +81,7 @@
                 specialsToggler.Add(spell.Name, true);
             }
 
-            var menu = SpecialMenu.Create(spell.Name);
+            var menu = SpecialMenu.Create(spell.Name, spell);
             SpecialsMenuDictionary.Add(spell.Name, menu);
             SpecialsMenu.AddSubMenu(menu);
         }

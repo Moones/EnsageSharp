@@ -19,7 +19,6 @@
                                                                                 { "item_veil_of_discord", 2 }, 
 
                                                                                 // { "item_dagon", 3 }, { "item_dagon_2", 3 },
-                                                                                // { "item_dagon_3", 3 },
                                                                                 { "necrolyte_reapers_scythe", 0 }, 
                                                                                 { "morphling_waveform", 3 }, 
                                                                                 { "necrolyte_death_pulse", 1 }, 
@@ -37,6 +36,8 @@
                                                                                 { "zuus_lightning_bolt", 4 }, 
                                                                                 { "zuus_thundergods_wrath", 10 }, 
                                                                                 { "templar_assassin_psionic_trap", 2 }
+
+                                                                                // { "item_dagon_3", 3 },
 
                                                                                 // { "item_dagon_4", 3 },
 
@@ -87,7 +88,6 @@
                                                                                 { "item_veil_of_discord", 2 }, 
 
                                                                                 // { "item_dagon", 3 }, { "item_dagon_2", 3 },
-                                                                                // { "item_dagon_3", 3 },
                                                                                 { "necrolyte_reapers_scythe", 0 }, 
                                                                                 { "morphling_waveform", 3 }, 
                                                                                 { "morphling_adaptive_strike", 2 }, 
@@ -102,6 +102,8 @@
                                                                                 { "shadow_shaman_voodoo", 0 }, 
                                                                                 { "zuus_lightning_bolt", 4 }, 
                                                                                 { "zuus_thundergods_wrath", 10 }
+
+                                                                                // { "item_dagon_3", 3 },
 
                                                                                 // { "item_dagon_4", 3 },
 
