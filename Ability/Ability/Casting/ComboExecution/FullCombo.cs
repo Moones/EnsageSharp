@@ -146,7 +146,7 @@
                         return false;
                     }
 
-                    if (category == "nuke"
+                    if (category == "nuke" && Utils.SleepCheck(hero.Handle + "KillSteal")
                         && Nukes.NukesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value < mana
                         && MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
                         && Nukes.NukesMenuDictionary[name].Item(name + "herotoggler")
@@ -163,8 +163,8 @@
                                     x => !x.Equals(hero) && x.Health <= AbilityDamage.CalculateDamage(ability, me, x)))
                             >= Nukes.NukesMenuDictionary[name].Item(name + "minenemykill").GetValue<Slider>().Value))
                     {
-                        if ((hero.Health - dealtDamage) > 0
-                            && (hero.Health - dealtDamage)
+                        if ((hero.Health - dealtDamage) <= 0
+                            || (hero.Health - dealtDamage)
                             < Nukes.NukesMenuDictionary[name].Item(name + "minhealthslider").GetValue<Slider>().Value)
                         {
                             dealtDamage = 0;
@@ -178,9 +178,7 @@
                             {
                                 DelayAction.Add(
                                     new DelayActionItem(
-                                        (int)
-                                        (ability.GetCastDelay(AbilityMain.Me, hero, true) * 1000
-                                         - Math.Max(50, Game.Ping)), 
+                                        (int)(ability.GetCastDelay(AbilityMain.Me, hero, true) * 1000 - Game.Ping - 50), 
                                         () =>
                                             {
                                                 if (!CastingChecks.Killsteal(ability, hero, name) || !hero.IsAlive
@@ -190,6 +188,7 @@
                                                 }
                                             }, 
                                         CancellationToken.None));
+                                Utils.Sleep(ability.GetHitDelay(hero, name) * 1000 + 500, hero.Handle + "KillSteal");
                             }
 
                             if (name == "riki_blink_strike")
@@ -230,12 +229,6 @@
                             return true;
                         }
 
-                        continue;
-                    }
-
-                    if (Dictionaries.InDamageDictionary.ContainsKey(hero.Handle)
-                        && Dictionaries.InDamageDictionary[hero.Handle] >= hero.Health)
-                    {
                         continue;
                     }
 
@@ -348,6 +341,12 @@
                             return true;
                         }
 
+                        continue;
+                    }
+
+                    if (Dictionaries.InDamageDictionary.ContainsKey(hero.Handle)
+                        && Dictionaries.InDamageDictionary[hero.Handle] >= hero.Health)
+                    {
                         continue;
                     }
 
@@ -970,6 +969,11 @@
                         return false;
                     }
 
+                    if (!Utils.SleepCheck(target.Handle + "KeyCombo"))
+                    {
+                        return false;
+                    }
+
                     var modifiers = target.Modifiers.ToList();
                     if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_TemplarAssassin)
                     {
@@ -1164,10 +1168,21 @@
                             continue;
                         }
 
+                        if (Dictionaries.InDamageDictionary.ContainsKey(target.Handle)
+                            && Dictionaries.InDamageDictionary[target.Handle] >= target.Health
+                            || (Dictionaries.OutDamageDictionary.ContainsKey(target.Handle)
+                                && Dictionaries.InDamageDictionary.ContainsKey(target.Handle)
+                                && (Dictionaries.InDamageDictionary[target.Handle]
+                                    + Dictionaries.OutDamageDictionary[target.Handle]) >= target.Health))
+                        {
+                            return false;
+                        }
+
                         if (category == "nuke"
-                            && Nukes.NukesMenuDictionary[name].Item(name + "minManaCheckCombo").GetValue<Slider>().Value
-                            < mana
-                            && ((name == "axe_culling_blade" && !CastingChecks.Killsteal(ability, target, name))
+                            && (Nukes.NukesMenuDictionary[name].Item(name + "minManaCheckCombo")
+                                    .GetValue<Slider>()
+                                    .Value > mana || !Utils.SleepCheck(target.Handle + "KillSteal")
+                                || (name == "axe_culling_blade" && !CastingChecks.Killsteal(ability, target, name))
                                 || (target.Health
                                     < Nukes.NukesMenuDictionary[name].Item(name + "minhealthslider")
                                           .GetValue<Slider>()
@@ -1180,15 +1195,18 @@
                                             && x.Health <= AbilityDamage.CalculateDamage(ability, me, x)))
                                     < Nukes.NukesMenuDictionary[name].Item(name + "minenemykill")
                                           .GetValue<Slider>()
-                                          .Value) || !Nuke.Cast(ability, target, name)))
+                                          .Value)))
                         {
                             continue;
                         }
 
-                        if (Dictionaries.InDamageDictionary.ContainsKey(target.Handle)
-                            && Dictionaries.InDamageDictionary[target.Handle] >= target.Health)
+                        if (category == "nuke")
                         {
-                            continue;
+                            Nuke.Cast(ability, target, name);
+                            if (AbilityDamage.CalculateDamage(ability, me, target) >= target.Health)
+                            {
+                                Utils.Sleep(ability.GetHitDelay(target, name) * 1000 + 500, target.Handle + "KillSteal");
+                            }
                         }
 
                         if (category == "disable"
@@ -1286,7 +1304,9 @@
                         }
 
                         Utils.Sleep(delay, handleString);
-                        Utils.Sleep(delay, "GlobalCasting");
+                        Utils.Sleep(
+                            ability.GetCastDelay(me, target, abilityName: name, useCastPoint: false) * 1000, 
+                            "GlobalCasting");
                         Utils.Sleep(ability.GetHitDelay(target, name) * 1000, "calculate");
                         Utils.Sleep(
                             Math.Max(ability.GetCastDelay(me, target, useCastPoint: false, abilityName: name), 0.15)
@@ -1323,7 +1343,8 @@
             var possibleTarget =
                 enemyHeroes.FirstOrDefault(
                     hero =>
-                    Dictionaries.InDamageDictionary.ContainsKey(hero.Handle)
+                    Utils.SleepCheck(hero.Handle + "KillSteal")
+                    && Dictionaries.InDamageDictionary.ContainsKey(hero.Handle)
                     && Dictionaries.InDamageDictionary[hero.Handle] >= hero.Health);
             if (possibleTarget != null && possibleTarget.CanDie() && MyAbilities.NukesCombo.Any())
             {
@@ -1403,12 +1424,16 @@
                             return false;
                         }
 
+                        if (possibleTarget.Health - dealtDamage <= 0
+                            || possibleTarget.Health - dealtDamage
+                            < Nukes.NukesMenuDictionary[name].Item(name + "minhealthslider").GetValue<Slider>().Value)
+                        {
+                            Utils.Sleep(500, possibleTarget.Handle + "KillSteal");
+                            dealtDamage = 0;
+                            return false;
+                        }
+
                         if (!ability.CanHit(possibleTarget, MyHeroInfo.Position, name)
-                            || ((possibleTarget.Health - dealtDamage) > 0
-                                && (possibleTarget.Health - dealtDamage)
-                                < Nukes.NukesMenuDictionary[name].Item(name + "minhealthslider")
-                                      .GetValue<Slider>()
-                                      .Value)
                             || (name == "zuus_thundergods_wrath"
                                 && (1
                                     + enemyHeroes.Count(
@@ -1416,19 +1441,24 @@
                                         !x.Equals(possibleTarget)
                                         && x.Health <= AbilityDamage.CalculateDamage(ability, me, x)))
                                 < Nukes.NukesMenuDictionary[name].Item(name + "minenemykill").GetValue<Slider>().Value)
-                            || !Nuke.Cast(ability, possibleTarget, name)
                             || !MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
                             || !Nukes.NukesMenuDictionary[name].Item(name + "herotoggler")
                                     .GetValue<HeroToggler>()
-                                    .IsEnabled(NameManager.Name(possibleTarget)))
+                                    .IsEnabled(NameManager.Name(possibleTarget))
+                            || !Nuke.Cast(ability, possibleTarget, name))
                         {
-                            dealtDamage = 0;
                             return false;
                         }
 
-                        if (Utils.SleepCheck(ability.Handle.ToString()))
+                        if (Utils.SleepCheck(handleString))
                         {
                             dealtDamage += AbilityDamage.CalculateDamage(ability, me, possibleTarget);
+                            if (possibleTarget.Health - dealtDamage <= 0)
+                            {
+                                Utils.Sleep(
+                                    ability.GetHitDelay(possibleTarget, name) * 1000 + 500, 
+                                    possibleTarget.Handle + "KillSteal");
+                            }
                         }
 
                         var delay = ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000;
@@ -1462,7 +1492,7 @@
                                  + Prediction.CalculateReachTime(
                                      possibleTarget, 
                                      1200, 
-                                     possibleTarget.Position - me.Position) + ping * 2);
+                                     possibleTarget.Position - MyHeroInfo.Position) + ping * 2);
                             Utils.Sleep(
                                 me.GetTurnTime(possibleTarget) * 1000 + 100
                                 + (MyHeroInfo.Position.Distance2D(possibleTarget) / 1200) * 1000 + ping, 
@@ -1478,7 +1508,9 @@
                         }
 
                         Utils.Sleep(delay, handleString);
-                        Utils.Sleep(delay, "GlobalCasting");
+                        Utils.Sleep(
+                            ability.GetCastDelay(me, possibleTarget, useCastPoint: false, abilityName: name) * 1000, 
+                            "GlobalCasting");
                         Utils.Sleep(ability.GetHitDelay(possibleTarget, name) * 1000, "calculate");
                         Utils.Sleep(
                             ability.GetCastDelay(me, possibleTarget, useCastPoint: false, abilityName: name) * 1000, 
@@ -1489,13 +1521,15 @@
                         Utils.Sleep(delay, "cancelorder");
                         return true;
                     }
+
+                    return true;
                 }
             }
-            else if (MyAbilities.NukesCombo.Any())
-            {
-                MyAbilities.NukesCombo = new List<Ability>();
-            }
 
+            // else if (MyAbilities.NukesCombo.Any())
+            // {
+            // MyAbilities.NukesCombo = new List<Ability>();
+            // }
             return false;
         }
 

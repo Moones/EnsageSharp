@@ -15,12 +15,12 @@
 
         public static void UpdateAutoAttack()
         {
-            if (Utils.SleepCheck("GlobalCasting") && AutoAttackDisabled)
+            if (Utils.SleepCheck("cancelorder") && AutoAttackDisabled)
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
                 AutoAttackDisabled = false;
             }
-            else if (!Utils.SleepCheck("GlobalCasting") && !AutoAttackDisabled)
+            else if (!Utils.SleepCheck("cancelorder") && !AutoAttackDisabled)
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
                 AutoAttackDisabled = true;

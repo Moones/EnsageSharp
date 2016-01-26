@@ -338,7 +338,9 @@
             if (cooldown > 0)
             {
                 var h = Math.Min(cooldown, 99).ToString(CultureInfo.InvariantCulture);
-                var hsize = cooldown > 9 ? new Vector2(itemBoxSizeY - 1, 15) : new Vector2(itemBoxSizeY + 1, 25);
+                var hsize = cooldown > 9
+                                ? new Vector2(Math.Min(itemBoxSizeY - 1, 15), 15)
+                                : new Vector2(Math.Min(itemBoxSizeY + 1, 15), 25);
                 var textSize = Drawing.MeasureText(h, "Arial", hsize, FontFlags.AntiAlias);
                 var pos = position
                           + new Vector2(itemBoxSizeX / 2 - textSize.X / 2, (itemBoxSizeY / 2) - (textSize.Y / 2));
@@ -348,10 +350,19 @@
             if (!enoughMana && cooldown <= 0)
             {
                 var h = Math.Min(Math.Ceiling(ability.ManaCost - mana), 999).ToString(CultureInfo.InvariantCulture);
-                var textSize = Drawing.MeasureText(h, "Arial", new Vector2(itemBoxSizeY - 2, 1), FontFlags.AntiAlias);
+                var textSize = Drawing.MeasureText(
+                    h, 
+                    "Arial", 
+                    new Vector2(Math.Min(itemBoxSizeY - 2, 15), 1), 
+                    FontFlags.AntiAlias);
                 var pos = position
                           + new Vector2(itemBoxSizeX / 2 - textSize.X / 2, (itemBoxSizeY / 2) - (textSize.Y / 2));
-                Drawing.DrawText(h, pos, new Vector2(itemBoxSizeY - 2, 1), Color.LightBlue, FontFlags.AntiAlias);
+                Drawing.DrawText(
+                    h, 
+                    pos, 
+                    new Vector2(Math.Min(itemBoxSizeY - 2, 15), 1), 
+                    Color.LightBlue, 
+                    FontFlags.AntiAlias);
             }
 
             if ((ability.IsRequiringCharges || NameManager.Name(ability) == "item_ward_dispenser"
@@ -359,7 +370,7 @@
                 && cooldown <= 0)
             {
                 var s = ability.CurrentCharges.ToString();
-                var tSize = new Vector2(itemBoxSizeY - 2, 1);
+                var tSize = new Vector2(Math.Min(itemBoxSizeY - 2, 15), 1);
                 var textSize = Drawing.MeasureText(s, "Arial", tSize, FontFlags.AntiAlias);
                 var tPos = position + new Vector2(itemBoxSizeX - textSize.X - 2, itemBoxSizeY - textSize.Y - 1);
                 Drawing.DrawRect(
@@ -372,7 +383,7 @@
                 {
                     tPos = position + new Vector2(2, itemBoxSizeY - textSize.Y - 1);
                     s = secondcharges.ToString();
-                    tSize = new Vector2(itemBoxSizeY - 2, 1);
+                    tSize = new Vector2(Math.Min(itemBoxSizeY - 2, 15), 1);
                     var textSize1 = Drawing.MeasureText(s, "Arial", tSize, FontFlags.AntiAlias);
                     Drawing.DrawRect(
                         tPos - new Vector2(1, 0), 

@@ -33,7 +33,9 @@
             foreach (var spell in
                 from spell in spells
                 let data = AbilityDatabase.Find(spell.Name)
-                where data != null && (data.TrueSight || data.WeakensEnemy || data.IsPurge)
+                where
+                    spell.Name != "zuus_thundergods_wrath" && data != null
+                    && (data.TrueSight || data.WeakensEnemy || data.IsPurge)
                 select spell)
             {
                 AddSpecial(spell);

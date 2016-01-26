@@ -9,6 +9,7 @@
     using Ability.Casting.ComboExecution;
     using Ability.DamageCalculation;
     using Ability.Drawings;
+    using Ability.Extensions;
     using Ability.ObjectManager;
     using Ability.ObjectManager.Heroes;
     using Ability.OnUpdate;
@@ -63,13 +64,13 @@
                 if (lastOrderPosition != Vector3.Zero && lastActivity == NetworkActivity.Move)
                 {
                     var ctarget = TargetSelector.ClosestToMouse(Me, 150);
-                    if (ctarget != null)
+                    if (ctarget != null && ctarget.IsValid)
                     {
                         Me.Attack(ctarget);
                     }
                     else
                     {
-                        Me.Attack(lastOrderPosition);
+                        Me.Move(lastOrderPosition);
                     }
 
                     lastOrderPosition = Vector3.Zero;
@@ -93,6 +94,16 @@
                 }
             }
 
+            var targetLock =
+                MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.TargetLock").GetValue<StringList>().SelectedIndex;
+
+            var keyDown = Game.IsKeyDown(MainMenu.ComboKeysMenu.Item("abilityKey1").GetValue<KeyBind>().Key);
+
+            if (!keyDown)
+            {
+                target = null;
+            }
+
             if (!MyAbilities.OffensiveAbilities.Any())
             {
                 if (Game.IsChatOpen)
@@ -100,11 +111,17 @@
                     return;
                 }
 
-                if (Game.IsKeyDown(MainMenu.ComboKeysMenu.Item("abilityKey1").GetValue<KeyBind>().Key))
+                if (keyDown)
                 {
-                    if (Utils.SleepCheck("UpdateTarget"))
+                    if (Utils.SleepCheck("UpdateTarget")
+                        && (target == null || !target.IsValid || (!target.IsVisible && targetLock == 0)))
                     {
-                        target = TargetSelector.ClosestToMouse(Me, 2000);
+                        var mode =
+                            MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Target").GetValue<StringList>().SelectedIndex;
+                        target = mode == 0
+                                     ? TargetSelector.ClosestToMouse(Me, 2000)
+                                     : EnemyHeroes.UsableHeroes.Where(x => x.Distance2D(Me) < 1000)
+                                           .MaxOrDefault(x => x.GetDoableDamage());
                         Utils.Sleep(250, "UpdateTarget");
                     }
 
@@ -153,14 +170,6 @@
                 }
             }
 
-            if (Utils.SleepCheck("casting") && Utils.SleepCheck("Orbwalk.Attack"))
-            {
-                if (FullCombo.KillSteal(enemyHeroes, ping, Me))
-                {
-                    return;
-                }
-            }
-
             var meMissingHp = Me.MaximumHealth - Me.Health;
             var meMana = Me.Mana;
             if (Utils.SleepCheck("Orbwalk.Attack")
@@ -170,28 +179,37 @@
                 return;
             }
 
+            if (Utils.SleepCheck("casting"))
+            {
+                if (FullCombo.KillSteal(enemyHeroes, ping, Me))
+                {
+                    return;
+                }
+            }
+
             if (Game.IsChatOpen)
             {
                 return;
             }
 
-            if (Game.IsKeyDown(MainMenu.ComboKeysMenu.Item("abilityKey1").GetValue<KeyBind>().Key))
+            if (keyDown)
             {
-                if (Utils.SleepCheck("UpdateTarget"))
+                if (Utils.SleepCheck("UpdateTarget")
+                    && (target == null || !target.IsValid || (!target.IsVisible && targetLock == 0)))
                 {
-                    target = TargetSelector.ClosestToMouse(Me, 2000);
+                    var mode =
+                        MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Target").GetValue<StringList>().SelectedIndex;
+                    target = mode == 0
+                                 ? TargetSelector.ClosestToMouse(Me, 2000)
+                                 : EnemyHeroes.UsableHeroes.Where(x => x.Distance2D(Me) < 1000)
+                                       .MaxOrDefault(x => x.GetDoableDamage());
                     Utils.Sleep(250, "UpdateTarget");
-                }
-
-                if (target != null && !target.IsValid)
-                {
-                    target = null;
                 }
 
                 var selectedCombo = MainMenu.ComboKeysMenu.Item("abilityComboType").GetValue<StringList>().SelectedIndex;
                 if (target != null && Utils.SleepCheck("Orbwalk.Attack"))
                 {
-                    FullCombo.Execute(
+                    var combo = FullCombo.Execute(
                         target, 
                         enemyHeroes, 
                         ping, 

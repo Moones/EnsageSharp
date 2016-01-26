@@ -2,6 +2,8 @@
 {
     using System.Collections.Generic;
 
+    using Ability.DamageCalculation;
+
     using Ensage;
     using Ensage.Common;
 
@@ -16,6 +18,22 @@
         #endregion
 
         #region Public Methods and Operators
+
+        public static float GetDoableDamage(this Unit unit)
+        {
+            var dmg = 0f;
+            if (Dictionaries.InDamageDictionary.ContainsKey(unit.Handle))
+            {
+                dmg += Dictionaries.InDamageDictionary[unit.Handle];
+            }
+
+            if (Dictionaries.HitDamageDictionary.ContainsKey(unit.Handle))
+            {
+                dmg += Dictionaries.HitDamageDictionary[unit.Handle];
+            }
+
+            return dmg;
+        }
 
         public static Vector3 PredictedPosition(this Unit unit, double bonusDelay = 0)
         {

@@ -90,6 +90,10 @@
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("Ability.KeyCombo.NoMoveRange", "No move range"))
                 .SetValue(new Slider(0, 0, 300))
                 .SetTooltip("Your hero will not move if you put your mouse near your hero in the selected range");
+            MainMenu.ComboKeysMenu.AddItem(new MenuItem("Ability.KeyCombo.Target", "Target selection"))
+                .SetValue(new StringList(new[] { "ClosestToMouse", "FastestKillable" }));
+            MainMenu.ComboKeysMenu.AddItem(new MenuItem("Ability.KeyCombo.TargetLock", "Target lock"))
+                .SetValue(new StringList(new[] { "None", "WhenTheyGoToFog", "WhenKeyIsPressed" }));
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("comboAbilitiesToggler", "Abilities in combo: "))
                 .SetValue(new AbilityToggler(new Dictionary<string, bool>()));
 

@@ -69,7 +69,7 @@
         {
             var list = Ensage.Common.Objects.Heroes.GetByTeam(AbilityMain.Me.Team);
             var herolist = new List<Hero>(Heroes);
-            foreach (var hero in list.Where(x => x.IsValid && x.IsVisible))
+            foreach (var hero in list.Where(x => x.IsValid && !x.IsIllusion && x.IsVisible))
             {
                 var name = NameManager.Name(hero);
                 var spells = hero.Spellbook.Spells.ToList();
