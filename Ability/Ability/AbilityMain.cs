@@ -114,7 +114,7 @@
                 if (keyDown)
                 {
                     if (Utils.SleepCheck("UpdateTarget")
-                        && (target == null || !target.IsValid || (!target.IsVisible && targetLock == 0)))
+                        && (target == null || !target.IsValid || !target.IsAlive || (!target.IsVisible && targetLock == 0)))
                     {
                         var mode =
                             MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Target").GetValue<StringList>().SelectedIndex;
@@ -195,7 +195,7 @@
             if (keyDown)
             {
                 if (Utils.SleepCheck("UpdateTarget")
-                    && (target == null || !target.IsValid || (!target.IsVisible && targetLock == 0)))
+                    && (target == null || !target.IsValid || !target.IsAlive || (!target.IsVisible && targetLock == 0)))
                 {
                     var mode =
                         MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Target").GetValue<StringList>().SelectedIndex;
