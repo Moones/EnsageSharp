@@ -6,6 +6,7 @@
 
     using Ensage;
     using Ensage.Common;
+    using Ensage.Common.Extensions;
 
     using SharpDX;
 
@@ -27,7 +28,8 @@
                 dmg += Dictionaries.InDamageDictionary[unit.Handle];
             }
 
-            if (Dictionaries.HitDamageDictionary.ContainsKey(unit.Handle))
+            if (Dictionaries.HitDamageDictionary.ContainsKey(unit.Handle)
+                && AbilityMain.Me.Distance2D(unit) < AbilityMain.Me.GetAttackRange() + 150)
             {
                 dmg += Dictionaries.HitDamageDictionary[unit.Handle];
             }

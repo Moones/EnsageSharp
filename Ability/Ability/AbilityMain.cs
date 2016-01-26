@@ -120,7 +120,7 @@
                             MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Target").GetValue<StringList>().SelectedIndex;
                         target = mode == 0
                                      ? TargetSelector.ClosestToMouse(Me, 2000)
-                                     : EnemyHeroes.UsableHeroes.Where(x => x.Distance2D(Me) < 1000)
+                                     : EnemyHeroes.UsableHeroes.Where(x => x.Distance2D(Me) < 2000)
                                            .MaxOrDefault(x => x.GetDoableDamage());
                         Utils.Sleep(250, "UpdateTarget");
                     }
@@ -201,7 +201,7 @@
                         MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Target").GetValue<StringList>().SelectedIndex;
                     target = mode == 0
                                  ? TargetSelector.ClosestToMouse(Me, 2000)
-                                 : EnemyHeroes.UsableHeroes.Where(x => x.Distance2D(Me) < 1000)
+                                 : EnemyHeroes.UsableHeroes.Where(x => x.Distance2D(Me) < 2000)
                                        .MaxOrDefault(x => x.GetDoableDamage());
                     Utils.Sleep(250, "UpdateTarget");
                 }
