@@ -401,7 +401,18 @@
 
         private static void AddNewHeal(Ability item)
         {
-            MyAbilities.DeffensiveAbilities.Add(NameManager.Name(item) + "heal", item);
+            if (NameManager.Name(item) != "item_soul_ring")
+            {
+                MyAbilities.DeffensiveAbilities.Add(NameManager.Name(item) + "heal", item);
+            }
+            else if (Heals.HealsTogglerCreated
+                     && MainMenu.Menu.Item("healsToggler")
+                            .GetValue<AbilityToggler>()
+                            .Dictionary.ContainsKey(NameManager.Name(item)))
+            {
+                return;
+            }
+
             if (!Heals.HealsTogglerCreated)
             {
                 Heals.HealsTogglerCreated = true;

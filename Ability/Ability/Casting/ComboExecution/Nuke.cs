@@ -18,13 +18,13 @@
 
         public static bool Cast(Ability ability, Unit target, string name)
         {
-            if (target.Modifiers.Any(x => x.Name == "modifier_item_blade_mail_reflect")
+            if (target.HasModifier("modifier_item_blade_mail_reflect")
                 && AbilityDamage.CalculateDamage(ability, AbilityMain.Me, target) > AbilityMain.Me.Health)
             {
                 return false;
             }
 
-            if (target.Modifiers.Any(x => x.Name == "modifier_nyx_assassin_spiked_carapace"))
+            if (target.HasModifier("modifier_nyx_assassin_spiked_carapace"))
             {
                 return false;
             }

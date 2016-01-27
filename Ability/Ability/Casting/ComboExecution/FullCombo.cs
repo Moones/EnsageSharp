@@ -47,8 +47,7 @@
         public static bool AutoUsage(
             Hero enemyHero, 
             Hero[] enemyHeroes, 
-            float meMissingHp, 
-            List<Modifier> meModifiers, 
+            float meMissingHp,
             float ping, 
             Hero me, 
             float mana)
@@ -56,7 +55,6 @@
             var hero = enemyHero;
             var heroName = NameManager.Name(hero);
             var heroDistance = MyHeroInfo.Position.Distance2D(hero);
-            var modifiers = hero.Modifiers.ToList();
             if (Utils.SleepCheck("GlobalCasting") && Utils.SleepCheck("casting"))
             {
                 if (me.ClassID == ClassID.CDOTA_Unit_Hero_Tusk
@@ -100,7 +98,7 @@
                         continue;
                     }
 
-                    if (!CastingChecks.All(name, hero, modifiers))
+                    if (!CastingChecks.All(name, hero))
                     {
                         continue;
                     }
@@ -571,7 +569,7 @@
                             if (Buffs.BuffsMenuDictionary[name].Item(name + "alwaystoggle").GetValue<bool>()
                                 && Buffs.BuffsMenuDictionary[name].Item(name + "belowhpslider").GetValue<Slider>().Value
                                 > me.Health && AbilityMain.Me.Distance2D(Base.Position()) > 1300
-                                && Buff.Cast(ability, hero, me, name, meModifiers, true))
+                                && Buff.Cast(ability, hero, me, name, true))
                             {
                                 Utils.Sleep(
                                     Buffs.BuffsMenuDictionary[name].Item(name + "armletdelay").GetValue<Slider>().Value, 
@@ -594,7 +592,7 @@
                         if (
                             Buffs.BuffsMenuDictionary[name].Item(name + "onsighttoggler")
                                 .GetValue<HeroToggler>()
-                                .IsEnabled(heroName) && canHit && Buff.Cast(ability, hero, me, name, meModifiers))
+                                .IsEnabled(heroName) && canHit && Buff.Cast(ability, hero, me, name))
                         {
                             if (name == "item_armlet")
                             {
@@ -626,7 +624,7 @@
                             Buffs.BuffsMenuDictionary[name].Item(name + "onattacktoggler")
                                 .GetValue<HeroToggler>()
                                 .IsEnabled(heroName) && canHit && CastingChecks.Attacking(hero, me)
-                            && Buff.Cast(ability, hero, me, name, meModifiers))
+                            && Buff.Cast(ability, hero, me, name))
                         {
                             if (name == "item_armlet")
                             {
@@ -778,7 +776,6 @@
             var heroName = NameManager.Name(hero);
 
             // var heroDistance = position.Distance2D(hero);
-            var modifiers = hero.Modifiers.ToList();
             var heroMissingHp = hero.MaximumHealth - hero.Health;
             var heroMissingMana = hero.MaximumMana - hero.Mana;
             var heroManaPercentage = (hero.Mana / hero.MaximumMana) * 100;
@@ -806,14 +803,14 @@
 
                 var category = data.Key.Substring(name.Length);
                 var handleString = ability.Handle.ToString();
-                if (!CastingChecks.All(name, hero, modifiers))
+                if (!CastingChecks.All(name, hero))
                 {
                     continue;
                 }
 
                 var delay = ability.GetCastDelay(me, hero, abilityName: name) * 1000;
                 var canHit = ability.CanHit(hero, MyHeroInfo.Position, name);
-                if (category == "heal" && hero.Modifiers.All(x => x.Name != "modifier_ice_blast")
+                if (category == "heal" && !hero.HasModifier("modifier_ice_blast")
                     && MainMenu.Menu.Item("healsToggler").GetValue<AbilityToggler>().IsEnabled(name)
                     && ((!(name == "item_soul_ring" || name == "item_magic_wand" || name == "item_magic_stick")
                          && Heals.HealsMenuDictionary[name].Item(name + "useonallies")
@@ -840,13 +837,14 @@
                                > heroHpPercentage))
                     && (name == "item_urn_of_shadows"
                             ? (!enemyHeroes.Any(x => x.Distance2D(hero) < Math.Max(x.GetAttackRange(), 500))
-                               && !hero.Modifiers.Any(
-                                   x =>
-                                   x.Name == "modifier_doom_bringer_doom" || x.Name == "modifier_axe_battle_hunger"
-                                   || x.Name == "modifier_queenofpain_shadow_strike"
-                                   || x.Name == "modifier_phoenix_fire_spirit_burn"
-                                   || x.Name == "modifier_venomancer_poison_nova"
-                                   || x.Name == "modifier_venomancer_venomous_gale"))
+                               && !hero.HasModifiers(
+                                   new[]
+                                       {
+                                           "modifier_doom_bringer_doom", "modifier_axe_battle_hunger",
+                                           "modifier_queenofpain_shadow_strike", "modifier_phoenix_fire_spirit_burn",
+                                           "modifier_venomancer_poison_nova", "modifier_venomancer_venomous_gale"
+                                       },
+                                   false))
                             : (name == "item_arcane_boots"
                                || (enemyHeroes.Count(
                                    x =>
@@ -881,6 +879,18 @@
                                 > Heals.HealsMenuDictionary[name].Item(name + "missinghpmin").GetValue<Slider>().Value)
                             - 1)) && Heal.Cast(ability, hero, name))
                 {
+                    if (name == "item_urn_of_shadows")
+                    {
+                        Console.WriteLine(
+                            hero.HasModifiers(
+                                new[]
+                                    {
+                                        "modifier_doom_bringer_doom", "modifier_axe_battle_hunger",
+                                        "modifier_queenofpain_shadow_strike", "modifier_phoenix_fire_spirit_burn",
+                                        "modifier_venomancer_poison_nova", "modifier_venomancer_venomous_gale"
+                                    },
+                                false));
+                    }
                     Utils.Sleep(ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, handleString);
                     if (name == "item_tango" || name == "item_tango_single")
                     {
@@ -944,8 +954,7 @@
             float ping, 
             bool onlyDamage, 
             bool onlyDisable, 
-            Hero me, 
-            List<Modifier> meModifiers, 
+            Hero me,
             float mana)
         {
             var toggler = MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>();
@@ -974,11 +983,10 @@
                         return false;
                     }
 
-                    var modifiers = target.Modifiers.ToList();
                     if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_TemplarAssassin)
                     {
                         var r = MyAbilities.Combo.FirstOrDefault(x => x.Key == "templar_assassin_psionic_trapslow");
-                        var modifier = modifiers.FirstOrDefault(x => x.Name == "modifier_templar_assassin_trap_slow");
+                        var modifier = target.FindModifier("modifier_templar_assassin_trap_slow");
                         if (modifier == null || modifier.RemainingTime < r.Value.GetHitDelay(target))
                         {
                             Slow.TemplarAssasinUseTrap(target);
@@ -1044,7 +1052,7 @@
                             continue;
                         }
 
-                        if (!CastingChecks.All(name, target, modifiers, ability))
+                        if (!CastingChecks.All(name, target, ability))
                         {
                             continue;
                         }
@@ -1252,7 +1260,7 @@
                             && Buffs.BuffsMenuDictionary[name].Item(name + "minManaCheckCombo").GetValue<Slider>().Value
                             < mana
                             && (name == "item_armlet" || name == "item_satanic"
-                                || !Buff.Cast(ability, target, me, name, meModifiers)))
+                                || !Buff.Cast(ability, target, me, name)))
                         {
                             continue;
                         }

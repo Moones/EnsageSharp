@@ -29,7 +29,7 @@
 
             if (name == "templar_assassin_psionic_trap")
             {
-                var modifier = target.Modifiers.FirstOrDefault(x => x.Name == "modifier_templar_assassin_trap_slow");
+                var modifier = target.FindModifier("modifier_templar_assassin_trap_slow");
                 if (modifier != null && modifier.RemainingTime > ability.GetHitDelay(target, name))
                 {
                     return false;

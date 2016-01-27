@@ -20,13 +20,12 @@
             Ability ability, 
             Unit target, 
             Unit buffTarget, 
-            string name, 
-            List<Modifier> modifiers, 
+            string name,
             bool togglearmlet = false)
         {
             if (name == "item_armlet")
             {
-                if (buffTarget.Modifiers.Any(x => x.Name == "modifier_ice_blast"))
+                if (buffTarget.HasModifier("modifier_ice_blast"))
                 {
                     return false;
                 }
@@ -36,8 +35,7 @@
                     return false;
                 }
 
-                var armlettoggled = modifiers.Any(x => x.Name == "modifier_item_armlet_unholy_strength")
-                                    && ability.IsToggled;
+                var armlettoggled = buffTarget.HasModifier("modifier_item_armlet_unholy_strength") && ability.IsToggled;
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
                 if (armlettoggled)

@@ -53,7 +53,7 @@
             GankDamage.UpdateDamage(enemyHeroes, allyHeroes);
             if (!Me.IsAlive
                 || (Me.IsInvisible() && !Me.IsVisibleToEnemies && Me.ClassID != ClassID.CDOTA_Unit_Hero_Riki
-                    && (Me.Modifiers.All(x => x.Name != "modifier_templar_assassin_meld")
+                    && (!Me.HasModifier("modifier_templar_assassin_meld")
                         || !Orbwalking.CanCancelAnimation())) || Me.IsChanneling())
             {
                 return;
@@ -82,7 +82,6 @@
                 lastOrderPosition = Game.MousePosition;
             }
 
-            var meModifiers = Me.Modifiers.ToList();
             var ping = Game.Ping;
 
             if (MyAbilities.DeffensiveAbilities.Any() && Utils.SleepCheck("casting"))
@@ -174,7 +173,7 @@
             var meMana = Me.Mana;
             if (Utils.SleepCheck("Orbwalk.Attack")
                 && enemyHeroes.Any(
-                    enemyHero => FullCombo.AutoUsage(enemyHero, enemyHeroes, meMissingHp, meModifiers, ping, Me, meMana)))
+                    enemyHero => FullCombo.AutoUsage(enemyHero, enemyHeroes, meMissingHp, ping, Me, meMana)))
             {
                 return;
             }
@@ -215,8 +214,7 @@
                         ping, 
                         selectedCombo == 2, 
                         selectedCombo == 1, 
-                        Me, 
-                        meModifiers, 
+                        Me,
                         meMana);
                 }
 

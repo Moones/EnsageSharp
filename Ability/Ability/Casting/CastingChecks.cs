@@ -15,37 +15,37 @@
     {
         #region Public Methods and Operators
 
-        public static bool All(string name, Unit hero, List<Modifier> modifiers, Ability ability = null)
+        public static bool All(string name, Unit hero, Ability ability = null)
         {
             if ((name == "item_diffusal_blade" || name == "item_diffusal_blade_2")
-                && modifiers.Any(x => x.Name == "modifier_item_diffusal_blade_slow"))
+                && hero.HasModifier("modifier_item_diffusal_blade_slow"))
             {
                 return false;
             }
 
-            if (name == "slardar_amplify_damage" && modifiers.Any(x => x.Name == "modifier_slardar_amplify_damage"))
+            if (name == "slardar_amplify_damage" && hero.HasModifier("modifier_slardar_amplify_damage"))
             {
                 return false;
             }
 
-            if (name == "bloodseeker_bloodrage" && modifiers.Any(x => x.Name == "modifier_bloodseeker_bloodrage"))
+            if (name == "bloodseeker_bloodrage" && hero.HasModifier("modifier_bloodseeker_bloodrage"))
             {
                 return false;
             }
 
-            if (name == "axe_battle_hunger" && modifiers.Any(x => x.Name == "modifier_axe_battle_hunger"))
+            if (name == "axe_battle_hunger" && hero.HasModifier("modifier_axe_battle_hunger"))
             {
                 return false;
             }
 
-            if (name == "bounty_hunter_track" && modifiers.Any(x => x.Name == "modifier_bounty_hunter_track"))
+            if (name == "bounty_hunter_track" && hero.HasModifier("modifier_bounty_hunter_track"))
             {
                 return false;
             }
 
             if (name == "visage_soul_assumption" && ability != null)
             {
-                var modif = AbilityMain.Me.Modifiers.FirstOrDefault(x => x.Name == "modifier_visage_soul_assumption");
+                var modif = AbilityMain.Me.FindModifier("modifier_visage_soul_assumption");
                 if (modif == null || modif.StackCount < ability.GetAbilityData("stack_limit"))
                 {
                     return false;

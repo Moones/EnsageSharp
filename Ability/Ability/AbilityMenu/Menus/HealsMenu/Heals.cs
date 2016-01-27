@@ -66,7 +66,11 @@
 
         private static void AddHeal(Ability spell)
         {
-            MyAbilities.DeffensiveAbilities.Add(spell.Name + "heal", spell);
+            if (spell.Name != "item_soul_ring")
+            {
+                MyAbilities.DeffensiveAbilities.Add(spell.Name + "heal", spell);
+            }
+
             if (!HealsTogglerCreated)
             {
                 HealsTogglerCreated = true;
