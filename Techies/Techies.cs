@@ -65,6 +65,10 @@
             {
                 Variables.Damage = new Damage();
             }
+            else
+            {
+                Variables.Damage.OnLoad();
+            }
 
             this.EnabledHeroes = new Dictionary<ClassID, bool>();
             this.heroTopPanel = new Dictionary<ClassID, double[]>();

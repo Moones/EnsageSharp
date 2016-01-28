@@ -92,15 +92,16 @@
         private static void ObjectMgr_OnAddEntity(EntityEventArgs args)
         {
             var e = args.Entity as Unit;
-            if (e == null || e.ClassID != ClassID.CDOTA_NPC_TechiesMines)
-            {
-                return;
-            }
 
             DelayAction.Add(
                 Math.Max(500 - Game.Ping, 100), 
                 delegate
                     {
+                        if (e == null || !e.IsValid || e.ClassID != ClassID.CDOTA_NPC_TechiesMines)
+                        {
+                            return;
+                        }
+
                         if (e.Name != null && e.Name != "npc_dota_techies_land_mine")
                         {
                             return;

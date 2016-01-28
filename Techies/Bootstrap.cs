@@ -28,17 +28,22 @@
             var hero = ObjectMgr.LocalHero;
             if (hero.ClassID != ClassID.CDOTA_Unit_Hero_Techies)
             {
-                return;
-            }
-
-            if (Variables.Instance != null)
-            {
+                Variables.Instance = null;
                 return;
             }
 
             Variables.Techies = hero;
 
             this.Techies = new Techies();
+
+            foreach (var module in Variables.Modules)
+            {
+                module.OnLoad();
+            }
+
+            Game.OnUpdate += this.Techies.Game_OnUpdate;
+            Drawing.OnDraw += this.Techies.Drawing_OnDraw;
+            Game.OnWndProc += this.Techies.Game_OnWndProc;
 
             PrintOnLoadMessage();
         }

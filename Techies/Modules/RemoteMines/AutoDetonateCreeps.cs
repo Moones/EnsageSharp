@@ -1,11 +1,13 @@
 ﻿namespace Techies.Modules.RemoteMines
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Objects;
 
     using global::Techies.Classes;
     using global::Techies.Utility;
@@ -51,13 +53,10 @@
             if (Utils.SleepCheck("Techies.GetCreeps") || this.creeps == null)
             {
                 this.creeps =
-                    ObjectMgr.GetEntities<Creep>()
-                        .Where(
-                            x =>
-                            (x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Lane
-                             || x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Siege) && x.IsAlive && x.IsVisible
-                            && x.IsSpawned && x.Team == Variables.EnemyTeam)
-                        .ToList();
+                    Creeps.All.Where(
+                        x =>
+                        (x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Lane || x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Siege)
+                        && x.IsAlive && x.IsVisible && x.IsSpawned && x.Team == Variables.EnemyTeam).ToList();
                 Utils.Sleep(500, "Techies.GetCreeps");
             }
 

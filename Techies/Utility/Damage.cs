@@ -57,8 +57,6 @@
             this.currentRemoteMineDamage = Variables.Techies.AghanimState()
                                                ? Variables.RemoteMinesAbility.GetAbilityData("damage_scepter")
                                                : Variables.RemoteMinesAbility.GetAbilityData("damage");
-            Events.OnLoad += this.OnLoad;
-            Events.OnClose += this.OnClose;
         }
 
         #endregion
@@ -143,29 +141,17 @@
         }
 
         /// <summary>
-        ///     The on close.
+        /// The on close.
         /// </summary>
-        /// <param name="sender">
-        ///     The sender.
-        /// </param>
-        /// <param name="args">
-        ///     The args.
-        /// </param>
-        public void OnClose(object sender, EventArgs args)
+        public void OnClose()
         {
             Game.OnUpdate -= this.Game_OnUpdate;
         }
 
         /// <summary>
-        ///     The on load.
+        /// The on load.
         /// </summary>
-        /// <param name="sender">
-        ///     The sender.
-        /// </param>
-        /// <param name="args">
-        ///     The args.
-        /// </param>
-        public void OnLoad(object sender, EventArgs args)
+        public void OnLoad()
         {
             Game.OnUpdate += this.Game_OnUpdate;
             this.remoteMineDamageDictionary = new Dictionary<uint, Dictionary<ClassID, float>>();
