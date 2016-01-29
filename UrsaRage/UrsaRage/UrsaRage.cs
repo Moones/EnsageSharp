@@ -61,7 +61,7 @@
         {
             var dict = new Dictionary<string, bool>
                            {
-                               { "ursa_enrage", true }, { "ursa_overpower", true }, { "ursa_earthshock", true },
+                               { "ursa_enrage", true }, { "ursa_overpower", true }, { "ursa_earthshock", true }, 
                                { "item_sheepstick", true }, { "item_abyssal_blade", true }, { "item_blink", true }
                            };
             Menu.AddItem(new MenuItem("enabledAbilities", "Abilities:").SetValue(new AbilityToggler(dict)));
@@ -105,6 +105,7 @@
             {
                 return false;
             }
+
             if (manaCheck && abyssalBlade != null && abyssalBlade.IsValid && menuValue.IsEnabled(abyssalBlade.Name)
                 && abyssalBlade.CanBeCasted() && targetDistance <= (350 + hullsum) && Utils.SleepCheck("abyssal"))
             {
@@ -116,12 +117,13 @@
                     Utils.Sleep(turnTime * 1000 + 50, "move");
                     Utils.Sleep(
                         turnTime * 1000 + 100
-                        + (Math.Max(targetDistance - hullsum - abyssalBlade.CastRange, 0) / me.MovementSpeed) * 1000,
+                        + (Math.Max(targetDistance - hullsum - abyssalBlade.CastRange, 0) / me.MovementSpeed) * 1000, 
                         "casting");
                     Utils.Sleep(turnTime * 1000 + 200, "CHAINSTUN_SLEEP");
                     return true;
                 }
             }
+
             if (manaCheck && scytheOfVyse != null && scytheOfVyse.IsValid && menuValue.IsEnabled(scytheOfVyse.Name)
                 && scytheOfVyse.CanBeCasted() && targetDistance <= (scytheOfVyse.CastRange + hullsum)
                 && Utils.SleepCheck("hex"))
@@ -134,12 +136,13 @@
                     Utils.Sleep(turnTime * 1000 + 50, "move");
                     Utils.Sleep(
                         turnTime * 1000 + 100
-                        + (Math.Max(targetDistance - hullsum - scytheOfVyse.CastRange, 0) / me.MovementSpeed) * 1000,
+                        + (Math.Max(targetDistance - hullsum - scytheOfVyse.CastRange, 0) / me.MovementSpeed) * 1000, 
                         "casting");
                     Utils.Sleep(turnTime * 1000 + 200, "CHAINSTUN_SLEEP");
                     return true;
                 }
             }
+
             if (manaCheck && menuValue.IsEnabled(earthshock.Name) && earthshock.CanBeCasted() && Utils.SleepCheck("Q")
                 && ((me.Mana - earthshock.ManaCost) > overpower.ManaCost || !overpower.CanBeCasted()))
             {
@@ -151,7 +154,8 @@
                 {
                     pos = target.Position;
                 }
-                if (mePosition.Distance2D(pos) <= (radius)
+
+                if (mePosition.Distance2D(pos) <= radius
                     && (abyssalBlade == null || !abyssalBlade.CanBeCasted() || mePosition.Distance2D(pos) > 200)
                     && (scytheOfVyse == null || !scytheOfVyse.CanBeCasted() || mePosition.Distance2D(pos) > 200))
                 {
@@ -171,7 +175,8 @@
                     return true;
                 }
             }
-            //Console.WriteLine(blink != null);
+
+            // Console.WriteLine(blink != null);
             if (blink != null && menuValue.IsEnabled(blink.Name) && blink.CanBeCasted() && targetDistance > 400
                 && targetDistance < (blinkRange + hullsum * 2 + me.AttackRange) && Utils.SleepCheck("blink"))
             {
@@ -184,11 +189,13 @@
                         position = target.Position;
                     }
                 }
+
                 var dist = position.Distance2D(mePosition);
                 if (dist > blinkRange)
                 {
                     position = (position - mePosition) * (blinkRange - 1) / position.Distance2D(me) + mePosition;
                 }
+
                 blink.UseAbility(position);
                 mePosition = position;
                 Utils.Sleep(turnTime * 1000 + 100 + Game.Ping, "blink");
@@ -196,12 +203,14 @@
                 Utils.Sleep(turnTime * 1000, "casting");
                 return true;
             }
+
             const int Radius = 300;
             var canAttack = !target.IsInvul() && !target.IsAttackImmune() && me.CanAttack();
             if (!canAttack)
             {
                 return false;
             }
+
             if (manaCheck && menuValue.IsEnabled(overpower.Name) && overpower.CanBeCasted() && Utils.SleepCheck("W")
                 && !(earthshock.CanBeCasted() && Utils.ChainStun(target, 0.3 + Game.Ping / 1000, null, false)))
             {
@@ -213,14 +222,17 @@
                     return true;
                 }
             }
+
             if (!menuValue.IsEnabled(enrage.Name) || !enrage.CanBeCasted() || !Utils.SleepCheck("R"))
             {
                 return false;
             }
+
             if (!(mePosition.Distance2D(target) <= (Radius + hullsum)))
             {
                 return false;
             }
+
             enrage.UseAbility();
             Utils.Sleep(100 + Game.Ping, "R");
             Utils.Sleep(100, "casting");
@@ -236,6 +248,7 @@
                 {
                     return;
                 }
+
                 earthshock = me.Spellbook.Spell1;
                 overpower = me.Spellbook.SpellW;
                 enrage = me.FindSpell("ursa_enrage");
@@ -244,7 +257,7 @@
                 scytheOfVyse = me.FindItem("item_sheepstick");
                 loaded = true;
                 Game.PrintMessage(
-                    "<font color='#3377ff'>UrsaRage</font>: loaded! <font face='Tahoma' size='9'>(by MOON<font color='#ff9900'>ES</font>)</font>",
+                    "<font color='#3377ff'>UrsaRage</font>: loaded! <font face='Tahoma' size='9'>(by MOON<font color='#ff9900'>ES</font>)</font>", 
                     MessageType.ChatMessage);
             }
 
@@ -268,7 +281,8 @@
             {
                 menuValue = Menu.Item("enabledAbilities").GetValue<AbilityToggler>();
                 menuvalueSet = true;
-                //Utils.Sleep(100000, "updateMenuValue");
+
+                // Utils.Sleep(100000, "updateMenuValue");
             }
 
             if (Game.IsPaused)
@@ -319,10 +333,12 @@
                 target = null;
                 return;
             }
+
             if (Utils.SleepCheck("blink"))
             {
                 mePosition = me.Position;
             }
+
             if (earthshock.IsInAbilityPhase
                 && (target == null || !target.IsAlive
                     || target.Distance2D(me) > earthshock.GetAbilityData("shock_radius")))
@@ -333,6 +349,7 @@
                     me.Attack(target);
                 }
             }
+
             if (overpower.IsInAbilityPhase && (target == null || !target.IsAlive))
             {
                 me.Stop();
@@ -341,6 +358,7 @@
                     me.Attack(target);
                 }
             }
+
             var range = 1000f;
             var mousePosition = Game.MousePosition;
             if (blink != null)
@@ -348,6 +366,7 @@
                 blinkRange = blink.AbilityData.FirstOrDefault(x => x.Name == "blink_range").GetValue(0);
                 range = blinkRange + me.HullRadius + 500;
             }
+
             var canCancel = (Orbwalking.CanCancelAnimation() && Orbwalking.AttackOnCooldown(target))
                             || (!Orbwalking.AttackOnCooldown(target)
                                 && (targetDistance > 350 || (target != null && !target.IsVisible))) || target == null;
@@ -370,6 +389,7 @@
                     target = index == 0 ? me.BestAATarget(blinkRange) : me.ClosestToMouseTarget();
                 }
             }
+
             if (target == null || !target.IsAlive
                 || ((!target.IsVisible || target.Distance2D(mousePosition) > target.Distance2D(me) + 1000) && canCancel))
             {
@@ -377,10 +397,12 @@
                 {
                     return;
                 }
+
                 me.Move(mousePosition);
                 Utils.Sleep(100, "move");
                 return;
             }
+
             targetDistance = mePosition.Distance2D(target);
             hullsum = (me.HullRadius + target.HullRadius) * 2;
             turnTime = me.GetTurnTime(target);
@@ -389,26 +411,29 @@
             {
                 return;
             }
+
             if (!Utils.SleepCheck("casting"))
             {
                 return;
             }
+
             OrbWalk(Orbwalking.CanCancelAnimation());
         }
 
         private static void OrbWalk(bool canCancel)
         {
-            //var modifier = target.Modifiers.FirstOrDefault(x => x.Name == "modifier_ursa_fury_swipes_damage_increase");
+            // var modifier = target.Modifiers.FirstOrDefault(x => x.Name == "modifier_ursa_fury_swipes_damage_increase");
             // && UnitDatabase.GetAttackSpeed(me) < 300 && !me.Modifiers.Any(x => x.Name == "modifier_ursa_overpower")
-            //var overpowering = me.Modifiers.Any(x => x.Name == "modifier_ursa_overpower");
+            // var overpowering = me.Modifiers.Any(x => x.Name == "modifier_ursa_overpower");
             var canAttack = !Orbwalking.AttackOnCooldown(target) && !target.IsInvul() && !target.IsAttackImmune()
                             && me.CanAttack();
-            if (canAttack && (targetDistance <= (350)))
+            if (canAttack && (targetDistance <= 350))
             {
                 if (!Utils.SleepCheck("attack"))
                 {
                     return;
                 }
+
                 me.Attack(target);
                 Utils.Sleep(100, "attack");
                 return;
@@ -420,6 +445,7 @@
             {
                 return;
             }
+
             var mousePos = Game.MousePosition;
             if (target.Distance2D(me) < 500)
             {
@@ -428,10 +454,10 @@
                           * (float)
                             Math.Max(
                                 (Game.Ping / 1000 + (targetDistance / me.MovementSpeed) + turnTime)
-                                * target.MovementSpeed,
+                                * target.MovementSpeed, 
                                 500);
 
-                //Console.WriteLine(pos.Distance(me.Position) + " " + target.Distance2D(pos));
+                // Console.WriteLine(pos.Distance(me.Position) + " " + target.Distance2D(pos));
                 if (pos.Distance(me.Position) > target.Distance2D(pos) - 80)
                 {
                     me.Move(pos);
@@ -445,6 +471,7 @@
             {
                 me.Move(mousePos);
             }
+
             Utils.Sleep(100, "move");
         }
 
