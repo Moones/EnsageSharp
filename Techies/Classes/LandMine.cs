@@ -84,7 +84,7 @@
         public void CreateRangeDisplay()
         {
             this.RangeDisplay = this.Entity.AddParticleEffect(@"particles\ui_mouseactions\drag_selected_ring.vpcf");
-            this.RangeDisplay.SetControlPoint(1, new Vector3(210, 80, 80));
+            this.RangeDisplay.SetControlPoint(1, new Vector3(255, 80, 80));
             this.RangeDisplay.SetControlPoint(3, new Vector3(9, 0, 0));
             this.RangeDisplay.SetControlPoint(2, new Vector3(this.Radius + 30, 255, 0));
         }

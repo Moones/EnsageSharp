@@ -40,6 +40,9 @@
             Game.OnWndProc -= Variables.Instance.Techies.Game_OnWndProc;
             Variables.Damage.OnClose();
 
+            Variables.Menu.MainMenu.RemoveFromMainMenu();
+            Variables.Menu = null;
+
             Variables.Techies = null;
             Variables.Instance = null;
         }
@@ -55,6 +58,13 @@
         /// </param>
         private static void Events_OnLoad(object sender, EventArgs e)
         {
+            var hero = ObjectMgr.LocalHero;
+            if (hero.ClassID != ClassID.CDOTA_Unit_Hero_Techies)
+            {
+                Variables.Instance = null;
+                return;
+            }
+
             Variables.Instance = new Bootstrap();
         }
 

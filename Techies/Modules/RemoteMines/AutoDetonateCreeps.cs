@@ -1,6 +1,5 @@
 ﻿namespace Techies.Modules.RemoteMines
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -64,27 +63,29 @@
                 this.creeps.Where(x => Utils.SleepCheck(x.Handle + "Techies.AutoDetonate")))
             {
                 var tempDamage = creep.GetStackDamage();
-                if (tempDamage.Item1 >= creep.Health)
+                if (!(tempDamage.Item1 >= creep.Health))
                 {
-                    var creep1 = creep;
-                    var count =
-                        (from creep2 in
-                             this.creeps.Where(
-                                 x =>
-                                 !x.Equals(creep1) && Utils.SleepCheck(x.Handle + "Techies.AutoDetonate")
-                                 && x.Distance2D(creep1) < 500)
-                         let tempDamage2 = creep2.GetStackDamage()
-                         where tempDamage2.Item1 >= creep2.Health
-                         select creep2).Count();
-                    if (count < 3)
-                    {
-                        return false;
-                    }
-
-                    Detonate(tempDamage.Item2);
-                    Utils.Sleep(500, creep.Handle + "Techies.AutoDetonate");
-                    return true;
+                    continue;
                 }
+
+                var creep1 = creep;
+                var count =
+                    (from creep2 in
+                         this.creeps.Where(
+                             x =>
+                             !x.Equals(creep1) && Utils.SleepCheck(x.Handle + "Techies.AutoDetonate")
+                             && x.Distance2D(creep1) < 500)
+                     let tempDamage2 = creep2.GetStackDamage()
+                     where tempDamage2.Item1 >= creep2.Health
+                     select creep2).Count();
+                if (count < 3)
+                {
+                    return false;
+                }
+
+                Detonate(tempDamage.Item2);
+                Utils.Sleep(500, creep.Handle + "Techies.AutoDetonate");
+                return true;
             }
 
             return false;

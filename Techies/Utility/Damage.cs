@@ -117,13 +117,15 @@
                     .ToDictionary(
                         hero => hero.ClassID, 
                         hero => hero.DamageTaken(damage, DamageType.Magical, Variables.Techies));
-                if (classId == ClassID.CDOTA_BaseNPC_Creep || classId == ClassID.CDOTA_BaseNPC_Creep_Lane
-                    || classId == ClassID.CDOTA_BaseNPC_Creep_Siege)
-                {
-                    dictionary.Add(
-                        classId, 
-                        creep.DamageTaken(this.currentRemoteMineDamage, DamageType.Magical, Variables.Techies));
-                }
+            }
+
+            if (!dictionary.ContainsKey(classId)
+                && (classId == ClassID.CDOTA_BaseNPC_Creep || classId == ClassID.CDOTA_BaseNPC_Creep_Lane
+                    || classId == ClassID.CDOTA_BaseNPC_Creep_Siege))
+            {
+                dictionary.Add(
+                    classId, 
+                    creep.DamageTaken(this.currentRemoteMineDamage, DamageType.Magical, Variables.Techies));
             }
 
             return !dictionary.ContainsKey(classId) ? 0 : dictionary[classId];
@@ -141,7 +143,7 @@
         }
 
         /// <summary>
-        /// The on close.
+        ///     The on close.
         /// </summary>
         public void OnClose()
         {
@@ -149,7 +151,7 @@
         }
 
         /// <summary>
-        /// The on load.
+        ///     The on load.
         /// </summary>
         public void OnLoad()
         {

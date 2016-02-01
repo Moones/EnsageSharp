@@ -27,6 +27,11 @@
         public Menu ForceStaffMenu;
 
         /// <summary>
+        ///     The main menu.
+        /// </summary>
+        public Menu MainMenu;
+
+        /// <summary>
         ///     The suicide menu.
         /// </summary>
         public Menu SuicideMenu;
@@ -141,6 +146,7 @@
             this.DrawingsMenu = drawingMenu;
             this.ForceStaffMenu = forceStaffMenu;
             this.SuicideMenu = suicideMenu;
+            this.MainMenu = menu;
         }
 
         #endregion

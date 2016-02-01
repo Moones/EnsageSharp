@@ -51,22 +51,22 @@
 
             foreach (var mine in
                 nearestStack.RemoteMines.Where(
-                    x =>
-                    x.Entity.IsValid && x.Entity.IsAlive && x.Entity.IsVisible
-                    && x.Entity.IsVisibleForTeam(Variables.EnemyTeam)))
+                    x => x.Entity.IsValid && x.Entity.IsAlive && x.Entity.IsVisible && x.Entity.IsVisibleToEnemies))
             {
-                if (item != null && item.CanHit(mine.Entity))
+                if (item != null && item.CanHit(mine.Entity) && hero.GetTurnTime(mine.Position) < 0.01)
                 {
                     mine.Detonate();
                     return true;
                 }
 
-                if (hero.IsAttacking() && hero.GetTurnTime(mine.Position) < 0.01
-                    && mine.Entity.DamageTaken(hero.MaximumDamage, DamageType.Physical, hero) >= mine.Entity.Health)
+                if (!hero.IsAttacking() || !(hero.GetTurnTime(mine.Position) < 0.01)
+                    || !(mine.Entity.DamageTaken(hero.MaximumDamage, DamageType.Physical, hero) >= mine.Entity.Health))
                 {
-                    mine.Detonate();
-                    return true;
+                    continue;
                 }
+
+                mine.Detonate();
+                return true;
             }
 
             return false;
