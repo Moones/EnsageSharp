@@ -54,8 +54,10 @@
                 this.creeps =
                     Creeps.All.Where(
                         x =>
-                        (x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Lane || x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Siege)
-                        && x.IsAlive && x.IsVisible && x.IsSpawned && x.Team == Variables.EnemyTeam).ToList();
+                        x.IsValid
+                        && (x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Lane
+                            || x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Siege) && x.IsAlive && x.IsVisible
+                        && x.IsSpawned && x.Team == Variables.EnemyTeam).ToList();
                 Utils.Sleep(500, "Techies.GetCreeps");
             }
 
