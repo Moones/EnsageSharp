@@ -1,10 +1,16 @@
 ﻿namespace Orbwalker
 {
+    /// <summary>
+    ///     The program.
+    /// </summary>
     internal class Program
     {
         #region Methods
 
-        private static void Main(string[] args)
+        /// <summary>
+        ///     The main.
+        /// </summary>
+        private static void Main()
         {
             Orbwalker.Init();
         }

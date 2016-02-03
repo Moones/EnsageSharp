@@ -7,30 +7,50 @@
     using Ensage.Common.Extensions;
     using Ensage.Common.Menu;
 
-    using SharpDX;
-
+    /// <summary>
+    ///     The orb walker.
+    /// </summary>
     internal class Orbwalker
     {
         #region Static Fields
 
+        /// <summary>
+        ///     The menu.
+        /// </summary>
         private static readonly Menu Menu = new Menu("Orbwalker", "orbwalker", true);
 
+        /// <summary>
+        ///     The range display.
+        /// </summary>
+        private static readonly RangeDrawing RangeDisplay = new RangeDrawing();
+
+        /// <summary>
+        ///     The creep target.
+        /// </summary>
         private static Unit creepTarget;
 
-        private static float lastRange;
-
+        /// <summary>
+        ///     The loaded.
+        /// </summary>
         private static bool loaded;
 
+        /// <summary>
+        ///     The me.
+        /// </summary>
         private static Hero me;
 
-        private static ParticleEffect rangeDisplay;
-
+        /// <summary>
+        ///     The target.
+        /// </summary>
         private static Hero target;
 
         #endregion
 
         #region Public Methods and Operators
 
+        /// <summary>
+        ///     The initialization
+        /// </summary>
         public static void Init()
         {
             Menu.AddItem(new MenuItem("chaseKey", "Chase Key").SetValue(new KeyBind(32, KeyBindType.Press)));
@@ -42,106 +62,105 @@
             Menu.AddToMainMenu();
             Game.OnUpdate += Game_OnUpdate;
             Orbwalking.Load();
-            if (rangeDisplay == null)
-            {
-                return;
-            }
-            rangeDisplay = null;
         }
 
         #endregion
 
         #region Methods
 
+        /// <summary>
+        ///     The game_ on update.
+        /// </summary>
+        /// <param name="args">
+        ///     The args.
+        /// </param>
         private static void Game_OnUpdate(EventArgs args)
         {
             if (!loaded)
             {
-                //Orbwalking.Load();
                 me = ObjectMgr.LocalHero;
                 if (!Game.IsInGame || me == null)
                 {
                     return;
                 }
+
                 loaded = true;
                 target = null;
-                rangeDisplay = null;
+                RangeDisplay.Dispose();
                 Game.PrintMessage(
-                    "<font face='Tahoma'><font color='#000000'>[--</font> <font color='#33ff66'>Orbwalker</font> by <font color='#999999'>MOON</font><font color='#ff9900'>ES</font> loaded! <font color='#000000'>--]</font></font>",
+                    "<font face='Tahoma'><font color='#000000'>[--</font> <font color='#33ff66'>Orbwalker</font> by <font color='#999999'>MOON</font><font color='#ff9900'>ES</font> loaded! <font color='#000000'>--]</font></font>", 
                     MessageType.LogMessage);
             }
 
             if (me == null || !me.IsValid)
             {
-                //Orbwalking.Load();
                 loaded = false;
                 me = ObjectMgr.LocalHero;
-                if (rangeDisplay == null)
-                {
-                    return;
-                }
+
                 target = null;
-                rangeDisplay = null;
+                RangeDisplay.Dispose();
                 return;
             }
+
+            RangeDisplay.Me();
 
             if (Game.IsPaused)
             {
                 return;
             }
 
-            if (rangeDisplay == null)
+            if (RangeDisplay.IsDisposed())
             {
                 if (me.IsAlive)
                 {
-                    rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\drag_selected_ring.vpcf");
-                    rangeDisplay.SetControlPoint(1, new Vector3(255, 80, 50));
-                    rangeDisplay.SetControlPoint(3, new Vector3(20, 0, 0));
-                    lastRange = me.GetAttackRange() + me.HullRadius + 70;
-                    rangeDisplay.SetControlPoint(2, new Vector3(lastRange, 255, 0));
+                    RangeDisplay.Create();
                 }
             }
             else
             {
                 if (!me.IsAlive)
                 {
-                    rangeDisplay.Dispose();
-                    rangeDisplay = null;
+                    RangeDisplay.Dispose();
                 }
-                else if (lastRange != (me.GetAttackRange() + me.HullRadius + 70))
+                else if (!RangeDisplay.IsUpdated())
                 {
-                    lastRange = me.GetAttackRange() + me.HullRadius + 70;
-                    rangeDisplay.Dispose();
-                    rangeDisplay = me.AddParticleEffect(@"particles\ui_mouseactions\drag_selected_ring.vpcf");
-                    rangeDisplay.SetControlPoint(1, new Vector3(255, 80, 50));
-                    rangeDisplay.SetControlPoint(3, new Vector3(15, 0, 0));
-                    rangeDisplay.SetControlPoint(2, new Vector3(lastRange, 255, 0));
+                    RangeDisplay.Update();
                 }
             }
+
             if (target != null && (!target.IsValid || !target.IsVisible || !target.IsAlive || target.Health <= 0))
             {
                 target = null;
             }
+
             var canCancel = Orbwalking.CanCancelAnimation();
-            if (canCancel)
+            var cd = Orbwalking.AttackOnCooldown(creepTarget);
+            if ((canCancel || !cd) && Utils.SleepCheck("Orbwalk.Attack"))
             {
-                if (target != null && !target.IsVisible && !Orbwalking.AttackOnCooldown(target))
+                if (Utils.SleepCheck("Orbwalker.Update.Target"))
                 {
-                    target = me.ClosestToMouseTarget(128);
-                }
-                else if (target == null || !Orbwalking.AttackOnCooldown(target))
-                {
-                    var bestAa = me.BestAATarget();
-                    if (bestAa != null)
+                    if (target != null && !target.IsVisible)
                     {
-                        target = me.BestAATarget();
+                        target = me.ClosestToMouseTarget(128);
                     }
+                    else if (target == null)
+                    {
+                        var bestAa = me.BestAATarget();
+                        if (bestAa != null)
+                        {
+                            target = me.BestAATarget();
+                        }
+                    }
+
+                    Utils.Sleep(500, "Orbwalker.Update.Target");
                 }
-                if (Game.IsKeyDown(Menu.Item("farmKey").GetValue<KeyBind>().Key)
-                    && (creepTarget == null || !creepTarget.IsValid || !creepTarget.IsVisible || !creepTarget.IsAlive
-                        || creepTarget.Health <= 0 || !Orbwalking.AttackOnCooldown(creepTarget)))
+
+                if (!Game.IsChatOpen && Game.IsKeyDown(Menu.Item("farmKey").GetValue<KeyBind>().Key)
+                    && (creepTarget == null || !creepTarget.IsValid || !creepTarget.IsAlive || !creepTarget.IsVisible
+                        || Utils.SleepCheck("Orbwalker.Update.Creep")))
                 {
-                    creepTarget = TargetSelector.GetLowestHPCreep(me);
+                    creepTarget = TargetSelector.GetLowestHPCreep(me, 200);
+                    Utils.Sleep(500, "Orbwalker.Update.Creep");
                 }
             }
 
@@ -153,16 +172,20 @@
             if (Game.IsKeyDown(Menu.Item("farmKey").GetValue<KeyBind>().Key))
             {
                 Orbwalking.Orbwalk(creepTarget);
+                return;
             }
+
             if (Game.IsKeyDown(Menu.Item("chaseKey").GetValue<KeyBind>().Key))
             {
                 Orbwalking.Orbwalk(target, attackmodifiers: true);
+                return;
             }
+
             if (Game.IsKeyDown(Menu.Item("kiteKey").GetValue<KeyBind>().Key))
             {
                 Orbwalking.Orbwalk(
-                    target,
-                    attackmodifiers: true,
+                    target, 
+                    attackmodifiers: true, 
                     bonusWindupMs: Menu.Item("bonusWindup").GetValue<Slider>().Value);
             }
         }
