@@ -1,5 +1,8 @@
 ﻿namespace Ability.Casting.ComboExecution
 {
+    using System;
+    using System.Linq;
+
     using Ability.AutoAttack;
 
     using Ensage;
@@ -13,22 +16,24 @@
         {
             if (name == "item_tango" || name == "item_tango_single")
             {
-                // if (!target.Equals(AbilityMain.Me))
-                // {
-                // return false;
-                // }
-                // var closestTree =
-                // ObjectMgr.GetEntities<Entity>()
-                // .Where(x => x.Name == "ent_dota_tree" && x.Distance2D(target) < 250)
-                // .MinOrDefault(x => x.Distance2D(target));
-                // Console.WriteLine(closestTree is Rune);
-                // if (closestTree == null)
-                // {
-                // return false;
-                // }
-                return false;
+                if (!target.Equals(AbilityMain.Me))
+                {
+                    return false;
+                }
 
-                // ability.UseAbility(closestTree);
+                var closestTree =
+                    ObjectMgr.GetEntities<Tree>()
+                        .Where(x => x.IsAlive && x.IsVisible && x.Distance2D(target) < 250)
+                        .MinOrDefault(x => x.Distance2D(target));
+                if (closestTree == null)
+                {
+                    return false;
+                }
+
+                //Console.WriteLine(closestTree);
+                //ability.UseAbility(closestTree);
+                //Player.UseAbility(target, ability, closestTree);
+                return true;
             }
 
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))

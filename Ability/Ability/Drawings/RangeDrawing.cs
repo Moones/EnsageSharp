@@ -26,7 +26,7 @@
 
         #region Public Methods and Operators
 
-        public static void AddRange(Ability ability, float crange = 0)
+        public static void AddRange(Ability ability, float crange = 0, bool visible = true)
         {
             var name = NameManager.Name(ability);
             if (RangesDictionary.ContainsKey(ability))

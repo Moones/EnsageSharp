@@ -160,15 +160,10 @@
                             RangeDrawing.Update();
                             break;
                         case "item_blink":
-                            if (MyAbilities.Blink == null)
-                            {
-                                // MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(item.Name);
-                                BlinkMenu.Create(item);
-                                MyAbilities.Blink = item;
-                                continue;
-                            }
-
-                            break;
+                            // MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(item.Name);
+                            RangeDrawing.AddRange(item);
+                            MyAbilities.Blink = item;
+                            continue;
                     }
 
                     var data = AbilityDatabase.Find(NameManager.Name(item));

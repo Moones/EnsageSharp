@@ -17,11 +17,9 @@
                     {
                         RangeDrawing.RangeVisible(blink, eventArgs.GetNewValue<bool>());
                     };
-            if (menu.Item("abilityMenuShowBlinkRange").GetValue<bool>())
-            {
-                RangeDrawing.AddRange(blink);
-            }
 
+            RangeDrawing.AddRange(blink);
+            RangeDrawing.RangeVisible(blink, menu.Item("abilityMenuShowBlinkRange").GetValue<bool>());
             MainMenu.OptionsMenu.AddSubMenu(menu);
         }
 
