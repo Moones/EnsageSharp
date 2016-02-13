@@ -9,35 +9,6 @@
     /// </summary>
     internal class TechiesMenu
     {
-        #region Fields
-
-        /// <summary>
-        ///     The detonation menu.
-        /// </summary>
-        public Menu DetonationMenu;
-
-        /// <summary>
-        ///     The drawings menu.
-        /// </summary>
-        public Menu DrawingsMenu;
-
-        /// <summary>
-        ///     The force staff menu.
-        /// </summary>
-        public Menu ForceStaffMenu;
-
-        /// <summary>
-        ///     The main menu.
-        /// </summary>
-        public Menu MainMenu;
-
-        /// <summary>
-        ///     The suicide menu.
-        /// </summary>
-        public Menu SuicideMenu;
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -65,74 +36,12 @@
             drawingMenu.AddItem(new MenuItem("drawTopPanel", "Draw TopPanel").SetValue(true));
             drawingMenu.AddItem(new MenuItem("drawSuicideKills", "Draw killability with Suicide").SetValue(true));
             drawingMenu.AddItem(new MenuItem("drawRemoteMineRange", "Draw range for remote mines").SetValue(true))
-                .ValueChanged += (sender, args) =>
-                    {
-                        if (args.GetNewValue<bool>())
-                        {
-                            foreach (var remoteMine in from remoteMine in Variables.RemoteMines
-                                                       let effect = remoteMine.RangeDisplay
-                                                       where effect == null || effect.IsDestroyed
-                                                       select remoteMine)
-                            {
-                                remoteMine.CreateRangeDisplay();
-                            }
-                        }
-                        else
-                        {
-                            foreach (var effect in
-                                Variables.RemoteMines.Select(remoteMine => remoteMine.RangeDisplay)
-                                    .Where(effect => effect != null && !effect.IsDestroyed))
-                            {
-                                effect.Dispose();
-                            }
-                        }
-                    };
+                .ValueChanged += RemoteMines_OnValueChanged;
             drawingMenu.AddItem(new MenuItem("drawLandMineRange", "Draw range for land mines").SetValue(true))
-                .ValueChanged += (sender, args) =>
-                    {
-                        if (args.GetNewValue<bool>())
-                        {
-                            foreach (var landMine in from landMine in Variables.LandMines
-                                                     let effect = landMine.RangeDisplay
-                                                     where effect == null || effect.IsDestroyed
-                                                     select landMine)
-                            {
-                                landMine.CreateRangeDisplay();
-                            }
-                        }
-                        else
-                        {
-                            foreach (var effect in
-                                Variables.LandMines.Select(remoteMine => remoteMine.RangeDisplay)
-                                    .Where(effect => effect != null && !effect.IsDestroyed))
-                            {
-                                effect.Dispose();
-                            }
-                        }
-                    };
+                .ValueChanged += LandMines_OnValueChanged;
             drawingMenu.AddItem(new MenuItem("drawStasisTrapRange", "Draw range for stasis traps").SetValue(true))
-                .ValueChanged += (sender, args) =>
-                    {
-                        if (args.GetNewValue<bool>())
-                        {
-                            foreach (var stasisTrap in from stasisTrap in Variables.StasisTraps
-                                                       let effect = stasisTrap.RangeDisplay
-                                                       where effect == null || effect.IsDestroyed
-                                                       select stasisTrap)
-                            {
-                                stasisTrap.CreateRangeDisplay();
-                            }
-                        }
-                        else
-                        {
-                            foreach (var effect in
-                                Variables.StasisTraps.Select(remoteMine => remoteMine.RangeDisplay)
-                                    .Where(effect => effect != null && !effect.IsDestroyed))
-                            {
-                                effect.Dispose();
-                            }
-                        }
-                    };
+                .ValueChanged += StasisTraps_OnValueChanged;
+            drawingMenu.AddItem(new MenuItem("drawStackOverlay", "Draw StackOverlay").SetValue(true));
             var suicideMenu = new Menu("Auto Suicide", "autoSuicide");
             suicideMenu.AddItem(new MenuItem("autoSuicide", "Auto Suicide").SetValue(true));
             suicideMenu.AddItem(
@@ -147,6 +56,135 @@
             this.ForceStaffMenu = forceStaffMenu;
             this.SuicideMenu = suicideMenu;
             this.MainMenu = menu;
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets or sets the detonation menu.
+        /// </summary>
+        public Menu DetonationMenu { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the drawings menu.
+        /// </summary>
+        public Menu DrawingsMenu { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the force staff menu.
+        /// </summary>
+        public Menu ForceStaffMenu { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the main menu.
+        /// </summary>
+        public Menu MainMenu { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the suicide menu.
+        /// </summary>
+        public Menu SuicideMenu { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        ///     The land mines_ on value changed.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sender.
+        /// </param>
+        /// <param name="onValueChangeEventArgs">
+        ///     The on value change event args.
+        /// </param>
+        private static void LandMines_OnValueChanged(object sender, OnValueChangeEventArgs onValueChangeEventArgs)
+        {
+            if (onValueChangeEventArgs.GetNewValue<bool>())
+            {
+                foreach (var landMine in from landMine in Variables.LandMines
+                                         let effect = landMine.RangeDisplay
+                                         where effect == null || effect.IsDestroyed
+                                         select landMine)
+                {
+                    landMine.CreateRangeDisplay();
+                }
+            }
+            else
+            {
+                foreach (var effect in
+                    Variables.LandMines.Select(remoteMine => remoteMine.RangeDisplay)
+                        .Where(effect => effect != null && !effect.IsDestroyed))
+                {
+                    effect.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     The remote mines_ on value changed.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sender.
+        /// </param>
+        /// <param name="onValueChangeEventArgs">
+        ///     The on value change event args.
+        /// </param>
+        private static void RemoteMines_OnValueChanged(object sender, OnValueChangeEventArgs onValueChangeEventArgs)
+        {
+            if (onValueChangeEventArgs.GetNewValue<bool>())
+            {
+                foreach (var remoteMine in from remoteMine in Variables.RemoteMines
+                                           let effect = remoteMine.RangeDisplay
+                                           where effect == null || effect.IsDestroyed
+                                           select remoteMine)
+                {
+                    remoteMine.CreateRangeDisplay();
+                }
+            }
+            else
+            {
+                foreach (var effect in
+                    Variables.RemoteMines.Select(remoteMine => remoteMine.RangeDisplay)
+                        .Where(effect => effect != null && !effect.IsDestroyed))
+                {
+                    effect.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     The stasis traps_ on value changed.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sender.
+        /// </param>
+        /// <param name="onValueChangeEventArgs">
+        ///     The on value change event args.
+        /// </param>
+        private static void StasisTraps_OnValueChanged(object sender, OnValueChangeEventArgs onValueChangeEventArgs)
+        {
+            if (onValueChangeEventArgs.GetNewValue<bool>())
+            {
+                foreach (var stasisTrap in from stasisTrap in Variables.StasisTraps
+                                           let effect = stasisTrap.RangeDisplay
+                                           where effect == null || effect.IsDestroyed
+                                           select stasisTrap)
+                {
+                    stasisTrap.CreateRangeDisplay();
+                }
+            }
+            else
+            {
+                foreach (var effect in
+                    Variables.StasisTraps.Select(remoteMine => remoteMine.RangeDisplay)
+                        .Where(effect => effect != null && !effect.IsDestroyed))
+                {
+                    effect.Dispose();
+                }
+            }
         }
 
         #endregion

@@ -54,7 +54,8 @@
             }
 
             var tempDamage = 0f;
-            var nearestStack = Variables.Stacks.MinOrDefault(x => x.Position.Distance(heroPosition));
+            var nearestStack =
+                Variables.Stacks.Where(x => x.AutoDetonate).MinOrDefault(x => x.Position.Distance(heroPosition));
             if (nearestStack == null || nearestStack.Position.Distance(heroPosition) > 1000)
             {
                 return new Tuple<float, IEnumerable<RemoteMine>>(0, detonatableMines);

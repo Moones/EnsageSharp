@@ -15,45 +15,6 @@
     /// </summary>
     internal class RemoteMine
     {
-        #region Fields
-
-        /// <summary>
-        ///     The detonate ability.
-        /// </summary>
-        public Ability DetonateAbility;
-
-        /// <summary>
-        ///     The entity.
-        /// </summary>
-        public Unit Entity;
-
-        /// <summary>
-        ///     The handle.
-        /// </summary>
-        public float Handle;
-
-        /// <summary>
-        ///     The level.
-        /// </summary>
-        public uint Level;
-
-        /// <summary>
-        ///     The position.
-        /// </summary>
-        public Vector3 Position;
-
-        /// <summary>
-        ///     The radius.
-        /// </summary>
-        public float Radius;
-
-        /// <summary>
-        ///     The range display.
-        /// </summary>
-        public ParticleEffect RangeDisplay;
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -80,6 +41,45 @@
 
             this.CreateRangeDisplay();
         }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets or sets the detonate ability.
+        /// </summary>
+        public Ability DetonateAbility { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the entity.
+        /// </summary>
+        public Unit Entity { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the handle.
+        /// </summary>
+        public float Handle { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the level.
+        /// </summary>
+        public uint Level { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the position.
+        /// </summary>
+        public Vector3 Position { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the radius.
+        /// </summary>
+        public float Radius { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the range display.
+        /// </summary>
+        public ParticleEffect RangeDisplay { get; set; }
 
         #endregion
 

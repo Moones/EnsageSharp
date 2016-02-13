@@ -14,40 +14,6 @@
     /// </summary>
     internal class LandMine
     {
-        #region Fields
-
-        /// <summary>
-        ///     The land mine entity.
-        /// </summary>
-        public Unit Entity;
-
-        /// <summary>
-        ///     The land mine handle.
-        /// </summary>
-        public float Handle;
-
-        /// <summary>
-        ///     The land mine ability level.
-        /// </summary>
-        public uint Level;
-
-        /// <summary>
-        ///     The land mine position.
-        /// </summary>
-        public Vector3 Position;
-
-        /// <summary>
-        ///     The land mine activation radius.
-        /// </summary>
-        public float Radius;
-
-        /// <summary>
-        ///     The land mine range display.
-        /// </summary>
-        public ParticleEffect RangeDisplay;
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -73,6 +39,40 @@
 
             this.CreateRangeDisplay();
         }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets or sets the entity.
+        /// </summary>
+        public Unit Entity { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the handle.
+        /// </summary>
+        public float Handle { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the level.
+        /// </summary>
+        public uint Level { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the position.
+        /// </summary>
+        public Vector3 Position { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the radius.
+        /// </summary>
+        public float Radius { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the range display.
+        /// </summary>
+        public ParticleEffect RangeDisplay { get; set; }
 
         #endregion
 

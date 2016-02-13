@@ -12,35 +12,6 @@
     /// </summary>
     internal class StasisTrap
     {
-        #region Fields
-
-        /// <summary>
-        ///     The entity.
-        /// </summary>
-        public Unit Entity;
-
-        /// <summary>
-        ///     The handle.
-        /// </summary>
-        public float Handle;
-
-        /// <summary>
-        ///     The position.
-        /// </summary>
-        public Vector3 Position;
-
-        /// <summary>
-        ///     The radius.
-        /// </summary>
-        public float Radius;
-
-        /// <summary>
-        ///     The range display.
-        /// </summary>
-        public ParticleEffect RangeDisplay;
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -52,14 +23,40 @@
         public StasisTrap(Entity entity)
         {
             this.Handle = entity.Handle;
-
             this.Position = entity.Position;
-
             this.Radius = Variables.StasisTrapAbility.GetAbilityData("activation_radius");
             this.Entity = entity as Unit;
-
             this.CreateRangeDisplay();
         }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets or sets the entity.
+        /// </summary>
+        public Unit Entity { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the handle.
+        /// </summary>
+        public float Handle { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the position.
+        /// </summary>
+        public Vector3 Position { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the radius.
+        /// </summary>
+        public float Radius { get; set; }
+
+        /// <summary>
+        /// Gets or sets the range display.
+        /// </summary>
+        public ParticleEffect RangeDisplay { get; set; }
 
         #endregion
 
