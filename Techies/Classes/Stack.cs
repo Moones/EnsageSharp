@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
 
     using Ensage;
@@ -64,6 +65,7 @@
             this.DetonateTextSize = Drawing.MeasureText("DETONATE!", "Arial", new Vector2(16), FontFlags.None);
             this.XTextSize = Drawing.MeasureText("x", "Arial", new Vector2(30), FontFlags.None);
             this.AutoDetonateTextSize = Drawing.MeasureText("[AUTO DETONATE]", "Arial", new Vector2(12), FontFlags.None);
+            this.StackDamageTextSize = Drawing.MeasureText("StackDamage: ", "Arial", new Vector2(12), FontFlags.None);
             this.Visible = true;
             this.AutoDetonate = true;
 
@@ -100,6 +102,11 @@
         ///     Gets or sets the detonate text size.
         /// </summary>
         public Vector2 DetonateTextSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the stack damage text size.
+        /// </summary>
+        public Vector2 StackDamageTextSize { get; set; }
 
         /// <summary>
         ///     Gets or sets the id.
@@ -247,6 +254,11 @@
         public bool Visible { get; set; }
 
         /// <summary>
+        /// Gets or sets the raw damage.
+        /// </summary>
+        public float RawDamage { get; set; }
+
+        /// <summary>
         ///     Gets or sets the x text size.
         /// </summary>
         public Vector2 XTextSize { get; set; }
@@ -342,28 +354,43 @@
                 return;
             }
 
-            position -= new Vector2(28, 75);
+            position -= new Vector2(28, 85);
 
             var alpha = Game.MousePosition.Distance(this.Position) < 500
                             ? Utils.IsUnderRectangle(
                                 Game.MouseScreenPosition, 
                                 position.X - 30, 
                                 position.Y - 10, 
-                                155, 
-                                62)
-                                  ? 12
+                                170, 
+                                74)
+                                  ? 20
                                   : 0
-                            : -12;
+                            : -25;
 
             Drawing.DrawRect(
-                new Vector2(position.X - 30, position.Y - 10), 
-                new Vector2(155, 62), 
-                new Color(30 + alpha, 30 + alpha, 30 + alpha, 100 + (alpha * 2)));
+                new Vector2(position.X - 30, position.Y - 11), 
+                new Vector2(170, 74), 
+                new Color(30 + alpha, 30 + alpha, 30 + alpha, 150 + (alpha * 2)));
             Drawing.DrawRect(
-                new Vector2(position.X - 31, position.Y - 11), 
-                new Vector2(156, 63), 
-                new Color(0 + alpha, 0 + alpha, 0 + alpha, 100 + alpha), 
+                new Vector2(position.X - 31, position.Y - 12), 
+                new Vector2(171, 75), 
+                new Color(0 + alpha, 0 + alpha, 0 + alpha, 150 + alpha), 
                 true);
+            Drawing.DrawText(
+                "StackDamage: ",
+                new Vector2(position.X - 27, position.Y + 48),
+                new Vector2(12),
+                new Color(200 + alpha, 200 + alpha, 200 + alpha, 190 + alpha),
+                FontFlags.None);
+            var r = Math.Min(this.RawDamage / 20, 255);
+            var g = Math.Max(255 - (this.RawDamage / 30), 0);
+            var cl = new Color(r, g, 0, 200 + alpha) { R = (byte)r, G = (byte)g };
+            Drawing.DrawText(
+                this.RawDamage.ToString(CultureInfo.InvariantCulture),
+                new Vector2(position.X - 27 + this.StackDamageTextSize.X, position.Y + 48),
+                new Vector2(12),
+                cl,
+                FontFlags.None);
             Drawing.DrawRect(
                 position - new Vector2(28, 4), 
                 new Vector2(25, 25), 
@@ -415,32 +442,32 @@
                 new Color(200 + alpha + alpha2, 170 + alpha - (alpha2 * 2), 60 + alpha), 
                 FontFlags.Outline);
             Drawing.DrawRect(
-                position - new Vector2(28, -24), 
+                position - new Vector2(28, -22), 
                 new Vector2(25, 25), 
                 Textures.GetTexture("materials/ensage_ui/other/npc_dota_techies_land_mine"));
             Drawing.DrawText(
                 this.LandMineCount, 
-                position - new Vector2(0, -28), 
+                position - new Vector2(0, -26), 
                 new Vector2(16), 
                 new Color(220 + alpha, 220 + alpha, 220 + alpha, 220 + alpha), 
                 FontFlags.None);
             alpha2 = Utils.IsUnderRectangle(
                 Game.MouseScreenPosition, 
                 position.X + this.LandMineCountTextSize.X + 5, 
-                position.Y + 26, 
+                position.Y + 24, 
                 20, 
                 20)
                          ? 25
                          : 0;
             DrawingUtils.RoundedRectangle(
                 position.X + this.LandMineCountTextSize.X + 5, 
-                position.Y + 26, 
+                position.Y + 24, 
                 20, 
                 20, 
                 3, 
                 new Color(100 + alpha - alpha2, 100 + alpha - alpha2, 100 + alpha - alpha2));
             Drawing.DrawRect(
-                position + new Vector2(this.LandMineCountTextSize.X + 7, 28), 
+                position + new Vector2(this.LandMineCountTextSize.X + 7, 26), 
                 new Vector2(16, 16), 
                 Textures.GetTexture("materials/ensage_ui/other/plus"));
             alpha2 = Utils.IsUnderRectangle(
@@ -460,7 +487,7 @@
             alpha2 = Utils.IsUnderRectangle(
                 Game.MouseScreenPosition, 
                 position.X + this.LandMineCountTextSize.X + 30, 
-                position.Y + 30, 
+                position.Y + 28, 
                 this.AutoDetonateTextSize.X, 
                 this.AutoDetonateTextSize.Y)
                          ? 40
@@ -478,13 +505,9 @@
                                   200 + alpha + alpha2);
             if (this.AutoDetonate)
             {
-                //Drawing.DrawRect(
-                //    new Vector2(position.X - 1 + this.LandMineCountTextSize.X + 30, position.Y - 1 + 30),
-                //    this.AutoDetonateTextSize + new Vector2(1),
-                //    new Color(20 + alpha + alpha2, 120 + alpha + alpha2, 20 + alpha + alpha2, 40 + alpha + alpha2));
                 DrawingUtils.RoundedRectangle(
                     position.X - 2 + this.LandMineCountTextSize.X + 30,
-                    position.Y - 2 + 30,
+                    position.Y - 2 + 28,
                     this.AutoDetonateTextSize.X + 3,
                     this.AutoDetonateTextSize.Y + 4,
                     2,
@@ -493,7 +516,7 @@
 
             Drawing.DrawText(
                 "[AUTO DETONATE]", 
-                new Vector2(position.X + this.LandMineCountTextSize.X + 30, position.Y + 30), 
+                new Vector2(position.X + this.LandMineCountTextSize.X + 30, position.Y + 28), 
                 new Vector2(12), 
                 color, 
                 FontFlags.None);
@@ -547,12 +570,12 @@
                 return;
             }
 
-            position -= new Vector2(28, 75);
+            position -= new Vector2(28, 85);
 
             if (Utils.IsUnderRectangle(
                 Game.MouseScreenPosition, 
                 position.X + this.LandMineCountTextSize.X + 30, 
-                position.Y + 30, 
+                position.Y + 28, 
                 this.AutoDetonateTextSize.X, 
                 this.AutoDetonateTextSize.Y))
             {
@@ -597,7 +620,7 @@
                 && Utils.IsUnderRectangle(
                     Game.MouseScreenPosition, 
                     position.X + this.LandMineCountTextSize.X + 5, 
-                    position.Y + 26, 
+                    position.Y + 24, 
                     20, 
                     20))
             {
@@ -654,6 +677,9 @@
                 Variables.Stacks.Remove(this);
                 this.Delete();
             }
+
+            this.RawDamage = this.RemoteMines.Sum(remoteMine => remoteMine.Damage)
+                             + this.LandMines.Sum(landMine => landMine.Damage);
 
             Utils.Sleep(500, this.Id + "Techies.Stacks.Update");
         }

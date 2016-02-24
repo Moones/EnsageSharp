@@ -4,6 +4,7 @@
 
     using Ensage;
     using Ensage.Common;
+    using Ensage.Common.Extensions;
 
     using global::Techies.Classes;
     using global::Techies.Utility;
@@ -37,8 +38,15 @@
         /// </returns>
         public bool Execute(Hero hero)
         {
-            if (Variables.Instance.Techies.EnabledHeroes.ContainsKey(hero.ClassID)
-                && !Variables.Instance.Techies.EnabledHeroes[hero.ClassID])
+            if ((Variables.Instance.Techies.EnabledHeroes.ContainsKey(hero.ClassID)
+                 && !Variables.Instance.Techies.EnabledHeroes[hero.ClassID]) || hero.IsInvul() || hero.IsMagicImmune()
+                || hero.HasModifiers(
+                    new[]
+                        {
+                            "modifier_juggernaut_blade_fury",
+                            "modifier_ember_spirit_sleight_of_fist_caster_invulnerability"
+                        },
+                    false))
             {
                 return false;
             }

@@ -34,6 +34,7 @@
             this.Level = Variables.RemoteMinesAbility.Level;
             this.Radius = Variables.RemoteMinesAbility.GetAbilityData("radius");
             this.Entity = entity as Unit;
+            this.Damage = Variables.Damage.CurrentRemoteMineDamage;
             if (Variables.Stacks != null && !Variables.Stacks.Any(x => x.Position.Distance(this.Position) < 350))
             {
                 Variables.Stacks.Add(new Stack(this.Position));
@@ -50,6 +51,11 @@
         ///     Gets or sets the detonate ability.
         /// </summary>
         public Ability DetonateAbility { get; set; }
+
+        /// <summary>
+        /// Gets or sets the damage.
+        /// </summary>
+        public float Damage { get; set; }
 
         /// <summary>
         ///     Gets or sets the entity.

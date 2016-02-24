@@ -42,15 +42,15 @@
                                : 0;
             var heroPosition = inFrontDistance > 0
                                    ? hero.Position
-                                     + VectorExtensions.FromPolarCoordinates(
-                                         1f, 
-                                         (float)(hero.NetworkRotationRad + rotSpeed)).ToVector3() * inFrontDistance
+                                     + (VectorExtensions.FromPolarCoordinates(
+                                         1f,
+                                         (float)(hero.NetworkRotationRad + rotSpeed)).ToVector3() * inFrontDistance)
                                    : hero.Position;
             if (hero.NetworkActivity == NetworkActivity.Move)
             {
                 heroPosition +=
                     VectorExtensions.FromPolarCoordinates(1f, (float)(hero.NetworkRotationRad + rotSpeed)).ToVector3()
-                    * (float)(Variables.Techies.GetTurnTime(hero) + Game.Ping / 1000) * hero.MovementSpeed;
+                    * ((float)(Variables.Techies.GetTurnTime(hero) + (Game.Ping / 1000)) * hero.MovementSpeed);
             }
 
             var tempDamage = 0f;
@@ -61,7 +61,9 @@
                 return new Tuple<float, IEnumerable<RemoteMine>>(0, detonatableMines);
             }
 
-            foreach (var landMine in nearestStack.LandMines.Where(x => x.Distance(heroPosition) <= x.Radius))
+            foreach (var landMine in
+                nearestStack.LandMines.Where(
+                    x => x.Distance(heroPosition) <= x.Radius && x.Distance(hero.Position) <= x.Radius))
             {
                 if (tempDamage >= hero.Health)
                 {
@@ -71,11 +73,13 @@
                 tempDamage += Variables.Damage.GetLandMineDamage(landMine.Level, hero.ClassID);
             }
 
-            foreach (var remoteMine in nearestStack.RemoteMines.Where(x => x.Distance(heroPosition) <= x.Radius))
+            foreach (var remoteMine in
+                nearestStack.RemoteMines.Where(
+                    x => x.Distance(heroPosition) <= x.Radius && x.Distance(hero.Position) <= x.Radius))
             {
                 if (tempDamage >= hero.Health)
                 {
-                    break;
+                    return new Tuple<float, IEnumerable<RemoteMine>>(tempDamage, detonatableMines);
                 }
 
                 detonatableMines.Add(remoteMine);

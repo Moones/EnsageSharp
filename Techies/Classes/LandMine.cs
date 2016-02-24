@@ -25,13 +25,11 @@
         public LandMine(Entity entity)
         {
             this.Handle = entity.Handle;
-
             this.Position = entity.Position;
-
             this.Level = Variables.LandMinesAbility.Level;
-
             this.Radius = Variables.LandMinesAbility.GetAbilityData("small_radius");
             this.Entity = entity as Unit;
+            this.Damage = Variables.Damage.CurrentLandMineDamage;
             if (Variables.Stacks != null && !Variables.Stacks.Any(x => x.Position.Distance(this.Position) < 200))
             {
                 Variables.Stacks.Add(new Stack(this.Position));
@@ -53,6 +51,11 @@
         ///     Gets or sets the handle.
         /// </summary>
         public float Handle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the damage.
+        /// </summary>
+        public float Damage { get; set; }
 
         /// <summary>
         ///     Gets or sets the level.
