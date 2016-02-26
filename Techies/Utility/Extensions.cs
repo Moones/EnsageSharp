@@ -46,9 +46,10 @@
                                          1f,
                                          (float)(hero.NetworkRotationRad + rotSpeed)).ToVector3() * inFrontDistance)
                                    : hero.Position;
+            var prediction = heroPosition;
             if (hero.NetworkActivity == NetworkActivity.Move)
             {
-                heroPosition +=
+                prediction +=
                     VectorExtensions.FromPolarCoordinates(1f, (float)(hero.NetworkRotationRad + rotSpeed)).ToVector3()
                     * ((float)(Variables.Techies.GetTurnTime(hero) + (Game.Ping / 1000)) * hero.MovementSpeed);
             }
@@ -63,7 +64,7 @@
 
             foreach (var landMine in
                 nearestStack.LandMines.Where(
-                    x => x.Distance(heroPosition) <= x.Radius && x.Distance(hero.Position) <= x.Radius))
+                    x => x.Distance(heroPosition) <= x.Radius && x.Distance(prediction) <= x.Radius))
             {
                 if (tempDamage >= hero.Health)
                 {
@@ -75,7 +76,7 @@
 
             foreach (var remoteMine in
                 nearestStack.RemoteMines.Where(
-                    x => x.Distance(heroPosition) <= x.Radius && x.Distance(hero.Position) <= x.Radius))
+                    x => x.Distance(heroPosition) <= x.Radius && x.Distance(prediction) <= x.Radius))
             {
                 if (tempDamage >= hero.Health)
                 {
