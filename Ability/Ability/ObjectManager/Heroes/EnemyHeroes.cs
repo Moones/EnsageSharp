@@ -33,7 +33,7 @@
                 return;
             }
 
-            if (Utils.SleepCheck("getheroes") && Heroes.Count < 5)
+            if (Utils.SleepCheck("getheroes") && Heroes.Count(x => x.IsValid) < 5)
             {
                 UpdateHeroes();
                 Utils.Sleep(1000, "getheroes");

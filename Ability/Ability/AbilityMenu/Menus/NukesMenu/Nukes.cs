@@ -73,7 +73,7 @@
                 NukesToggler.Add(spell.Name, true);
             }
 
-            var menu = NukeMenu.Create(spell.Name);
+            var menu = NukeMenu.Create(spell.Name, spell);
             NukesMenuDictionary.Add(spell.Name, menu);
             NukesMenu.AddSubMenu(menu);
         }

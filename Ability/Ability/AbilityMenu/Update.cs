@@ -159,7 +159,14 @@
 
                             RangeDrawing.Update();
                             break;
+                        case "item_cyclone":
+                            MyAbilities.Cyclone = item;
+                            break;
+                        case "item_force_staff":
+                            MyAbilities.ForceStaff = item;
+                            break;
                         case "item_blink":
+
                             // MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(item.Name);
                             RangeDrawing.AddRange(item);
                             MyAbilities.Blink = item;
@@ -442,7 +449,7 @@
                 MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().Add(NameManager.Name(item));
             }
 
-            var menu = NukeMenu.Create(NameManager.Name(item));
+            var menu = NukeMenu.Create(NameManager.Name(item), item);
             Nukes.NukesMenuDictionary.Add(NameManager.Name(item), menu);
             Nukes.NukesMenu.AddSubMenu(menu);
         }

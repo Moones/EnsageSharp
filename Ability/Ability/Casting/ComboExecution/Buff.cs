@@ -1,8 +1,6 @@
 ﻿namespace Ability.Casting.ComboExecution
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
 
     using Ability.AutoAttack;
@@ -16,12 +14,7 @@
     {
         #region Public Methods and Operators
 
-        public static bool Cast(
-            Ability ability, 
-            Unit target, 
-            Unit buffTarget, 
-            string name,
-            bool togglearmlet = false)
+        public static bool Cast(Ability ability, Unit target, Unit buffTarget, string name, bool togglearmlet = false)
         {
             if (name == "item_armlet")
             {

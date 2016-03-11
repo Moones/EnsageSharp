@@ -1,9 +1,9 @@
 ﻿namespace Ability.Casting.ComboExecution
 {
     using System;
-    using System.Linq;
     using System.Threading;
 
+    using Ability.AbilityMenu.Menus.NukesMenu;
     using Ability.AutoAttack;
     using Ability.ObjectManager;
 
@@ -11,6 +11,7 @@
     using Ensage.Common;
     using Ensage.Common.AbilityInfo;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Menu;
 
     internal class Nuke
     {
@@ -39,6 +40,31 @@
 
             if (ability.IsAbilityBehavior(AbilityBehavior.UnitTarget, name) && ability.Name != "lion_impale")
             {
+                if (target.IsLinkensProtected())
+                {
+                    if (!Utils.SleepCheck("AbilitySharp.CancelLinkens"))
+                    {
+                        return false;
+                    }
+
+                    if (MyAbilities.Cyclone != null && MyAbilities.Cyclone.CanBeCasted())
+                    {
+                        MyAbilities.Cyclone.UseAbility(target);
+                    }
+                    else if (MyAbilities.ForceStaff != null && MyAbilities.ForceStaff.CanBeCasted())
+                    {
+                        MyAbilities.ForceStaff.UseAbility(target);
+                    }
+
+                    Utils.Sleep(1000, "AbilitySharp.CancelLinkens");
+
+                    Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                    ManageAutoAttack.AutoAttackDisabled = true;
+                    SoulRing.Cast(ability);
+                    ability.UseAbility(target, true);
+                    return false;
+                }
+
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
                 SoulRing.Cast(ability);
@@ -50,7 +76,9 @@
 
             if ((ability.IsAbilityBehavior(AbilityBehavior.AreaOfEffect, name)
                  || ability.IsAbilityBehavior(AbilityBehavior.Point, name))
-                && (Prediction.StraightTime(target) > 600 || target.MovementSpeed < 200))
+                && (Prediction.StraightTime(target)
+                    > Nukes.NukesMenuDictionary[name].Item(name + "minstraighttime").GetValue<Slider>().Value
+                    || target.MovementSpeed < 200))
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
                 ManageAutoAttack.AutoAttackDisabled = true;

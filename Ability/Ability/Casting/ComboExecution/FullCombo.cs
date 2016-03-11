@@ -1,7 +1,6 @@
 ﻿namespace Ability.Casting.ComboExecution
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
 
@@ -47,7 +46,7 @@
         public static bool AutoUsage(
             Hero enemyHero, 
             Hero[] enemyHeroes, 
-            float meMissingHp,
+            float meMissingHp, 
             float ping, 
             Hero me, 
             float mana)
@@ -840,10 +839,10 @@
                                && !hero.HasModifiers(
                                    new[]
                                        {
-                                           "modifier_doom_bringer_doom", "modifier_axe_battle_hunger",
-                                           "modifier_queenofpain_shadow_strike", "modifier_phoenix_fire_spirit_burn",
+                                           "modifier_doom_bringer_doom", "modifier_axe_battle_hunger", 
+                                           "modifier_queenofpain_shadow_strike", "modifier_phoenix_fire_spirit_burn", 
                                            "modifier_venomancer_poison_nova", "modifier_venomancer_venomous_gale"
-                                       },
+                                       }, 
                                    false))
                             : (name == "item_arcane_boots"
                                || (enemyHeroes.Count(
@@ -885,12 +884,13 @@
                             hero.HasModifiers(
                                 new[]
                                     {
-                                        "modifier_doom_bringer_doom", "modifier_axe_battle_hunger",
-                                        "modifier_queenofpain_shadow_strike", "modifier_phoenix_fire_spirit_burn",
+                                        "modifier_doom_bringer_doom", "modifier_axe_battle_hunger", 
+                                        "modifier_queenofpain_shadow_strike", "modifier_phoenix_fire_spirit_burn", 
                                         "modifier_venomancer_poison_nova", "modifier_venomancer_venomous_gale"
-                                    },
+                                    }, 
                                 false));
                     }
+
                     Utils.Sleep(ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, handleString);
                     if (name == "item_tango" || name == "item_tango_single")
                     {
@@ -954,7 +954,7 @@
             float ping, 
             bool onlyDamage, 
             bool onlyDisable, 
-            Hero me,
+            Hero me, 
             float mana)
         {
             var toggler = MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>();
@@ -1259,8 +1259,7 @@
                         if (category == "buff"
                             && Buffs.BuffsMenuDictionary[name].Item(name + "minManaCheckCombo").GetValue<Slider>().Value
                             < mana
-                            && (name == "item_armlet" || name == "item_satanic"
-                                || !Buff.Cast(ability, target, me, name)))
+                            && (name == "item_armlet" || name == "item_satanic" || !Buff.Cast(ability, target, me, name)))
                         {
                             continue;
                         }

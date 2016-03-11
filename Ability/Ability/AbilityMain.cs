@@ -53,8 +53,8 @@
             GankDamage.UpdateDamage(enemyHeroes, allyHeroes);
             if (!Me.IsAlive
                 || (Me.IsInvisible() && !Me.IsVisibleToEnemies && Me.ClassID != ClassID.CDOTA_Unit_Hero_Riki
-                    && (!Me.HasModifier("modifier_templar_assassin_meld")
-                        || !Orbwalking.CanCancelAnimation())) || Me.IsChanneling())
+                    && (!Me.HasModifier("modifier_templar_assassin_meld") || !Orbwalking.CanCancelAnimation()))
+                || Me.IsChanneling())
             {
                 return;
             }
@@ -113,7 +113,8 @@
                 if (keyDown)
                 {
                     if (Utils.SleepCheck("UpdateTarget")
-                        && (target == null || !target.IsValid || !target.IsAlive || (!target.IsVisible && targetLock == 0)))
+                        && (target == null || !target.IsValid || !target.IsAlive
+                            || (!target.IsVisible && targetLock == 0)))
                     {
                         var mode =
                             MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Target").GetValue<StringList>().SelectedIndex;
@@ -214,7 +215,7 @@
                         ping, 
                         selectedCombo == 2, 
                         selectedCombo == 1, 
-                        Me,
+                        Me, 
                         meMana);
                 }
 

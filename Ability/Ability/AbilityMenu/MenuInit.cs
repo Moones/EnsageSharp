@@ -33,6 +33,7 @@
             var myItems1 = myItems as Item[] ?? myItems.ToArray();
             var blink = myItems1.FirstOrDefault(x => x.Name == "item_blink");
             MyAbilities.SoulRing = myItems1.FirstOrDefault(x => x.Name == "item_soul_ring");
+            MyAbilities.ForceStaff = myItems1.FirstOrDefault(x => x.Name == "item_force_staff");
             if (blink != null)
             {
                 MyAbilities.Blink = blink;
@@ -125,6 +126,11 @@
                         || data.IsSlow || data.IsSilence)
                 select spell)
             {
+                if (NameManager.Name(spell) == "item_cyclone")
+                {
+                    MyAbilities.Cyclone = spell;
+                }
+
                 ComboMenu.AddAbility(spell.Name);
             }
 
