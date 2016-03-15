@@ -33,7 +33,7 @@
                 return;
             }
 
-            if (All.Count(x => x != null && x.Hero != null && x.IsValid) < 5)
+            if (All.Count(x => x != null && x.IsValid && x.Hero != null) < 5)
             {
                 All =
                     Players.All.Where(
