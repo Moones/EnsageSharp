@@ -40,6 +40,7 @@
                 RangeDrawing.AddRange(blink);
             }
 
+            MainMenu.Menu.AddItem(new MenuItem("Ability#.EnableAutoUsage", "Enable AutoUsage:")).SetValue(true);
             Nukes.AddAllNukes(spells, myItems1);
             Disables.AddAllDisables(spells, myItems1);
             Slows.AddAllSlows(spells, myItems1);

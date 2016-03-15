@@ -84,7 +84,8 @@
 
             var ping = Game.Ping;
 
-            if (MyAbilities.DeffensiveAbilities.Any() && Utils.SleepCheck("casting"))
+            if (MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>() && MyAbilities.DeffensiveAbilities.Any()
+                && Utils.SleepCheck("casting"))
             {
                 if (Utils.SleepCheck("Orbwalk.Attack")
                     && allyHeroes.Any(allyHero => FullCombo.DeffensiveAutoUsage(allyHero, Me, enemyHeroes, ping)))
@@ -172,7 +173,7 @@
 
             var meMissingHp = Me.MaximumHealth - Me.Health;
             var meMana = Me.Mana;
-            if (Utils.SleepCheck("Orbwalk.Attack")
+            if (MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>() && Utils.SleepCheck("Orbwalk.Attack")
                 && enemyHeroes.Any(
                     enemyHero => FullCombo.AutoUsage(enemyHero, enemyHeroes, meMissingHp, ping, Me, meMana)))
             {

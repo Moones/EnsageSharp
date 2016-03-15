@@ -68,7 +68,7 @@
             if (id == ClassID.CDOTA_Unit_Hero_Invoker)
             {
                 msg = "Partially supported (only currently invoked spells will be used)";
-                color = "#997700";
+                color = "#994400";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_EarthSpirit)
             {
@@ -98,27 +98,27 @@
             else if (id == ClassID.CDOTA_Unit_Hero_AncientApparition)
             {
                 msg = "Partially supported (will not use ultimate)";
-                color = "#997700";
+                color = "#994400";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_Obsidian_Destroyer)
             {
                 msg = "Partially supported (will not use ultimate)";
-                color = "#997700";
+                color = "#994400";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_Chen)
             {
                 msg = "Partially supported (will not control creeps)";
-                color = "#997700";
+                color = "#994400";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_Warlock)
             {
                 msg = "Partially supported (will not use ultimate)";
-                color = "#997700";
+                color = "#994400";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_StormSpirit)
             {
                 msg = "Partially supported (will not use ultimate)";
-                color = "#997700";
+                color = "#994400";
             }
 
             Game.PrintMessage(
