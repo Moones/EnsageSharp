@@ -7,6 +7,7 @@
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Objects;
 
     using global::Techies.Classes;
 
@@ -43,7 +44,7 @@
             var heroPosition = inFrontDistance > 0
                                    ? hero.Position
                                      + (VectorExtensions.FromPolarCoordinates(
-                                         1f,
+                                         1f, 
                                          (float)(hero.NetworkRotationRad + rotSpeed)).ToVector3() * inFrontDistance)
                                    : hero.Position;
             var prediction = heroPosition;
@@ -80,6 +81,31 @@
             {
                 if (tempDamage >= hero.Health)
                 {
+                    if (hero is Hero && nearestStack.MinEnemiesKill > 1)
+                    {
+                        var count =
+                            (from hero2 in
+                                 Heroes.GetByTeam(Variables.EnemyTeam)
+                                 .Where(
+                                     x =>
+                                     x.IsAlive && x.IsVisible && !x.Equals(hero)
+                                     && Utils.SleepCheck(x.ClassID + "Techies.AutoDetonate")
+                                     && x.Distance2D(nearestStack.Position) < 420)
+                             let tempDamage2 =
+                                 detonatableMines.Sum(
+                                     x => Variables.Damage.GetRemoteMineDamage(x.Level, hero2.ClassID, hero2))
+                             where tempDamage2 >= hero2.Health
+                             select hero2).Count();
+                        if (count + 1 >= nearestStack.MinEnemiesKill)
+                        {
+                            return new Tuple<float, IEnumerable<RemoteMine>>(tempDamage, detonatableMines);
+                        }
+
+                        detonatableMines.Add(remoteMine);
+                        tempDamage += Variables.Damage.GetRemoteMineDamage(remoteMine.Level, hero.ClassID, hero);
+                        continue;
+                    }
+
                     return new Tuple<float, IEnumerable<RemoteMine>>(tempDamage, detonatableMines);
                 }
 
@@ -87,7 +113,35 @@
                 tempDamage += Variables.Damage.GetRemoteMineDamage(remoteMine.Level, hero.ClassID, hero);
             }
 
-            return new Tuple<float, IEnumerable<RemoteMine>>(tempDamage, detonatableMines);
+            if (tempDamage >= hero.Health)
+            {
+                if (hero is Hero && nearestStack.MinEnemiesKill > 1)
+                {
+                    var count =
+                        (from hero2 in
+                             Heroes.GetByTeam(Variables.EnemyTeam)
+                             .Where(
+                                 x =>
+                                 x.IsAlive && x.IsVisible && !x.Equals(hero)
+                                 && Utils.SleepCheck(x.ClassID + "Techies.AutoDetonate")
+                                 && x.Distance2D(nearestStack.Position) < 420)
+                         let tempDamage2 =
+                             detonatableMines.Sum(
+                                 x => Variables.Damage.GetRemoteMineDamage(x.Level, hero2.ClassID, hero2))
+                         where tempDamage2 >= hero2.Health
+                         select hero2).Count();
+                    if (count + 1 >= nearestStack.MinEnemiesKill)
+                    {
+                        return new Tuple<float, IEnumerable<RemoteMine>>(tempDamage, detonatableMines);
+                    }
+
+                    return new Tuple<float, IEnumerable<RemoteMine>>(0, detonatableMines);
+                }
+
+                return new Tuple<float, IEnumerable<RemoteMine>>(tempDamage, detonatableMines);
+            }
+
+            return new Tuple<float, IEnumerable<RemoteMine>>(0, detonatableMines);
         }
 
         #endregion

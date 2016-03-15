@@ -68,6 +68,7 @@
             this.StackDamageTextSize = Drawing.MeasureText("StackDamage: ", "Arial", new Vector2(12), FontFlags.None);
             this.Visible = true;
             this.AutoDetonate = true;
+            this.MinEnemiesKill = 1;
 
             Game.OnUpdate += this.OnUpdate;
             Drawing.OnDraw += this.Drawing_OnDraw;
@@ -102,11 +103,6 @@
         ///     Gets or sets the detonate text size.
         /// </summary>
         public Vector2 DetonateTextSize { get; set; }
-
-        /// <summary>
-        /// Gets or sets the stack damage text size.
-        /// </summary>
-        public Vector2 StackDamageTextSize { get; set; }
 
         /// <summary>
         ///     Gets or sets the id.
@@ -160,10 +156,17 @@
         /// </summary>
         public List<LandMine> LandMines { get; set; }
 
+        public double MinEnemiesKill { get; set; }
+
         /// <summary>
         ///     Gets or sets the position.
         /// </summary>
         public Vector3 Position { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the raw damage.
+        /// </summary>
+        public float RawDamage { get; set; }
 
         /// <summary>
         ///     Gets the remote mine count.
@@ -249,14 +252,14 @@
         }
 
         /// <summary>
+        ///     Gets or sets the stack damage text size.
+        /// </summary>
+        public Vector2 StackDamageTextSize { get; set; }
+
+        /// <summary>
         ///     Gets or sets a value indicating whether visible.
         /// </summary>
         public bool Visible { get; set; }
-
-        /// <summary>
-        /// Gets or sets the raw damage.
-        /// </summary>
-        public float RawDamage { get; set; }
 
         /// <summary>
         ///     Gets or sets the x text size.
@@ -313,24 +316,24 @@
             if (!this.Visible)
             {
                 var alpha3 = Utils.IsUnderRectangle(
-                    Game.MouseScreenPosition,
-                    position.X - 45,
-                    position.Y - 40,
-                    this.XTextSize.X + 4,
+                    Game.MouseScreenPosition, 
+                    position.X - 45, 
+                    position.Y - 40, 
+                    this.XTextSize.X + 4, 
                     this.XTextSize.Y)
                                  ? 50
                                  : 0;
                 Drawing.DrawText(
-                    "*",
-                    new Vector2(position.X - 45, position.Y - 40),
-                    new Vector2(50),
-                    new Color(160 + alpha3, 160 + alpha3, 140 + alpha3, 112 + alpha3),
+                    "*", 
+                    new Vector2(position.X - 45, position.Y - 40), 
+                    new Vector2(50), 
+                    new Color(160 + alpha3, 160 + alpha3, 140 + alpha3, 112 + alpha3), 
                     FontFlags.None);
                 alpha3 = Utils.IsUnderRectangle(
-                    Game.MouseScreenPosition,
-                    position.X - 45 + this.XTextSize.X + 8,
-                    position.Y - 32,
-                    this.AutoDetonateTextSize.X,
+                    Game.MouseScreenPosition, 
+                    position.X - 45 + this.XTextSize.X + 8, 
+                    position.Y - 32, 
+                    this.AutoDetonateTextSize.X, 
                     this.AutoDetonateTextSize.Y)
                              ? 40
                              : 0;
@@ -340,16 +343,16 @@
                 if (this.AutoDetonate)
                 {
                     Drawing.DrawRect(
-                        new Vector2(position.X - 45 + this.XTextSize.X + 8, position.Y - 32),
-                        this.AutoDetonateTextSize,
+                        new Vector2(position.X - 45 + this.XTextSize.X + 8, position.Y - 32), 
+                        this.AutoDetonateTextSize, 
                         new Color(70 + alpha3, 160 + alpha3, 70 + alpha3, 70 + alpha3));
                 }
 
                 Drawing.DrawText(
-                    " AUTO DETONATE",
-                    new Vector2(position.X - 45 + this.XTextSize.X + 8, position.Y - 32),
-                    new Vector2(12),
-                    color2,
+                    " AUTO DETONATE", 
+                    new Vector2(position.X - 45 + this.XTextSize.X + 8, position.Y - 32), 
+                    new Vector2(12), 
+                    color2, 
                     FontFlags.None);
                 return;
             }
@@ -377,19 +380,19 @@
                 new Color(0 + alpha, 0 + alpha, 0 + alpha, 150 + alpha), 
                 true);
             Drawing.DrawText(
-                "StackDamage: ",
-                new Vector2(position.X - 27, position.Y + 48),
-                new Vector2(12),
-                new Color(200 + alpha, 200 + alpha, 200 + alpha, 190 + alpha),
+                "StackDamage: ", 
+                new Vector2(position.X - 27, position.Y + 48), 
+                new Vector2(12), 
+                new Color(200 + alpha, 200 + alpha, 200 + alpha, 190 + alpha), 
                 FontFlags.None);
             var r = Math.Min(this.RawDamage / 20, 255);
             var g = Math.Max(255 - (this.RawDamage / 30), 0);
             var cl = new Color(r, g, 0, 200 + alpha) { R = (byte)r, G = (byte)g };
             Drawing.DrawText(
-                this.RawDamage.ToString(CultureInfo.InvariantCulture),
-                new Vector2(position.X - 27 + this.StackDamageTextSize.X, position.Y + 48),
-                new Vector2(12),
-                cl,
+                this.RawDamage.ToString(CultureInfo.InvariantCulture), 
+                new Vector2(position.X - 27 + this.StackDamageTextSize.X, position.Y + 48), 
+                new Vector2(12), 
+                cl, 
                 FontFlags.None);
             Drawing.DrawRect(
                 position - new Vector2(28, 4), 
@@ -506,11 +509,11 @@
             if (this.AutoDetonate)
             {
                 DrawingUtils.RoundedRectangle(
-                    position.X - 2 + this.LandMineCountTextSize.X + 30,
-                    position.Y - 2 + 28,
-                    this.AutoDetonateTextSize.X + 3,
-                    this.AutoDetonateTextSize.Y + 4,
-                    2,
+                    position.X - 2 + this.LandMineCountTextSize.X + 30, 
+                    position.Y - 2 + 28, 
+                    this.AutoDetonateTextSize.X + 3, 
+                    this.AutoDetonateTextSize.Y + 4, 
+                    2, 
                     new Color(0 + alpha + alpha2, 100 + alpha + alpha2, 0 + alpha + alpha2));
             }
 
@@ -520,6 +523,32 @@
                 new Vector2(12), 
                 color, 
                 FontFlags.None);
+
+            var hoveringMinEnemiesKillNumber = Utils.IsUnderRectangle(
+                Game.MouseScreenPosition, 
+                position.X + this.LandMineCountTextSize.X + 32 + this.AutoDetonateTextSize.X, 
+                position.Y + 25, 
+                12, 
+                15);
+
+            Drawing.DrawText(
+                this.MinEnemiesKill.ToString(CultureInfo.InvariantCulture), 
+                new Vector2(
+                    position.X + this.LandMineCountTextSize.X + 34 + this.AutoDetonateTextSize.X, 
+                    position.Y + 26), 
+                new Vector2(16), 
+                hoveringMinEnemiesKillNumber ? Color.Orange : Color.DarkOrange, 
+                FontFlags.None);
+
+            if (hoveringMinEnemiesKillNumber)
+            {
+                Drawing.DrawText(
+                    "Kill atleast " + this.MinEnemiesKill + " enemies (click to toggle)", 
+                    Game.MouseScreenPosition + new Vector2(4, -14), 
+                    new Vector2(15), 
+                    Color.AntiqueWhite, 
+                    FontFlags.DropShadow);
+            }
         }
 
         /// <summary>
@@ -580,6 +609,25 @@
                 this.AutoDetonateTextSize.Y))
             {
                 this.AutoDetonate = !this.AutoDetonate;
+                return;
+            }
+
+            if (Utils.IsUnderRectangle(
+                Game.MouseScreenPosition, 
+                position.X + this.LandMineCountTextSize.X + 32 + this.AutoDetonateTextSize.X, 
+                position.Y + 25, 
+                12, 
+                15))
+            {
+                if (this.MinEnemiesKill == 5)
+                {
+                    this.MinEnemiesKill = 1;
+                }
+                else
+                {
+                    this.MinEnemiesKill++;
+                }
+
                 return;
             }
 

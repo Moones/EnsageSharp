@@ -54,7 +54,7 @@
         public float Radius { get; set; }
 
         /// <summary>
-        /// Gets or sets the range display.
+        ///     Gets or sets the range display.
         /// </summary>
         public ParticleEffect RangeDisplay { get; set; }
 

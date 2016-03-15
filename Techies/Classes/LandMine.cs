@@ -43,6 +43,11 @@
         #region Public Properties
 
         /// <summary>
+        ///     Gets or sets the damage.
+        /// </summary>
+        public float Damage { get; set; }
+
+        /// <summary>
         ///     Gets or sets the entity.
         /// </summary>
         public Unit Entity { get; set; }
@@ -51,11 +56,6 @@
         ///     Gets or sets the handle.
         /// </summary>
         public float Handle { get; set; }
-
-        /// <summary>
-        /// Gets or sets the damage.
-        /// </summary>
-        public float Damage { get; set; }
 
         /// <summary>
         ///     Gets or sets the level.

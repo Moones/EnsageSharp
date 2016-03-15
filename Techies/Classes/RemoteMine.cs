@@ -48,14 +48,14 @@
         #region Public Properties
 
         /// <summary>
+        ///     Gets or sets the damage.
+        /// </summary>
+        public float Damage { get; set; }
+
+        /// <summary>
         ///     Gets or sets the detonate ability.
         /// </summary>
         public Ability DetonateAbility { get; set; }
-
-        /// <summary>
-        /// Gets or sets the damage.
-        /// </summary>
-        public float Damage { get; set; }
 
         /// <summary>
         ///     Gets or sets the entity.

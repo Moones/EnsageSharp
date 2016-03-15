@@ -43,9 +43,9 @@
                 || hero.HasModifiers(
                     new[]
                         {
-                            "modifier_juggernaut_blade_fury",
+                            "modifier_juggernaut_blade_fury", 
                             "modifier_ember_spirit_sleight_of_fist_caster_invulnerability"
-                        },
+                        }, 
                     false))
             {
                 return false;
