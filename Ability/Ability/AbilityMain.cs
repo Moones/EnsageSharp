@@ -180,7 +180,7 @@
                 return;
             }
 
-            if (Utils.SleepCheck("casting"))
+            if (MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>() && Utils.SleepCheck("casting"))
             {
                 if (FullCombo.KillSteal(enemyHeroes, ping, Me))
                 {
