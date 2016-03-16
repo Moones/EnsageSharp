@@ -83,6 +83,7 @@
             Game.OnUpdate -= this.OnUpdate;
             Drawing.OnDraw -= this.Drawing_OnDraw;
             Game.OnWndProc -= this.Game_OnWndProc;
+            Variables.Stacks.Remove(this);
         }
 
         #endregion
@@ -156,6 +157,9 @@
         /// </summary>
         public List<LandMine> LandMines { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the min enemies kill.
+        /// </summary>
         public double MinEnemiesKill { get; set; }
 
         /// <summary>
@@ -234,7 +238,7 @@
                 }
 
                 Utils.Sleep(5, n);
-                float offset;
+                float offset = 70;
                 try
                 {
                     var mine = this.RemoteMines.First();
@@ -242,7 +246,10 @@
                 }
                 catch (Exception)
                 {
-                    offset = this.LandMines.First().Entity.HealthBarOffset;
+                    if (this.LandMines.Any())
+                    {
+                        offset = this.LandMines.First().Entity.HealthBarOffset;
+                    }
                 }
 
                 return !Drawing.WorldToScreen(this.Position + new Vector3(0, 0, offset), out this.screenPosition)
@@ -292,6 +299,11 @@
         /// </param>
         private void Drawing_OnDraw(EventArgs args)
         {
+            if (!Game.IsInGame || Game.IsPaused || Variables.Techies == null || !Variables.Techies.IsValid)
+            {
+                return;
+            }
+
             if (!Variables.Menu.DrawingsMenu.Item("drawStackOverlay").GetValue<bool>())
             {
                 return;
@@ -559,6 +571,11 @@
         /// </param>
         private void Game_OnWndProc(WndEventArgs args)
         {
+            if (!Game.IsInGame || Game.IsPaused || Variables.Techies == null || !Variables.Techies.IsValid)
+            {
+                return;
+            }
+
             if (!Variables.Menu.DrawingsMenu.Item("drawStackOverlay").GetValue<bool>())
             {
                 return;
@@ -708,6 +725,11 @@
         /// </param>
         private void OnUpdate(EventArgs args)
         {
+            if (!Game.IsInGame || Game.IsPaused || Variables.Techies == null || !Variables.Techies.IsValid)
+            {
+                return;
+            }
+
             if (!Utils.SleepCheck(this.Id + "Techies.Stacks.Update"))
             {
                 return;
@@ -715,15 +737,20 @@
 
             this.RemoteMines =
                 Variables.RemoteMines.Where(
-                    x => x.Entity.IsValid && x.Entity.IsAlive && x.Position.Distance(this.Position) < 350).ToList();
+                    x =>
+                    x.Entity.IsValid && x.Entity.IsAlive && x.Entity.Health > 0
+                    && x.Position.Distance(this.Position) < 350).ToList();
 
             this.LandMines =
                 Variables.LandMines.Where(
-                    x => x.Entity.IsValid && x.Entity.IsAlive && x.Position.Distance(this.Position) < 200).ToList();
+                    x =>
+                    x.Entity.IsValid && x.Entity.IsAlive && x.Entity.Health > 0
+                    && x.Position.Distance(this.Position) < 200).ToList();
             if (this.RemoteMines.Count <= 0 && this.LandMines.Count <= 0)
             {
                 Variables.Stacks.Remove(this);
                 this.Delete();
+                return;
             }
 
             this.RawDamage = this.RemoteMines.Sum(remoteMine => remoteMine.Damage)

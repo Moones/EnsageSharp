@@ -3,6 +3,7 @@
     using System.Linq;
 
     using Ensage;
+    using Ensage.Common;
     using Ensage.Common.Extensions;
 
     using global::Techies.Utility;
@@ -30,10 +31,20 @@
             this.Radius = Variables.LandMinesAbility.GetAbilityData("small_radius");
             this.Entity = entity as Unit;
             this.Damage = Variables.Damage.CurrentLandMineDamage;
-            if (Variables.Stacks != null && !Variables.Stacks.Any(x => x.Position.Distance(this.Position) < 200))
-            {
-                Variables.Stacks.Add(new Stack(this.Position));
-            }
+
+            DelayAction.Add(
+                500, 
+                () =>
+                    {
+                        if (Variables.Stacks != null
+                            && !Variables.Stacks.Any(
+                                x =>
+                                (x.RemoteMines.Count > 0 || x.LandMines.Count > 0)
+                                && x.Position.Distance(this.Position) < 200))
+                        {
+                            Variables.Stacks.Add(new Stack(this.Position));
+                        }
+                    });
 
             this.CreateRangeDisplay();
         }

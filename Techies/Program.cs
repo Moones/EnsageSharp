@@ -45,6 +45,24 @@
 
             Variables.Techies = null;
             Variables.Instance = null;
+
+            foreach (var remoteMine in Variables.RemoteMines)
+            {
+                remoteMine.Delete();
+                Variables.RemoteMines.Remove(remoteMine);
+            }
+
+            foreach (var landMine in Variables.LandMines)
+            {
+                landMine.Delete();
+                Variables.LandMines.Remove(landMine);
+            }
+
+            foreach (var stack in Variables.Stacks)
+            {
+                stack.Delete();
+                Variables.Stacks.Remove(stack);
+            }
         }
 
         /// <summary>
