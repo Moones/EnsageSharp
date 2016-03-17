@@ -115,7 +115,7 @@
                 {
                     if (Utils.SleepCheck("UpdateTarget")
                         && (target == null || !target.IsValid || !target.IsAlive
-                            || (!target.IsVisible && targetLock == 0)))
+                            || (!target.IsVisible && targetLock == 0) || (target.IsVisible && targetLock <= 1)))
                     {
                         var mode =
                             MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Target").GetValue<StringList>().SelectedIndex;
@@ -180,7 +180,7 @@
                 return;
             }
 
-            if (MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>() && Utils.SleepCheck("casting"))
+            if (MainMenu.Menu.Item("Ability#.EnableAutoKillSteal").GetValue<bool>() && Utils.SleepCheck("casting"))
             {
                 if (FullCombo.KillSteal(enemyHeroes, ping, Me))
                 {
@@ -196,7 +196,8 @@
             if (keyDown)
             {
                 if (Utils.SleepCheck("UpdateTarget")
-                    && (target == null || !target.IsValid || !target.IsAlive || (!target.IsVisible && targetLock == 0)))
+                    && (target == null || !target.IsValid || !target.IsAlive || (!target.IsVisible && targetLock == 0)
+                        || (target.IsVisible && targetLock <= 1)))
                 {
                     var mode =
                         MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Target").GetValue<StringList>().SelectedIndex;

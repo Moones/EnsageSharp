@@ -106,6 +106,11 @@
                     var canHit = ability.CanHit(hero, MyHeroInfo.Position, name);
                     if (name == "omniknight_purification")
                     {
+                        if (!MainMenu.Menu.Item("Ability#.EnableAutoKillSteal").GetValue<bool>())
+                        {
+                            continue;
+                        }
+
                         if (Nukes.NukesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value < mana
                             && MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
                             && Nukes.NukesMenuDictionary[name].Item(name + "herotoggler")
@@ -141,6 +146,11 @@
                         }
 
                         return false;
+                    }
+
+                    if (category == "nuke" && !MainMenu.Menu.Item("Ability#.EnableAutoKillSteal").GetValue<bool>())
+                    {
+                        continue;
                     }
 
                     if (category == "nuke" && Utils.SleepCheck(hero.Handle + "KillSteal")
@@ -342,7 +352,8 @@
                     }
 
                     if (Dictionaries.InDamageDictionary.ContainsKey(hero.Handle)
-                        && Dictionaries.InDamageDictionary[hero.Handle] >= hero.Health)
+                        && Dictionaries.InDamageDictionary[hero.Handle] >= hero.Health
+                        && MainMenu.Menu.Item("Ability#.EnableAutoKillSteal").GetValue<bool>())
                     {
                         continue;
                     }
@@ -1176,12 +1187,13 @@
                             continue;
                         }
 
-                        if (Dictionaries.InDamageDictionary.ContainsKey(target.Handle)
-                            && Dictionaries.InDamageDictionary[target.Handle] >= target.Health
-                            || (Dictionaries.OutDamageDictionary.ContainsKey(target.Handle)
-                                && Dictionaries.InDamageDictionary.ContainsKey(target.Handle)
-                                && (Dictionaries.InDamageDictionary[target.Handle]
-                                    + Dictionaries.OutDamageDictionary[target.Handle]) >= target.Health))
+                        if (((Dictionaries.InDamageDictionary.ContainsKey(target.Handle)
+                              && Dictionaries.InDamageDictionary[target.Handle] >= target.Health)
+                             || (Dictionaries.OutDamageDictionary.ContainsKey(target.Handle)
+                                 && Dictionaries.InDamageDictionary.ContainsKey(target.Handle)
+                                 && (Dictionaries.InDamageDictionary[target.Handle]
+                                     + Dictionaries.OutDamageDictionary[target.Handle]) >= target.Health))
+                            && MainMenu.Menu.Item("Ability#.EnableAutoKillSteal").GetValue<bool>())
                         {
                             return false;
                         }

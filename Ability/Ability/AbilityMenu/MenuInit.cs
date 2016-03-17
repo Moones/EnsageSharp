@@ -40,8 +40,9 @@
                 RangeDrawing.AddRange(blink);
             }
 
-            MainMenu.Menu.AddItem(new MenuItem("Ability#.EnableAutoUsage", "Enable AutoUsage:")).SetValue(true);
+            MainMenu.Menu.AddItem(new MenuItem("Ability#.EnableAutoKillSteal", "Enable AutoKillSteal:")).SetValue(true).SetFontStyle(fontColor: Color.Orange);
             Nukes.AddAllNukes(spells, myItems1);
+            MainMenu.Menu.AddItem(new MenuItem("Ability#.EnableAutoUsage", "Enable AutoUsage:")).SetValue(true).SetFontStyle(fontColor: Color.Orange);
             Disables.AddAllDisables(spells, myItems1);
             Slows.AddAllSlows(spells, myItems1);
             Buffs.AddAllBuffs(spells, myItems1);
