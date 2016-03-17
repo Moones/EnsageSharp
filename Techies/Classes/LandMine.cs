@@ -37,10 +37,7 @@
                 () =>
                     {
                         if (Variables.Stacks != null
-                            && !Variables.Stacks.Any(
-                                x =>
-                                (x.RemoteMines.Count > 0 || x.LandMines.Count > 0)
-                                && x.Position.Distance(this.Position) < 200))
+                            && !Variables.Stacks.Any(x => x.Position.Distance(this.Position) < 200))
                         {
                             Variables.Stacks.Add(new Stack(this.Position));
                         }

@@ -61,7 +61,16 @@
             this.Position = position;
             this.RemoteMines = Variables.RemoteMines.Where(x => x.Position.Distance(position) < 350).ToList();
             this.LandMines = Variables.LandMines.Where(x => x.Position.Distance(position) < 200).ToList();
-            this.Id = Variables.Stacks.Count + 1;
+            var lastOrDefault = Variables.Stacks.LastOrDefault();
+            if (lastOrDefault != null)
+            {
+                this.Id = lastOrDefault.Id + 1;
+            }
+            else
+            {
+                this.Id = 1;
+            }
+
             this.DetonateTextSize = Drawing.MeasureText("DETONATE!", "Arial", new Vector2(16), FontFlags.None);
             this.XTextSize = Drawing.MeasureText("x", "Arial", new Vector2(30), FontFlags.None);
             this.AutoDetonateTextSize = Drawing.MeasureText("[AUTO DETONATE]", "Arial", new Vector2(12), FontFlags.None);
@@ -234,7 +243,9 @@
 
                 if (!this.RemoteMines.Any() && !this.LandMines.Any())
                 {
-                    return this.screenPosition;
+                    return !Drawing.WorldToScreen(this.Position + new Vector3(0, 0, 100), out this.screenPosition)
+                               ? Vector2.Zero
+                               : this.screenPosition;
                 }
 
                 Utils.Sleep(5, n);
