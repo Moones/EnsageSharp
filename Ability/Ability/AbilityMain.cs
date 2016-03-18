@@ -51,10 +51,7 @@
             var enemyHeroes = EnemyHeroes.UsableHeroes;
             var allyHeroes = AllyHeroes.UsableHeroes;
             GankDamage.UpdateDamage(enemyHeroes, allyHeroes);
-            if (!Me.IsAlive
-                || (Me.IsInvisible() && !Me.IsVisibleToEnemies && Me.ClassID != ClassID.CDOTA_Unit_Hero_Riki
-                    && (!Me.HasModifier("modifier_templar_assassin_meld") || !Orbwalking.CanCancelAnimation()))
-                || Me.IsChanneling())
+            if (!Me.IsAlive || Me.IsChanneling() || Me.HasModifier("modifier_spirit_breaker_charge_of_darkness"))
             {
                 return;
             }
@@ -84,8 +81,11 @@
 
             var ping = Game.Ping;
 
-            if (MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>() && MyAbilities.DeffensiveAbilities.Any()
-                && Utils.SleepCheck("casting"))
+            var invisible = Me.IsInvisible() && Me.ClassID != ClassID.CDOTA_Unit_Hero_Riki
+                             && (!Me.HasModifier("modifier_templar_assassin_meld") || !Orbwalking.CanCancelAnimation());
+
+            if (!invisible && MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>()
+                && MyAbilities.DeffensiveAbilities.Any() && Utils.SleepCheck("casting"))
             {
                 if (Utils.SleepCheck("Orbwalk.Attack")
                     && allyHeroes.Any(allyHero => FullCombo.DeffensiveAutoUsage(allyHero, Me, enemyHeroes, ping)))
@@ -173,14 +173,16 @@
 
             var meMissingHp = Me.MaximumHealth - Me.Health;
             var meMana = Me.Mana;
-            if (MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>() && Utils.SleepCheck("Orbwalk.Attack")
+            if (!invisible && MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>()
+                && Utils.SleepCheck("Orbwalk.Attack")
                 && enemyHeroes.Any(
                     enemyHero => FullCombo.AutoUsage(enemyHero, enemyHeroes, meMissingHp, ping, Me, meMana)))
             {
                 return;
             }
 
-            if (MainMenu.Menu.Item("Ability#.EnableAutoKillSteal").GetValue<bool>() && Utils.SleepCheck("casting"))
+            if (!invisible && MainMenu.Menu.Item("Ability#.EnableAutoKillSteal").GetValue<bool>()
+                && Utils.SleepCheck("casting"))
             {
                 if (FullCombo.KillSteal(enemyHeroes, ping, Me))
                 {
@@ -209,15 +211,15 @@
                 }
 
                 var selectedCombo = MainMenu.ComboKeysMenu.Item("abilityComboType").GetValue<StringList>().SelectedIndex;
-                if (target != null && Utils.SleepCheck("Orbwalk.Attack"))
+                if (!invisible && target != null && Utils.SleepCheck("Orbwalk.Attack"))
                 {
                     var combo = FullCombo.Execute(
-                        target, 
-                        enemyHeroes, 
-                        ping, 
-                        selectedCombo == 2, 
-                        selectedCombo == 1, 
-                        Me, 
+                        target,
+                        enemyHeroes,
+                        ping,
+                        selectedCombo == 2,
+                        selectedCombo == 1,
+                        Me,
                         meMana);
                 }
 
