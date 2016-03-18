@@ -1,11 +1,13 @@
 ﻿namespace Orbwalker
 {
     using System;
+    using System.Linq;
 
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
     using Ensage.Common.Menu;
+    using Ensage.Common.Objects;
 
     /// <summary>
     ///     The orb walker.
@@ -78,7 +80,7 @@
         {
             if (!loaded)
             {
-                me = ObjectMgr.LocalHero;
+                me = ObjectManager.LocalHero;
                 if (!Game.IsInGame || me == null)
                 {
                     return;
@@ -95,7 +97,7 @@
             if (me == null || !me.IsValid)
             {
                 loaded = false;
-                me = ObjectMgr.LocalHero;
+                me = ObjectManager.LocalHero;
 
                 target = null;
                 RangeDisplay.Dispose();
@@ -134,8 +136,18 @@
             }
 
             var canCancel = Orbwalking.CanCancelAnimation();
-            var cd = Orbwalking.AttackOnCooldown(creepTarget);
-            if ((canCancel || !cd) && Utils.SleepCheck("Orbwalk.Attack"))
+            var cd = false;
+            if (creepTarget != null && creepTarget.IsValid)
+            {
+                cd = Orbwalking.AttackOnCooldown(creepTarget);
+            }
+
+            if (target != null && target.IsValid && !Game.IsKeyDown(Menu.Item("farmKey").GetValue<KeyBind>().Key))
+            {
+                cd = Orbwalking.AttackOnCooldown(target);
+            }
+
+            if (canCancel || !cd)
             {
                 if (Utils.SleepCheck("Orbwalker.Update.Target"))
                 {
@@ -159,8 +171,11 @@
                     && (creepTarget == null || !creepTarget.IsValid || !creepTarget.IsAlive || !creepTarget.IsVisible
                         || Utils.SleepCheck("Orbwalker.Update.Creep")))
                 {
-                    creepTarget = TargetSelector.GetLowestHPCreep(me, 200);
-                    Utils.Sleep(500, "Orbwalker.Update.Creep");
+                    creepTarget =
+                        Creeps.All.Where(
+                            x => x.IsValid && x.Team != me.Team && x.Distance2D(me) < me.GetAttackRange() + 150)
+                            .MinOrDefault(x => x.Health + x.Distance2D(me));
+                    Utils.Sleep(200, "Orbwalker.Update.Creep");
                 }
             }
 

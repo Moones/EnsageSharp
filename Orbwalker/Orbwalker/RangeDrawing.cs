@@ -36,7 +36,7 @@
         /// </summary>
         public RangeDrawing()
         {
-            this.me = ObjectMgr.LocalHero;
+            this.me = ObjectManager.LocalHero;
             this.rangeDisplay = null;
         }
 
@@ -131,7 +131,7 @@
         {
             if (this.me == null || !this.me.IsValid)
             {
-                this.me = ObjectMgr.LocalHero;
+                this.me = ObjectManager.LocalHero;
             }
         }
 
