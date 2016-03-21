@@ -1,10 +1,9 @@
 ﻿namespace Techies.Classes
 {
-    using System.Linq;
-
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Extensions.SharpDX;
 
     using global::Techies.Utility;
 
@@ -40,10 +39,30 @@
                 500, 
                 () =>
                     {
-                        if (Variables.Stacks != null
-                            && !Variables.Stacks.Any(x => x.Position.Distance(this.Position) < 350))
+                        if (Variables.Stacks != null)
                         {
-                            Variables.Stacks.Add(new Stack(this.Position));
+                            var position = this.Position;
+                            var nearestStack =
+                                Variables.Stacks.MinOrDefault(x => VectorExtensions.Distance(x.Position, position));
+                            if (nearestStack == null)
+                            {
+                                Variables.Stacks.Add(new Stack(position));
+                                return;
+                            }
+
+                            var distance = VectorExtensions.Distance(nearestStack.Position, position);
+                            if (distance < 350)
+                            {
+                                return;
+                            }
+
+                            if (distance < 700)
+                            {
+                                Variables.Stacks.Add(new Stack(nearestStack.Position.Extend(position, 702)));
+                                return;
+                            }
+
+                            Variables.Stacks.Add(new Stack(position));
                         }
                     });
 
@@ -144,7 +163,7 @@
         /// </returns>
         public float Distance(Vector3 v)
         {
-            return this.Position.Distance(v);
+            return VectorExtensions.Distance(this.Position, v);
         }
 
         #endregion

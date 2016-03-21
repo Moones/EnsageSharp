@@ -98,7 +98,11 @@
                              select hero2).Count();
                         if (count + 1 >= nearestStack.MinEnemiesKill)
                         {
-                            return new Tuple<float, IEnumerable<RemoteMine>>(tempDamage, detonatableMines);
+                            return new Tuple<float, IEnumerable<RemoteMine>>(
+                                tempDamage, 
+                                Variables.Menu.DetonationMenu.Item("detonateAllMines").GetValue<bool>()
+                                    ? nearestStack.RemoteMines
+                                    : detonatableMines);
                         }
 
                         detonatableMines.Add(remoteMine);
@@ -106,7 +110,11 @@
                         continue;
                     }
 
-                    return new Tuple<float, IEnumerable<RemoteMine>>(tempDamage, detonatableMines);
+                    return new Tuple<float, IEnumerable<RemoteMine>>(
+                        tempDamage, 
+                        Variables.Menu.DetonationMenu.Item("detonateAllMines").GetValue<bool>()
+                            ? nearestStack.RemoteMines
+                            : detonatableMines);
                 }
 
                 detonatableMines.Add(remoteMine);
@@ -130,15 +138,20 @@
                                  x => Variables.Damage.GetRemoteMineDamage(x.Level, hero2.ClassID, hero2))
                          where tempDamage2 >= hero2.Health
                          select hero2).Count();
-                    if (count + 1 >= nearestStack.MinEnemiesKill)
-                    {
-                        return new Tuple<float, IEnumerable<RemoteMine>>(tempDamage, detonatableMines);
-                    }
-
-                    return new Tuple<float, IEnumerable<RemoteMine>>(0, detonatableMines);
+                    return count + 1 >= nearestStack.MinEnemiesKill
+                               ? new Tuple<float, IEnumerable<RemoteMine>>(
+                                     tempDamage, 
+                                     Variables.Menu.DetonationMenu.Item("detonateAllMines").GetValue<bool>()
+                                         ? nearestStack.RemoteMines
+                                         : detonatableMines)
+                               : new Tuple<float, IEnumerable<RemoteMine>>(0, detonatableMines);
                 }
 
-                return new Tuple<float, IEnumerable<RemoteMine>>(tempDamage, detonatableMines);
+                return new Tuple<float, IEnumerable<RemoteMine>>(
+                    tempDamage, 
+                    Variables.Menu.DetonationMenu.Item("detonateAllMines").GetValue<bool>()
+                        ? nearestStack.RemoteMines
+                        : detonatableMines);
             }
 
             return new Tuple<float, IEnumerable<RemoteMine>>(0, detonatableMines);

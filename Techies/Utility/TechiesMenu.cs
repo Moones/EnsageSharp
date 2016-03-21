@@ -24,6 +24,9 @@
             detonationMenu.AddItem(
                 new MenuItem("autoDetonateProtection", "Detonate when enemy tries to destroy").SetValue(true)
                     .SetTooltip("Detonates mine when enemy tries to kill it with auto attack or item"));
+            detonationMenu.AddItem(new MenuItem("detonateAllMines", "Detonate all mines in stack").SetValue(false))
+                .SetTooltip(
+                    "Instead of detonating only needed amount of mines, assembly will detonate all mines in stack");
             optionsMenu.AddSubMenu(detonationMenu);
             var forceStaffMenu = new Menu("Auto ForceStaff", "autoForceStaff");
             forceStaffMenu.AddItem(new MenuItem("useForceStaff", "Use ForceStaff").SetValue(true));

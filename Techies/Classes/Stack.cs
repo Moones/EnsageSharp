@@ -752,11 +752,12 @@
                     x.Entity.IsValid && x.Entity.IsAlive && x.Entity.Health > 0
                     && x.Position.Distance(this.Position) < 350).ToList();
 
+            var minDistance = this.RemoteMines.Count > 0 ? 350 : 200;
             this.LandMines =
                 Variables.LandMines.Where(
                     x =>
                     x.Entity.IsValid && x.Entity.IsAlive && x.Entity.Health > 0
-                    && x.Position.Distance(this.Position) < 200).ToList();
+                    && x.Position.Distance(this.Position) < minDistance).ToList();
             if (this.RemoteMines.Count <= 0 && this.LandMines.Count <= 0)
             {
                 Variables.Stacks.Remove(this);
