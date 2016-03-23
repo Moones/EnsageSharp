@@ -76,7 +76,7 @@
         /// </param>
         private static void Events_OnLoad(object sender, EventArgs e)
         {
-            var hero = ObjectMgr.LocalHero;
+            var hero = ObjectManager.LocalHero;
             if (hero.ClassID != ClassID.CDOTA_Unit_Hero_Techies)
             {
                 Variables.Instance = null;

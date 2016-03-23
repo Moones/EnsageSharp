@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
 
     using Ensage;
@@ -12,8 +11,6 @@
 
     using global::Techies.Classes;
     using global::Techies.Utility;
-
-    using SharpDX;
 
     /// <summary>
     ///     The techies.
@@ -121,8 +118,8 @@
                 var sizey = topPanel[2];
                 if (Variables.Menu.DrawingsMenu.Item("drawTopPanel").GetValue<bool>())
                 {
-                    DrawRemoteMineNumber(classId, health, x, sizeX, sizey, enabled);
-                    DrawLandMineNumber(classId, health, x, sizey, enabled);
+                    DrawingUtils.DrawRemoteMineNumber(classId, health, x, sizeX, sizey, enabled);
+                    DrawingUtils.DrawLandMineNumber(classId, health, x, sizey, enabled);
                 }
 
                 if (!Variables.Damage.GetSuicideDamage().ContainsKey(classId))
@@ -130,7 +127,7 @@
                     continue;
                 }
 
-                DrawSuicide(classId, health, x, sizey, sizeX, enabled, hero);
+                DrawingUtils.DrawSuicide(classId, health, x, sizey, sizeX, enabled, hero);
             }
         }
 
@@ -192,169 +189,6 @@
                     this.EnabledHeroes[hero.ClassID] = !enabled;
                 }
             }
-        }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        ///     The draw land mine number.
-        /// </summary>
-        /// <param name="classId">
-        ///     The class id.
-        /// </param>
-        /// <param name="health">
-        ///     The health.
-        /// </param>
-        /// <param name="x">
-        ///     The x.
-        /// </param>
-        /// <param name="sizey">
-        ///     The size y.
-        /// </param>
-        /// <param name="enabled">
-        ///     The enabled.
-        /// </param>
-        private static void DrawLandMineNumber(ClassID classId, float health, double x, double sizey, bool enabled)
-        {
-            var landMinesDmg = Variables.Damage.GetLandMineDamage(Variables.LandMinesAbility.Level, classId);
-            if (!(landMinesDmg > 0))
-            {
-                return;
-            }
-
-            var landNumber = Math.Ceiling(health / landMinesDmg);
-            Drawing.DrawText(
-                landNumber.ToString(CultureInfo.InvariantCulture), 
-                new Vector2((float)x, (float)sizey), 
-                new Vector2(17, 17), 
-                enabled ? Color.Red : Color.DimGray, 
-                FontFlags.AntiAlias);
-        }
-
-        /// <summary>
-        ///     The draw remote mine number.
-        /// </summary>
-        /// <param name="classId">
-        ///     The class id.
-        /// </param>
-        /// <param name="health">
-        ///     The health.
-        /// </param>
-        /// <param name="x">
-        ///     The x.
-        /// </param>
-        /// <param name="sizeX">
-        ///     The size x.
-        /// </param>
-        /// <param name="sizey">
-        ///     The size y.
-        /// </param>
-        /// <param name="enabled">
-        ///     The enabled.
-        /// </param>
-        private static void DrawRemoteMineNumber(
-            ClassID classId, 
-            float health, 
-            double x, 
-            double sizeX, 
-            double sizey, 
-            bool enabled)
-        {
-            var remoteDmg = Variables.Damage.GetRemoteMineDamage(Variables.RemoteMinesAbility.Level, classId);
-            if (!(remoteDmg > 0))
-            {
-                return;
-            }
-
-            var remoteNumber = Math.Ceiling(health / remoteDmg);
-            Drawing.DrawText(
-                remoteNumber.ToString(CultureInfo.InvariantCulture), 
-                new Vector2((float)(x + sizeX / 3.6), (float)sizey), 
-                new Vector2(17, 17), 
-                enabled ? Color.Green : Color.DimGray, 
-                FontFlags.AntiAlias);
-        }
-
-        /// <summary>
-        ///     The draw suicide.
-        /// </summary>
-        /// <param name="classId">
-        ///     The class id.
-        /// </param>
-        /// <param name="health">
-        ///     The health.
-        /// </param>
-        /// <param name="x">
-        ///     The x.
-        /// </param>
-        /// <param name="sizey">
-        ///     The size y.
-        /// </param>
-        /// <param name="sizeX">
-        ///     The size x.
-        /// </param>
-        /// <param name="enabled">
-        ///     The enabled.
-        /// </param>
-        /// <param name="hero">
-        ///     The hero.
-        /// </param>
-        private static void DrawSuicide(
-            ClassID classId, 
-            float health, 
-            double x, 
-            double sizey, 
-            double sizeX, 
-            bool enabled, 
-            Unit hero)
-        {
-            var suicideAttackDmg = Variables.Damage.GetSuicideDamage()[classId];
-            if (!(suicideAttackDmg > 0))
-            {
-                return;
-            }
-
-            var dmg = health - suicideAttackDmg;
-            var canKill = dmg <= 0;
-            if (Variables.Menu.DrawingsMenu.Item("drawTopPanel").GetValue<bool>())
-            {
-                Drawing.DrawText(
-                    canKill ? "Yes" : "No", 
-                    new Vector2(canKill ? (float)(x + sizeX / 2) : (float)(x + sizeX / 1.7), (float)sizey), 
-                    new Vector2(17, 17), 
-                    enabled ? Color.DarkOrange : Color.DimGray, 
-                    FontFlags.AntiAlias);
-            }
-
-            if (!hero.IsVisible || !hero.IsAlive)
-            {
-                return;
-            }
-
-            if (!Variables.Menu.DrawingsMenu.Item("drawSuicideKills").GetValue<bool>())
-            {
-                return;
-            }
-
-            var screenPos = HUDInfo.GetHPbarPosition(hero);
-            if (screenPos.X + 20 > Drawing.Width || screenPos.X - 20 < 0 || screenPos.Y + 100 > Drawing.Height
-                || screenPos.Y - 30 < 0)
-            {
-                return;
-            }
-
-            var text = canKill ? "Yes" : "No " + Math.Floor(dmg);
-            var size = new Vector2(15, 15);
-            var textSize = Drawing.MeasureText(text, "Arial", size, FontFlags.AntiAlias);
-            var position = new Vector2(screenPos.X - textSize.X - 2, screenPos.Y - 3);
-            Drawing.DrawText(
-                text, 
-                position, 
-                size, 
-                enabled ? (canKill ? Color.LawnGreen : Color.Red) : Color.Gray, 
-                FontFlags.AntiAlias);
         }
 
         #endregion

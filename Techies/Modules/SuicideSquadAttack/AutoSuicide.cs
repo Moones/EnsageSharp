@@ -11,12 +11,12 @@
     /// </summary>
     internal class AutoSuicide : ITechiesModule
     {
-        #region Fields
+        #region Public Properties
 
         /// <summary>
-        ///     The suicide radius.
+        ///     Gets or sets the suicide radius.
         /// </summary>
-        public float SuicideRadius;
+        public float SuicideRadius { get; set; }
 
         #endregion
 
@@ -62,7 +62,7 @@
                 {
                     pos = Prediction.InFront(
                         hero, 
-                        (float)((Game.Ping / 1000 + Variables.Techies.GetTurnTime(hero)) * hero.MovementSpeed));
+                        (float)(((Game.Ping / 1000) + Variables.Techies.GetTurnTime(hero)) * hero.MovementSpeed));
                 }
 
                 if (pos.Distance2D(Variables.Techies) < hero.Distance2D(Variables.Techies))
@@ -77,7 +77,7 @@
 
                 if (Variables.Techies.Distance2D(pos) > 100)
                 {
-                    pos = (pos - Variables.Techies.Position) * 99 / pos.Distance2D(Variables.Techies)
+                    pos = (pos - (Variables.Techies.Position * 99 / pos.Distance2D(Variables.Techies)))
                           + Variables.Techies.Position;
                 }
 

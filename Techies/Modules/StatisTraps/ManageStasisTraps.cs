@@ -57,8 +57,8 @@
         /// </summary>
         public void OnClose()
         {
-            ObjectMgr.OnAddEntity -= ObjectMgr_OnAddEntity;
-            ObjectMgr.OnRemoveEntity -= ObjectMgr_OnRemoveEntity;
+            ObjectManager.OnAddEntity -= ObjectMgr_OnAddEntity;
+            ObjectManager.OnRemoveEntity -= ObjectMgr_OnRemoveEntity;
         }
 
         /// <summary>
@@ -66,10 +66,10 @@
         /// </summary>
         public void OnLoad()
         {
-            ObjectMgr.OnAddEntity += ObjectMgr_OnAddEntity;
-            ObjectMgr.OnRemoveEntity += ObjectMgr_OnRemoveEntity;
+            ObjectManager.OnAddEntity += ObjectMgr_OnAddEntity;
+            ObjectManager.OnRemoveEntity += ObjectMgr_OnRemoveEntity;
             foreach (var bomb in
-                ObjectMgr.GetEntities<Unit>()
+                ObjectManager.GetEntities<Unit>()
                     .Where(
                         x =>
                         x.ClassID == ClassID.CDOTA_NPC_TechiesMines && x.Name == "npc_dota_techies_stasis_trap"
