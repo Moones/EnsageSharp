@@ -48,7 +48,7 @@
         {
             if (Utils.SleepCheck("mePosition"))
             {
-                Position = AbilityMain.Me.IsMoving
+                Position = AbilityMain.Me.NetworkActivity == NetworkActivity.Move
                                ? Prediction.InFront(AbilityMain.Me, AbilityMain.Me.MovementSpeed * (Game.Ping / 1000))
                                : AbilityMain.Me.Position;
             }
