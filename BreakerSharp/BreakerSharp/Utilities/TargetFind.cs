@@ -111,15 +111,11 @@
                 return;
             }
 
+            this.UnlockTarget();
             this.Target =
                 Heroes.GetByTeam(Variables.EnemyTeam)
                     .Where(x => x.IsValid && x.IsAlive && !x.IsIllusion && x.IsVisible)
                     .MinOrDefault(x => x.Distance2D(Game.MousePosition));
-            if (this.Target == null)
-            {
-                this.UnlockTarget();
-            }
-
             this.sleeper.Sleep(100);
         }
 

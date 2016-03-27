@@ -72,6 +72,7 @@
             this.lastLevel = ability.Level;
             this.abilityIcon = Drawing.GetTexture("materials/ensage_ui/spellicons/spirit_breaker_charge_of_darkness");
             this.iconSize = new Vector2(HUDInfo.GetHpBarSizeY() * 2);
+            this.CastPoint = this.ability.FindCastPoint();
         }
 
         #endregion
@@ -88,6 +89,11 @@
                 return this.ability.CanBeCasted() && !this.sleeper.Sleeping && !this.IsCharging;
             }
         }
+
+        /// <summary>
+        ///     Gets the cast point.
+        /// </summary>
+        public double CastPoint { get; private set; }
 
         /// <summary>
         ///     Gets a value indicating whether is charging.

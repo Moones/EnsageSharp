@@ -95,10 +95,11 @@
         /// <returns>
         ///     The <see cref="bool" />.
         /// </returns>
-        public bool CanUseOn(Entity target)
+        public bool CanUseOn(Unit target)
         {
             return target != null && target.IsVisible
-                   && target.Distance2D(Variables.Hero) <= this.ability.GetCastRange();
+                   && target.Distance2D(Variables.Hero) <= this.ability.GetCastRange() + 100
+                   && !target.IsLinkensProtected();
         }
 
         /// <summary>
@@ -117,7 +118,8 @@
                     .Where(
                         hero =>
                         hero.IsValid && hero.IsVisible && hero.IsAlive && this.CanUseOn(hero) && hero.Health > minHealth
-                        && AbilityDamage.CalculateDamage(this.ability, Variables.Hero, hero) >= hero.Health))
+                        && AbilityDamage.CalculateDamage(this.ability, Variables.Hero, hero) >= hero.Health
+                        && hero.CanDie()))
             {
                 this.UseOn(hero);
                 return true;

@@ -15,6 +15,11 @@
         #region Public Properties
 
         /// <summary>
+        ///     Gets or sets the armlet toggler.
+        /// </summary>
+        public static ArmletToggler ArmletToggler { get; set; }
+
+        /// <summary>
         ///     Gets a value indicating whether charge away.
         /// </summary>
         public static bool ChargeAway

@@ -90,6 +90,11 @@
         /// </summary>
         public void CheckProc()
         {
+            if (this.ability.Level <= 0)
+            {
+                return;
+            }
+
             var onCooldown = Orbwalking.AttackOnCooldown();
             if (this.attacked && !onCooldown)
             {
@@ -123,6 +128,11 @@
         /// </summary>
         public void DrawChance()
         {
+            if (this.ability.Level <= 0)
+            {
+                return;
+            }
+
             Vector2 screenPosition;
             if (
                 !Drawing.WorldToScreen(

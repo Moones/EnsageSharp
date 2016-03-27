@@ -96,6 +96,11 @@
         public void OnClose()
         {
             this.pause = true;
+            if (this.itemCombo != null)
+            {
+                this.itemCombo.Pause = true;
+            }
+
             if (Variables.MenuManager != null)
             {
                 Variables.MenuManager.Menu.RemoveFromMainMenu();
@@ -136,6 +141,7 @@
         {
             Variables.Hero = ObjectManager.LocalHero;
             this.pause = Variables.Hero.ClassID != ClassID.CDOTA_Unit_Hero_SpiritBreaker;
+            this.itemCombo.Pause = this.pause;
             if (this.pause)
             {
                 return;
@@ -163,8 +169,21 @@
         /// </summary>
         public void OnUpdate()
         {
+            if (!this.pause)
+            {
+                this.pause = Game.IsPaused;
+            }
+
             if (this.pause || Variables.Hero == null || !Variables.Hero.IsValid)
             {
+                return;
+            }
+
+            var canAutoUse = !Me.IsInvisible() && !Me.IsChanneling();
+            if (Variables.ArmletToggler != null && Variables.ArmletToggler.CanToggle && canAutoUse)
+            {
+                Variables.ArmletToggler.Toggle();
+                this.comboSleeper.Sleep(Game.Ping + 100);
                 return;
             }
 
@@ -178,34 +197,45 @@
 
             if (Variables.Combo)
             {
-                if (this.comboSleeper.Sleeping || Variables.ChargeOfDarkness.IsCharging)
+                if (this.comboSleeper.Sleeping)
                 {
                     return;
                 }
 
-                if (this.Target == null || !this.Target.IsVisible)
+                if (Variables.ChargeOfDarkness.IsCharging)
+                {
+                    this.itemCombo.UseInvis(false);
+                    return;
+                }
+
+                if (this.Target == null || !this.Target.IsVisible || !this.Target.IsAlive)
                 {
                     this.move.ToPosition(Game.MousePosition);
                     return;
                 }
 
-                var canCancelAutoAttack = Orbwalking.CanCancelAnimation() && Utils.SleepCheck("Orbwalk.Attack")
-                                          && Utils.SleepCheck("GlobalCasting");
+                var canDoCombo = Orbwalking.CanCancelAnimation() && Utils.SleepCheck("Orbwalk.Attack")
+                                 && Utils.SleepCheck("GlobalCasting")
+                                 && (this.Target.Health
+                                     > this.Target.DamageTaken(Me.DamageAverage, DamageType.Physical, Me) * 2
+                                     || this.Target.Distance2D(Me) > Me.GetAttackRange() + 100);
 
-                if (Variables.MenuManager.AbilityEnabled("spirit_breaker_charge_of_darkness") && canCancelAutoAttack
+                if (Variables.MenuManager.AbilityEnabled("spirit_breaker_charge_of_darkness") && canDoCombo
                     && Variables.ChargeOfDarkness.ChargeTo(this.Target))
                 {
-                    this.comboSleeper.Sleep(1000);
+                    this.itemCombo.UseInvis(true);
+                    this.comboSleeper.Sleep((float)((Variables.ChargeOfDarkness.CastPoint * 1000) + Game.Ping + 200));
                     return;
                 }
 
-                if (canCancelAutoAttack && this.itemCombo.ExecuteCombo(this.Target))
+                if (canDoCombo && this.itemCombo.ExecuteCombo(this.Target))
                 {
                     this.comboSleeper.Sleep((float)(Game.Ping + Me.GetTurnTime(this.Target.Position)));
                     return;
                 }
 
-                if (Variables.MenuManager.AbilityEnabled("spirit_breaker_nether_strike") && canCancelAutoAttack
+                if (Variables.MenuManager.AbilityEnabled("spirit_breaker_nether_strike") && canDoCombo
+                    && this.Target.Health > Variables.MenuManager.MinHpKillsteal
                     && Variables.NetherStrike.UseOn(this.Target))
                 {
                     this.comboSleeper.Sleep((float)(Variables.NetherStrike.CastPoint * 1000));
@@ -216,7 +246,8 @@
                 return;
             }
 
-            if (Variables.MenuManager.KillSteal && Variables.NetherStrike.KillSteal(200))
+            if (canAutoUse && Variables.MenuManager.KillSteal
+                && Variables.NetherStrike.KillSteal(Variables.MenuManager.MinHpKillsteal))
             {
                 this.comboSleeper.Sleep((float)(Game.Ping + (Variables.NetherStrike.CastPoint * 1000)));
             }
@@ -268,6 +299,17 @@
         /// </param>
         public void Player_OnExecuteOrder(ExecuteOrderEventArgs args)
         {
+            if (this.pause || Variables.Hero == null || !Variables.Hero.IsValid)
+            {
+                return;
+            }
+
+            if (Variables.ArmletToggler != null && args.Order == Order.ToggleAbility && args.Ability != null
+                && args.Ability.StoredName() == "item_armlet")
+            {
+                Variables.ArmletToggler.Sleeper.Sleep(Variables.MenuManager.ArmletToggleInterval / 2);
+            }
+
             if (args.Ability != null && args.Target != null
                 && args.Ability.StoredName() == "spirit_breaker_charge_of_darkness")
             {
