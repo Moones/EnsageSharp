@@ -65,7 +65,12 @@
                 return;
             }
 
-            if (!Heroes.GetByTeam(Variables.EnemyTeam).Any(x => x.Distance2D(Variables.Hero) < x.GetAttackRange())
+            if (
+                !Heroes.GetByTeam(Variables.EnemyTeam)
+                     .Any(
+                         x =>
+                         x.IsValid && x.IsAlive && x.IsVisible
+                         && x.Distance2D(Variables.Hero) < x.GetAttackRange() + 200)
                 && !Variables.Hero.HasModifiers(
                     new[]
                         {
