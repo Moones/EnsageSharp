@@ -101,7 +101,7 @@
                     new AbilityToggler(
                         new Dictionary<string, bool>
                             {
-                                { "item_glimmer_cape", true }, { "item_invis_sword", true }, { "item_silver_edge", true }, 
+                                { "item_invis_sword", true }, { "item_silver_edge", true }, 
                                 { "item_rod_of_atos", true }, { "item_sheepstick", true }, { "item_orchid", true }, 
                                 { "item_shivas_guard", true }, { "item_abyssal_blade", true }, { "item_armlet", true }, 
                                 { "item_mask_of_madness", true }, { "item_urn_of_shadows", true }, 
