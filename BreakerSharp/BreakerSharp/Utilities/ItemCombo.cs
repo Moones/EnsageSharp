@@ -158,7 +158,7 @@
                 {
                     var canEnableArmlet =
                         !Variables.Hero.HasModifiers(
-                            new[] { "modifier_item_armlet_unholy_strength", "modifier_ice_blast" }) && !item.IsToggled;
+                            new[] { "modifier_item_armlet_unholy_strength", "modifier_ice_blast" }, false) && !item.IsToggled;
                     if (!canEnableArmlet)
                     {
                         continue;
