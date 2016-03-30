@@ -153,6 +153,11 @@
                         continue;
                     }
 
+                    if (name == "item_urn_of_shadows" && hero.HasModifier("modifier_item_urn_damage"))
+                    {
+                        continue;
+                    }
+
                     if (category == "nuke" && Utils.SleepCheck(hero.Handle + "KillSteal")
                         && Nukes.NukesMenuDictionary[name].Item(name + "minManaCheck").GetValue<Slider>().Value < mana
                         && MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
@@ -890,19 +895,18 @@
                                 > Heals.HealsMenuDictionary[name].Item(name + "missinghpmin").GetValue<Slider>().Value)
                             - 1)) && Heal.Cast(ability, hero, name))
                 {
-                    //if (name == "item_urn_of_shadows")
-                    //{
-                    //    Console.WriteLine(
-                    //        hero.HasModifiers(
-                    //            new[]
-                    //                {
-                    //                    "modifier_doom_bringer_doom", "modifier_axe_battle_hunger", 
-                    //                    "modifier_queenofpain_shadow_strike", "modifier_phoenix_fire_spirit_burn", 
-                    //                    "modifier_venomancer_poison_nova", "modifier_venomancer_venomous_gale"
-                    //                }, 
-                    //            false));
-                    //}
-
+                    // if (name == "item_urn_of_shadows")
+                    // {
+                    // Console.WriteLine(
+                    // hero.HasModifiers(
+                    // new[]
+                    // {
+                    // "modifier_doom_bringer_doom", "modifier_axe_battle_hunger", 
+                    // "modifier_queenofpain_shadow_strike", "modifier_phoenix_fire_spirit_burn", 
+                    // "modifier_venomancer_poison_nova", "modifier_venomancer_venomous_gale"
+                    // }, 
+                    // false));
+                    // }
                     Utils.Sleep(ability.GetCastDelay(me, hero, abilityName: name) * 1000 + ping + 100, handleString);
                     if (name == "item_tango" || name == "item_tango_single")
                     {
@@ -1221,6 +1225,11 @@
                             continue;
                         }
 
+                        if (name == "item_urn_of_shadows" && target.HasModifier("modifier_item_urn_damage"))
+                        {
+                            continue;
+                        }
+
                         if (category == "nuke")
                         {
                             Nuke.Cast(ability, target, name);
@@ -1451,6 +1460,11 @@
                             Utils.Sleep(500, possibleTarget.Handle + "KillSteal");
                             dealtDamage = 0;
                             return false;
+                        }
+
+                        if (name == "item_urn_of_shadows" && possibleTarget.HasModifier("modifier_item_urn_damage"))
+                        {
+                            continue;
                         }
 
                         if (!ability.CanHit(possibleTarget, MyHeroInfo.Position, name)

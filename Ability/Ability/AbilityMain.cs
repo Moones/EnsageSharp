@@ -82,7 +82,7 @@
             var ping = Game.Ping;
 
             var invisible = Me.IsInvisible() && Me.ClassID != ClassID.CDOTA_Unit_Hero_Riki
-                             && (!Me.HasModifier("modifier_templar_assassin_meld") || !Orbwalking.CanCancelAnimation());
+                            && (!Me.HasModifier("modifier_templar_assassin_meld") || !Orbwalking.CanCancelAnimation());
 
             if (!invisible && MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>()
                 && MyAbilities.DeffensiveAbilities.Any() && Utils.SleepCheck("casting"))
@@ -214,12 +214,12 @@
                 if (!invisible && target != null && Utils.SleepCheck("Orbwalk.Attack"))
                 {
                     var combo = FullCombo.Execute(
-                        target,
-                        enemyHeroes,
-                        ping,
-                        selectedCombo == 2,
-                        selectedCombo == 1,
-                        Me,
+                        target, 
+                        enemyHeroes, 
+                        ping, 
+                        selectedCombo == 2, 
+                        selectedCombo == 1, 
+                        Me, 
                         meMana);
                 }
 

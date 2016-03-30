@@ -15,7 +15,7 @@
         {
             if (ability.IsAbilityBehavior(AbilityBehavior.UnitTarget, name))
             {
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
                 SoulRing.Cast(ability);
                 ability.UseAbility(target);
@@ -26,7 +26,7 @@
                  || ability.IsAbilityBehavior(AbilityBehavior.Point, name))
                 && (Prediction.StraightTime(target) > 1000 || target.MovementSpeed < 200))
             {
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
                 return ability.CastSkillShot(target, name, SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
             }
@@ -34,7 +34,7 @@
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))
             {
                 SoulRing.Cast(ability);
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
                 ability.UseAbility();
                 return true;

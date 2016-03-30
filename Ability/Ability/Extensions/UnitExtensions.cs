@@ -11,14 +11,14 @@
     using SharpDX;
 
     /// <summary>
-    /// The unit extensions.
+    ///     The unit extensions.
     /// </summary>
     internal static class UnitExtensions
     {
         #region Static Fields
 
         /// <summary>
-        /// The position dictionary.
+        ///     The position dictionary.
         /// </summary>
         private static readonly Dictionary<float, Vector3> PositionDictionary = new Dictionary<float, Vector3>();
 
@@ -27,13 +27,13 @@
         #region Public Methods and Operators
 
         /// <summary>
-        /// The get doable damage.
+        ///     The get doable damage.
         /// </summary>
         /// <param name="unit">
-        /// The unit.
+        ///     The unit.
         /// </param>
         /// <returns>
-        /// The <see cref="float"/>.
+        ///     The <see cref="float" />.
         /// </returns>
         public static float GetDoableDamage(this Unit unit)
         {
@@ -53,16 +53,16 @@
         }
 
         /// <summary>
-        /// The predicted position.
+        ///     The predicted position.
         /// </summary>
         /// <param name="unit">
-        /// The unit.
+        ///     The unit.
         /// </param>
         /// <param name="bonusDelay">
-        /// The bonus delay.
+        ///     The bonus delay.
         /// </param>
         /// <returns>
-        /// The <see cref="Vector3"/>.
+        ///     The <see cref="Vector3" />.
         /// </returns>
         public static Vector3 PredictedPosition(this Unit unit, double bonusDelay = 0)
         {
@@ -73,7 +73,7 @@
             {
                 position = unit.NetworkActivity == NetworkActivity.Move
                                ? Prediction.InFront(
-                                   unit,
+                                   unit, 
                                    (float)(unit.MovementSpeed * ((Game.Ping / 1000) + bonusDelay)))
                                : unit.Position;
                 if (PositionDictionary.ContainsKey((float)(handle + bonusDelay)))

@@ -36,7 +36,7 @@
             {
                 DelayAction.Add(
                     new DelayActionItem(300, () => { AbilityMain.LaunchSnowball(); }, CancellationToken.None));
-                
+
                 if (name == "spirit_breaker_charge_of_darkness")
                 {
                     Utils.Sleep(1500, "Ability.Move");

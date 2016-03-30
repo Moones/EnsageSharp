@@ -102,7 +102,7 @@
 
         public static bool UnderTower(Ability ability, Hero target)
         {
-            var closestTower = EnemyTowers.GetClosest;
+            var closestTower = AllyTowers.GetClosest;
             return closestTower != null
                    && target.Distance2D(closestTower)
                    < (closestTower.AttackRange + closestTower.HullRadius + target.HullRadius);

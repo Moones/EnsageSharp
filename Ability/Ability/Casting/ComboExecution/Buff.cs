@@ -29,7 +29,7 @@
                 }
 
                 var armlettoggled = buffTarget.HasModifier("modifier_item_armlet_unholy_strength") && ability.IsToggled;
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
                 if (armlettoggled)
                 {
@@ -64,7 +64,7 @@
                         return false;
                     }
 
-                    Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                    Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                     ManageAutoAttack.AutoAttackDisabled = true;
                     ability.UseAbility();
                     if (Nuke.Cast(meld, target, NameManager.Name(meld)))
@@ -86,13 +86,13 @@
 
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))
             {
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
                 ability.UseAbility();
                 return true;
             }
 
-            Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+            Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
             ManageAutoAttack.AutoAttackDisabled = true;
             ability.UseAbility(buffTarget);
             return true;

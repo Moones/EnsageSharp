@@ -140,6 +140,7 @@
     <Compile Include="ObjectManager\NameManager.cs" />
     <Compile Include="ObjectManager\Players\AllyPlayers.cs" />
     <Compile Include="ObjectManager\Players\EnemyPlayers.cs" />
+    <Compile Include="ObjectManager\Towers\AllyTowers.cs" />
     <Compile Include="ObjectManager\Towers\EnemyTowers.cs" />
     <Compile Include="OnUpdate\OnUpdateChecks.cs" />
     <Compile Include="Program.cs" />

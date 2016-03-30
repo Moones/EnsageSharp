@@ -69,7 +69,7 @@
                     MyAbilities.OffensiveAbilities.Remove(name + "buff");
                 }
 
-                if (data.IsNuke)
+                if (data.IsNuke || name == "item_urn_of_shadows")
                 {
                     MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().Remove(name);
                     Nukes.NukesMenuDictionary.Remove(name);
@@ -219,7 +219,7 @@
                             added = true;
                         }
 
-                        if (data.IsNuke)
+                        if (data.IsNuke || item.Name == "item_urn_of_shadows")
                         {
                             AddNewNuke(item);
                             added = true;

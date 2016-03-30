@@ -9,6 +9,7 @@
     using Ensage;
     using Ensage.Common.AbilityInfo;
     using Ensage.Common.Menu;
+    using Ensage.Common.Objects;
 
     internal class Nukes
     {
@@ -42,7 +43,7 @@
             foreach (var spell in
                 from spell in myItems1
                 let data = AbilityDatabase.Find(spell.Name)
-                where data != null && data.IsNuke
+                where data != null && (data.IsNuke || spell.StoredName() == "item_urn_of_shadows")
                 select spell)
             {
                 AddNuke(spell);

@@ -58,14 +58,14 @@
 
                     Utils.Sleep(1000, "AbilitySharp.CancelLinkens");
 
-                    Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                    Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                     ManageAutoAttack.AutoAttackDisabled = true;
                     SoulRing.Cast(ability);
                     ability.UseAbility(target, true);
                     return false;
                 }
 
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
                 SoulRing.Cast(ability);
                 ability.UseAbility(target);
@@ -80,7 +80,7 @@
                     > Nukes.NukesMenuDictionary[name].Item(name + "minstraighttime").GetValue<Slider>().Value
                     || target.MovementSpeed < 200))
             {
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
                 var casted = ability.CastSkillShot(target, name, SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
                 if (casted)
@@ -124,7 +124,7 @@
                         return false;
                     }
 
-                    Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                    Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                     ManageAutoAttack.AutoAttackDisabled = true;
                     ability.UseAbility();
                     DelayAction.Add(
@@ -141,13 +141,13 @@
 
                 if (ability.Name.Contains("nevermore_shadowraze"))
                 {
-                    Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                    Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                     ManageAutoAttack.AutoAttackDisabled = true;
                     return ability.CastSkillShot(target, name);
                 }
 
                 SoulRing.Cast(ability);
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
                 ability.UseAbility();
                 return true;

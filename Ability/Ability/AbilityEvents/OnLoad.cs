@@ -57,7 +57,7 @@
             AllyHeroes.UsableHeroes = new Hero[] { };
             EnemyPlayers.All = new List<Player>();
             AllyPlayers.All = new List<Player>();
-            EnemyTowers.Towers = new List<Building>();
+            AllyTowers.Towers = new List<Building>();
             AllyHeroes.AbilityDictionary = new Dictionary<string, List<Ability>>();
             EnemyHeroes.AbilityDictionary = new Dictionary<string, List<Ability>>();
             AllyHeroes.ItemDictionary = new Dictionary<string, List<Item>>();

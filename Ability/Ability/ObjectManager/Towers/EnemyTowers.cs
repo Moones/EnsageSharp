@@ -4,25 +4,21 @@
     using System.Linq;
 
     using Ensage;
-    using Ensage.Common;
-    using Ensage.Common.Extensions;
 
+    /// <summary>
+    ///     The enemy towers.
+    /// </summary>
     internal class EnemyTowers
     {
-        #region Static Fields
-
-        public static List<Building> Towers;
-
-        private static Building closestTower;
-
-        #endregion
-
         #region Constructors and Destructors
 
+        /// <summary>
+        ///     Initializes static members of the <see cref="EnemyTowers" /> class.
+        /// </summary>
         static EnemyTowers()
         {
             Towers =
-                ObjectMgr.GetEntities<Building>()
+                ObjectManager.GetEntities<Building>()
                     .Where(x => x.ClassID == ClassID.CDOTA_BaseNPC_Tower && x.Team == AbilityMain.Me.Team && x.IsAlive)
                     .ToList();
         }
@@ -31,21 +27,10 @@
 
         #region Public Properties
 
-        public static Building GetClosest
-        {
-            get
-            {
-                if (!Utils.SleepCheck("GetClosestTower") && closestTower != null && closestTower.IsValid)
-                {
-                    return closestTower;
-                }
-
-                closestTower =
-                    Towers.FirstOrDefault(x => x.IsValid && x.IsAlive && x.Distance2D(MyHeroInfo.Position) < 1500);
-                Utils.Sleep(250, "GetClosestTower");
-                return closestTower;
-            }
-        }
+        /// <summary>
+        ///     Gets or sets the towers.
+        /// </summary>
+        public static List<Building> Towers { get; set; }
 
         #endregion
     }

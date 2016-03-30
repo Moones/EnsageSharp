@@ -17,12 +17,12 @@
         {
             if (Utils.SleepCheck("cancelorder") && AutoAttackDisabled)
             {
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 1");
+                Game.ExecuteCommand("dota_player_units_auto_attack_mode 1");
                 AutoAttackDisabled = false;
             }
             else if (!Utils.SleepCheck("cancelorder") && !AutoAttackDisabled)
             {
-                Game.ExecuteCommand("dota_player_units_auto_attack_after_spell 0");
+                Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                 AutoAttackDisabled = true;
             }
         }
