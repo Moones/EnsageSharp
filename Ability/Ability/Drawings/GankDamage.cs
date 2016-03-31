@@ -32,7 +32,7 @@
 
         public static void Drawing_OnDraw(EventArgs args)
         {
-            if (!Game.IsInGame || !allies.Any() || !enemies.Any() || !IncomingDamages.Any() || AbilityMain.Me == null
+            if (!Game.IsInGame || !IncomingDamages.Any() || AbilityMain.Me == null
                 || !AbilityMain.Me.IsValid || !MainMenu.GankDamageMenu.Item("enableGankDamage").GetValue<bool>())
             {
                 return;
@@ -40,7 +40,7 @@
 
             if (MainMenu.GankDamageMenu.Item("enableGankDamageAllies").GetValue<bool>())
             {
-                foreach (var ally in allies.Where(x => x != null && IncomingDamages.ContainsKey(NameManager.Name(x))))
+                foreach (var ally in allies.Where(x => x != null && x.IsValid && IncomingDamages.ContainsKey(NameManager.Name(x))))
                 {
                     var health = ally.Health;
                     var maxHealth = ally.MaximumHealth;
@@ -72,7 +72,7 @@
                 return;
             }
 
-            foreach (var enemy in enemies.Where(x => x != null && IncomingDamages.ContainsKey(NameManager.Name(x))))
+            foreach (var enemy in enemies.Where(x => x != null && x.IsValid && IncomingDamages.ContainsKey(NameManager.Name(x))))
             {
                 var health = enemy.Health;
                 var maxHealth = enemy.MaximumHealth;
