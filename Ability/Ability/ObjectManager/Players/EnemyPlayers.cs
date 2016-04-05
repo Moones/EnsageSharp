@@ -28,20 +28,28 @@
                 return;
             }
 
-            if (!Utils.SleepCheck("Players.Update"))
+            try
             {
-                return;
-            }
+                if (!Utils.SleepCheck("Players.Update"))
+                {
+                    return;
+                }
 
-            if (All.Count(x => x != null && x.IsValid && x.Hero != null) < 5)
+                if (All.Count(x => x != null && x.IsValid && x.Hero != null) < 5)
+                {
+                    All =
+                        Players.All.Where(
+                            x =>
+                            x != null && x.IsValid && x.Hero != null && x.Hero.IsValid
+                            && x.Team == AbilityMain.Me.GetEnemyTeam()).ToList();
+                }
+
+                Utils.Sleep(2000, "Players.Update");
+            }
+            catch (EntityNotFoundException)
             {
-                All =
-                    Players.All.Where(
-                        x => x != null && x.Hero != null && x.Hero.IsValid && x.Team == AbilityMain.Me.GetEnemyTeam())
-                        .ToList();
+                Utils.Sleep(2000, "Players.Update");
             }
-
-            Utils.Sleep(2000, "Players.Update");
         }
 
         #endregion
