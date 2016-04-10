@@ -21,6 +21,7 @@
     using Ensage.Common;
     using Ensage.Common.AbilityInfo;
     using Ensage.Common.Menu;
+    using Ensage.Common.Objects;
 
     internal class Update
     {
@@ -256,6 +257,11 @@
                         if (data == null)
                         {
                             continue;
+                        }
+
+                        if (item.StoredName() == "spirit_breaker_charge_of_darkness")
+                        {
+                            MyAbilities.ChargeOfDarkness = item;
                         }
 
                         if (!MyAbilities.OffensiveAbilities.ContainsValue(item))

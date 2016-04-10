@@ -51,7 +51,9 @@
             var enemyHeroes = EnemyHeroes.UsableHeroes;
             var allyHeroes = AllyHeroes.UsableHeroes;
             GankDamage.UpdateDamage(enemyHeroes, allyHeroes);
-            if (!Me.IsAlive || Me.IsChanneling() || Me.HasModifier("modifier_spirit_breaker_charge_of_darkness"))
+            if (!Me.IsAlive || Me.IsChanneling() || Me.HasModifier("modifier_spirit_breaker_charge_of_darkness")
+                || (MyAbilities.ChargeOfDarkness != null && MyAbilities.ChargeOfDarkness.IsValid
+                    && MyAbilities.ChargeOfDarkness.IsInAbilityPhase))
             {
                 return;
             }
@@ -320,15 +322,14 @@
             if (ability != null && NameManager.Name(ability) != null)
             {
                 var hero = args.Target as Hero;
-                if (hero != null && ability.CanHit(hero, NameManager.Name(ability)))
+                if (hero != null)
                 {
-                    Utils.Sleep(ability.GetCastDelay(Me, hero) * 1000, "GlobalCasting");
-                    Utils.Sleep(ability.GetCastDelay(Me, hero) * 1000, "casting");
+                    Utils.Sleep(ability.GetCastDelay(Me, hero, true, useChannel: true) * 1000, "GlobalCasting");
+                    Utils.Sleep(ability.GetCastDelay(Me, hero, true, useChannel: true) * 1000, "casting");
                     return;
                 }
 
-                if (args.TargetPosition != Vector3.Zero
-                    && (ability.GetCastRange() <= Me.Distance2D(args.TargetPosition)))
+                if (args.TargetPosition != Vector3.Zero)
                 {
                     Utils.Sleep(
                         ability.FindCastPoint() * 1000 + Me.GetTurnTime(args.TargetPosition) * 1000, 

@@ -28,6 +28,8 @@
 
         public static Ability TinkerRearm;
 
+        public static Ability ChargeOfDarkness;
+
         #endregion
     }
 }
