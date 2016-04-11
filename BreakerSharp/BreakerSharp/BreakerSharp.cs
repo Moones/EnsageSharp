@@ -113,7 +113,7 @@
         /// </summary>
         public void OnDraw()
         {
-            if (this.pause || Variables.Hero == null || !Variables.Hero.IsValid)
+            if (this.pause || Variables.Hero == null || !Variables.Hero.IsValid || !Variables.Hero.IsAlive)
             {
                 return;
             }
@@ -172,7 +172,7 @@
                 this.pause = Game.IsPaused;
             }
 
-            if (this.pause || Variables.Hero == null || !Variables.Hero.IsValid)
+            if (this.pause || Variables.Hero == null || !Variables.Hero.IsValid || !Variables.Hero.IsAlive)
             {
                 this.pause = Game.IsPaused;
                 return;
@@ -280,7 +280,7 @@
         /// </param>
         public void OnWndProc(WndEventArgs args)
         {
-            if (this.pause || Variables.Hero == null || !Variables.Hero.IsValid)
+            if (this.pause || Variables.Hero == null || !Variables.Hero.IsValid || !Variables.Hero.IsAlive)
             {
                 return;
             }
@@ -320,7 +320,7 @@
         /// </param>
         public void Player_OnExecuteOrder(ExecuteOrderEventArgs args)
         {
-            if (this.pause || Variables.Hero == null || !Variables.Hero.IsValid)
+            if (this.pause || Variables.Hero == null || !Variables.Hero.IsValid || !Variables.Hero.IsAlive)
             {
                 return;
             }
