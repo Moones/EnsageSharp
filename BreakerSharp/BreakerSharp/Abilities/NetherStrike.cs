@@ -100,7 +100,7 @@
         {
             return target != null && target.IsVisible
                    && target.Distance2D(Variables.Hero) <= this.ability.GetCastRange() + 100
-                   && !target.IsLinkensProtected();
+                   && !target.IsLinkensProtected() && !target.IsInvul();
         }
 
         /// <summary>

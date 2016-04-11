@@ -186,6 +186,11 @@
                 return false;
             }
 
+            if (target.IsMagicImmune() || target.IsInvul())
+            {
+                return false;
+            }
+
             this.lastTarget = target;
             var lastAttribute = Variables.PowerTreadsSwitcher.PowerTreads.ActiveAttribute;
             if (Variables.PowerTreadsSwitcher != null && Variables.Hero.Health > 300)
