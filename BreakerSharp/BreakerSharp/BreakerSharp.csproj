@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abilities\ChargeNotification\Notification.cs" />
     <Compile Include="Abilities\ChargeOfDarkness.cs" />
     <Compile Include="Abilities\GreaterBash.cs" />
     <Compile Include="Abilities\NetherStrike.cs" />
@@ -62,9 +63,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ArmletToggler.cs" />
+    <Compile Include="Utilities\DotaCommands.cs" />
+    <Compile Include="Utilities\DrawText.cs" />
     <Compile Include="Utilities\ItemCombo.cs" />
     <Compile Include="Utilities\MenuManager.cs" />
     <Compile Include="Utilities\Move.cs" />
+    <Compile Include="Utilities\PowerTreadsSwitcher.cs" />
     <Compile Include="Utilities\Sleeper.cs" />
     <Compile Include="Utilities\TargetFind.cs" />
     <Compile Include="Variables.cs" />

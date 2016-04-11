@@ -67,6 +67,11 @@
         public static NetherStrike NetherStrike { get; set; }
 
         /// <summary>
+        ///     Gets or sets the power treads switcher.
+        /// </summary>
+        public static PowerTreadsSwitcher PowerTreadsSwitcher { get; set; }
+
+        /// <summary>
         ///     Gets the tick count.
         /// </summary>
         public static float TickCount

@@ -8,6 +8,7 @@
     using Ensage.Common.AbilityInfo;
     using Ensage.Common.Extensions;
     using Ensage.Common.Objects;
+    using Ensage.Items;
 
     /// <summary>
     ///     The item combo.
@@ -158,7 +159,8 @@
                 {
                     var canEnableArmlet =
                         !Variables.Hero.HasModifiers(
-                            new[] { "modifier_item_armlet_unholy_strength", "modifier_ice_blast" }, false) && !item.IsToggled;
+                            new[] { "modifier_item_armlet_unholy_strength", "modifier_ice_blast" }, 
+                            false) && !item.IsToggled;
                     if (!canEnableArmlet)
                     {
                         continue;
@@ -192,6 +194,12 @@
                 myHeroItems.Where(
                     x => x.Name != "item_invis_sword" && x.Name != "item_silver_edge" && x.Name != "item_glimmer_cape")
                     .ToList();
+            var powerTreads = this.items.FirstOrDefault(x => x.StoredName() == "item_power_treads");
+            if (powerTreads != null)
+            {
+                Variables.PowerTreadsSwitcher = new PowerTreadsSwitcher(powerTreads as PowerTreads);
+            }
+
             var armlet = this.items.FirstOrDefault(x => x.Name == "item_armlet");
             if (armlet != null)
             {
@@ -286,6 +294,11 @@
                                 return;
                             }
 
+                            if (e.StoredName() == "item_power_treads")
+                            {
+                                Variables.PowerTreadsSwitcher = new PowerTreadsSwitcher(e as PowerTreads);
+                            }
+
                             this.items.Add(e);
                             if (e.StoredName() == "item_armlet")
                             {
@@ -324,6 +337,11 @@
             if (e.StoredName() == "item_armlet" && Variables.ArmletToggler != null)
             {
                 Variables.ArmletToggler = null;
+            }
+
+            if (e.StoredName() == "item_power_treads")
+            {
+                Variables.PowerTreadsSwitcher = null;
             }
 
             if (e.Equals(this.invis))

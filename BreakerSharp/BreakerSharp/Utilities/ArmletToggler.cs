@@ -74,11 +74,11 @@
                 && !Variables.Hero.HasModifiers(
                     new[]
                         {
-                            "modifier_axe_battle_hunger", "modifier_queenofpain_shadow_strike",
-                            "modifier_phoenix_fire_spirit_burn", "modifier_venomancer_poison_nova",
-                            "modifier_venomancer_venomous_gale", "modifier_huskar_burning_spear_debuff",
+                            "modifier_axe_battle_hunger", "modifier_queenofpain_shadow_strike", 
+                            "modifier_phoenix_fire_spirit_burn", "modifier_venomancer_poison_nova", 
+                            "modifier_venomancer_venomous_gale", "modifier_huskar_burning_spear_debuff", 
                             "modifier_item_urn_damage"
-                        },
+                        }, 
                     false))
             {
                 return;

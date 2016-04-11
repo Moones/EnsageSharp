@@ -3,6 +3,7 @@
     using System.Linq;
 
     using Ensage;
+    using Ensage.Common;
     using Ensage.Common.AbilityInfo;
     using Ensage.Common.Extensions;
     using Ensage.Common.Objects;
@@ -105,6 +106,30 @@
         /// <summary>
         ///     The kill steal.
         /// </summary>
+        /// <param name="hero">
+        ///     The hero.
+        /// </param>
+        /// <param name="minHealth">
+        ///     The min health.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="bool" />.
+        /// </returns>
+        public bool KillSteal(Unit hero, float minHealth)
+        {
+            if (!hero.IsAlive || !this.CanUseOn(hero) || !(hero.Health > minHealth)
+                || !(AbilityDamage.CalculateDamage(this.ability, Variables.Hero, hero) >= hero.Health) || !hero.CanDie())
+            {
+                return false;
+            }
+
+            this.UseOn(hero);
+            return true;
+        }
+
+        /// <summary>
+        ///     The kill steal.
+        /// </summary>
         /// <param name="minHealth">
         ///     The min Health.
         /// </param>
@@ -144,12 +169,41 @@
                 return false;
             }
 
-            if (!this.ability.CastStun(target))
+            if (!this.ability.CanBeCasted())
             {
                 return false;
             }
 
-            this.sleeper.Sleep(500);
+            var lastAttribute = Variables.PowerTreadsSwitcher.PowerTreads.ActiveAttribute;
+            if (Variables.PowerTreadsSwitcher != null && Variables.Hero.Health > 300)
+            {
+                Variables.PowerTreadsSwitcher.SwitchTo(
+                    Attribute.Intelligence, 
+                    Variables.PowerTreadsSwitcher.PowerTreads.ActiveAttribute, 
+                    false);
+            }
+
+            if (!this.ability.CastStun(target))
+            {
+                if (Variables.PowerTreadsSwitcher != null)
+                {
+                    DelayAction.Add(
+                        (float)((this.CastPoint * 1000) + (Variables.Hero.GetTurnTime(target) * 1000) + Game.Ping), 
+                        () => { Variables.PowerTreadsSwitcher.SwitchTo(lastAttribute, Attribute.Intelligence, false); });
+                }
+
+                return false;
+            }
+
+            if (Variables.PowerTreadsSwitcher != null)
+            {
+                DelayAction.Add(
+                    (float)((this.CastPoint * 1000) + (Variables.Hero.GetTurnTime(target) * 1000) + Game.Ping), 
+                    () => { Variables.PowerTreadsSwitcher.SwitchTo(lastAttribute, Attribute.Intelligence, false); });
+            }
+
+            this.sleeper.Sleep(
+                (float)((this.CastPoint * 1000) + (Variables.Hero.GetTurnTime(target) * 1000) + Game.Ping));
             return true;
         }
 

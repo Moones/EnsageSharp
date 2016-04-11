@@ -49,6 +49,16 @@
         private readonly MenuItem drawBashChance;
 
         /// <summary>
+        ///     The draw notification.
+        /// </summary>
+        private readonly MenuItem drawNotification;
+
+        /// <summary>
+        ///     The draw notification health.
+        /// </summary>
+        private readonly MenuItem drawNotificationHealth;
+
+        /// <summary>
         ///     The draw target.
         /// </summary>
         private readonly MenuItem drawTarget;
@@ -91,8 +101,10 @@
             this.chargeAwayKey =
                 new MenuItem("BreakerSharp.ChargeAwayKey", "Charge Away").SetValue(new KeyBind('B', KeyBindType.Press));
             this.comboKey = new MenuItem("BreakerSharp.ComboKey", "Combo").SetValue(new KeyBind(32, KeyBindType.Press));
+
             keyMenu.AddItem(this.chargeAwayKey);
             keyMenu.AddItem(this.comboKey);
+
             this.Menu.AddSubMenu(keyMenu);
 
             var comboMenu = new Menu("Combo", "BreakerSharp.Combo");
@@ -101,19 +113,20 @@
                     new AbilityToggler(
                         new Dictionary<string, bool>
                             {
-                                { "item_invis_sword", true }, { "item_silver_edge", true }, 
-                                { "item_rod_of_atos", true }, { "item_sheepstick", true }, { "item_orchid", true }, 
-                                { "item_shivas_guard", true }, { "item_abyssal_blade", true }, { "item_armlet", true }, 
-                                { "item_mask_of_madness", true }, { "item_urn_of_shadows", true }, 
-                                { "item_solar_crest", true }, { "item_medallion_of_courage", true }, 
-                                { "item_heavens_halberd", true }, { "spirit_breaker_nether_strike", true }, 
-                                { "spirit_breaker_charge_of_darkness", true }
+                                { "item_invis_sword", true }, { "item_silver_edge", true }, { "item_rod_of_atos", true }, 
+                                { "item_sheepstick", true }, { "item_orchid", true }, { "item_shivas_guard", true }, 
+                                { "item_abyssal_blade", true }, { "item_armlet", true }, { "item_mask_of_madness", true }, 
+                                { "item_urn_of_shadows", true }, { "item_solar_crest", true }, 
+                                { "item_medallion_of_courage", true }, { "item_heavens_halberd", true }, 
+                                { "spirit_breaker_nether_strike", true }, { "spirit_breaker_charge_of_darkness", true }
                             }));
             this.moveMode =
                 new MenuItem("BreakerSharp.MoveMode", "Move mode").SetValue(
                     new StringList(new[] { "Move to Mouse", "Follow enemy" }));
+
             comboMenu.AddItem(this.abilityComboToggler);
             comboMenu.AddItem(this.moveMode);
+
             this.Menu.AddSubMenu(comboMenu);
 
             var drawingMenu = new Menu("Drawing", "BreakerSharp.Drawing");
@@ -122,11 +135,21 @@
                     .SetTooltip("Calculates current bash proc chance based on pseudo random distribution");
             this.drawTarget = new MenuItem("BreakerSharp.DrawTarget", "Draw TargetIndicator").SetValue(true);
             this.drawTimeToHit =
-                new MenuItem("BreakerSharp.DrawTimeToHit", "Draw TimeToHit with Charge").SetValue(true)
+                new MenuItem("BreakerSharp.Draw", "Visible TimeToHit with Charge").SetValue(true)
                     .SetTooltip("Calculates hit time based on current charge speed");
+            this.drawNotification =
+                new MenuItem("BreakerSharp.DrawNotification", "Draw notification").SetValue(true)
+                    .SetTooltip("Notification when enemy health goes below specified value");
+            this.drawNotificationHealth =
+                new MenuItem("BreakerSharp.DrawNotificationHealth", "Notification alert health").SetValue(
+                    new Slider(200, 100, 500));
+
             drawingMenu.AddItem(this.drawBashChance);
             drawingMenu.AddItem(this.drawTarget);
             drawingMenu.AddItem(this.drawTimeToHit);
+            drawingMenu.AddItem(this.drawNotification);
+            drawingMenu.AddItem(this.drawNotificationHealth);
+
             this.Menu.AddSubMenu(drawingMenu);
 
             var autoUsageMenu = new Menu("AutoUsage", "BreakerSharp.AutoUsageMenu");
@@ -141,6 +164,7 @@
                     new Slider(1400, 500, 2500));
             autoUsageMenu.AddItem(
                 new MenuItem("BreakerSharp.KillStealSign", "KillSteal").SetFontStyle(fontColor: Color.LightSkyBlue));
+
             autoUsageMenu.AddItem(this.killSteal);
             autoUsageMenu.AddItem(this.minHpKillsteal);
             autoUsageMenu.AddItem(
@@ -149,6 +173,7 @@
             autoUsageMenu.AddItem(this.armletToggle);
             autoUsageMenu.AddItem(this.armletHpTreshold);
             autoUsageMenu.AddItem(this.armletToggleInterval);
+
             this.Menu.AddSubMenu(autoUsageMenu);
         }
 
@@ -208,6 +233,17 @@
             get
             {
                 return this.drawBashChance.GetValue<bool>();
+            }
+        }
+
+        /// <summary>
+        ///     Gets a value indicating whether draw notification.
+        /// </summary>
+        public bool DrawNotification
+        {
+            get
+            {
+                return this.drawNotification.GetValue<bool>();
             }
         }
 
@@ -279,6 +315,17 @@
             get
             {
                 return this.moveMode.GetValue<StringList>().SelectedIndex;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the notification health.
+        /// </summary>
+        public float NotificationHealth
+        {
+            get
+            {
+                return this.drawNotificationHealth.GetValue<Slider>().Value;
             }
         }
 

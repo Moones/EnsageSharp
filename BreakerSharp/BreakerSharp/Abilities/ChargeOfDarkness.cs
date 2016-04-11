@@ -8,9 +8,12 @@
     using Ensage.Common.Extensions;
     using Ensage.Common.Objects;
 
+    using global::BreakerSharp.Abilities.ChargeNotification;
     using global::BreakerSharp.Utilities;
 
     using SharpDX;
+
+    using Attribute = Ensage.Attribute;
 
     /// <summary>
     ///     The charge of darkness.
@@ -28,6 +31,11 @@
         ///     The ability icon.
         /// </summary>
         private readonly DotaTexture abilityIcon;
+
+        /// <summary>
+        ///     The notification.
+        /// </summary>
+        private readonly Notification notification;
 
         /// <summary>
         ///     The sleeper.
@@ -73,6 +81,10 @@
             this.abilityIcon = Drawing.GetTexture("materials/ensage_ui/spellicons/spirit_breaker_charge_of_darkness");
             this.iconSize = new Vector2(HUDInfo.GetHpBarSizeY() * 2);
             this.CastPoint = this.ability.FindCastPoint();
+            this.notification = new Notification(
+                5000, 
+                new Vector2(HUDInfo.ScreenSizeX(), (float)(HUDInfo.ScreenSizeY() / 2.3)), 
+                new Vector2(HUDInfo.ScreenSizeX() / 11, HUDInfo.ScreenSizeX() / 30));
         }
 
         #endregion
@@ -103,7 +115,8 @@
             get
             {
                 return this.ability.IsInAbilityPhase
-                       || Variables.Hero.HasModifier("modifier_spirit_breaker_charge_of_darkness");
+                       || Variables.Hero.HasModifier("modifier_spirit_breaker_charge_of_darkness")
+                       || this.sleeper.Sleeping;
             }
         }
 
@@ -174,9 +187,55 @@
             }
 
             this.lastTarget = target;
+            var lastAttribute = Variables.PowerTreadsSwitcher.PowerTreads.ActiveAttribute;
+            if (Variables.PowerTreadsSwitcher != null && Variables.Hero.Health > 300)
+            {
+                Variables.PowerTreadsSwitcher.SwitchTo(
+                    Attribute.Intelligence, 
+                    Variables.PowerTreadsSwitcher.PowerTreads.ActiveAttribute, 
+                    false);
+            }
+
             this.ability.UseAbility(target);
-            this.sleeper.Sleep(1000);
+            if (Variables.PowerTreadsSwitcher != null)
+            {
+                Variables.PowerTreadsSwitcher.SwitchTo(lastAttribute, Attribute.Intelligence, true);
+            }
+
+            this.sleeper.Sleep(
+                (float)((this.CastPoint * 1000) + Game.Ping + (Variables.Hero.GetTurnTime(target) * 1000)));
             return true;
+        }
+
+        /// <summary>
+        ///     The check health and alert.
+        /// </summary>
+        /// <param name="hero">
+        ///     The hero.
+        /// </param>
+        /// <param name="healthToAlert">
+        ///     The health to alert.
+        /// </param>
+        public void CheckHpAndAlert(Unit hero, float healthToAlert)
+        {
+            if (!(hero.Health <= healthToAlert) || !Utils.SleepCheck("BreakerSharp.Notification." + hero.StoredName()))
+            {
+                return;
+            }
+
+            this.notification.PopUp(hero);
+            Utils.Sleep(15000, "BreakerSharp.Notification." + hero.StoredName());
+        }
+
+        /// <summary>
+        ///     The click.
+        /// </summary>
+        /// <param name="mousePosition">
+        ///     The mouse position.
+        /// </param>
+        public void Click(Vector2 mousePosition)
+        {
+            this.notification.Click(mousePosition);
         }
 
         /// <summary>
@@ -185,14 +244,19 @@
         /// <param name="target">
         ///     The target.
         /// </param>
-        public void DrawTimeToHit(Unit target)
+        public void Draw(Unit target)
         {
+            if (Variables.MenuManager.DrawNotification)
+            {
+                this.notification.Draw();
+            }
+
             if (target == null || !target.IsVisible || !target.IsAlive)
             {
                 return;
             }
 
-            if (!this.CanCharge && !this.IsCharging)
+            if ((!this.CanCharge && !this.IsCharging) || !Variables.MenuManager.DrawTimeToHit)
             {
                 return;
             }

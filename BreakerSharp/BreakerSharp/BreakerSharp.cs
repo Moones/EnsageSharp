@@ -1,5 +1,6 @@
 ﻿namespace BreakerSharp
 {
+    using System.Linq;
     using System.Reflection;
 
     using Ensage;
@@ -128,10 +129,7 @@
                 this.greaterBash.DrawChance();
             }
 
-            if (Variables.MenuManager.DrawTimeToHit)
-            {
-                Variables.ChargeOfDarkness.DrawTimeToHit(this.Target);
-            }
+            Variables.ChargeOfDarkness.Draw(this.Target);
         }
 
         /// <summary>
@@ -176,6 +174,7 @@
 
             if (this.pause || Variables.Hero == null || !Variables.Hero.IsValid)
             {
+                this.pause = Game.IsPaused;
                 return;
             }
 
@@ -224,7 +223,16 @@
                     && Variables.ChargeOfDarkness.ChargeTo(this.Target))
                 {
                     this.itemCombo.UseInvis(true);
-                    this.comboSleeper.Sleep((float)((Variables.ChargeOfDarkness.CastPoint * 1000) + Game.Ping + 200));
+                    var delay =
+                        (float)
+                        ((Variables.ChargeOfDarkness.CastPoint * 1000) + (Game.Ping * 2) + 300
+                         + (Variables.Hero.GetTurnTime(this.Target) * 1000));
+                    this.comboSleeper.Sleep(delay);
+                    Utils.Sleep(delay, "GlobalCasting");
+                    Utils.Sleep(delay, "Orbwalk.Attack");
+                    Utils.Sleep(delay, "Orbwalk.Move");
+                    Utils.Sleep(delay, "cancelorder");
+                    Utils.Sleep(delay, "casting");
                     return;
                 }
 
@@ -246,10 +254,21 @@
                 return;
             }
 
-            if (canAutoUse && Variables.MenuManager.KillSteal
-                && Variables.NetherStrike.KillSteal(Variables.MenuManager.MinHpKillsteal))
+            foreach (var hero in Heroes.GetByTeam(Variables.EnemyTeam).Where(x => x.IsValid && x.IsAlive && x.IsVisible)
+                )
             {
-                this.comboSleeper.Sleep((float)(Game.Ping + (Variables.NetherStrike.CastPoint * 1000)));
+                if (canAutoUse && Variables.MenuManager.KillSteal
+                    && Variables.NetherStrike.KillSteal(hero, Variables.MenuManager.MinHpKillsteal))
+                {
+                    this.comboSleeper.Sleep((float)(Game.Ping + (Variables.NetherStrike.CastPoint * 1000)));
+                }
+
+                if (!Variables.MenuManager.DrawNotification)
+                {
+                    continue;
+                }
+
+                Variables.ChargeOfDarkness.CheckHpAndAlert(hero, Variables.MenuManager.NotificationHealth);
             }
         }
 
@@ -270,6 +289,8 @@
             {
                 return;
             }
+
+            Variables.ChargeOfDarkness.Click(Game.MouseScreenPosition);
 
             if (this.Target == null || !this.Target.IsValid)
             {
@@ -314,10 +335,13 @@
                 && args.Ability.StoredName() == "spirit_breaker_charge_of_darkness")
             {
                 var target = args.Target as Unit;
-                if (target != null)
+                if (target == null)
                 {
-                    Variables.ChargeOfDarkness.ChargeTo(target);
+                    return;
                 }
+
+                Variables.ChargeOfDarkness.ChargeTo(target);
+                args.Process = false;
             }
         }
 
