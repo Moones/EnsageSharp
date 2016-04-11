@@ -230,11 +230,11 @@
                         ((Variables.ChargeOfDarkness.CastPoint * 1000) + (Game.Ping * 2) + 300
                          + (Variables.Hero.GetTurnTime(this.Target) * 1000));
                     this.comboSleeper.Sleep(delay);
-                    Utils.Sleep(delay, "GlobalCasting");
-                    Utils.Sleep(delay, "Orbwalk.Attack");
-                    Utils.Sleep(delay, "Orbwalk.Move");
-                    Utils.Sleep(delay, "cancelorder");
-                    Utils.Sleep(delay, "casting");
+                    Utils.Sleep(delay + 300, "GlobalCasting");
+                    Utils.Sleep(delay + 300, "Orbwalk.Attack");
+                    Utils.Sleep(delay + 300, "Orbwalk.Move");
+                    Utils.Sleep(delay + 300, "cancelorder");
+                    Utils.Sleep(delay + 300, "casting");
                     return;
                 }
 
