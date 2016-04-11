@@ -114,7 +114,10 @@
             this.UnlockTarget();
             this.Target =
                 Heroes.GetByTeam(Variables.EnemyTeam)
-                    .Where(x => x.IsValid && x.IsAlive && !x.IsIllusion && x.IsVisible)
+                    .Where(
+                        x =>
+                        x.IsValid && x.IsAlive && !x.IsIllusion && x.IsVisible
+                        && x.Distance2D(Game.MousePosition) < 2000)
                     .MinOrDefault(x => x.Distance2D(Game.MousePosition));
             this.sleeper.Sleep(100);
         }
