@@ -106,6 +106,8 @@
             {
                 Variables.MenuManager.Menu.RemoveFromMainMenu();
             }
+
+            Variables.PowerTreadsSwitcher = null;
         }
 
         /// <summary>

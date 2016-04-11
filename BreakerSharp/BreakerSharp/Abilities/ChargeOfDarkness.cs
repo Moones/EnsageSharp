@@ -204,7 +204,9 @@
             this.ability.UseAbility(target);
             if (Variables.PowerTreadsSwitcher != null)
             {
-                Variables.PowerTreadsSwitcher.SwitchTo(lastAttribute, Attribute.Intelligence, true);
+                DelayAction.Add(
+                    (float)((this.CastPoint * 1000) + (Variables.Hero.GetTurnTime(target) * 1000) + Game.Ping + 200),
+                    () => { Variables.PowerTreadsSwitcher.SwitchTo(lastAttribute, Attribute.Intelligence, false); });
             }
 
             this.sleeper.Sleep(
