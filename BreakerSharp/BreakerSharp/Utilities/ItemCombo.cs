@@ -218,7 +218,7 @@
         }
 
         /// <summary>
-        ///     The use invis.
+        ///     The use invisibility.
         /// </summary>
         /// <param name="overRide">
         ///     The over Ride.
@@ -287,24 +287,22 @@
                                 return;
                             }
 
-                            if (e.StoredName() == "item_invis_sword" || e.StoredName() == "item_silver_edge"
-                                || e.StoredName() == "item_glimmer_cape")
+                            switch (e.StoredName())
                             {
-                                this.invis = e;
-                                return;
-                            }
-
-                            if (e.StoredName() == "item_power_treads")
-                            {
-                                Variables.PowerTreadsSwitcher = new PowerTreadsSwitcher(e as PowerTreads);
+                                case "item_invis_sword":
+                                case "item_silver_edge":
+                                case "item_glimmer_cape":
+                                    this.invis = e;
+                                    return;
+                                case "item_power_treads":
+                                    Variables.PowerTreadsSwitcher = new PowerTreadsSwitcher(e as PowerTreads);
+                                    break;
+                                case "item_armlet":
+                                    Variables.ArmletToggler = new ArmletToggler(e);
+                                    break;
                             }
 
                             this.items.Add(e);
-                            if (e.StoredName() == "item_armlet")
-                            {
-                                Variables.ArmletToggler = new ArmletToggler(e);
-                            }
-
                             this.OrderItems();
                         }
                         catch (EntityNotFoundException)

@@ -26,6 +26,17 @@
         #region Public Properties
 
         /// <summary>
+        ///     Gets a value indicating whether is valid.
+        /// </summary>
+        public bool IsValid
+        {
+            get
+            {
+                return this.PowerTreads != null && this.PowerTreads.IsValid;
+            }
+        }
+
+        /// <summary>
         ///     Gets or sets the power treads.
         /// </summary>
         public PowerTreads PowerTreads { get; set; }

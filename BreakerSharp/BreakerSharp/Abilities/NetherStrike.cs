@@ -164,6 +164,11 @@
         /// </returns>
         public bool UseOn(Unit target)
         {
+            if (target == null || !target.IsValid)
+            {
+                return false;
+            }
+
             if (this.sleeper.Sleeping || !this.CanUseOn(target))
             {
                 return false;
@@ -174,32 +179,30 @@
                 return false;
             }
 
-            var lastAttribute = Variables.PowerTreadsSwitcher.PowerTreads.ActiveAttribute;
-            if (Variables.PowerTreadsSwitcher != null && Variables.Hero.Health > 300)
+            var lastAttribute = Attribute.Strength;
+            if (Variables.PowerTreadsSwitcher != null && Variables.PowerTreadsSwitcher.IsValid
+                && Variables.Hero.Health > 300)
             {
+                lastAttribute = Variables.PowerTreadsSwitcher.PowerTreads.ActiveAttribute;
                 Variables.PowerTreadsSwitcher.SwitchTo(
                     Attribute.Intelligence, 
                     Variables.PowerTreadsSwitcher.PowerTreads.ActiveAttribute, 
                     false);
             }
 
-            if (!this.ability.CastStun(target))
-            {
-                if (Variables.PowerTreadsSwitcher != null)
-                {
-                    DelayAction.Add(
-                        (float)((this.CastPoint * 1000) + (Variables.Hero.GetTurnTime(target) * 1000) + Game.Ping), 
-                        () => { Variables.PowerTreadsSwitcher.SwitchTo(lastAttribute, Attribute.Intelligence, false); });
-                }
+            var casted = this.ability.CastStun(target);
 
-                return false;
-            }
-
-            if (Variables.PowerTreadsSwitcher != null)
+            if (casted && Variables.PowerTreadsSwitcher != null && Variables.PowerTreadsSwitcher.IsValid
+                && Variables.Hero.Health > 300)
             {
                 DelayAction.Add(
                     (float)((this.CastPoint * 1000) + (Variables.Hero.GetTurnTime(target) * 1000) + Game.Ping), 
                     () => { Variables.PowerTreadsSwitcher.SwitchTo(lastAttribute, Attribute.Intelligence, false); });
+            }
+
+            if (!casted)
+            {
+                return false;
             }
 
             this.sleeper.Sleep(

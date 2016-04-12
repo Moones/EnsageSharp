@@ -181,6 +181,11 @@
         /// </returns>
         public bool ChargeTo(Unit target)
         {
+            if (target == null || !target.IsValid)
+            {
+                return false;
+            }
+
             if (!this.CanCharge)
             {
                 return false;
@@ -192,9 +197,11 @@
             }
 
             this.lastTarget = target;
-            var lastAttribute = Variables.PowerTreadsSwitcher.PowerTreads.ActiveAttribute;
-            if (Variables.PowerTreadsSwitcher != null && Variables.Hero.Health > 300)
+            var lastAttribute = Attribute.Strength;
+            if (Variables.PowerTreadsSwitcher != null && Variables.PowerTreadsSwitcher.IsValid
+                && Variables.Hero.Health > 300)
             {
+                lastAttribute = Variables.PowerTreadsSwitcher.PowerTreads.ActiveAttribute;
                 Variables.PowerTreadsSwitcher.SwitchTo(
                     Attribute.Intelligence, 
                     Variables.PowerTreadsSwitcher.PowerTreads.ActiveAttribute, 
@@ -202,10 +209,11 @@
             }
 
             this.ability.UseAbility(target);
-            if (Variables.PowerTreadsSwitcher != null)
+            if (Variables.PowerTreadsSwitcher != null && Variables.PowerTreadsSwitcher.IsValid
+                && Variables.Hero.Health > 300)
             {
                 DelayAction.Add(
-                    (float)((this.CastPoint * 1000) + (Variables.Hero.GetTurnTime(target) * 1000) + Game.Ping + 200),
+                    (float)((this.CastPoint * 1000) + (Variables.Hero.GetTurnTime(target) * 1000) + Game.Ping + 200), 
                     () => { Variables.PowerTreadsSwitcher.SwitchTo(lastAttribute, Attribute.Intelligence, false); });
             }
 

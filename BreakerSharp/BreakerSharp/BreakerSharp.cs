@@ -195,7 +195,6 @@
             }
 
             this.targetFind.Find();
-
             if (Variables.Combo)
             {
                 if (this.comboSleeper.Sleeping)
@@ -235,6 +234,7 @@
                     Utils.Sleep(delay + 300, "Orbwalk.Move");
                     Utils.Sleep(delay + 300, "cancelorder");
                     Utils.Sleep(delay + 300, "casting");
+                    Utils.Sleep(delay + 300, "Ability#.Sleep");
                     return;
                 }
 
@@ -253,6 +253,11 @@
                 }
 
                 Orbwalking.Orbwalk(this.Target, followTarget: Variables.MenuManager.MoveMode == 1);
+                return;
+            }
+
+            if (this.comboSleeper.Sleeping || Variables.ChargeOfDarkness.IsCharging)
+            {
                 return;
             }
 
