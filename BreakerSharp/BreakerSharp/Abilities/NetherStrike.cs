@@ -192,7 +192,7 @@
 
             var casted = this.ability.CastStun(target);
 
-            if (casted && Variables.PowerTreadsSwitcher != null && Variables.PowerTreadsSwitcher.IsValid
+            if (Variables.PowerTreadsSwitcher != null && Variables.PowerTreadsSwitcher.IsValid
                 && Variables.Hero.Health > 300)
             {
                 DelayAction.Add(
