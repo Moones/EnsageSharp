@@ -53,7 +53,7 @@
             GankDamage.UpdateDamage(enemyHeroes, allyHeroes);
             if (!Me.IsAlive || Me.IsChanneling() || Me.HasModifier("modifier_spirit_breaker_charge_of_darkness")
                 || (MyAbilities.ChargeOfDarkness != null && MyAbilities.ChargeOfDarkness.IsValid
-                    && MyAbilities.ChargeOfDarkness.IsInAbilityPhase))
+                    && MyAbilities.ChargeOfDarkness.IsInAbilityPhase) || !Utils.SleepCheck("Ability#.Sleep"))
             {
                 return;
             }
