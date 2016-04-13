@@ -14,7 +14,7 @@
         /// <summary>
         ///     The sleeper.
         /// </summary>
-        private Sleeper sleeper;
+        private readonly Sleeper sleeper;
 
         /// <summary>
         ///     The text.

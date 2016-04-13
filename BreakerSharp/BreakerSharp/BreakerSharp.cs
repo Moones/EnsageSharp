@@ -29,6 +29,11 @@
         private readonly ItemCombo itemCombo;
 
         /// <summary>
+        ///     The empowering haste.
+        /// </summary>
+        private Ability empoweringHaste;
+
+        /// <summary>
         ///     The greater bash.
         /// </summary>
         private GreaterBash greaterBash;
@@ -155,6 +160,7 @@
             Variables.MenuManager.Menu.AddToMainMenu();
 
             this.greaterBash = new GreaterBash(Me.Spellbook.Spell3);
+            this.empoweringHaste = Variables.Hero.Spellbook.Spell2;
             this.targetFind = new TargetFind();
             this.move = new Move(Me);
             this.itemCombo.UpdateItems();
@@ -249,6 +255,14 @@
                     && Variables.NetherStrike.UseOn(this.Target))
                 {
                     this.comboSleeper.Sleep((float)(Variables.NetherStrike.CastPoint * 1000));
+                    return;
+                }
+
+                if (Variables.MenuManager.AbilityEnabled("spirit_breaker_empowering_haste") && canDoCombo
+                    && this.empoweringHaste.CanBeCasted() && Variables.Hero.CanCast())
+                {
+                    this.empoweringHaste.UseAbility();
+                    this.comboSleeper.Sleep(300 + Game.Ping);
                     return;
                 }
 

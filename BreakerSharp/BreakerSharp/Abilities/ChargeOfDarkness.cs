@@ -315,7 +315,7 @@
 
             screenPosition += new Vector2(-this.iconSize.X, this.iconSize.Y + 2);
             Drawing.DrawRect(screenPosition, this.iconSize, this.abilityIcon);
-            var time = (Math.Floor(this.TimeToHit(target) * 10) / 10) + "s to impact";
+            var time = Math.Max(Math.Floor(this.TimeToHit(target) * 10) / 10, 0) + "s to impact";
             Drawing.DrawText(
                 time, 
                 screenPosition + new Vector2(this.iconSize.X + 2, 1), 

@@ -118,7 +118,8 @@
                                 { "item_abyssal_blade", true }, { "item_armlet", true }, { "item_mask_of_madness", true }, 
                                 { "item_urn_of_shadows", true }, { "item_solar_crest", true }, 
                                 { "item_medallion_of_courage", true }, { "item_heavens_halberd", true }, 
-                                { "spirit_breaker_nether_strike", true }, { "spirit_breaker_charge_of_darkness", true }
+                                { "spirit_breaker_empowering_haste", false }, { "spirit_breaker_nether_strike", true }, 
+                                { "spirit_breaker_charge_of_darkness", true }
                             }));
             this.moveMode =
                 new MenuItem("BreakerSharp.MoveMode", "Move mode").SetValue(
