@@ -113,6 +113,7 @@
     <Compile Include="Casting\ComboExecution\FullCombo.cs" />
     <Compile Include="Casting\ComboExecution\Harras.cs" />
     <Compile Include="Casting\ComboExecution\Heal.cs" />
+    <Compile Include="Casting\ComboExecution\Killsteal.cs" />
     <Compile Include="Casting\ComboExecution\Nuke.cs" />
     <Compile Include="Casting\ComboExecution\Shield.cs" />
     <Compile Include="Casting\ComboExecution\Silence.cs" />
@@ -145,6 +146,8 @@
     <Compile Include="OnUpdate\OnUpdateChecks.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\Sleeper.cs" />
+    <Compile Include="Variables.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -26,7 +26,7 @@
             Game.OnUpdate += AbilityMain.Game_OnUpdate;
             Drawing.OnDraw += DamageIndicator.Drawing_OnDraw;
             Player.OnExecuteOrder += AbilityMain.Player_OnExecuteOrder;
-            ObjectMgr.OnRemoveEntity += Update.ObjectMgr_OnRemoveEntity;
+            ObjectManager.OnRemoveEntity += Update.ObjectMgr_OnRemoveEntity;
             Game.OnUpdate += Update.UpdateItems;
             Game.OnUpdate += Process.OnUpdate;
             Game.OnUpdate += MyDamage.Update;
@@ -49,7 +49,7 @@
             Game.OnUpdate -= AbilityMain.Game_OnUpdate;
             Drawing.OnDraw -= DamageIndicator.Drawing_OnDraw;
             Player.OnExecuteOrder -= AbilityMain.Player_OnExecuteOrder;
-            ObjectMgr.OnRemoveEntity -= Update.ObjectMgr_OnRemoveEntity;
+            ObjectManager.OnRemoveEntity -= Update.ObjectMgr_OnRemoveEntity;
             Game.OnUpdate -= Update.UpdateItems;
             Game.OnUpdate -= Process.OnUpdate;
             Game.OnUpdate -= MyDamage.Update;

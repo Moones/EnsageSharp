@@ -20,6 +20,12 @@
 
         #region Public Methods and Operators
 
+        /// <summary>
+        ///     The attack range.
+        /// </summary>
+        /// <returns>
+        ///     The <see cref="float" />.
+        /// </returns>
         public static float AttackRange()
         {
             if (!Utils.SleepCheck("MyHeroInfo.AttackRange"))
@@ -32,6 +38,12 @@
             return attackRange;
         }
 
+        /// <summary>
+        ///     The attack rate.
+        /// </summary>
+        /// <returns>
+        ///     The <see cref="double" />.
+        /// </returns>
         public static double AttackRate()
         {
             if (!Utils.SleepCheck("MyAttackRate"))
@@ -44,6 +56,9 @@
             return attackRate;
         }
 
+        /// <summary>
+        ///     The update position.
+        /// </summary>
         public static void UpdatePosition()
         {
             if (Utils.SleepCheck("mePosition"))

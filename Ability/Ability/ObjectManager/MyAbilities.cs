@@ -10,6 +10,8 @@
 
         public static Ability Blink;
 
+        public static Ability ChargeOfDarkness;
+
         public static IEnumerable<KeyValuePair<string, Ability>> Combo = new Dictionary<string, Ability>();
 
         public static Ability Cyclone;
@@ -27,8 +29,6 @@
         public static Ability SoulRing;
 
         public static Ability TinkerRearm;
-
-        public static Ability ChargeOfDarkness;
 
         #endregion
     }

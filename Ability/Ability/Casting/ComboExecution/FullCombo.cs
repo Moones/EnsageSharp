@@ -35,10 +35,6 @@
 
         private static float coldFeetLastUse;
 
-        private static float dealtDamage;
-
-        private static float etherealHitTime;
-
         #endregion
 
         #region Public Methods and Operators
@@ -116,7 +112,7 @@
                             && Nukes.NukesMenuDictionary[name].Item(name + "herotoggler")
                                    .GetValue<HeroToggler>()
                                    .IsEnabled(heroName)
-                            && (etherealHitTime < (Environment.TickCount + ability.GetHitDelay(hero, name) * 1000))
+                            && (Variables.EtherealHitTime < (Utils.TickCount + ability.GetHitDelay(hero, name) * 1000))
                             && hero.Health
                             > Nukes.NukesMenuDictionary[name].Item(NameManager.Name(ability) + "minhealthslider")
                                   .GetValue<Slider>()
@@ -164,7 +160,7 @@
                         && Nukes.NukesMenuDictionary[name].Item(name + "herotoggler")
                                .GetValue<HeroToggler>()
                                .IsEnabled(heroName) && canHit
-                        && (etherealHitTime < (Environment.TickCount + ability.GetHitDelay(hero, name) * 1000))
+                        && (Variables.EtherealHitTime < (Utils.TickCount + ability.GetHitDelay(hero, name) * 1000))
                         && hero.Health
                         > Nukes.NukesMenuDictionary[name].Item(NameManager.Name(ability) + "minhealthslider")
                               .GetValue<Slider>()
@@ -175,11 +171,11 @@
                                     x => !x.Equals(hero) && x.Health <= AbilityDamage.CalculateDamage(ability, me, x)))
                             >= Nukes.NukesMenuDictionary[name].Item(name + "minenemykill").GetValue<Slider>().Value))
                     {
-                        if ((hero.Health - dealtDamage) <= 0
-                            || (hero.Health - dealtDamage)
+                        if ((hero.Health - Variables.DealtDamage) <= 0
+                            || (hero.Health - Variables.DealtDamage)
                             < Nukes.NukesMenuDictionary[name].Item(name + "minhealthslider").GetValue<Slider>().Value)
                         {
-                            dealtDamage = 0;
+                            Variables.DealtDamage = 0;
                             return false;
                         }
 
@@ -214,9 +210,9 @@
                                 // me.GetTurnTime(hero) * 1000
                                 // + Prediction.CalculateReachTime(hero, 1200, hero.Position - MyHeroInfo.Position),
                                 // "casting");
-                                etherealHitTime =
+                                Variables.EtherealHitTime =
                                     (float)
-                                    (Environment.TickCount + me.GetTurnTime(hero) * 1000
+                                    (Utils.TickCount + me.GetTurnTime(hero) * 1000
                                      + Prediction.CalculateReachTime(hero, 1200, hero.Position - MyHeroInfo.Position)
                                      + ping);
                                 Utils.Sleep(
@@ -1074,7 +1070,7 @@
                         }
 
                         var handleString = ability.Handle.ToString();
-                        if (etherealHitTime >= (Environment.TickCount + ability.GetHitDelay(target, name) * 1000))
+                        if (Variables.EtherealHitTime >= (Utils.TickCount + ability.GetHitDelay(target, name) * 1000))
                         {
                             continue;
                         }
@@ -1086,7 +1082,8 @@
                                 && Nukes.NukesMenuDictionary[name].Item(name + "herotoggler")
                                        .GetValue<HeroToggler>()
                                        .IsEnabled(NameManager.Name(target))
-                                && (etherealHitTime < (Environment.TickCount + ability.GetHitDelay(target, name) * 1000))
+                                && (Variables.EtherealHitTime
+                                    < (Utils.TickCount + ability.GetHitDelay(target, name) * 1000))
                                 && target.Health
                                 > Nukes.NukesMenuDictionary[name].Item(NameManager.Name(ability) + "minhealthslider")
                                       .GetValue<Slider>()
@@ -1146,7 +1143,7 @@
 
                         if (!ability.CanHit(target, MyHeroInfo.Position, name) && category != "buff")
                         {
-                            dealtDamage = 0;
+                            Variables.DealtDamage = 0;
                             if (name == "templar_assassin_meld")
                             {
                                 if (!Nuke.Cast(ability, target, name) && Utils.SleepCheck("Ability.Move"))
@@ -1186,8 +1183,8 @@
                             return false;
                         }
 
-                        if (name == "item_cyclone" && coldFeetLastUse - Environment.TickCount < 2500
-                            && coldFeetLastUse - Environment.TickCount > -1000)
+                        if (name == "item_cyclone" && coldFeetLastUse - Utils.TickCount < 2500
+                            && coldFeetLastUse - Utils.TickCount > -1000)
                         {
                             continue;
                         }
@@ -1288,7 +1285,7 @@
 
                         if (Utils.SleepCheck(ability.Handle.ToString()))
                         {
-                            dealtDamage += AbilityDamage.CalculateDamage(ability, me, target);
+                            Variables.DealtDamage += AbilityDamage.CalculateDamage(ability, me, target);
                         }
 
                         var delay = Math.Max(ability.GetCastDelay(me, target, abilityName: name), 0.2) * 1000;
@@ -1304,9 +1301,9 @@
                                 Utils.Sleep(delay + ping + 200, "calculate");
                                 break;
                             case "item_ethereal_blade":
-                                etherealHitTime =
+                                Variables.EtherealHitTime =
                                     (float)
-                                    (Environment.TickCount + me.GetTurnTime(target) * 1000
+                                    (Utils.TickCount + me.GetTurnTime(target) * 1000
                                      + Prediction.CalculateReachTime(target, 1200, target.Position - me.Position)
                                      + ping * 2);
                                 Utils.Sleep(
@@ -1321,7 +1318,7 @@
                                     "GlobalCasting");
                                 break;
                             case "ancient_apparition_cold_feet":
-                                coldFeetLastUse = Environment.TickCount + 4000;
+                                coldFeetLastUse = Utils.TickCount + 4000;
                                 break;
                         }
 
@@ -1358,6 +1355,15 @@
             return false;
         }
 
+        /// <summary>
+        ///     The find purification target.
+        /// </summary>
+        /// <param name="hero">
+        ///     The hero.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="Unit" />.
+        /// </returns>
         public static Unit FindPurificationTarget(Hero hero)
         {
             var target = AllyHeroes.UsableHeroes.Where(x => !x.IsMagicImmune()).MinOrDefault(x => x.Distance2D(hero));
@@ -1365,206 +1371,6 @@
             return target != null && (creep == null || target.Distance2D(hero) < creep.Distance2D(hero))
                        ? (Unit)target
                        : creep;
-        }
-
-        public static bool KillSteal(Hero[] enemyHeroes, float ping, Hero me)
-        {
-            var possibleTarget =
-                enemyHeroes.FirstOrDefault(
-                    hero =>
-                    Utils.SleepCheck(hero.Handle + "KillSteal")
-                    && Dictionaries.InDamageDictionary.ContainsKey(hero.Handle)
-                    && Dictionaries.InDamageDictionary[hero.Handle] >= hero.Health);
-            if (possibleTarget != null && possibleTarget.CanDie() && MyAbilities.NukesCombo.Any())
-            {
-                if (Dictionaries.InDamageDictionary[possibleTarget.Handle] >= possibleTarget.Health)
-                {
-                    foreach (var ability in from ability in MyAbilities.NukesCombo.OrderBy(ComboOrder.GetAbilityOrder)
-                                            where
-                                                ability != null
-                                                && (ability.CanBeCasted()
-                                                    || (ability.CanBeCasted(SoulRing.ManaGained)
-                                                        && SoulRing.Check(ability)))
-                                                && (Utils.SleepCheck(ability.Handle.ToString())
-                                                    || (!ability.IsInAbilityPhase && ability.FindCastPoint() > 0))
-                                            select ability)
-                    {
-                        var name = NameManager.Name(ability);
-                        var handleString = ability.Handle.ToString();
-                        if (etherealHitTime
-                            >= (Environment.TickCount + ability.GetHitDelay(possibleTarget, name) * 1000))
-                        {
-                            continue;
-                        }
-
-                        if (name == "omniknight_purification")
-                        {
-                            if (MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
-                                && Nukes.NukesMenuDictionary[name].Item(name + "herotoggler")
-                                       .GetValue<HeroToggler>()
-                                       .IsEnabled(NameManager.Name(possibleTarget))
-                                && (etherealHitTime
-                                    < (Environment.TickCount + ability.GetHitDelay(possibleTarget, name) * 1000))
-                                && possibleTarget.Health
-                                > Nukes.NukesMenuDictionary[name].Item(NameManager.Name(ability) + "minhealthslider")
-                                      .GetValue<Slider>()
-                                      .Value)
-                            {
-                                var target = FindPurificationTarget(possibleTarget);
-                                if (target != null
-                                    && target.PredictedPosition().Distance2D(possibleTarget.PredictedPosition())
-                                    < ability.GetRadius(name)
-                                    && target.PredictedPosition()
-                                           .Distance2D(
-                                               possibleTarget.PredictedPosition(
-                                                   ability.FindCastPoint(NameManager.Name(ability))))
-                                    < ability.GetRadius(name))
-                                {
-                                    if (Nuke.Cast(ability, target, name))
-                                    {
-                                        Utils.Sleep(
-                                            ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000 + ping
-                                            + 100, 
-                                            handleString);
-                                        Utils.Sleep(
-                                            ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000, 
-                                            "GlobalCasting");
-                                        Utils.Sleep(ability.GetHitDelay(possibleTarget, name) * 1000, "calculate");
-                                        Utils.Sleep(
-                                            ability.GetCastDelay(
-                                                me, 
-                                                possibleTarget, 
-                                                useCastPoint: false, 
-                                                abilityName: name) * 1000, 
-
-                                            // + (Math.Max(Me.Distance2D(possibleTarget) - ability.GetCastRange(name) - 50, 0)
-                                            // / Me.MovementSpeed) * 1000,
-                                            "casting");
-                                        Utils.Sleep(
-                                            ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000, 
-                                            "cancelorder");
-
-                                        // Utils.Sleep(ping, "killsteal");
-                                        return true;
-                                    }
-                                }
-                            }
-
-                            return false;
-                        }
-
-                        if (possibleTarget.Health - dealtDamage <= 0
-                            || possibleTarget.Health - dealtDamage
-                            < Nukes.NukesMenuDictionary[name].Item(name + "minhealthslider").GetValue<Slider>().Value)
-                        {
-                            Utils.Sleep(500, possibleTarget.Handle + "KillSteal");
-                            dealtDamage = 0;
-                            return false;
-                        }
-
-                        if (name == "item_urn_of_shadows" && possibleTarget.HasModifier("modifier_item_urn_damage"))
-                        {
-                            continue;
-                        }
-
-                        if (!ability.CanHit(possibleTarget, MyHeroInfo.Position, name)
-                            || (name == "zuus_thundergods_wrath"
-                                && (1
-                                    + enemyHeroes.Count(
-                                        x =>
-                                        !x.Equals(possibleTarget)
-                                        && x.Health <= AbilityDamage.CalculateDamage(ability, me, x)))
-                                < Nukes.NukesMenuDictionary[name].Item(name + "minenemykill").GetValue<Slider>().Value)
-                            || !MainMenu.Menu.Item("nukesToggler").GetValue<AbilityToggler>().IsEnabled(name)
-                            || !Nukes.NukesMenuDictionary[name].Item(name + "herotoggler")
-                                    .GetValue<HeroToggler>()
-                                    .IsEnabled(NameManager.Name(possibleTarget))
-                            || !Nuke.Cast(ability, possibleTarget, name))
-                        {
-                            return false;
-                        }
-
-                        if (Utils.SleepCheck(handleString))
-                        {
-                            dealtDamage += AbilityDamage.CalculateDamage(ability, me, possibleTarget);
-                            if (possibleTarget.Health - dealtDamage <= 0)
-                            {
-                                Utils.Sleep(
-                                    ability.GetHitDelay(possibleTarget, name) * 1000 + 500, 
-                                    possibleTarget.Handle + "KillSteal");
-                            }
-                        }
-
-                        var delay = ability.GetCastDelay(me, possibleTarget, abilityName: name) * 1000;
-                        if (name == "riki_blink_strike")
-                        {
-                            Utils.Sleep(MyHeroInfo.AttackRate() * 1000, handleString);
-                        }
-
-                        if (name == "necrolyte_reapers_scythe")
-                        {
-                            Utils.Sleep(delay + ping + 1500, "calculate");
-                        }
-
-                        if (name == "necrolyte_death_pulse")
-                        {
-                            Utils.Sleep(delay + ping + 200, "calculate");
-                        }
-
-                        if (name == "item_ethereal_blade")
-                        {
-                            // Utils.Sleep(
-                            // Me.GetTurnTime(possibleTarget) * 1000
-                            // + Prediction.CalculateReachTime(
-                            // possibleTarget,
-                            // 1200,
-                            // possibleTarget.Position - MyHeroInfo.Position),
-                            // "casting");
-                            etherealHitTime =
-                                (float)
-                                (Environment.TickCount + me.GetTurnTime(possibleTarget) * 1000
-                                 + Prediction.CalculateReachTime(
-                                     possibleTarget, 
-                                     1200, 
-                                     possibleTarget.Position - MyHeroInfo.Position) + ping * 2);
-                            Utils.Sleep(
-                                me.GetTurnTime(possibleTarget) * 1000 + 100
-                                + (MyHeroInfo.Position.Distance2D(possibleTarget) / 1200) * 1000 + ping, 
-                                "calculate");
-                        }
-
-                        if (name == "tusk_snowball")
-                        {
-                            Utils.Sleep(
-                                me.GetTurnTime(possibleTarget) * 1000
-                                + (MyHeroInfo.Position.Distance2D(possibleTarget) / 675) * 1000, 
-                                "GlobalCasting");
-                        }
-
-                        Utils.Sleep(delay, handleString);
-                        Utils.Sleep(
-                            ability.GetCastDelay(me, possibleTarget, useCastPoint: false, abilityName: name) * 1000, 
-                            "GlobalCasting");
-                        Utils.Sleep(ability.GetHitDelay(possibleTarget, name) * 1000, "calculate");
-                        Utils.Sleep(
-                            ability.GetCastDelay(me, possibleTarget, useCastPoint: false, abilityName: name) * 1000, 
-
-                            // + (Math.Max(Me.Distance2D(possibleTarget) - ability.GetCastRange(name) - 50, 0)
-                            // / Me.MovementSpeed) * 1000,
-                            "casting");
-                        Utils.Sleep(delay, "cancelorder");
-                        return true;
-                    }
-
-                    return true;
-                }
-            }
-
-            // else if (MyAbilities.NukesCombo.Any())
-            // {
-            // MyAbilities.NukesCombo = new List<Ability>();
-            // }
-            return false;
         }
 
         #endregion

@@ -22,12 +22,12 @@
 
         public static void Event(object sender, EventArgs e)
         {
-            if (Manage.Loaded || ObjectMgr.LocalHero == null)
+            if (Manage.Loaded || ObjectManager.LocalHero == null)
             {
                 return;
             }
 
-            AbilityMain.Me = ObjectMgr.LocalHero;
+            AbilityMain.Me = ObjectManager.LocalHero;
             Manage.Loaded = true;
             MainMenu.RestartMenu();
             MyAbilities.OffensiveAbilities = new Dictionary<string, Ability>();

@@ -50,7 +50,7 @@
                 // {
                 // if (!Rubick.MyCdDictionary.ContainsKey(name))
                 // {
-                // Rubick.MyCdDictionary.Add(name, Environment.TickCount + ((a as Ability).Cooldown * 1000));
+                // Rubick.MyCdDictionary.Add(name, Utils.TickCount + ((a as Ability).Cooldown * 1000));
                 // }
                 // }
                 RangeDrawing.RemoveRange(a as Ability);

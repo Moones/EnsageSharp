@@ -9,6 +9,7 @@
     using Ability.OnUpdate;
 
     using Ensage;
+    using Ensage.Common;
     using Ensage.Common.Extensions;
     using Ensage.Common.Menu;
 
@@ -28,7 +29,7 @@
 
         public static bool Cooldown(string name)
         {
-            return !MyCdDictionary.ContainsKey(name) || MyCdDictionary[name] < Environment.TickCount;
+            return !MyCdDictionary.ContainsKey(name) || MyCdDictionary[name] < Utils.TickCount;
         }
 
         public static void Game_OnUpdate(EventArgs args)

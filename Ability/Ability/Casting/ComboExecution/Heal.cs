@@ -21,7 +21,7 @@
                 }
 
                 var closestTree =
-                    ObjectMgr.GetEntities<Tree>()
+                    ObjectManager.GetEntities<Tree>()
                         .Where(x => x.IsAlive && x.IsVisible && x.Distance2D(target) < 250)
                         .MinOrDefault(x => x.Distance2D(target));
                 if (closestTree == null)

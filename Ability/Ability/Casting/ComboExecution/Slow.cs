@@ -68,7 +68,7 @@
             }
 
             var closestTrap =
-                ObjectMgr.GetEntities<Unit>()
+                ObjectManager.GetEntities<Unit>()
                     .Where(
                         x =>
                         x.ClassID == ClassID.CDOTA_BaseNPC_Additive && x.Team == AbilityMain.Me.Team && x.IsAlive

@@ -186,7 +186,8 @@
             if (!invisible && MainMenu.Menu.Item("Ability#.EnableAutoKillSteal").GetValue<bool>()
                 && Utils.SleepCheck("casting"))
             {
-                if (FullCombo.KillSteal(enemyHeroes, ping, Me))
+                Variables.Killsteal.FindTarget(enemyHeroes, Me);
+                if (Variables.Killsteal.TryKillsteal(Me, ping, enemyHeroes))
                 {
                     return;
                 }
@@ -197,7 +198,10 @@
                 return;
             }
 
-            if (keyDown)
+            if (!keyDown)
+            {
+                return;
+            }
             {
                 if (Utils.SleepCheck("UpdateTarget")
                     && (target == null || !target.IsValid || !target.IsAlive || (!target.IsVisible && targetLock == 0)
@@ -242,12 +246,15 @@
                     }
                 }
 
-                if (Utils.SleepCheck("GlobalCasting")
-                    && (Game.MousePosition.Distance2D(Me)
-                        > MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value
-                        || (target != null
-                            && Me.Distance2D(target)
-                            <= MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value)))
+                if (!Utils.SleepCheck("GlobalCasting")
+                    || (!(Game.MousePosition.Distance2D(Me)
+                          > MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value)
+                        && (target == null
+                            || !(Me.Distance2D(target)
+                                 <= MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value))))
+                {
+                    return;
+                }
                 {
                     var mode = MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Mode").GetValue<StringList>().SelectedIndex;
                     switch (mode)

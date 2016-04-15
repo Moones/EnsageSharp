@@ -1,12 +1,21 @@
 ﻿namespace Ability
 {
+    using Ability.Casting.ComboExecution;
+
+    /// <summary>
+    ///     The program.
+    /// </summary>
     internal class Program
     {
         #region Methods
 
-        private static void Main(string[] args)
+        /// <summary>
+        ///     The main.
+        /// </summary>
+        private static void Main()
         {
             AbilityMain.Init();
+            Variables.Killsteal = new Killsteal();
         }
 
         #endregion
