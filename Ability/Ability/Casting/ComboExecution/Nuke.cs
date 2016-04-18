@@ -86,13 +86,13 @@
                 var casted = ability.CastSkillShot(target, name, SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
                 if (casted)
                 {
-                    if (Utils.SleepCheck(ability.Handle.ToString())
+                    if (!disabled && Utils.SleepCheck(ability.Handle.ToString())
                         && ability.GetCastDelay(AbilityMain.Me, target, true) * 1000 - Game.Ping > 0.1)
                     {
                         DelayAction.Add(
                             new DelayActionItem(
                                 (int)
-                                (ability.GetCastDelay(AbilityMain.Me, target, true) * 1000 - Math.Max(50, Game.Ping)), 
+                                (ability.GetCastDelay(AbilityMain.Me, target, true) * 1000 - Math.Max(50, Game.Ping)),
                                 () =>
                                     {
                                         if (Prediction.StraightTime(target)
@@ -102,7 +102,7 @@
                                         {
                                             AbilityMain.Me.Stop();
                                         }
-                                    }, 
+                                    },
                                 CancellationToken.None));
                     }
                 }
