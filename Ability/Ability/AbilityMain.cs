@@ -47,7 +47,6 @@
             }
 
             MyHeroInfo.UpdatePosition();
-            ManageAutoAttack.UpdateAutoAttack();
             var enemyHeroes = EnemyHeroes.UsableHeroes;
             var allyHeroes = AllyHeroes.UsableHeroes;
             GankDamage.UpdateDamage(enemyHeroes, allyHeroes);
@@ -178,7 +177,7 @@
             if (!invisible && MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>()
                 && Utils.SleepCheck("Orbwalk.Attack")
                 && enemyHeroes.Any(
-                    enemyHero => FullCombo.AutoUsage(enemyHero, enemyHeroes, meMissingHp, ping, Me, meMana)))
+                    enemyHero => Variables.AutoUsage.Try(enemyHero, enemyHeroes, meMissingHp, ping, Me, meMana)))
             {
                 return;
             }
@@ -198,6 +197,7 @@
                 return;
             }
 
+            ManageAutoAttack.UpdateAutoAttack();
             if (!keyDown)
             {
                 return;

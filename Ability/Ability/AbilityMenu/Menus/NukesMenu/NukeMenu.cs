@@ -27,8 +27,9 @@
             menu.AddItem(Sliders.MinManaCheck(name));
             menu.AddItem(Sliders.MinManaCheck(name, true));
             if (ability.IsAbilityBehavior(AbilityBehavior.AreaOfEffect, name)
-                || ability.IsAbilityBehavior(AbilityBehavior.Point, name))
+                || ability.IsAbilityBehavior(AbilityBehavior.Point, name) || ability.IsSkillShot())
             {
+                menu.AddItem(Togglers.OnDisableEnemy(name));
                 menu.AddItem(
                     new MenuItem(name + "minstraighttime", "Minimum enemy straight time (ms): ").SetValue(
                         new Slider(600, 0, 5000))

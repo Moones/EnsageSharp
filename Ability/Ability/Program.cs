@@ -15,7 +15,9 @@
         private static void Main()
         {
             AbilityMain.Init();
+
             Variables.Killsteal = new Killsteal();
+            Variables.AutoUsage = new AutoUsage();
         }
 
         #endregion

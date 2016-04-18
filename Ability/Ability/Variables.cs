@@ -10,6 +10,11 @@
         #region Public Properties
 
         /// <summary>
+        ///     Gets or sets the auto usage.
+        /// </summary>
+        public static AutoUsage AutoUsage { get; set; }
+
+        /// <summary>
         ///     Gets or sets the dealt damage.
         /// </summary>
         public static float DealtDamage { get; set; }

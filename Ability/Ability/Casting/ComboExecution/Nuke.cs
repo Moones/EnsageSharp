@@ -17,7 +17,7 @@
     {
         #region Public Methods and Operators
 
-        public static bool Cast(Ability ability, Unit target, string name)
+        public static bool Cast(Ability ability, Unit target, string name, bool disabled = false)
         {
             if (target.HasModifier("modifier_item_blade_mail_reflect")
                 && AbilityDamage.CalculateDamage(ability, AbilityMain.Me, target) > AbilityMain.Me.Health)
@@ -76,7 +76,8 @@
 
             if ((ability.IsAbilityBehavior(AbilityBehavior.AreaOfEffect, name)
                  || ability.IsAbilityBehavior(AbilityBehavior.Point, name))
-                && (Prediction.StraightTime(target)
+                && (disabled
+                    || Prediction.StraightTime(target)
                     > Nukes.NukesMenuDictionary[name].Item(name + "minstraighttime").GetValue<Slider>().Value
                     || target.MovementSpeed < 200))
             {

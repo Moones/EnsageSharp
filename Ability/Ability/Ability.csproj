@@ -108,6 +108,7 @@
     <Compile Include="AbilityMenu\Update.cs" />
     <Compile Include="AutoAttack\ManageAutoAttack.cs" />
     <Compile Include="Casting\CastingChecks.cs" />
+    <Compile Include="Casting\ComboExecution\AutoUsage.cs" />
     <Compile Include="Casting\ComboExecution\Buff.cs" />
     <Compile Include="Casting\ComboExecution\Disable.cs" />
     <Compile Include="Casting\ComboExecution\FullCombo.cs" />
