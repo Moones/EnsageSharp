@@ -11,52 +11,115 @@
 
     using SharpDX;
 
+    /// <summary>
+    ///     The ursa rage.
+    /// </summary>
     internal class UrsaRage
     {
         #region Static Fields
 
+        /// <summary>
+        ///     The menu.
+        /// </summary>
         private static readonly Menu Menu = new Menu("UrsaRage", "ursaRage", true, "npc_dota_hero_ursa", true);
 
+        /// <summary>
+        ///     The abyssal blade.
+        /// </summary>
         private static Item abyssalBlade;
 
+        /// <summary>
+        ///     The blink.
+        /// </summary>
         private static Item blink;
 
+        /// <summary>
+        ///     The blink range.
+        /// </summary>
         private static float blinkRange;
 
+        /// <summary>
+        ///     The earth shock.
+        /// </summary>
         private static Ability earthshock;
 
+        /// <summary>
+        ///     The earth shock cast point.
+        /// </summary>
         private static double earthshockCastPoint;
 
+        /// <summary>
+        ///     The enrage.
+        /// </summary>
         private static Ability enrage;
 
+        /// <summary>
+        ///     The hull sum.
+        /// </summary>
         private static float hullsum;
 
+        /// <summary>
+        ///     The loaded.
+        /// </summary>
         private static bool loaded;
 
+        /// <summary>
+        ///     The me.
+        /// </summary>
         private static Hero me;
 
+        /// <summary>
+        ///     The menu value.
+        /// </summary>
         private static AbilityToggler menuValue;
 
+        /// <summary>
+        ///     The menuvalue set.
+        /// </summary>
         private static bool menuvalueSet;
 
+        /// <summary>
+        ///     The me position.
+        /// </summary>
         private static Vector3 mePosition;
 
+        /// <summary>
+        ///     The overpower.
+        /// </summary>
         private static Ability overpower;
 
+        /// <summary>
+        ///     The overpower cast point.
+        /// </summary>
         private static double overpowerCastPoint;
 
+        /// <summary>
+        ///     The scythe of vyse.
+        /// </summary>
         private static Item scytheOfVyse;
 
+        /// <summary>
+        ///     The target.
+        /// </summary>
         private static Hero target;
 
+        /// <summary>
+        ///     The target distance.
+        /// </summary>
         private static float targetDistance;
 
+        /// <summary>
+        ///     The turn time.
+        /// </summary>
         private static double turnTime;
 
         #endregion
 
         #region Public Methods and Operators
 
+        /// <summary>
+        ///     The init.
+        /// </summary>
         public static void Init()
         {
             var dict = new Dictionary<string, bool>
@@ -95,11 +158,15 @@
 
         #region Methods
 
+        /// <summary>
+        ///     The cast combo.
+        /// </summary>
+        /// <returns>
+        ///     The <see cref="bool" />.
+        /// </returns>
         private static bool CastCombo()
         {
-            var canCancel = (Orbwalking.CanCancelAnimation()
-                             && (Orbwalking.AttackOnCooldown(target) || !me.IsAttacking()))
-                            || (!Orbwalking.AttackOnCooldown(target) && targetDistance > 250);
+            var canCancel = Orbwalking.CanCancelAnimation();
             var manaCheck = Menu.Item("manaSlider").GetValue<Slider>().Value < me.Mana;
             if (!Utils.SleepCheck("casting") || !me.CanCast() || !target.IsVisible || !canCancel)
             {
@@ -239,11 +306,17 @@
             return true;
         }
 
+        /// <summary>
+        ///     The game_ on update.
+        /// </summary>
+        /// <param name="args">
+        ///     The args.
+        /// </param>
         private static void Game_OnUpdate(EventArgs args)
         {
             if (!loaded)
             {
-                me = ObjectMgr.LocalHero;
+                me = ObjectManager.LocalHero;
                 if (!Game.IsInGame || me == null || me.ClassID != ClassID.CDOTA_Unit_Hero_Ursa)
                 {
                     return;
@@ -363,7 +436,7 @@
             var mousePosition = Game.MousePosition;
             if (blink != null)
             {
-                blinkRange = blink.AbilityData.FirstOrDefault(x => x.Name == "blink_range").GetValue(0);
+                blinkRange = blink.AbilitySpecialData.FirstOrDefault(x => x.Name == "blink_range").GetValue(0);
                 range = blinkRange + me.HullRadius + 500;
             }
 
@@ -420,11 +493,14 @@
             OrbWalk(Orbwalking.CanCancelAnimation());
         }
 
+        /// <summary>
+        ///     The orb walk.
+        /// </summary>
+        /// <param name="canCancel">
+        ///     The can cancel.
+        /// </param>
         private static void OrbWalk(bool canCancel)
         {
-            // var modifier = target.Modifiers.FirstOrDefault(x => x.Name == "modifier_ursa_fury_swipes_damage_increase");
-            // && UnitDatabase.GetAttackSpeed(me) < 300 && !me.Modifiers.Any(x => x.Name == "modifier_ursa_overpower")
-            // var overpowering = me.Modifiers.Any(x => x.Name == "modifier_ursa_overpower");
             var canAttack = !Orbwalking.AttackOnCooldown(target) && !target.IsInvul() && !target.IsAttackImmune()
                             && me.CanAttack();
             if (canAttack && (targetDistance <= 350))
