@@ -92,8 +92,22 @@
                 .SetTooltip("Contains unfinished stuff, not all combos are tweaked/in right order.");
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("abilityKey1", "Combo Key"))
                 .SetValue(new KeyBind('G', KeyBindType.Press));
+            var priorityChanger =
+                new MenuItem("Ability#.ComboOrder", "Custom Order: ").SetValue(
+                    new PriorityChanger(new List<string>(), "Ability#.ComboOrder")).SetFontStyle(fontColor: Color.Gray);
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("abilityComboType", "Combo Order"))
-                .SetValue(new StringList(new[] { "Normal", "Maximum Disable", "Maximum Damage" }));
+                .SetValue(new StringList(new[] { "Normal", "Maximum Disable", "Maximum Damage", "Custom" })).ValueChanged +=
+                (sender, args) =>
+                    {
+                        priorityChanger.SetFontStyle(
+                            fontColor: args.GetNewValue<StringList>().SelectedIndex == 3 ? Color.White : Color.Gray);
+                    };
+
+            if (MainMenu.ComboKeysMenu.Item("abilityComboType").GetValue<StringList>().SelectedIndex == 3)
+            {
+                priorityChanger.SetFontStyle(fontColor: Color.White);
+            }
+
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("Ability.KeyCombo.Mode", "Move mode"))
                 .SetValue(new StringList(new[] { "Orbwalk", "Move to mouse", "Attack target", "Do nothing" }));
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("Ability.KeyCombo.NoMoveRange", "No move range"))
@@ -105,6 +119,7 @@
                 .SetValue(new StringList(new[] { "None", "WhenTheyGoToFog", "WhenKeyIsPressed" }));
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("comboAbilitiesToggler", "Abilities in combo: "))
                 .SetValue(new AbilityToggler(new Dictionary<string, bool>()));
+            MainMenu.ComboKeysMenu.AddItem(priorityChanger);
 
             foreach (var spell in
                 from spell in spells
@@ -121,7 +136,7 @@
                     MyAbilities.TinkerRearm = spell;
                 }
 
-                ComboMenu.AddAbility(spell.Name, dv);
+                ComboMenu.AddAbility(spell.Name, spell, dv);
             }
 
             foreach (var spell in
@@ -138,7 +153,7 @@
                     MyAbilities.Cyclone = spell;
                 }
 
-                ComboMenu.AddAbility(spell.Name);
+                ComboMenu.AddAbility(spell.Name, spell);
             }
 
             // if (blink != null)

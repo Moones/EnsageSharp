@@ -226,7 +226,8 @@
                         selectedCombo == 2, 
                         selectedCombo == 1, 
                         Me, 
-                        meMana);
+                        meMana, 
+                        selectedCombo == 3);
                 }
 
                 if (Me.ClassID == ClassID.CDOTA_Unit_Hero_TemplarAssassin && target != null && target.IsVisible)

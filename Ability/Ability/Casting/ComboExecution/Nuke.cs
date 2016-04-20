@@ -92,7 +92,7 @@
                         DelayAction.Add(
                             new DelayActionItem(
                                 (int)
-                                (ability.GetCastDelay(AbilityMain.Me, target, true) * 1000 - Math.Max(50, Game.Ping)),
+                                (ability.GetCastDelay(AbilityMain.Me, target, true) * 1000 - Math.Max(50, Game.Ping)), 
                                 () =>
                                     {
                                         if (Prediction.StraightTime(target)
@@ -102,7 +102,7 @@
                                         {
                                             AbilityMain.Me.Stop();
                                         }
-                                    },
+                                    }, 
                                 CancellationToken.None));
                     }
                 }

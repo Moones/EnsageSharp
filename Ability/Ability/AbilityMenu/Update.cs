@@ -45,6 +45,7 @@
                 }
 
                 MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Remove(name);
+                MainMenu.ComboKeysMenu.Item("Ability#.ComboOrder").GetValue<PriorityChanger>().Remove(name);
 
                 // if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
                 // {
@@ -229,7 +230,7 @@
                         if (added)
                         {
                             RangeDrawing.AddRange(item);
-                            ComboMenu.AddAbility(item.Name);
+                            ComboMenu.AddAbility(item.Name, item);
                         }
                     }
 
@@ -311,7 +312,7 @@
 
                             if (added)
                             {
-                                ComboMenu.AddAbility(item.Name);
+                                ComboMenu.AddAbility(item.Name, item);
                             }
                         }
 

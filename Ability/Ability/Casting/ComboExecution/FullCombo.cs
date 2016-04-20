@@ -224,15 +224,33 @@
             bool onlyDamage, 
             bool onlyDisable, 
             Hero me, 
-            float mana)
+            float mana, 
+            bool customOrder)
         {
             var toggler = MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>();
             if (Utils.SleepCheck("UpdateCombo"))
             {
-                MyAbilities.Combo =
-                    MyAbilities.OffensiveAbilities.Where(
-                        x => x.Value.IsValid && x.Value.Owner.Equals(me) && toggler.IsEnabled(NameManager.Name(x.Value)))
-                        .OrderBy(x => ComboOrder.GetComboOrder(x.Value, onlyDisable));
+                if (customOrder)
+                {
+                    MyAbilities.Combo =
+                        MyAbilities.OffensiveAbilities.Where(
+                            x =>
+                            x.Value.IsValid && x.Value.Owner.Equals(me) && toggler.IsEnabled(NameManager.Name(x.Value)))
+                            .OrderByDescending(
+                                x =>
+                                MainMenu.ComboKeysMenu.Item("Ability#.ComboOrder")
+                                    .GetValue<PriorityChanger>()
+                                    .GetPriority(x.Value.StoredName()));
+                }
+                else
+                {
+                    MyAbilities.Combo =
+                        MyAbilities.OffensiveAbilities.Where(
+                            x =>
+                            x.Value.IsValid && x.Value.Owner.Equals(me) && toggler.IsEnabled(NameManager.Name(x.Value)))
+                            .OrderBy(x => ComboOrder.GetComboOrder(x.Value, onlyDisable));
+                }
+
                 Utils.Sleep(500, "UpdateCombo");
             }
 
@@ -284,8 +302,16 @@
                             "casting");
                         Utils.Sleep(
                             MyAbilities.TinkerRearm.FindCastPoint() * 1000 + Game.Ping
-                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000, 
+                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000,
                             "cancelorder");
+                        Utils.Sleep(
+                            MyAbilities.TinkerRearm.FindCastPoint() * 1000 + Game.Ping
+                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000,
+                            "Orbwalk.Attack");
+                        Utils.Sleep(
+                            MyAbilities.TinkerRearm.FindCastPoint() * 1000 + Game.Ping
+                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000,
+                            "Ability#.Sleep");
                         return true;
                     }
 
