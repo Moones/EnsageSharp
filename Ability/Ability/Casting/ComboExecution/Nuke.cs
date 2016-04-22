@@ -38,7 +38,8 @@
                 }
             }
 
-            if (ability.IsAbilityBehavior(AbilityBehavior.UnitTarget, name) && ability.Name != "lion_impale")
+            if (ability.IsAbilityBehavior(AbilityBehavior.UnitTarget, name) && ability.Name != "lion_impale"
+                && ability.Name != "lina_dragon_slave")
             {
                 if (target.IsLinkensProtected())
                 {

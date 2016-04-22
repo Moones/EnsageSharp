@@ -70,7 +70,8 @@
 
         public static bool ChainStun(Ability ability, Hero target, string name)
         {
-            return Utils.ChainStun(target, ability.GetHitDelay(target), null, true, name);
+            var chainStun = Utils.ChainStun(target, ability.GetHitDelay(target), null, true, name);
+            return chainStun;
         }
 
         public static bool Channel(Hero target)

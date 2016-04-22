@@ -96,7 +96,8 @@
                 new MenuItem("Ability#.ComboOrder", "Custom Order: ").SetValue(
                     new PriorityChanger(new List<string>(), "Ability#.ComboOrder")).SetFontStyle(fontColor: Color.Gray);
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("abilityComboType", "Combo Order"))
-                .SetValue(new StringList(new[] { "Normal", "Maximum Disable", "Maximum Damage", "Custom" })).ValueChanged +=
+                .SetValue(new StringList(new[] { "Normal", "Maximum Disable", "Maximum Damage", "Custom" }))
+                .ValueChanged +=
                 (sender, args) =>
                     {
                         priorityChanger.SetFontStyle(

@@ -217,9 +217,10 @@
                 }
 
                 var selectedCombo = MainMenu.ComboKeysMenu.Item("abilityComboType").GetValue<StringList>().SelectedIndex;
+                var combo = false;
                 if (!invisible && target != null && Utils.SleepCheck("Orbwalk.Attack"))
                 {
-                    var combo = FullCombo.Execute(
+                    combo = FullCombo.Execute(
                         target, 
                         enemyHeroes, 
                         ping, 
@@ -247,7 +248,7 @@
                     }
                 }
 
-                if (!Utils.SleepCheck("GlobalCasting")
+                if (combo || !Utils.SleepCheck("GlobalCasting")
                     || (!(Game.MousePosition.Distance2D(Me)
                           > MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value)
                         && (target == null

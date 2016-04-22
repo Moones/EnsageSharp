@@ -302,15 +302,15 @@
                             "casting");
                         Utils.Sleep(
                             MyAbilities.TinkerRearm.FindCastPoint() * 1000 + Game.Ping
-                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000,
+                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000, 
                             "cancelorder");
                         Utils.Sleep(
                             MyAbilities.TinkerRearm.FindCastPoint() * 1000 + Game.Ping
-                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000,
+                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000, 
                             "Orbwalk.Attack");
                         Utils.Sleep(
                             MyAbilities.TinkerRearm.FindCastPoint() * 1000 + Game.Ping
-                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000,
+                            + MyAbilities.TinkerRearm.GetChannelTime(MyAbilities.TinkerRearm.Level - 1) * 1000, 
                             "Ability#.Sleep");
                         return true;
                     }
@@ -458,12 +458,23 @@
                                 return true;
                             }
 
-                            if (target.Distance2D(MyHeroInfo.Position) > ability.GetCastRange(name) + 250)
+                            var distance = target.Distance2D(MyHeroInfo.Position);
+
+                            if (distance > ability.GetCastRange(name) + 250
+                                && ((name != "item_cyclone" && category != "disable")
+                                    || distance > ability.GetCastRange(name) + 1200))
                             {
                                 continue;
                             }
 
-                            return false;
+                            if (!Utils.SleepCheck("Ability.Move"))
+                            {
+                                return true;
+                            }
+
+                            AbilityMain.Me.Move(Game.MousePosition);
+                            Utils.Sleep(100, "Ability.Move");
+                            return true;
                         }
 
                         if (name == "item_cyclone" && coldFeetLastUse - Utils.TickCount < 2500
@@ -602,6 +613,9 @@
                                 break;
                             case "ancient_apparition_cold_feet":
                                 coldFeetLastUse = Utils.TickCount + 4000;
+                                break;
+                            case "item_cyclone":
+                                Utils.Sleep(Game.Ping + (me.GetTurnTime(target) * 1000) + 450, "GlobalCasting");
                                 break;
                         }
 

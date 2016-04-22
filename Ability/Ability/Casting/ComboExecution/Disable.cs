@@ -32,20 +32,21 @@
                 abilityName: name, 
                 useSleep: name != "ancient_apparition_cold_feet" && name != "rattletrap_battery_assault", 
                 soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
-            if (casted)
+            if (!casted)
             {
-                DelayAction.Add(
-                    new DelayActionItem(300, () => { AbilityMain.LaunchSnowball(); }, CancellationToken.None));
-
-                if (name == "spirit_breaker_charge_of_darkness")
-                {
-                    Utils.Sleep(1500, "Ability.Move");
-                    Utils.Sleep(1500, "cancelorder");
-                    Utils.Sleep(1500, "GlobalCasting");
-                }
+                return false;
             }
 
-            return casted;
+            DelayAction.Add(new DelayActionItem(300, () => { AbilityMain.LaunchSnowball(); }, CancellationToken.None));
+
+            if (name == "spirit_breaker_charge_of_darkness")
+            {
+                Utils.Sleep(1500, "Ability.Move");
+                Utils.Sleep(1500, "cancelorder");
+                Utils.Sleep(1500, "GlobalCasting");
+            }
+
+            return true;
         }
 
         #endregion
