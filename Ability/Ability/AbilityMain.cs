@@ -146,8 +146,10 @@
                         selectedCombo == 3);
                 }
 
-                if (target == null
-                    || (target.Distance2D(MyHeroInfo.Position) > 500 && Me.HasModifier("modifier_pudge_rot")))
+                if (!combo
+                    && (target == null
+                        || (target.Distance2D(MyHeroInfo.Position) > 500 && Me.HasModifier("modifier_pudge_rot")
+                            && !target.HasModifier("modifier_pudge_meat_hook"))))
                 {
                     foreach (var ability in AllyHeroes.AbilityDictionary[Me.StoredName()].Where(x => x.IsToggled))
                     {
