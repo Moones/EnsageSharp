@@ -22,6 +22,7 @@
     using Ensage.Common;
     using Ensage.Common.AbilityInfo;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Extensions.SharpDX;
     using Ensage.Common.Menu;
     using Ensage.Common.Objects;
 
@@ -318,7 +319,7 @@
                     foreach (var data in
                         MyAbilities.Combo.Where(
                             x =>
-                            x.Value.IsValid
+                            x.Value.IsValid && !x.Value.IsToggled
                             && (x.Value.CanBeCasted()
                                 || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value)))
                             && !x.Value.IsAbilityBehavior(AbilityBehavior.Hidden)
@@ -342,6 +343,48 @@
                         // {
                         // continue;
                         // }
+                        var handleString = ability.Handle.ToString();
+                        if (category == "blink")
+                        {
+                            var range = MainMenu.BlinkMenu.Item("Ability#.BlinkRange").GetValue<Slider>().Value;
+                            var blinkPosition = target.PredictedPosition(0.3 + me.GetTurnTime(target));
+                            if (MyHeroInfo.Position.Distance2D(blinkPosition) > 1500 + range
+                                || MyHeroInfo.Position.Distance2D(blinkPosition) < 500 + range)
+                            {
+                                continue;
+                            }
+
+                            var minEnemiesAround =
+                                MainMenu.BlinkMenu.Item("Ability#.BlinkMaxEnemiesAround").GetValue<Slider>().Value;
+                            if (
+                                Heroes.GetByTeam(target.Team)
+                                    .Count(
+                                        x =>
+                                        x.IsValid && !x.Equals(target) && x.IsAlive && !x.IsIllusion
+                                        && x.Distance2D(target) < 500 + range) > minEnemiesAround)
+                            {
+                                continue;
+                            }
+
+                            if (MyHeroInfo.Position.Distance2D(blinkPosition) > 1200)
+                            {
+                                blinkPosition = (blinkPosition - MyHeroInfo.Position) * 1200
+                                                / blinkPosition.Distance2D(MyHeroInfo.Position) + MyHeroInfo.Position;
+                            }
+
+                            if (blinkPosition.Distance2D(target) < range)
+                            {
+                                blinkPosition.Extend(MyHeroInfo.Position, range);
+                            }
+
+                            ability.UseAbility(blinkPosition);
+                            MyHeroInfo.Position = blinkPosition;
+                            Utils.Sleep(Game.Ping + me.GetTurnTime(MyHeroInfo.Position) + 200, "mePosition");
+                            Utils.Sleep(500, handleString);
+                            Utils.Sleep(500, "GlobalCasting");
+                            return true;
+                        }
+
                         if (category != "buff" && target.IsMagicImmune() && ability.ImmunityType != (ImmunityType)3)
                         {
                             continue;
@@ -352,8 +395,12 @@
                             continue;
                         }
 
-                        var handleString = ability.Handle.ToString();
                         if (Variables.EtherealHitTime >= (Utils.TickCount + ability.GetHitDelay(target, name) * 1000))
+                        {
+                            continue;
+                        }
+
+                        if (Variables.EtherealHitTime >= Utils.TickCount && name == "pudge_dismember")
                         {
                             continue;
                         }
@@ -410,13 +457,7 @@
                                 }
                                 else if (target1 != null && target1.Equals(me))
                                 {
-                                    if (Utils.SleepCheck("Ability.Move"))
-                                    {
-                                        me.Move(Game.MousePosition);
-                                        Utils.Sleep(100, "Ability.Move");
-                                    }
-
-                                    Utils.Sleep(200, "GlobalCasting");
+                                    AbilityMain.MoveMode(target);
                                     return true;
                                 }
                             }
@@ -424,14 +465,17 @@
                             return false;
                         }
 
-                        if (!ability.CanHit(target, MyHeroInfo.Position, name) && category != "buff")
+
+                        if (!ability.CanHit(target, MyHeroInfo.Position, name) && category != "buff"
+                            && (!target.HasModifier("modifier_pudge_meat_hook")
+                                || me.ClassID != ClassID.CDOTA_Unit_Hero_Pudge || target.Distance2D(me) > 600))
                         {
                             Variables.DealtDamage = 0;
                             if (name == "templar_assassin_meld")
                             {
                                 if (!Nuke.Cast(ability, target, name) && Utils.SleepCheck("Ability.Move"))
                                 {
-                                    AbilityMain.Me.Move(Game.MousePosition);
+                                    AbilityMain.MoveMode(target);
                                     Utils.Sleep(100, "Ability.Move");
                                 }
 
@@ -446,16 +490,21 @@
 
                             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, NameManager.Name(ability))
                                 && target.PredictedPosition().Distance2D(MyHeroInfo.Position)
-                                < ability.GetRadius() + 150)
+                                < ability.GetRadius() + 150 && me.ClassID != ClassID.CDOTA_Unit_Hero_Pudge)
                             {
                                 if (Utils.SleepCheck("Ability.Move"))
                                 {
-                                    me.Move(Game.MousePosition);
+                                    AbilityMain.MoveMode(target);
                                     Utils.Sleep(100, "Ability.Move");
                                 }
 
                                 Utils.Sleep(200, "GlobalCasting");
                                 return true;
+                            }
+
+                            if (me.ClassID == ClassID.CDOTA_Unit_Hero_Pudge)
+                            {
+                                return false;
                             }
 
                             var distance = target.Distance2D(MyHeroInfo.Position);
@@ -467,12 +516,18 @@
                                 continue;
                             }
 
+                            if (Game.MousePosition.Distance2D(me)
+                                < MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value)
+                            {
+                                return false;
+                            }
+
                             if (!Utils.SleepCheck("Ability.Move"))
                             {
                                 return true;
                             }
 
-                            AbilityMain.Me.Move(Game.MousePosition);
+                            AbilityMain.MoveMode(target);
                             Utils.Sleep(100, "Ability.Move");
                             return true;
                         }
@@ -582,7 +637,7 @@
                             Variables.DealtDamage += AbilityDamage.CalculateDamage(ability, me, target);
                         }
 
-                        var delay = Math.Max(ability.GetCastDelay(me, target, abilityName: name), 0.2) * 1000;
+                        var delay = Math.Max(ability.GetCastDelay(me, target, abilityName: name, useCastPoint: false), 0.2) * 1000;
                         switch (name)
                         {
                             case "riki_blink_strike":
@@ -595,11 +650,15 @@
                                 Utils.Sleep(delay + ping + 200, "calculate");
                                 break;
                             case "item_ethereal_blade":
-                                Variables.EtherealHitTime =
-                                    (float)
-                                    (Utils.TickCount + me.GetTurnTime(target) * 1000
-                                     + Prediction.CalculateReachTime(target, 1200, target.Position - me.Position)
-                                     + ping * 2);
+                                //Variables.EtherealHitTime =
+                                //    (float)
+                                //    (Utils.TickCount + me.GetTurnTime(target) * 1000
+                                //     + Prediction.CalculateReachTime(target, 1200, target.Position - me.Position)
+                                //     + ping * 2);
+                                Variables.LastEtherealTarget = target;
+                                Variables.LastEtherealCastPosition = me.NetworkPosition;
+                                Variables.LastEtherealCastTime =
+                                    (float)(Utils.TickCount + (me.GetTurnTime(target) * 1000) + ping);
                                 Utils.Sleep(
                                     me.GetTurnTime(target) * 1000 + 100
                                     + (MyHeroInfo.Position.Distance2D(target) / 1200) * 1000 + ping, 
@@ -616,6 +675,7 @@
                                 break;
                             case "item_cyclone":
                                 Utils.Sleep(Game.Ping + (me.GetTurnTime(target) * 1000) + 450, "GlobalCasting");
+                                Utils.Sleep(Game.Ping + (me.GetTurnTime(target) * 1000) + 450, "casting");
                                 break;
                         }
 
@@ -627,9 +687,7 @@
                         }
 
                         Utils.Sleep(delay, handleString);
-                        Utils.Sleep(
-                            ability.GetCastDelay(me, target, abilityName: name, useCastPoint: false) * 1000, 
-                            "GlobalCasting");
+                        Utils.Sleep(ability.GetCastDelay(me, target, abilityName: name, useCastPoint: false) * 1000, "GlobalCasting");
                         Utils.Sleep(ability.GetHitDelay(target, name) * 1000, "calculate");
                         Utils.Sleep(
                             Math.Max(ability.GetCastDelay(me, target, useCastPoint: false, abilityName: name), 0.15)

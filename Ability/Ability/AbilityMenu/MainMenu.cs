@@ -36,6 +36,8 @@
 
         public static Menu RangeDrawingMenu;
 
+        public static Menu BlinkMenu;
+
         #endregion
 
         #region Public Methods and Operators
@@ -54,6 +56,7 @@
             Shields.ShieldsMenu = new Menu("Shields", "shieldsMenu" + AbilityMain.Me.Name);
             DrawingsMenu = new Menu("Drawings", "drawingsMenu");
             Silences.SilencesMenu = new Menu("Silences", "silencesMenu" + AbilityMain.Me.Name);
+            BlinkMenu = new Menu("Blink Configuration", "Ability#.Blink");
             OptionsMenu = new Menu("Options", "abilityOptions");
             DamageIndicatorMenu = new Menu("DamageIndicator", "abilityDamageIndicator");
             GankDamageMenu = new Menu("GankDamage", "abilityGankDamage");

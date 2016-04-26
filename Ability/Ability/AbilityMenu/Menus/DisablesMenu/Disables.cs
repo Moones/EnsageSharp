@@ -74,7 +74,7 @@
                 DisablesToggler.Add(spell.Name, true);
             }
 
-            var menu = DisableMenu.Create(spell.Name);
+            var menu = DisableMenu.Create(spell.Name, spell);
             DisablesMenuDictionary.Add(spell.Name, menu);
             DisablesMenu.AddSubMenu(menu);
         }

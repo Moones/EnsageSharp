@@ -18,6 +18,7 @@
     using Ensage.Common;
     using Ensage.Common.Extensions;
     using Ensage.Common.Menu;
+    using Ensage.Common.Objects;
 
     using SharpDX;
 
@@ -49,6 +50,7 @@
             MyHeroInfo.UpdatePosition();
             var enemyHeroes = EnemyHeroes.UsableHeroes;
             var allyHeroes = AllyHeroes.UsableHeroes;
+
             GankDamage.UpdateDamage(enemyHeroes, allyHeroes);
             if (!Me.IsAlive || Me.IsChanneling() || Me.HasModifier("modifier_spirit_breaker_charge_of_darkness")
                 || (MyAbilities.ChargeOfDarkness != null && MyAbilities.ChargeOfDarkness.IsValid
@@ -57,7 +59,9 @@
                 return;
             }
 
-            if (Utils.SleepCheck("cancelorder"))
+            var keyDown = Game.IsKeyDown(MainMenu.ComboKeysMenu.Item("abilityKey1").GetValue<KeyBind>().Key);
+
+            if (Utils.SleepCheck("cancelorder") || !keyDown)
             {
                 if (lastOrderPosition != Vector3.Zero && lastActivity == NetworkActivity.Move)
                 {
@@ -98,98 +102,9 @@
             var targetLock =
                 MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.TargetLock").GetValue<StringList>().SelectedIndex;
 
-            var keyDown = Game.IsKeyDown(MainMenu.ComboKeysMenu.Item("abilityKey1").GetValue<KeyBind>().Key);
-
             if (!keyDown)
             {
                 target = null;
-            }
-
-            if (!MyAbilities.OffensiveAbilities.Any())
-            {
-                if (Game.IsChatOpen)
-                {
-                    return;
-                }
-
-                if (keyDown)
-                {
-                    if (Utils.SleepCheck("UpdateTarget")
-                        && (target == null || !target.IsValid || !target.IsAlive
-                            || (!target.IsVisible && targetLock == 0) || (target.IsVisible && targetLock <= 1)))
-                    {
-                        var mode =
-                            MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Target").GetValue<StringList>().SelectedIndex;
-                        target = mode == 0
-                                     ? TargetSelector.ClosestToMouse(Me, 2000)
-                                     : EnemyHeroes.UsableHeroes.Where(x => x.Distance2D(Me) < 2000)
-                                           .MaxOrDefault(x => x.GetDoableDamage());
-                        Utils.Sleep(250, "UpdateTarget");
-                    }
-
-                    if (target != null && !target.IsValid)
-                    {
-                        target = null;
-                    }
-
-                    if (Utils.SleepCheck("GlobalCasting")
-                        && (Game.MousePosition.Distance2D(Me)
-                            > MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value
-                            || (target != null
-                                && Me.Distance2D(target)
-                                <= MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value)))
-                    {
-                        var mode =
-                            MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Mode").GetValue<StringList>().SelectedIndex;
-                        switch (mode)
-                        {
-                            case 0:
-
-                                Orbwalking.Orbwalk(target, attackmodifiers: true);
-                                break;
-                            case 1:
-                                if (!Utils.SleepCheck("Ability.Move"))
-                                {
-                                    return;
-                                }
-
-                                Me.Move(Game.MousePosition);
-                                Utils.Sleep(100, "Ability.Move");
-                                break;
-                            case 2:
-                                if (!Utils.SleepCheck("Ability.Move") || target == null)
-                                {
-                                    return;
-                                }
-
-                                Me.Attack(target);
-                                Utils.Sleep(100, "Ability.Move");
-                                break;
-                            case 3:
-                                return;
-                        }
-                    }
-                }
-            }
-
-            var meMissingHp = Me.MaximumHealth - Me.Health;
-            var meMana = Me.Mana;
-            if (!invisible && MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>()
-                && Utils.SleepCheck("Orbwalk.Attack")
-                && enemyHeroes.Any(
-                    enemyHero => Variables.AutoUsage.Try(enemyHero, enemyHeroes, meMissingHp, ping, Me, meMana)))
-            {
-                return;
-            }
-
-            if (!invisible && MainMenu.Menu.Item("Ability#.EnableAutoKillSteal").GetValue<bool>()
-                && Utils.SleepCheck("casting"))
-            {
-                Variables.Killsteal.FindTarget(enemyHeroes, Me);
-                if (Variables.Killsteal.TryKillsteal(Me, ping, enemyHeroes))
-                {
-                    return;
-                }
             }
 
             if (Game.IsChatOpen)
@@ -197,11 +112,11 @@
                 return;
             }
 
+            var meMissingHp = Me.MaximumHealth - Me.Health;
+            var meMana = Me.Mana;
             ManageAutoAttack.UpdateAutoAttack();
-            if (!keyDown)
-            {
-                return;
-            }
+
+            if (keyDown)
             {
                 if (Utils.SleepCheck("UpdateTarget")
                     && (target == null || !target.IsValid || !target.IsAlive || (!target.IsVisible && targetLock == 0)
@@ -221,14 +136,31 @@
                 if (!invisible && target != null && Utils.SleepCheck("Orbwalk.Attack"))
                 {
                     combo = FullCombo.Execute(
-                        target, 
-                        enemyHeroes, 
-                        ping, 
-                        selectedCombo == 2, 
-                        selectedCombo == 1, 
-                        Me, 
-                        meMana, 
+                        target,
+                        enemyHeroes,
+                        ping,
+                        selectedCombo == 2,
+                        selectedCombo == 1,
+                        Me,
+                        meMana,
                         selectedCombo == 3);
+                }
+
+                if (target == null
+                    || (target.Distance2D(MyHeroInfo.Position) > 500 && Me.HasModifier("modifier_pudge_rot")))
+                {
+                    foreach (var ability in AllyHeroes.AbilityDictionary[Me.StoredName()].Where(x => x.IsToggled))
+                    {
+                        var handle = ability.Handle.ToString();
+                        if (!Utils.SleepCheck(handle))
+                        {
+                            continue;
+                        }
+
+                        ability.ToggleAbility();
+                        Utils.Sleep(500 + Game.Ping, handle);
+                        return;
+                    }
                 }
 
                 if (Me.ClassID == ClassID.CDOTA_Unit_Hero_TemplarAssassin && target != null && target.IsVisible)
@@ -257,36 +189,66 @@
                 {
                     return;
                 }
+
                 {
-                    var mode = MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Mode").GetValue<StringList>().SelectedIndex;
-                    switch (mode)
-                    {
-                        case 0:
-
-                            Orbwalking.Orbwalk(target, attackmodifiers: true);
-                            break;
-                        case 1:
-                            if (!Utils.SleepCheck("Ability.Move"))
-                            {
-                                return;
-                            }
-
-                            Me.Move(Game.MousePosition);
-                            Utils.Sleep(100, "Ability.Move");
-                            break;
-                        case 2:
-                            if (!Utils.SleepCheck("Ability.Move") || target == null)
-                            {
-                                return;
-                            }
-
-                            Me.Attack(target);
-                            Utils.Sleep(100, "Ability.Move");
-                            break;
-                        case 3:
-                            return;
-                    }
+                    MoveMode(target);
                 }
+            }
+
+            if (!invisible && MainMenu.Menu.Item("Ability#.EnableAutoKillSteal").GetValue<bool>()
+                && Utils.SleepCheck("casting"))
+            {
+                Variables.Killsteal.FindTarget(enemyHeroes, Me);
+                if (Variables.Killsteal.TryKillsteal(Me, ping, enemyHeroes))
+                {
+                    return;
+                }
+            }
+
+            if (!invisible && MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>()
+                && Utils.SleepCheck("Orbwalk.Attack")
+                && enemyHeroes.Any(
+                    enemyHero => Variables.AutoUsage.Try(enemyHero, enemyHeroes, meMissingHp, ping, Me, meMana)))
+            {
+                return;
+            }
+        }
+
+        /// <summary>
+        /// The move mode.
+        /// </summary>
+        /// <param name="unitTarget">
+        /// The unit target.
+        /// </param>
+        public static void MoveMode(Unit unitTarget)
+        {
+            var mode = MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.Mode").GetValue<StringList>().SelectedIndex;
+            switch (mode)
+            {
+                case 0:
+
+                    Orbwalking.Orbwalk(unitTarget, attackmodifiers: true);
+                    break;
+                case 1:
+                    if (!Utils.SleepCheck("Ability.Move"))
+                    {
+                        return;
+                    }
+
+                    Me.Move(Game.MousePosition);
+                    Utils.Sleep(100, "Ability.Move");
+                    break;
+                case 2:
+                    if (!Utils.SleepCheck("Ability.Move") || unitTarget == null)
+                    {
+                        return;
+                    }
+
+                    Me.Attack(unitTarget);
+                    Utils.Sleep(100, "Ability.Move");
+                    break;
+                case 3:
+                    return;
             }
         }
 
@@ -324,7 +286,7 @@
                 }
 
                 MyHeroInfo.Position = blinkPos;
-                Utils.Sleep(Game.Ping + Me.GetTurnTime(MyHeroInfo.Position) + 100, "mePosition");
+                Utils.Sleep(Game.Ping + Me.GetTurnTime(MyHeroInfo.Position) + 200, "mePosition");
                 return;
             }
 

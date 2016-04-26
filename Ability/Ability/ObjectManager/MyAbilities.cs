@@ -22,6 +22,9 @@
 
         public static List<Ability> NukesCombo = new List<Ability>();
 
+        /// <summary>
+        /// The offensive abilities.
+        /// </summary>
         public static Dictionary<string, Ability> OffensiveAbilities;
 
         public static Ability PowerTreads;

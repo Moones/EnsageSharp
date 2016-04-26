@@ -18,6 +18,7 @@
     using Ensage;
     using Ensage.Common.AbilityInfo;
     using Ensage.Common.Menu;
+    using Ensage.Common.Objects;
 
     using SharpDX;
 
@@ -35,12 +36,6 @@
             MyAbilities.SoulRing = myItems1.FirstOrDefault(x => x.Name == "item_soul_ring");
             MyAbilities.ForceStaff = myItems1.FirstOrDefault(x => x.Name == "item_force_staff");
             MyAbilities.ChargeOfDarkness = spells.FirstOrDefault(x => x.Name == "spirit_breaker_charge_of_darkness");
-            if (blink != null)
-            {
-                MyAbilities.Blink = blink;
-                RangeDrawing.AddRange(blink);
-            }
-
             MainMenu.Menu.AddItem(new MenuItem("Ability#.EnableAutoKillSteal", "Enable AutoKillSteal:"))
                 .SetValue(true)
                 .SetFontStyle(fontColor: Color.Orange);
@@ -155,6 +150,13 @@
                 }
 
                 ComboMenu.AddAbility(spell.Name, spell);
+            }
+
+            if (blink != null)
+            {
+                MyAbilities.Blink = blink;
+                RangeDrawing.AddRange(blink);
+                ComboMenu.AddAbility(blink.StoredName(), blink);
             }
 
             // if (blink != null)

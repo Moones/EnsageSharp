@@ -1,12 +1,16 @@
 ﻿namespace Ability.Casting.ComboExecution
 {
+    using System;
     using System.Threading;
 
+    using Ability.AbilityMenu.Menus.DisablesMenu;
+    using Ability.AbilityMenu.Menus.NukesMenu;
     using Ability.ObjectManager;
 
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Menu;
 
     internal class Disable
     {
@@ -26,11 +30,21 @@
                 }
             }
 
+            var straightTime = Disables.DisablesMenuDictionary[name].Item(name + "minstraighttime") != null
+                                   ? (float)
+                                     Disables.DisablesMenuDictionary[name].Item(name + "minstraighttime")
+                                         .GetValue<Slider>()
+                                         .Value / 1000
+                                   : 1;
+
             var casted = ability.CastStun(
-                target, 
-                1, 
-                abilityName: name, 
-                useSleep: name != "ancient_apparition_cold_feet" && name != "rattletrap_battery_assault", 
+                target,
+                MyHeroInfo.Position,
+                straightTime,
+                abilityName: name,
+                useSleep:
+                    name != "ancient_apparition_cold_feet" && name != "rattletrap_battery_assault"
+                    && name != "pudge_meat_hook" && name != "pudge_dismember" && name != "pudge_rot",
                 soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
             if (!casted)
             {

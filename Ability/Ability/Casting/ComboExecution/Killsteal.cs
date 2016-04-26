@@ -190,13 +190,17 @@
 
                 if (name == "item_ethereal_blade")
                 {
-                    Variables.EtherealHitTime =
-                        (float)
-                        (Utils.TickCount + (me.GetTurnTime(this.possibleTarget) * 1000)
-                         + Prediction.CalculateReachTime(
-                             this.possibleTarget, 
-                             1200, 
-                             this.possibleTarget.Position - MyHeroInfo.Position) + (ping * 2));
+                    //Variables.EtherealHitTime =
+                    //    (float)
+                    //    (Utils.TickCount + (me.GetTurnTime(this.possibleTarget) * 1000)
+                    //     + Prediction.CalculateReachTime(
+                    //         this.possibleTarget, 
+                    //         1200, 
+                    //         this.possibleTarget.Position - MyHeroInfo.Position) + (ping * 2));
+                    Variables.LastEtherealTarget = this.possibleTarget;
+                    Variables.LastEtherealCastPosition = MyHeroInfo.Position;
+                    Variables.LastEtherealCastTime =
+                        (float)(Utils.TickCount + (me.GetTurnTime(this.possibleTarget) * 1000) + ping);
                     Utils.Sleep(
                         (me.GetTurnTime(this.possibleTarget) * 1000) + 100
                         + ((MyHeroInfo.Position.Distance2D(this.possibleTarget) / 1200) * 1000) + ping, 

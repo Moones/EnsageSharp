@@ -118,7 +118,7 @@
                     continue;
                 }
 
-                var delay = (ability.GetCastDelay(me, hero, true, useChannel: true, abilityName: name) * 1000) + 100;
+                var delay = (ability.GetCastDelay(me, hero, true, abilityName: name) * 1000) + 100;
                 var canHit = ability.CanHit(hero, MyHeroInfo.Position, name);
                 if (name == "omniknight_purification")
                 {
@@ -259,14 +259,10 @@
 
                         if (name == "item_ethereal_blade")
                         {
-                            // Utils.Sleep(
-                            // me.GetTurnTime(hero) * 1000
-                            // + Prediction.CalculateReachTime(hero, 1200, hero.Position - MyHeroInfo.Position),
-                            // "casting");
-                            Variables.EtherealHitTime =
-                                (float)
-                                (Utils.TickCount + me.GetTurnTime(hero) * 1000
-                                 + Prediction.CalculateReachTime(hero, 1200, hero.Position - MyHeroInfo.Position) + ping);
+                            Variables.LastEtherealTarget = hero;
+                            Variables.LastEtherealCastPosition = me.NetworkPosition;
+                            Variables.LastEtherealCastTime =
+                                (float)(Utils.TickCount + (me.GetTurnTime(hero) * 1000) + ping);
                             Utils.Sleep(
                                 me.GetTurnTime(hero) * 1000 + 100 + (MyHeroInfo.Position.Distance2D(hero) / 1200) * 1000
                                 + ping, 

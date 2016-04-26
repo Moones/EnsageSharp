@@ -54,9 +54,11 @@
             }
 
             return ability.CastStun(
-                target, 
-                1, 
-                abilityName: name, 
+                target,
+                MyHeroInfo.Position,
+                1,
+                abilityName: name,
+                useSleep: false,
                 soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
         }
 

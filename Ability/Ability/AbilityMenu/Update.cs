@@ -168,8 +168,7 @@
                             MyAbilities.ForceStaff = item;
                             break;
                         case "item_blink":
-
-                            // MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(item.Name);
+                            ComboMenu.AddAbility(item.StoredName(), item);
                             RangeDrawing.AddRange(item);
                             MyAbilities.Blink = item;
                             continue;
@@ -381,7 +380,7 @@
                 MainMenu.Menu.Item("disablesToggler").GetValue<AbilityToggler>().Add(NameManager.Name(item));
             }
 
-            var menu = DisableMenu.Create(NameManager.Name(item));
+            var menu = DisableMenu.Create(NameManager.Name(item), item);
             Disables.DisablesMenuDictionary.Add(NameManager.Name(item), menu);
             Disables.DisablesMenu.AddSubMenu(menu);
         }
