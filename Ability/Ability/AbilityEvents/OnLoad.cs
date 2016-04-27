@@ -69,8 +69,8 @@
             var color = "#009900";
             if (id == ClassID.CDOTA_Unit_Hero_Invoker)
             {
-                msg = "Partially supported (only currently invoked spells will be used)";
-                color = "#994400";
+                msg = "Fully supported (configure combo order in Menu>Options>ComboKeys)";
+                color = "#009900";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_EarthSpirit)
             {
