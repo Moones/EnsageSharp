@@ -50,7 +50,7 @@
             var heroManaPercentage = (hero.Mana / hero.MaximumMana) * 100;
             var heroHpPercentage = ((float)hero.Health / hero.MaximumHealth) * 100;
             foreach (var data in
-                MyAbilities.DeffensiveAbilities.Where(
+                MyAbilities.DefensiveAbilities.Where(
                     x =>
                     (x.Value.IsValid
                      && (x.Value.CanBeCasted() || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value)))
@@ -320,9 +320,11 @@
                         MyAbilities.Combo.Where(
                             x =>
                             x.Value.IsValid && !x.Value.IsToggled
-                            && (x.Value.CanBeCasted()
+                            && (x.Value.CanBeCasted() || x.Value.CanInvoke()
                                 || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value)))
-                            && !x.Value.IsAbilityBehavior(AbilityBehavior.Hidden)
+                            && (!x.Value.IsAbilityBehavior(AbilityBehavior.Hidden)
+                                || (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker
+                                    && (x.Value.CanBeCasted() || x.Value.CanInvoke())))
                             && ((x.Value is Item && me.CanUseItems()) || (!(x.Value is Item) && me.CanCast()))
                             && (Utils.SleepCheck(x.Value.Handle.ToString())
                                 || (!x.Value.IsInAbilityPhase && x.Value.FindCastPoint() > 0))))
@@ -465,7 +467,6 @@
                             return false;
                         }
 
-
                         if (!ability.CanHit(target, MyHeroInfo.Position, name) && category != "buff"
                             && (!target.HasModifier("modifier_pudge_meat_hook")
                                 || me.ClassID != ClassID.CDOTA_Unit_Hero_Pudge || target.Distance2D(me) > 600))
@@ -578,7 +579,12 @@
 
                         if (category == "nuke")
                         {
-                            Nuke.Cast(ability, target, name);
+                            var casted = Nuke.Cast(ability, target, name);
+                            if (!casted)
+                            {
+                                continue;
+                            }
+
                             if (AbilityDamage.CalculateDamage(ability, me, target) >= target.Health)
                             {
                                 Utils.Sleep(ability.GetHitDelay(target, name) * 1000 + 500, target.Handle + "KillSteal");
@@ -611,7 +617,11 @@
                         if (category == "silence"
                             && Silences.SilencesMenuDictionary[name].Item(name + "minManaCheckCombo")
                                    .GetValue<Slider>()
-                                   .Value < mana && !Silence.Cast(ability, target, name))
+                                   .Value < mana
+                            && (((name == "item_orchid" || name == "item_bloodthorn"
+                                  || name == "skywrath_mage_ancient_seal")
+                                 && MainMenu.ComboKeysMenu.Item("Ability#.MaximizeDamage").GetValue<bool>()
+                                 && !Nuke.Cast(ability, target, name)) || !Silence.Cast(ability, target, name)))
                         {
                             continue;
                         }
@@ -637,7 +647,9 @@
                             Variables.DealtDamage += AbilityDamage.CalculateDamage(ability, me, target);
                         }
 
-                        var delay = Math.Max(ability.GetCastDelay(me, target, abilityName: name, useCastPoint: false), 0.2) * 1000;
+                        var delay = Math.Max(
+                            ability.GetCastDelay(me, target, abilityName: name, useCastPoint: false), 
+                            0.2) * 1000;
                         switch (name)
                         {
                             case "riki_blink_strike":
@@ -650,11 +662,12 @@
                                 Utils.Sleep(delay + ping + 200, "calculate");
                                 break;
                             case "item_ethereal_blade":
-                                //Variables.EtherealHitTime =
-                                //    (float)
-                                //    (Utils.TickCount + me.GetTurnTime(target) * 1000
-                                //     + Prediction.CalculateReachTime(target, 1200, target.Position - me.Position)
-                                //     + ping * 2);
+
+                                // Variables.EtherealHitTime =
+                                // (float)
+                                // (Utils.TickCount + me.GetTurnTime(target) * 1000
+                                // + Prediction.CalculateReachTime(target, 1200, target.Position - me.Position)
+                                // + ping * 2);
                                 Variables.LastEtherealTarget = target;
                                 Variables.LastEtherealCastPosition = me.NetworkPosition;
                                 Variables.LastEtherealCastTime =
@@ -687,7 +700,9 @@
                         }
 
                         Utils.Sleep(delay, handleString);
-                        Utils.Sleep(ability.GetCastDelay(me, target, abilityName: name, useCastPoint: false) * 1000, "GlobalCasting");
+                        Utils.Sleep(
+                            ability.GetCastDelay(me, target, abilityName: name, useCastPoint: false) * 1000, 
+                            "GlobalCasting");
                         Utils.Sleep(ability.GetHitDelay(target, name) * 1000, "calculate");
                         Utils.Sleep(
                             Math.Max(ability.GetCastDelay(me, target, useCastPoint: false, abilityName: name), 0.15)

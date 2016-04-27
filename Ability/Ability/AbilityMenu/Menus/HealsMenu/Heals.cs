@@ -45,7 +45,7 @@
                 where data != null && data.IsHeal
                 select spell)
             {
-                if (MyAbilities.DeffensiveAbilities.ContainsKey(spell.Name + "heal"))
+                if (MyAbilities.DefensiveAbilities.ContainsKey(spell.Name + "heal"))
                 {
                     continue;
                 }
@@ -68,7 +68,7 @@
         {
             if (spell.Name != "item_soul_ring")
             {
-                MyAbilities.DeffensiveAbilities.Add(spell.Name + "heal", spell);
+                MyAbilities.DefensiveAbilities.Add(spell.Name + "heal", spell);
             }
 
             if (!HealsTogglerCreated)

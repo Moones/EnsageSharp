@@ -62,7 +62,7 @@
 
         private static void AddShield(Ability spell)
         {
-            MyAbilities.DeffensiveAbilities.Add(spell.Name + "shield", spell);
+            MyAbilities.DefensiveAbilities.Add(spell.Name + "shield", spell);
             if (!ShieldsTogglerCreated)
             {
                 ShieldsTogglerCreated = true;

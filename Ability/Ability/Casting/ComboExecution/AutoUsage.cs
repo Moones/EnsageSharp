@@ -98,7 +98,8 @@
                 MyAbilities.OffensiveAbilities.Where(
                     x =>
                     x.Value.IsValid
-                    && (x.Value.CanBeCasted() || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value)))
+                    && (x.Value.CanBeCasted() || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value))
+                        || x.Value.CanInvoke())
                     && ((x.Value is Item && me.CanUseItems()) || (!(x.Value is Item) && me.CanCast()))
                     && (Utils.SleepCheck(x.Value.Handle.ToString())
                         || (!x.Value.IsInAbilityPhase && x.Value.FindCastPoint() > 0)))
@@ -189,7 +190,7 @@
                         && duration
                         > ability.GetHitDelay(hero, name)
                         - ((ability.EndRadius() + hero.HullRadius) / hero.MovementSpeed) - (Game.Ping / 1000)
-                        && (!hero.IsInvul() || duration < ability.GetHitDelay(hero, name) - 0.05)
+                        && (!hero.IsInvul() || duration < ability.GetHitDelay(hero, name))
                         && Nuke.Cast(ability, hero, name, true))
                     {
                         if (ability.ChannelTime(name) > 0)

@@ -1,10 +1,8 @@
 ﻿namespace Ability.Casting.ComboExecution
 {
-    using System;
     using System.Threading;
 
     using Ability.AbilityMenu.Menus.DisablesMenu;
-    using Ability.AbilityMenu.Menus.NukesMenu;
     using Ability.ObjectManager;
 
     using Ensage;
@@ -36,15 +34,40 @@
                                          .GetValue<Slider>()
                                          .Value / 1000
                                    : 1;
+            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker && !ability.CanBeCasted())
+            {
+                var invoked = ability.Invoke();
+                if (!invoked)
+                {
+                    return false;
+                }
+
+                DelayAction.Add(
+                    Game.Ping * 2, 
+                    () =>
+                        {
+                            ability.CastStun(
+                                target, 
+                                MyHeroInfo.Position, 
+                                straightTime, 
+                                abilityName: name, 
+                                useSleep:
+                                    name != "ancient_apparition_cold_feet" && name != "rattletrap_battery_assault"
+                                    && name != "pudge_meat_hook" && name != "pudge_dismember" && name != "pudge_rot", 
+                                soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
+                        });
+
+                return true;
+            }
 
             var casted = ability.CastStun(
-                target,
-                MyHeroInfo.Position,
-                straightTime,
-                abilityName: name,
+                target, 
+                MyHeroInfo.Position, 
+                straightTime, 
+                abilityName: name, 
                 useSleep:
                     name != "ancient_apparition_cold_feet" && name != "rattletrap_battery_assault"
-                    && name != "pudge_meat_hook" && name != "pudge_dismember" && name != "pudge_rot",
+                    && name != "pudge_meat_hook" && name != "pudge_dismember" && name != "pudge_rot", 
                 soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
             if (!casted)
             {

@@ -121,6 +121,7 @@
     <Compile Include="Casting\ComboExecution\SoulRing.cs" />
     <Compile Include="Casting\ComboExecution\Special.cs" />
     <Compile Include="Casting\ComboOrder.cs" />
+    <Compile Include="Casting\Invoker.cs" />
     <Compile Include="Casting\Rubick.cs" />
     <Compile Include="DamageCalculation\Dictionaries.cs" />
     <Compile Include="DamageCalculation\MyDamage.cs" />

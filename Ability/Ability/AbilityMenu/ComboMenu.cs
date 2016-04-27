@@ -1,7 +1,7 @@
 ﻿namespace Ability.AbilityMenu
 {
-    using System;
-
+    using Ability.AbilityMenu.Menus.BuffsMenu;
+    using Ability.AbilityMenu.Menus.NukesMenu;
     using Ability.Casting;
     using Ability.ObjectManager;
 
@@ -19,9 +19,47 @@
                 return;
             }
 
-            if (name == "item_blink")
+            switch (name)
             {
-                MyAbilities.OffensiveAbilities.Add("item_blinkblink", ability);
+                case "item_blink":
+                    MyAbilities.OffensiveAbilities.Add("item_blinkblink", ability);
+                    break;
+                case "invoker_emp":
+                    {
+                        var menu = NukeMenu.Create("invoker_emp", ability);
+                        Nukes.NukesMenuDictionary.Add("invoker_emp", menu);
+                        Nukes.NukesMenu.AddSubMenu(menu);
+                        MyAbilities.OffensiveAbilities.Add("invoker_empnuke", ability);
+                    }
+
+                    break;
+                case "invoker_forge_spirit":
+                    {
+                        var menu = BuffMenu.Create("invoker_forge_spirit");
+                        Buffs.BuffsMenuDictionary.Add("invoker_forge_spirit", menu);
+                        Buffs.BuffsMenu.AddSubMenu(menu);
+                        MyAbilities.OffensiveAbilities.Add("invoker_forge_spiritbuff", ability);
+                    }
+
+                    break;
+                case "invoker_chaos_meteor":
+                    {
+                        var menu = NukeMenu.Create("invoker_chaos_meteor", ability);
+                        Nukes.NukesMenuDictionary.Add("invoker_chaos_meteor", menu);
+                        Nukes.NukesMenu.AddSubMenu(menu);
+                        MyAbilities.OffensiveAbilities.Add("invoker_chaos_meteornuke", ability);
+                    }
+
+                    break;
+                case "skywrath_mage_mystic_flare":
+                    {
+                        var menu = NukeMenu.Create("skywrath_mage_mystic_flare", ability);
+                        Nukes.NukesMenuDictionary.Add("skywrath_mage_mystic_flare", menu);
+                        Nukes.NukesMenu.AddSubMenu(menu);
+                        MyAbilities.OffensiveAbilities.Add("skywrath_mage_mystic_flarenuke", ability);
+                    }
+
+                    break;
             }
 
             MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Add(name, defaultValue);

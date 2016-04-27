@@ -36,13 +36,17 @@
             MyAbilities.SoulRing = myItems1.FirstOrDefault(x => x.Name == "item_soul_ring");
             MyAbilities.ForceStaff = myItems1.FirstOrDefault(x => x.Name == "item_force_staff");
             MyAbilities.ChargeOfDarkness = spells.FirstOrDefault(x => x.Name == "spirit_breaker_charge_of_darkness");
+            MyAbilities.InvokerInvoke = AbilityMain.Me.Spellbook.Spells.FirstOrDefault(x => x.Name == "invoker_invoke");
+            MyAbilities.InvokerQ = AbilityMain.Me.Spellbook.Spells.FirstOrDefault(x => x.Name == "invoker_quas");
+            MyAbilities.InvokerW = AbilityMain.Me.Spellbook.Spells.FirstOrDefault(x => x.Name == "invoker_wex");
+            MyAbilities.InvokerE = AbilityMain.Me.Spellbook.Spells.FirstOrDefault(x => x.Name == "invoker_exort");
             MainMenu.Menu.AddItem(new MenuItem("Ability#.EnableAutoKillSteal", "Enable AutoKillSteal:"))
                 .SetValue(true)
-                .SetFontStyle(fontColor: Color.Orange);
-            Nukes.AddAllNukes(spells, myItems1);
+                .SetFontStyle(fontColor: Color.DarkOrange);
             MainMenu.Menu.AddItem(new MenuItem("Ability#.EnableAutoUsage", "Enable AutoUsage:"))
                 .SetValue(true)
-                .SetFontStyle(fontColor: Color.Orange);
+                .SetFontStyle(fontColor: Color.DarkOrange);
+            Nukes.AddAllNukes(spells, myItems1);
             Disables.AddAllDisables(spells, myItems1);
             Slows.AddAllSlows(spells, myItems1);
             Buffs.AddAllBuffs(spells, myItems1);
@@ -96,12 +100,12 @@
                 (sender, args) =>
                     {
                         priorityChanger.SetFontStyle(
-                            fontColor: args.GetNewValue<StringList>().SelectedIndex == 3 ? Color.White : Color.Gray);
+                            fontColor: args.GetNewValue<StringList>().SelectedIndex == 3 ? Color.Green : Color.Gray);
                     };
 
             if (MainMenu.ComboKeysMenu.Item("abilityComboType").GetValue<StringList>().SelectedIndex == 3)
             {
-                priorityChanger.SetFontStyle(fontColor: Color.White);
+                priorityChanger.SetFontStyle(fontColor: Color.Green);
             }
 
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("Ability.KeyCombo.Mode", "Move mode"))
@@ -113,17 +117,25 @@
                 .SetValue(new StringList(new[] { "ClosestToMouse", "FastestKillable" }));
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("Ability.KeyCombo.TargetLock", "Target lock"))
                 .SetValue(new StringList(new[] { "None", "WhenTheyGoToFog", "WhenKeyIsPressed" }));
+            MainMenu.ComboKeysMenu.AddItem(
+                new MenuItem("Ability#.MaximizeDamage", "Maximize damage (beta feature)").SetValue(false)
+                    .SetFontStyle(fontColor: Color.Aqua)
+                    .SetTooltip(
+                        "Enabling this option will make sure that all damage/damage amplifying abilities are used right away"));
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("comboAbilitiesToggler", "Abilities in combo: "))
                 .SetValue(new AbilityToggler(new Dictionary<string, bool>()));
             MainMenu.ComboKeysMenu.AddItem(priorityChanger);
 
             foreach (var spell in
-                from spell in spells
+                from spell in AbilityMain.Me.Spellbook.Spells
                 let data = AbilityDatabase.Find(spell.Name)
                 where
                     (data != null
                      && (data.IsNuke || data.IsDisable || data.IsHarras || data.IsBuff || data.WeakensEnemy
                          || data.IsSlow || data.IsSilence)) || spell.Name == "tinker_rearm"
+                    || spell.StoredName() == "invoker_emp" || spell.StoredName() == "invoker_forge_spirit"
+                    || spell.StoredName() == "invoker_chaos_meteor"
+                    || spell.StoredName() == "skywrath_mage_mystic_flare"
                 select spell)
             {
                 var dv = spell.AbilityType != AbilityType.Ultimate || spell.Name == "templar_assassin_psionic_trap";
@@ -169,9 +181,16 @@
                 new MenuItem("Ability#.BlinkRange", "BlinkPosition distance from target").SetValue(
                     new Slider(0, 0, 700)));
             MainMenu.BlinkMenu.AddItem(
-                new MenuItem("Ability#.BlinkMaxEnemiesAround", "Maximum enemies around target to use blink")
-                    .SetValue(new Slider(2, 0, 3)))
+                new MenuItem("Ability#.BlinkMaxEnemiesAround", "Maximum enemies around target to use blink").SetValue(
+                    new Slider(2, 0, 3)))
                 .SetTooltip("If theres more enemies around then specified value, blink will not be used");
+            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker)
+            {
+                MainMenu.OptionsMenu.AddSubMenu(MainMenu.InvokerMenu);
+                MainMenu.InvokerMenu.AddItem(
+                    new MenuItem("Ability#.InvokerInvoke", "Enable AutoInvoke").SetValue(false));
+            }
+
             MainMenu.OptionsMenu.AddSubMenu(MainMenu.BlinkMenu);
             MainMenu.Menu.AddSubMenu(MainMenu.OptionsMenu);
             MainMenu.Menu.AddSubMenu(MainMenu.RangeDrawingMenu);

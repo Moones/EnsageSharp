@@ -1,10 +1,8 @@
 ﻿namespace Ability
 {
     using Ability.Casting.ComboExecution;
-    using Ability.ObjectManager;
 
     using Ensage;
-    using Ensage.Common;
     using Ensage.Common.Extensions;
 
     using SharpDX;
@@ -27,7 +25,7 @@
         public static float DealtDamage { get; set; }
 
         /// <summary>
-        /// Gets the ethereal hit time.
+        ///     Gets the ethereal hit time.
         /// </summary>
         public static float EtherealHitTime
         {
@@ -44,24 +42,24 @@
         }
 
         /// <summary>
-        /// Gets or sets the last ethereal target.
+        ///     Gets or sets the kill steal.
         /// </summary>
-        public static Unit LastEtherealTarget { get; set; }
+        public static Killsteal Killsteal { get; set; }
 
         /// <summary>
-        /// Gets or sets the last ethereal cast time.
-        /// </summary>
-        public static float LastEtherealCastTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets the last ethereal cast position.
+        ///     Gets or sets the last ethereal cast position.
         /// </summary>
         public static Vector3 LastEtherealCastPosition { get; set; }
 
         /// <summary>
-        ///     Gets or sets the kill steal.
+        ///     Gets or sets the last ethereal cast time.
         /// </summary>
-        public static Killsteal Killsteal { get; set; }
+        public static float LastEtherealCastTime { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the last ethereal target.
+        /// </summary>
+        public static Unit LastEtherealTarget { get; set; }
 
         #endregion
     }

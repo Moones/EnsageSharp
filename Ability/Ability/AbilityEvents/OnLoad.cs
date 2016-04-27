@@ -31,7 +31,7 @@
             Manage.Loaded = true;
             MainMenu.RestartMenu();
             MyAbilities.OffensiveAbilities = new Dictionary<string, Ability>();
-            MyAbilities.DeffensiveAbilities = new Dictionary<string, Ability>();
+            MyAbilities.DefensiveAbilities = new Dictionary<string, Ability>();
             MyAbilities.NukesCombo = new List<Ability>();
             RangeDrawing.RangesDictionary = new Dictionary<Ability, ParticleEffect>();
             RangeDrawing.RangesValueDictionary = new Dictionary<string, float>();

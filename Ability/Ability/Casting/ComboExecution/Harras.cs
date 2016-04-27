@@ -29,9 +29,9 @@
                 Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
                 return ability.CastSkillShot(
-                    target,
-                    MyHeroInfo.Position,
-                    name,
+                    target, 
+                    MyHeroInfo.Position, 
+                    name, 
                     SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
             }
 

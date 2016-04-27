@@ -84,6 +84,35 @@
                 }
             }
 
+            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker && !ability.CanBeCasted())
+            {
+                var invoked = ability.Invoke();
+                if (!invoked)
+                {
+                    return false;
+                }
+
+                DelayAction.Add(
+                    Game.Ping * 2, 
+                    () =>
+                        {
+                            if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))
+                            {
+                                Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
+                                ManageAutoAttack.AutoAttackDisabled = true;
+                                ability.UseAbility();
+                            }
+
+                            Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
+                            ManageAutoAttack.AutoAttackDisabled = true;
+                            ability.UseAbility(buffTarget);
+                        });
+                Utils.Sleep((Game.Ping * 2) + 200, "cancelorder");
+                Utils.Sleep((Game.Ping * 2) + 200, ability.Handle.ToString());
+                Utils.Sleep((Game.Ping * 2) + 200, "casting");
+                return true;
+            }
+
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");

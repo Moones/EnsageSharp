@@ -90,7 +90,7 @@
                             && (!Me.HasModifier("modifier_templar_assassin_meld") || !Orbwalking.CanCancelAnimation());
 
             if (!invisible && MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>()
-                && MyAbilities.DeffensiveAbilities.Any() && Utils.SleepCheck("casting"))
+                && MyAbilities.DefensiveAbilities.Any() && Utils.SleepCheck("casting"))
             {
                 if (Utils.SleepCheck("Orbwalk.Attack")
                     && allyHeroes.Any(allyHero => FullCombo.DeffensiveAutoUsage(allyHero, Me, enemyHeroes, ping)))
@@ -136,20 +136,21 @@
                 if (!invisible && target != null && Utils.SleepCheck("Orbwalk.Attack"))
                 {
                     combo = FullCombo.Execute(
-                        target,
-                        enemyHeroes,
-                        ping,
-                        selectedCombo == 2,
-                        selectedCombo == 1,
-                        Me,
-                        meMana,
+                        target, 
+                        enemyHeroes, 
+                        ping, 
+                        selectedCombo == 2, 
+                        selectedCombo == 1, 
+                        Me, 
+                        meMana, 
                         selectedCombo == 3);
                 }
 
                 if (!combo
                     && (target == null
                         || (target.Distance2D(MyHeroInfo.Position) > 500 && Me.HasModifier("modifier_pudge_rot")
-                            && !target.HasModifier("modifier_pudge_meat_hook"))))
+                            && !target.HasModifier("modifier_pudge_meat_hook")))
+                    && AllyHeroes.AbilityDictionary.ContainsKey(Me.StoredName()))
                 {
                     foreach (var ability in AllyHeroes.AbilityDictionary[Me.StoredName()].Where(x => x.IsToggled))
                     {
@@ -185,16 +186,12 @@
                 if (combo || !Utils.SleepCheck("GlobalCasting")
                     || (!(Game.MousePosition.Distance2D(Me)
                           > MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value)
-                        && (target == null
-                            || !(Me.Distance2D(target)
-                                 <= MainMenu.ComboKeysMenu.Item("Ability.KeyCombo.NoMoveRange").GetValue<Slider>().Value))))
+                        && (target == null || !(Me.Distance2D(target) <= MyHeroInfo.AttackRange() + 100))))
                 {
                     return;
                 }
 
-                {
-                    MoveMode(target);
-                }
+                MoveMode(target);
             }
 
             if (!invisible && MainMenu.Menu.Item("Ability#.EnableAutoKillSteal").GetValue<bool>()
@@ -216,11 +213,33 @@
             }
         }
 
+        public static void Init()
+        {
+            Events.OnLoad += OnLoad.Event;
+            Events.OnClose += OnClose.Event;
+
+            // if (Game.IsInGame && ObjectMgr.LocalHero != null)
+            // {
+            // OnLoad.Event(null, null);
+            // }
+        }
+
+        public static bool LaunchSnowball()
+        {
+            if (Me.ClassID != ClassID.CDOTA_Unit_Hero_Tusk)
+            {
+                return false;
+            }
+
+            Me.FindSpell("tusk_launch_snowball").UseAbility();
+            return true;
+        }
+
         /// <summary>
-        /// The move mode.
+        ///     The move mode.
         /// </summary>
         /// <param name="unitTarget">
-        /// The unit target.
+        ///     The unit target.
         /// </param>
         public static void MoveMode(Unit unitTarget)
         {
@@ -252,28 +271,6 @@
                 case 3:
                     return;
             }
-        }
-
-        public static void Init()
-        {
-            Events.OnLoad += OnLoad.Event;
-            Events.OnClose += OnClose.Event;
-
-            // if (Game.IsInGame && ObjectMgr.LocalHero != null)
-            // {
-            // OnLoad.Event(null, null);
-            // }
-        }
-
-        public static bool LaunchSnowball()
-        {
-            if (Me.ClassID != ClassID.CDOTA_Unit_Hero_Tusk)
-            {
-                return false;
-            }
-
-            Me.FindSpell("tusk_launch_snowball").UseAbility();
-            return true;
         }
 
         public static void Player_OnExecuteOrder(Player sender, ExecuteOrderEventArgs args)

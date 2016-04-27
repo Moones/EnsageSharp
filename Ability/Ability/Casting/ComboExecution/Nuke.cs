@@ -19,6 +19,11 @@
 
         public static bool Cast(Ability ability, Unit target, string name, bool disabled = false)
         {
+            if (!disabled)
+            {
+                disabled = target.IsStunned() || target.IsRooted() || target.IsHexed() || target.IsInvul();
+            }
+
             if (target.HasModifier("modifier_item_blade_mail_reflect")
                 && AbilityDamage.CalculateDamage(ability, AbilityMain.Me, target) > AbilityMain.Me.Health)
             {
@@ -82,37 +87,88 @@
                     > Nukes.NukesMenuDictionary[name].Item(name + "minstraighttime").GetValue<Slider>().Value
                     || target.MovementSpeed < 200))
             {
+                if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker && !ability.CanBeCasted())
+                {
+                    var invoked = ability.Invoke();
+                    if (!invoked)
+                    {
+                        return false;
+                    }
+
+                    DelayAction.Add(
+                        Game.Ping * 2, 
+                        () =>
+                            {
+                                Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
+                                ManageAutoAttack.AutoAttackDisabled = true;
+                                var casted2 = ability.CastSkillShot(
+                                    target, 
+                                    MyHeroInfo.Position, 
+                                    name, 
+                                    SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
+                                if (!casted2)
+                                {
+                                    return;
+                                }
+
+                                if (!disabled && Utils.SleepCheck(ability.Handle.ToString())
+                                    && ability.GetCastDelay(AbilityMain.Me, target, true) * 1000 - Game.Ping > 0.1)
+                                {
+                                    DelayAction.Add(
+                                        new DelayActionItem(
+                                            (int)
+                                            (ability.GetCastDelay(AbilityMain.Me, target, true) * 1000
+                                             - Math.Max(50, Game.Ping)), 
+                                            () =>
+                                                {
+                                                    if (Prediction.StraightTime(target)
+                                                        < (600
+                                                           + (ability.GetCastDelay(AbilityMain.Me, target, true) * 1000
+                                                              - Math.Max(50, Game.Ping))) && target.MovementSpeed > 200)
+                                                    {
+                                                        AbilityMain.Me.Stop();
+                                                    }
+                                                }, 
+                                            CancellationToken.None));
+                                }
+                            });
+                    Utils.Sleep((Game.Ping * 2) + 200, "cancelorder");
+                    Utils.Sleep((Game.Ping * 2) + 200, ability.Handle.ToString());
+                    Utils.Sleep((Game.Ping * 2) + 200, "casting");
+                }
+
                 Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
                 var casted = ability.CastSkillShot(
-                    target,
-                    MyHeroInfo.Position,
-                    name,
+                    target, 
+                    MyHeroInfo.Position, 
+                    name, 
                     SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
-                if (casted)
+                if (!casted)
                 {
-                    if (!disabled && Utils.SleepCheck(ability.Handle.ToString())
-                        && ability.GetCastDelay(AbilityMain.Me, target, true) * 1000 - Game.Ping > 0.1)
-                    {
-                        DelayAction.Add(
-                            new DelayActionItem(
-                                (int)
-                                (ability.GetCastDelay(AbilityMain.Me, target, true) * 1000 - Math.Max(50, Game.Ping)), 
-                                () =>
-                                    {
-                                        if (Prediction.StraightTime(target)
-                                            < (600
-                                               + (ability.GetCastDelay(AbilityMain.Me, target, true) * 1000
-                                                  - Math.Max(50, Game.Ping))) && target.MovementSpeed > 200)
-                                        {
-                                            AbilityMain.Me.Stop();
-                                        }
-                                    }, 
-                                CancellationToken.None));
-                    }
+                    return false;
                 }
 
-                return casted;
+                if (!disabled && Utils.SleepCheck(ability.Handle.ToString())
+                    && ability.GetCastDelay(AbilityMain.Me, target, true) * 1000 - Game.Ping > 0.1)
+                {
+                    DelayAction.Add(
+                        new DelayActionItem(
+                            (int)(ability.GetCastDelay(AbilityMain.Me, target, true) * 1000 - Math.Max(50, Game.Ping)), 
+                            () =>
+                                {
+                                    if (Prediction.StraightTime(target)
+                                        < (600
+                                           + (ability.GetCastDelay(AbilityMain.Me, target, true) * 1000
+                                              - Math.Max(50, Game.Ping))) && target.MovementSpeed > 200)
+                                    {
+                                        AbilityMain.Me.Stop();
+                                    }
+                                }, 
+                            CancellationToken.None));
+                }
+
+                return true;
             }
 
             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, name))

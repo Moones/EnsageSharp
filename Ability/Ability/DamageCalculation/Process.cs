@@ -62,7 +62,12 @@
                     float[] outtakenDamage = { 0 };
                     var manaLeft = AbilityMain.Me.Mana;
                     foreach (var ability in
-                        enumerable.Where(ability => (ability.Value.CanBeCasted() || ability.Value.IsInAbilityPhase))
+                        enumerable.Where(
+                            ability =>
+                            (ability.Value.CanBeCasted() || ability.Value.IsInAbilityPhase
+                             || (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker
+                                 && MyAbilities.InvokerInvoke.CanBeCasted() && ability.Value.Cooldown <= 0.5
+                                 && ability.Value.ManaCost + MyAbilities.InvokerInvoke.ManaCost < manaLeft)))
                             .Select(data => data.Value))
                     {
                         var name = NameManager.Name(ability);

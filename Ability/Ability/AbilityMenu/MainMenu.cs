@@ -12,6 +12,7 @@
     using Ability.AbilityMenu.Menus.SlowsMenu;
     using Ability.AbilityMenu.Menus.SpecialsMenu;
 
+    using Ensage;
     using Ensage.Common.Menu;
 
     internal class MainMenu
@@ -22,6 +23,8 @@
 
         public static Menu AbilityOverlayMenu;
 
+        public static Menu BlinkMenu;
+
         public static Menu ComboKeysMenu;
 
         public static Menu DamageIndicatorMenu;
@@ -30,13 +33,13 @@
 
         public static Menu GankDamageMenu;
 
+        public static Menu InvokerMenu;
+
         public static Menu Menu;
 
         public static Menu OptionsMenu;
 
         public static Menu RangeDrawingMenu;
-
-        public static Menu BlinkMenu;
 
         #endregion
 
@@ -58,6 +61,11 @@
             Silences.SilencesMenu = new Menu("Silences", "silencesMenu" + AbilityMain.Me.Name);
             BlinkMenu = new Menu("Blink Configuration", "Ability#.Blink");
             OptionsMenu = new Menu("Options", "abilityOptions");
+            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker)
+            {
+                InvokerMenu = new Menu("Invoker Configuration", "Ability#.InvokerConfig");
+            }
+
             DamageIndicatorMenu = new Menu("DamageIndicator", "abilityDamageIndicator");
             GankDamageMenu = new Menu("GankDamage", "abilityGankDamage");
             AbilityOverlayMenu = new Menu("Ability Overlay", "abilityOverlayMenu");

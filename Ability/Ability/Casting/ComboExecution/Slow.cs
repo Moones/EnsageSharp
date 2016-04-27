@@ -53,12 +53,35 @@
                 return casted;
             }
 
+            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker && !ability.CanBeCasted())
+            {
+                var invoked = ability.Invoke();
+                if (!invoked)
+                {
+                    return false;
+                }
+
+                DelayAction.Add(
+                    Game.Ping * 2, 
+                    () =>
+                        {
+                            ability.CastStun(
+                                target, 
+                                MyHeroInfo.Position, 
+                                1, 
+                                abilityName: name, 
+                                useSleep: false, 
+                                soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
+                        });
+                return true;
+            }
+
             return ability.CastStun(
-                target,
-                MyHeroInfo.Position,
-                1,
-                abilityName: name,
-                useSleep: false,
+                target, 
+                MyHeroInfo.Position, 
+                1, 
+                abilityName: name, 
+                useSleep: false, 
                 soulRing: SoulRing.Check(ability) ? MyAbilities.SoulRing : null);
         }
 

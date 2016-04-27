@@ -116,7 +116,7 @@
                     MainMenu.Menu.Item("healsToggler").GetValue<AbilityToggler>().Remove(name);
                     Heals.HealsMenuDictionary.Remove(name);
                     Heals.HealsMenu.RemoveSubMenu(name);
-                    MyAbilities.DeffensiveAbilities.Remove(name + "heal");
+                    MyAbilities.DefensiveAbilities.Remove(name + "heal");
                 }
 
                 if (data.IsShield)
@@ -124,7 +124,7 @@
                     MainMenu.Menu.Item("shieldsToggler").GetValue<AbilityToggler>().Remove(name);
                     Shields.ShieldsMenuDictionary.Remove(name);
                     Shields.ShieldsMenu.RemoveSubMenu(name);
-                    MyAbilities.DeffensiveAbilities.Remove(name + "shield");
+                    MyAbilities.DefensiveAbilities.Remove(name + "shield");
                 }
             }
             catch (Exception)
@@ -233,8 +233,8 @@
                         }
                     }
 
-                    // Console.WriteLine(!MyAbilities.DeffensiveAbilities.ContainsValue(item) + " " + NameManager.Name(item) + " " + data.IsHeal);
-                    if (!MyAbilities.DeffensiveAbilities.ContainsValue(item))
+                    // Console.WriteLine(!MyAbilities.DefensiveAbilities.ContainsValue(item) + " " + NameManager.Name(item) + " " + data.IsHeal);
+                    if (!MyAbilities.DefensiveAbilities.ContainsValue(item))
                     {
                         if (data.IsHeal)
                         {
@@ -315,8 +315,8 @@
                             }
                         }
 
-                        // Console.WriteLine(!MyAbilities.DeffensiveAbilities.ContainsValue(item) + " " + NameManager.Name(item) + " " + data.IsHeal);
-                        if (!MyAbilities.DeffensiveAbilities.ContainsValue(item))
+                        // Console.WriteLine(!MyAbilities.DefensiveAbilities.ContainsValue(item) + " " + NameManager.Name(item) + " " + data.IsHeal);
+                        if (!MyAbilities.DefensiveAbilities.ContainsValue(item))
                         {
                             if (data.IsHeal)
                             {
@@ -411,7 +411,7 @@
         {
             if (NameManager.Name(item) != "item_soul_ring")
             {
-                MyAbilities.DeffensiveAbilities.Add(NameManager.Name(item) + "heal", item);
+                MyAbilities.DefensiveAbilities.Add(NameManager.Name(item) + "heal", item);
             }
             else if (Heals.HealsTogglerCreated
                      && MainMenu.Menu.Item("healsToggler")
@@ -462,7 +462,7 @@
 
         private static void AddNewShield(Ability item)
         {
-            MyAbilities.DeffensiveAbilities.Add(NameManager.Name(item) + "shield", item);
+            MyAbilities.DefensiveAbilities.Add(NameManager.Name(item) + "shield", item);
             if (!Shields.ShieldsTogglerCreated)
             {
                 Shields.ShieldsTogglerCreated = true;
