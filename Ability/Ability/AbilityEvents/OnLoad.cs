@@ -75,52 +75,52 @@
             else if (id == ClassID.CDOTA_Unit_Hero_EarthSpirit)
             {
                 msg = "Not supported (only items will be used)";
-                color = "#990000";
+                color = "#ff0000";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_EmberSpirit)
             {
                 msg = "Not supported (only items will be used)";
-                color = "#990000";
+                color = "#ff0000";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_Shredder)
             {
                 msg = "Not supported (only items will be used)";
-                color = "#990000";
+                color = "#ff0000";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_Wisp)
             {
                 msg = "Not supported (only items will be used)";
-                color = "#990000";
+                color = "#ff0000";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_Meepo)
             {
                 msg = "Not supported (only items will be used)";
-                color = "#990000";
+                color = "#ff0000";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_AncientApparition)
             {
                 msg = "Partially supported (will not use ultimate)";
-                color = "#994400";
+                color = "#ff4400";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_Obsidian_Destroyer)
             {
                 msg = "Partially supported (will not use ultimate)";
-                color = "#994400";
+                color = "#ff4400";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_Chen)
             {
                 msg = "Partially supported (will not control creeps)";
-                color = "#994400";
+                color = "#ff4400";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_Warlock)
             {
                 msg = "Partially supported (will not use ultimate)";
-                color = "#994400";
+                color = "#ff4400";
             }
             else if (id == ClassID.CDOTA_Unit_Hero_StormSpirit)
             {
                 msg = "Partially supported (will not use ultimate)";
-                color = "#994400";
+                color = "#ff4400";
             }
 
             Game.PrintMessage(
