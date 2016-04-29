@@ -82,7 +82,7 @@
             this.iconSize = new Vector2(HUDInfo.GetHpBarSizeY() * 2);
             this.CastPoint = this.ability.FindCastPoint();
             this.notification = new Notification(
-                5000, 
+                5000,
                 new Vector2(HUDInfo.ScreenSizeX(), (float)(HUDInfo.ScreenSizeY() / 2.3)), 
                 new Vector2(HUDInfo.ScreenSizeX() / 11, HUDInfo.ScreenSizeX() / 30));
         }

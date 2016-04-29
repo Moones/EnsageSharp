@@ -1,10 +1,12 @@
 ﻿namespace BreakerSharp.Abilities.ChargeNotification
 {
+    using System;
     using System.Linq;
 
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Menu.Transitions;
     using Ensage.Common.Objects;
 
     using global::BreakerSharp.Utilities;
@@ -53,6 +55,21 @@
         /// </summary>
         private Vector2 heroIconPosition;
 
+        /// <summary>
+        /// The transition.
+        /// </summary>
+        private readonly Transition transition;
+
+        /// <summary>
+        /// The position on.
+        /// </summary>
+        private readonly Vector2 positionOn;
+
+        /// <summary>
+        /// The position off.
+        /// </summary>
+        private readonly Vector2 positionOff;
+
         #endregion
 
         #region Constructors and Destructors
@@ -74,7 +91,10 @@
             this.Duration = duration;
             this.alliesNearbySleeper = new Sleeper();
             this.Position = position;
+            this.positionOn = position - new Vector2(size.X + 1, 0);
+            this.positionOff = position + new Vector2(1, 0);
             this.Size = size;
+            this.Visible = true;
             this.HeroIconSize = new Vector2((float)(size.X / 2.2), (float)(size.Y / 1.5));
             this.chargeText = new DrawText
                                   {
@@ -97,6 +117,8 @@
                                           Position = new Vector2(), 
                                           TextSize = new Vector2((float)(this.HeroIconSize.Y / 3.4))
                                       };
+            this.transition = new QuadEaseInOut(2);
+            this.transition.Start(this.positionOn, this.positionOff);
         }
 
         #endregion
@@ -222,14 +244,8 @@
         /// </summary>
         public void Draw()
         {
-            if (!this.Visible)
+            if (!this.Visible || this.Hero == null || !this.Hero.IsValid)
             {
-                return;
-            }
-
-            if (this.IsHidden && this.Hide)
-            {
-                this.Visible = false;
                 return;
             }
 
@@ -240,9 +256,11 @@
                 this.Size.X, 
                 this.Size.Y);
 
-            if (!hover && this.DisplayTime > this.Duration)
+            if (!hover && this.DisplayTime > this.Duration && !this.Hide)
             {
+                this.transition.Start(this.Position, this.positionOff);
                 this.Hide = true;
+                this.IsHidden = false;
             }
 
             if (this.Hide && !this.IsHidden)
@@ -250,6 +268,7 @@
                 if (hover)
                 {
                     this.Hide = false;
+                    this.transition.Start(this.Position, this.positionOn);
                 }
                 else
                 {
@@ -259,7 +278,7 @@
                     }
                     else
                     {
-                        this.Position = new Vector2(this.Position.X + 1, this.Position.Y);
+                        this.Position = this.transition.GetPosition();
                     }
                 }
             }
@@ -272,7 +291,7 @@
                 }
                 else
                 {
-                    this.Position = new Vector2(this.Position.X - 1, this.Position.Y);
+                    this.Position = this.transition.GetPosition();
                 }
             }
 
@@ -366,11 +385,17 @@
         /// </param>
         public void PopUp(Unit hero)
         {
+            if (hero == null || !hero.IsValid)
+            {
+                return;
+            }
+
             this.Hero = hero;
             this.Visible = true;
             this.Hide = false;
             this.IsHidden = true;
             this.StartTime = Variables.TickCount;
+            this.transition.Start(this.positionOff, this.positionOn);
         }
 
         #endregion
