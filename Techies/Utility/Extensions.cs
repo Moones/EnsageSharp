@@ -11,6 +11,8 @@
 
     using global::Techies.Classes;
 
+    using SharpDX;
+
     /// <summary>
     ///     The extensions.
     /// </summary>
@@ -30,12 +32,14 @@
         /// <returns>
         ///     The <see cref="Tuple" />.
         /// </returns>
-        public static Tuple<float, IEnumerable<RemoteMine>> GetStackDamage(this Unit hero, float inFrontDistance = 0)
+        public static Tuple<float, IEnumerable<RemoteMine>, Stack> GetStackDamage(
+            this Unit hero, 
+            float inFrontDistance = 0)
         {
             var detonatableMines = new List<RemoteMine>();
             if (Variables.Stacks == null || !Variables.Stacks.Any())
             {
-                return new Tuple<float, IEnumerable<RemoteMine>>(0, detonatableMines);
+                return new Tuple<float, IEnumerable<RemoteMine>, Stack>(0, detonatableMines, null);
             }
 
             var rotSpeed = Prediction.RotSpeedDictionary.ContainsKey(hero.Handle)
@@ -56,11 +60,10 @@
             }
 
             var tempDamage = 0f;
-            var nearestStack =
-                Variables.Stacks.Where(x => x.AutoDetonate).MinOrDefault(x => x.Position.Distance(heroPosition));
+            var nearestStack = Variables.Stacks.MinOrDefault(x => x.Position.Distance(heroPosition));
             if (nearestStack == null || nearestStack.Position.Distance(heroPosition) > 1000)
             {
-                return new Tuple<float, IEnumerable<RemoteMine>>(0, detonatableMines);
+                return new Tuple<float, IEnumerable<RemoteMine>, Stack>(0, detonatableMines, nearestStack);
             }
 
             foreach (var landMine in
@@ -69,7 +72,7 @@
             {
                 if (tempDamage >= hero.Health)
                 {
-                    return new Tuple<float, IEnumerable<RemoteMine>>(tempDamage, detonatableMines);
+                    return new Tuple<float, IEnumerable<RemoteMine>, Stack>(tempDamage, detonatableMines, nearestStack);
                 }
 
                 tempDamage += Variables.Damage.GetLandMineDamage(landMine.Level, hero.ClassID);
@@ -81,50 +84,16 @@
             {
                 if (tempDamage >= hero.Health)
                 {
-                    if (hero is Hero && nearestStack.MinEnemiesKill > 1)
+                    if (!(hero is Hero) || !(nearestStack.MinEnemiesKill > 1))
                     {
-                        var count =
-                            (from hero2 in
-                                 Heroes.GetByTeam(Variables.EnemyTeam)
-                                 .Where(
-                                     x =>
-                                     x.IsAlive && x.IsVisible && !x.Equals(hero)
-                                     && Utils.SleepCheck(x.ClassID + "Techies.AutoDetonate")
-                                     && x.Distance2D(nearestStack.Position) < 420)
-                             let tempDamage2 =
-                                 detonatableMines.Sum(
-                                     x => Variables.Damage.GetRemoteMineDamage(x.Level, hero2.ClassID, hero2))
-                             where tempDamage2 >= hero2.Health
-                             select hero2).Count();
-                        if (count + 1 >= nearestStack.MinEnemiesKill)
-                        {
-                            return new Tuple<float, IEnumerable<RemoteMine>>(
-                                tempDamage, 
-                                Variables.Menu.DetonationMenu.Item("detonateAllMines").GetValue<bool>()
-                                    ? nearestStack.RemoteMines
-                                    : detonatableMines);
-                        }
-
-                        detonatableMines.Add(remoteMine);
-                        tempDamage += Variables.Damage.GetRemoteMineDamage(remoteMine.Level, hero.ClassID, hero);
-                        continue;
+                        return new Tuple<float, IEnumerable<RemoteMine>, Stack>(
+                            tempDamage, 
+                            Variables.Menu.DetonationMenu.Item("detonateAllMines").GetValue<bool>()
+                                ? nearestStack.RemoteMines
+                                : detonatableMines, 
+                            nearestStack);
                     }
 
-                    return new Tuple<float, IEnumerable<RemoteMine>>(
-                        tempDamage, 
-                        Variables.Menu.DetonationMenu.Item("detonateAllMines").GetValue<bool>()
-                            ? nearestStack.RemoteMines
-                            : detonatableMines);
-                }
-
-                detonatableMines.Add(remoteMine);
-                tempDamage += Variables.Damage.GetRemoteMineDamage(remoteMine.Level, hero.ClassID, hero);
-            }
-
-            if (tempDamage >= hero.Health)
-            {
-                if (hero is Hero && nearestStack.MinEnemiesKill > 1)
-                {
                     var count =
                         (from hero2 in
                              Heroes.GetByTeam(Variables.EnemyTeam)
@@ -138,23 +107,80 @@
                                  x => Variables.Damage.GetRemoteMineDamage(x.Level, hero2.ClassID, hero2))
                          where tempDamage2 >= hero2.Health
                          select hero2).Count();
-                    return count + 1 >= nearestStack.MinEnemiesKill
-                               ? new Tuple<float, IEnumerable<RemoteMine>>(
-                                     tempDamage, 
-                                     Variables.Menu.DetonationMenu.Item("detonateAllMines").GetValue<bool>()
-                                         ? nearestStack.RemoteMines
-                                         : detonatableMines)
-                               : new Tuple<float, IEnumerable<RemoteMine>>(0, detonatableMines);
+                    if (count + 1 >= nearestStack.MinEnemiesKill)
+                    {
+                        return new Tuple<float, IEnumerable<RemoteMine>, Stack>(
+                            tempDamage, 
+                            Variables.Menu.DetonationMenu.Item("detonateAllMines").GetValue<bool>()
+                                ? nearestStack.RemoteMines
+                                : detonatableMines, 
+                            nearestStack);
+                    }
+
+                    detonatableMines.Add(remoteMine);
+                    tempDamage += Variables.Damage.GetRemoteMineDamage(remoteMine.Level, hero.ClassID, hero);
+                    continue;
                 }
 
-                return new Tuple<float, IEnumerable<RemoteMine>>(
-                    tempDamage, 
-                    Variables.Menu.DetonationMenu.Item("detonateAllMines").GetValue<bool>()
-                        ? nearestStack.RemoteMines
-                        : detonatableMines);
+                detonatableMines.Add(remoteMine);
+                tempDamage += Variables.Damage.GetRemoteMineDamage(remoteMine.Level, hero.ClassID, hero);
             }
 
-            return new Tuple<float, IEnumerable<RemoteMine>>(0, detonatableMines);
+            if (!(tempDamage >= hero.Health))
+            {
+                return new Tuple<float, IEnumerable<RemoteMine>, Stack>(0, detonatableMines, nearestStack);
+            }
+            {
+                if (!(hero is Hero) || !(nearestStack.MinEnemiesKill > 1))
+                {
+                    return new Tuple<float, IEnumerable<RemoteMine>, Stack>(
+                        tempDamage, 
+                        Variables.Menu.DetonationMenu.Item("detonateAllMines").GetValue<bool>()
+                            ? nearestStack.RemoteMines
+                            : detonatableMines, 
+                        nearestStack);
+                }
+
+                var count =
+                    (from hero2 in
+                         Heroes.GetByTeam(Variables.EnemyTeam)
+                         .Where(
+                             x =>
+                             x.IsAlive && x.IsVisible && !x.Equals(hero)
+                             && Utils.SleepCheck(x.ClassID + "Techies.AutoDetonate")
+                             && x.Distance2D(nearestStack.Position) < 420)
+                     let tempDamage2 =
+                         detonatableMines.Sum(x => Variables.Damage.GetRemoteMineDamage(x.Level, hero2.ClassID, hero2))
+                     where tempDamage2 >= hero2.Health
+                     select hero2).Count();
+                return count + 1 >= nearestStack.MinEnemiesKill
+                           ? new Tuple<float, IEnumerable<RemoteMine>, Stack>(
+                                 tempDamage, 
+                                 Variables.Menu.DetonationMenu.Item("detonateAllMines").GetValue<bool>()
+                                     ? nearestStack.RemoteMines
+                                     : detonatableMines, 
+                                 nearestStack)
+                           : new Tuple<float, IEnumerable<RemoteMine>, Stack>(0, detonatableMines, nearestStack);
+            }
+        }
+
+        /// <summary>
+        ///     The predicted position.
+        /// </summary>
+        /// <param name="unit">
+        ///     The unit.
+        /// </param>
+        /// <param name="bonusDelay">
+        ///     The bonus delay.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="Vector3" />.
+        /// </returns>
+        public static Vector3 PredictedPosition(this Unit unit, double bonusDelay = 0)
+        {
+            return unit.NetworkActivity == NetworkActivity.Move
+                       ? Prediction.InFront(unit, (float)(unit.MovementSpeed * ((Game.Ping / 1000) + bonusDelay)))
+                       : unit.Position;
         }
 
         #endregion

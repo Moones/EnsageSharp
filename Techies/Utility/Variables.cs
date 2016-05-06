@@ -7,6 +7,7 @@
     using global::Techies.Classes;
     using global::Techies.Modules;
     using global::Techies.Modules.ForceStaff;
+    using global::Techies.Modules.HurricanePike;
     using global::Techies.Modules.LandMines;
     using global::Techies.Modules.RemoteMines;
     using global::Techies.Modules.StatisTraps;
@@ -26,8 +27,9 @@
                                                          {
                                                              new AutoDetonateHeroes(), new AutoDetonateCreeps(), 
                                                              new AutoForceStaff(), new AutoSuicide(), 
-                                                             new ManageRemoteMines(), new AutoProtection(), 
-                                                             new ManageLandMines(), new ManageStasisTraps()
+                                                             new HurricanePikeCombo(), new ManageRemoteMines(), 
+                                                             new AutoProtection(), new ManageLandMines(), 
+                                                             new ManageStasisTraps()
                                                          };
 
         #endregion

@@ -83,11 +83,13 @@
     <Compile Include="Bootstrap.cs" />
     <Compile Include="Classes\LandMine.cs" />
     <Compile Include="Classes\StasisTrap.cs" />
+    <Compile Include="Modules\HurricanePike\HurricanePikeCombo.cs" />
     <Compile Include="Modules\LandMines\ManageLandMines.cs" />
     <Compile Include="Modules\RemoteMines\AutoDetonateCreeps.cs" />
     <Compile Include="Modules\RemoteMines\AutoDetonateHeroes.cs" />
     <Compile Include="Modules\ForceStaff\AutoForceStaff.cs" />
     <Compile Include="Modules\RemoteMines\AutoProtection.cs" />
+    <Compile Include="Modules\RemoteMines\Notification.cs" />
     <Compile Include="Modules\StatisTraps\ManageStasisTraps.cs" />
     <Compile Include="Modules\SuicideSquadAttack\AutoSuicide.cs" />
     <Compile Include="Modules\RemoteMines\ManageRemoteMines.cs" />

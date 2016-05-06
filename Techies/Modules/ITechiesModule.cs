@@ -26,6 +26,19 @@ namespace Techies.Modules
         bool CanBeExecuted();
 
         /// <summary>
+        ///     The can draw.
+        /// </summary>
+        /// <returns>
+        ///     The <see cref="bool" />.
+        /// </returns>
+        bool CanDraw();
+
+        /// <summary>
+        ///     The draw.
+        /// </summary>
+        void Draw();
+
+        /// <summary>
         ///     The execute.
         /// </summary>
         /// <param name="hero">
@@ -53,6 +66,14 @@ namespace Techies.Modules
         ///     The on load.
         /// </summary>
         void OnLoad();
+
+        /// <summary>
+        ///     The on wnd proc.
+        /// </summary>
+        /// <param name="args">
+        ///     The args.
+        /// </param>
+        void OnWndProc(WndEventArgs args);
 
         #endregion
     }

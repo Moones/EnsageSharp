@@ -28,6 +28,24 @@
         }
 
         /// <summary>
+        ///     The can draw.
+        /// </summary>
+        /// <returns>
+        ///     The <see cref="bool" />.
+        /// </returns>
+        public bool CanDraw()
+        {
+            return false;
+        }
+
+        /// <summary>
+        ///     The draw.
+        /// </summary>
+        public void Draw()
+        {
+        }
+
+        /// <summary>
         ///     The execute.
         /// </summary>
         /// <param name="hero">
@@ -77,6 +95,16 @@
             {
                 Variables.LandMines.Add(new LandMine(bomb));
             }
+        }
+
+        /// <summary>
+        ///     The on wnd proc.
+        /// </summary>
+        /// <param name="args">
+        ///     The args.
+        /// </param>
+        public void OnWndProc(WndEventArgs args)
+        {
         }
 
         #endregion

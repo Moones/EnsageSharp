@@ -35,6 +35,18 @@
                 new MenuItem("straightTime", "Minimum straight time (secs)").SetValue(new Slider(0, 0, 5))
                     .SetTooltip("Use force staff only on enemies who havent changed their direction X seconds"));
             optionsMenu.AddSubMenu(forceStaffMenu);
+            this.HurricanePikeMenu = new Menu("HurricanePikeCombo", "Techies.HurricanePikeMenu");
+            this.HurricanePikeMenu.AddItem(new MenuItem("Techies.HurricanePikeEnable", "Enable").SetValue(true));
+            this.HurricanePikeMenu.AddItem(
+                new MenuItem("Techies.HurricanePikeKey", "KeyToHold").SetValue(new KeyBind('H', KeyBindType.Press)));
+            this.HurricanePikeMenu.AddItem(
+                new MenuItem("Techies.HurricanePikeNoMove", "Dont use on moving enemy").SetValue(false)
+                    .SetTooltip("If enabled, combo will be used only on idle enemy"));
+            this.HurricanePikeMenu.AddItem(
+                new MenuItem("Techies.HurricanePikeStraightTime", "Minimum straight time (secs)").SetValue(
+                    new Slider(0, 0, 5))
+                    .SetTooltip("Use combo only on enemies who havent changed their direction for X seconds"));
+            optionsMenu.AddSubMenu(this.HurricanePikeMenu);
             var drawingMenu = new Menu("Drawings", "drawings");
             drawingMenu.AddItem(new MenuItem("drawTopPanel", "Draw TopPanel").SetValue(true));
             drawingMenu.AddItem(new MenuItem("drawSuicideKills", "Draw killability with Suicide").SetValue(true));
@@ -45,6 +57,9 @@
             drawingMenu.AddItem(new MenuItem("drawStasisTrapRange", "Draw range for stasis traps").SetValue(true))
                 .ValueChanged += StasisTraps_OnValueChanged;
             drawingMenu.AddItem(new MenuItem("drawStackOverlay", "Draw StackOverlay").SetValue(true));
+            drawingMenu.AddItem(
+                new MenuItem("Techies.ShowNotification", "Draw notification").SetValue(true)
+                    .SetTooltip("Draw notification when killable enemy walks over a stack with autodetonate disabled"));
             var suicideMenu = new Menu("Auto Suicide", "autoSuicide");
             suicideMenu.AddItem(new MenuItem("autoSuicide", "Auto Suicide").SetValue(true));
             suicideMenu.AddItem(
@@ -79,6 +94,8 @@
         ///     Gets or sets the force staff menu.
         /// </summary>
         public Menu ForceStaffMenu { get; set; }
+
+        public Menu HurricanePikeMenu { get; set; }
 
         /// <summary>
         ///     Gets or sets the main menu.

@@ -88,6 +88,11 @@
                 return;
             }
 
+            foreach (var module in Variables.Modules.Where(module => module.CanDraw()))
+            {
+                module.Draw();
+            }
+
             foreach (var hero in Heroes.GetByTeam(Variables.EnemyTeam))
             {
                 var classId = hero.ClassID;
@@ -152,8 +157,7 @@
 
             foreach (var hero in Heroes.GetByTeam(Variables.EnemyTeam).Where(x => x.IsAlive && x.IsVisible))
             {
-                foreach (
-                    var module in Variables.Modules.Where(x => x.CanBeExecuted()).Where(module => module.IsHeroLoop()))
+                foreach (var module in Variables.Modules.Where(x => x.CanBeExecuted() && x.IsHeroLoop()))
                 {
                     module.Execute(hero);
                 }
@@ -171,6 +175,11 @@
             if (args.Msg != (ulong)Utils.WindowsMessages.WM_LBUTTONDOWN)
             {
                 return;
+            }
+
+            foreach (var module in Variables.Modules.Where(x => x.CanDraw()))
+            {
+                module.OnWndProc(args);
             }
 
             foreach (var hero in

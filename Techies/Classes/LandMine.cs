@@ -12,7 +12,7 @@
     /// <summary>
     ///     The land mine.
     /// </summary>
-    internal class LandMine
+    public class LandMine
     {
         #region Constructors and Destructors
 

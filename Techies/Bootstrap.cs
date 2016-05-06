@@ -9,15 +9,6 @@
     /// </summary>
     internal class Bootstrap
     {
-        #region Fields
-
-        /// <summary>
-        ///     The techies.
-        /// </summary>
-        public Techies Techies;
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -47,6 +38,15 @@
 
             PrintOnLoadMessage();
         }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets or sets the techies.
+        /// </summary>
+        public Techies Techies { get; set; }
 
         #endregion
 

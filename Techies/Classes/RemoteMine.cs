@@ -12,7 +12,7 @@
     /// <summary>
     ///     The remote mine.
     /// </summary>
-    internal class RemoteMine
+    public class RemoteMine
     {
         #region Constructors and Destructors
 

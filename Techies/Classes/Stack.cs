@@ -17,7 +17,7 @@
     /// <summary>
     ///     The stack.
     /// </summary>
-    internal class Stack
+    public class Stack
     {
         #region Fields
 
