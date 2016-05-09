@@ -265,7 +265,7 @@
                         return;
                     }
 
-                    Me.Attack(unitTarget);
+                    Orbwalking.Attack(unitTarget, true);
                     Utils.Sleep(100, "Ability.Move");
                     break;
                 case 3:
