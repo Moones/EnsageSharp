@@ -125,9 +125,10 @@
                     }
                 }
             }
-            catch (EntityNotFoundException)
+            catch (EntityNotFoundException e)
             {
                 EnemyHeroes.UpdateHeroes();
+                Console.WriteLine(e.ToString());
             }
 
             var spellOverlayEnabledAlly = MainMenu.AbilityOverlayMenu.Item("enableSpellOverlayAlly").GetValue<bool>();
@@ -194,9 +195,10 @@
                     }
                 }
             }
-            catch (EntityNotFoundException)
+            catch (EntityNotFoundException e)
             {
                 AllyHeroes.UpdateHeroes();
+                Console.WriteLine(e.ToString());
             }
         }
 

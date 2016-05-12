@@ -45,8 +45,9 @@
 
                 Utils.Sleep(2000, "Players.Update.Ally");
             }
-            catch (EntityNotFoundException)
+            catch (EntityNotFoundException e)
             {
+                Console.WriteLine(e.ToString());
                 Utils.Sleep(2000, "Players.Update.Ally");
             }
         }

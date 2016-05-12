@@ -8,6 +8,7 @@
     using Ability.ObjectManager.Players;
 
     using Ensage;
+    using Ensage.Common;
 
     internal class Manage
     {
@@ -23,46 +24,46 @@
 
         public static void SubscribeAllEvents()
         {
-            Game.OnUpdate += AbilityMain.Game_OnUpdate;
+            Events.OnUpdate += AbilityMain.Game_OnUpdate;
             Drawing.OnDraw += DamageIndicator.Drawing_OnDraw;
             Player.OnExecuteOrder += AbilityMain.Player_OnExecuteOrder;
             ObjectManager.OnRemoveEntity += Update.ObjectMgr_OnRemoveEntity;
-            Game.OnUpdate += Update.UpdateItems;
-            Game.OnUpdate += Process.OnUpdate;
-            Game.OnUpdate += MyDamage.Update;
-            Game.OnUpdate += EnemyHeroes.Update;
-            Game.OnUpdate += EnemyPlayers.Update;
-            Game.OnUpdate += AllyHeroes.Update;
-            Game.OnUpdate += AllyPlayers.Update;
+            Events.OnUpdate += Update.UpdateItems;
+            Events.OnUpdate += Process.OnUpdate;
+            Events.OnUpdate += MyDamage.Update;
+            Events.OnUpdate += EnemyHeroes.Update;
+            Events.OnUpdate += EnemyPlayers.Update;
+            Events.OnUpdate += AllyHeroes.Update;
+            Events.OnUpdate += AllyPlayers.Update;
             Drawing.OnDraw += GankDamage.Drawing_OnDraw;
             Drawing.OnDraw += HpBar.Update;
             Drawing.OnDraw += AbilityOverlay.Drawing_OnDraw;
             if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
             {
-                Game.OnUpdate += Rubick.Game_OnUpdate;
+                Events.OnUpdate += Rubick.Game_OnUpdate;
                 rubick = true;
             }
         }
 
         public static void UnsubscribeAllEvents()
         {
-            Game.OnUpdate -= AbilityMain.Game_OnUpdate;
+            Events.OnUpdate -= AbilityMain.Game_OnUpdate;
             Drawing.OnDraw -= DamageIndicator.Drawing_OnDraw;
             Player.OnExecuteOrder -= AbilityMain.Player_OnExecuteOrder;
             ObjectManager.OnRemoveEntity -= Update.ObjectMgr_OnRemoveEntity;
-            Game.OnUpdate -= Update.UpdateItems;
-            Game.OnUpdate -= Process.OnUpdate;
-            Game.OnUpdate -= MyDamage.Update;
-            Game.OnUpdate -= EnemyHeroes.Update;
-            Game.OnUpdate -= EnemyPlayers.Update;
-            Game.OnUpdate -= AllyHeroes.Update;
-            Game.OnUpdate -= AllyPlayers.Update;
+            Events.OnUpdate -= Update.UpdateItems;
+            Events.OnUpdate -= Process.OnUpdate;
+            Events.OnUpdate -= MyDamage.Update;
+            Events.OnUpdate -= EnemyHeroes.Update;
+            Events.OnUpdate -= EnemyPlayers.Update;
+            Events.OnUpdate -= AllyHeroes.Update;
+            Events.OnUpdate -= AllyPlayers.Update;
             Drawing.OnDraw -= GankDamage.Drawing_OnDraw;
             Drawing.OnDraw -= HpBar.Update;
             Drawing.OnDraw -= AbilityOverlay.Drawing_OnDraw;
             if (rubick)
             {
-                Game.OnUpdate -= Rubick.Game_OnUpdate;
+                Events.OnUpdate -= Rubick.Game_OnUpdate;
             }
 
             rubick = false;

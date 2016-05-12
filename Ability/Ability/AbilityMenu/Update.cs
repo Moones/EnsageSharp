@@ -127,9 +127,9 @@
                     MyAbilities.DefensiveAbilities.Remove(name + "shield");
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // e.GetBaseException();
+                Console.WriteLine(e.ToString());
             }
         }
 
@@ -333,8 +333,9 @@
 
                 Utils.Sleep(1000, "checkitems");
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.ToString());
             }
         }
 

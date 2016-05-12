@@ -46,8 +46,9 @@
 
                 Utils.Sleep(2000, "Players.Update");
             }
-            catch (EntityNotFoundException)
+            catch (EntityNotFoundException e)
             {
+                Console.WriteLine(e.ToString());
                 Utils.Sleep(2000, "Players.Update");
             }
         }
