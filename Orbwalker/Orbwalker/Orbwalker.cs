@@ -1,13 +1,17 @@
 ﻿namespace Orbwalker
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Extensions.SharpDX;
     using Ensage.Common.Menu;
     using Ensage.Common.Objects;
+
+    using orb = Ensage.Common.Objects.UtilityObjects.Orbwalker;
 
     /// <summary>
     ///     The orb walker.
@@ -27,6 +31,11 @@
         private static readonly RangeDrawing RangeDisplay = new RangeDrawing();
 
         /// <summary>
+        ///     The controllable units.
+        /// </summary>
+        private static ControllableUnits controllableUnits;
+
+        /// <summary>
         ///     The creep target.
         /// </summary>
         private static Unit creepTarget;
@@ -40,6 +49,11 @@
         ///     The me.
         /// </summary>
         private static Hero me;
+
+        /// <summary>
+        ///     The orbwalker dictionary.
+        /// </summary>
+        private static Dictionary<float, orb> orbwalkerDictionary;
 
         /// <summary>
         ///     The target.
@@ -56,6 +70,8 @@
         public static void Init()
         {
             Menu.AddItem(new MenuItem("chaseKey", "Chase Key").SetValue(new KeyBind(32, KeyBindType.Press)));
+            Menu.AddItem(
+                new MenuItem("allUnitsChaseKey", "All units Key").SetValue(new KeyBind('N', KeyBindType.Press)));
             Menu.AddItem(new MenuItem("kiteKey", "Kite Key").SetValue(new KeyBind('V', KeyBindType.Press)));
             Menu.AddItem(new MenuItem("farmKey", "Farm Key").SetValue(new KeyBind('B', KeyBindType.Press)));
             Menu.AddItem(
@@ -86,6 +102,8 @@
                     return;
                 }
 
+                controllableUnits = new ControllableUnits(me.Team);
+                orbwalkerDictionary = new Dictionary<float, orb>();
                 loaded = true;
                 target = null;
                 RangeDisplay.Dispose();
@@ -151,7 +169,11 @@
             {
                 if (Utils.SleepCheck("Orbwalker.Update.Target"))
                 {
-                    if (target != null && !target.IsVisible)
+                    if (Game.IsKeyDown(Menu.Item("allUnitsChaseKey").GetValue<KeyBind>().Key))
+                    {
+                        target = me.ClosestToMouseTarget(500);
+                    }
+                    else if (target != null && !target.IsVisible)
                     {
                         target = me.ClosestToMouseTarget(128);
                     }
@@ -181,6 +203,32 @@
 
             if (Game.IsChatOpen)
             {
+                return;
+            }
+
+            if (Game.IsKeyDown(Menu.Item("allUnitsChaseKey").GetValue<KeyBind>().Key))
+            {
+                Orbwalking.Orbwalk(target, attackmodifiers: true);
+                foreach (var unit in controllableUnits.Units.Where(x => !x.Equals(me) && x.IsValid && x.IsAlive))
+                {
+                    orb unitOrbwalker;
+                    if (!orbwalkerDictionary.TryGetValue(unit.Handle, out unitOrbwalker))
+                    {
+                        unitOrbwalker = new orb(unit);
+                        orbwalkerDictionary.Add(unit.Handle, unitOrbwalker);
+                    }
+
+                    var position = Game.MousePosition;
+                    if (target != null)
+                    {
+                        position = Game.MousePosition.Extend(
+                            target.Position, 
+                            (float)(Game.MousePosition.Distance2D(target) * 0.7));
+                    }
+
+                    unitOrbwalker.OrbwalkOn(target, position);
+                }
+
                 return;
             }
 
