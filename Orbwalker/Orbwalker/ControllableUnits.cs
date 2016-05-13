@@ -61,7 +61,9 @@
                 }
 
                 this.units =
-                    ObjectManager.GetEntities<Unit>().Where(x => x.Team == this.team && x.IsControllable).ToList();
+                    ObjectManager.GetEntities<Unit>()
+                        .Where(x => !(x is Courier) && x.Team == this.team && x.IsControllable)
+                        .ToList();
                 this.sleeper.Sleep(1000);
                 return this.units;
             }
