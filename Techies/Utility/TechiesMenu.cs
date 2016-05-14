@@ -4,6 +4,8 @@
 
     using Ensage.Common.Menu;
 
+    using SharpDX;
+
     /// <summary>
     ///     The techies menu.
     /// </summary>
@@ -27,6 +29,20 @@
             detonationMenu.AddItem(new MenuItem("detonateAllMines", "Detonate all mines in stack").SetValue(false))
                 .SetTooltip(
                     "Instead of detonating only needed amount of mines, assembly will detonate all mines in stack");
+            detonationMenu.AddItem(
+                new MenuItem("Techies.DetonateWhenOnEdge", "Detonate when enemy is about to escape from stack").SetValue
+                    (false))
+                .SetTooltip(
+                    "Will calculate ping in to ensure the enemy gets actually killed, the chance to kill enemy is still lower with this option enabled");
+            detonationMenu.AddItem(
+                new MenuItem("Techies.MoveCameraAndDetonate", "Move camera and detonate key").SetValue(
+                    new KeyBind('H', KeyBindType.Press))
+                    .SetTooltip(
+                        "If notification is enabled, pressing this key while the notification is visible will move camera and detonate"))
+                .SetFontColor(Color.DeepSkyBlue);
+            detonationMenu.AddItem(
+                new MenuItem("Techies.KeyDetonationDelay", "Key detonation delay").SetValue(new Slider(300, 0, 2000)))
+                .SetTooltip("Delay of detonation after pressing key and moving camera");
             optionsMenu.AddSubMenu(detonationMenu);
             var forceStaffMenu = new Menu("Auto ForceStaff", "autoForceStaff");
             forceStaffMenu.AddItem(new MenuItem("useForceStaff", "Use ForceStaff").SetValue(true));

@@ -87,14 +87,14 @@
             }
 
             var tempDamage = hero.GetStackDamage(610);
-            if (tempDamage.Item1 >= hero.Health)
+            if (!tempDamage.Item3.AutoDetonate || !(tempDamage.Item1 >= hero.Health))
             {
-                fs.UseAbility(hero);
-                Utils.Sleep(250, "Techies.ForceStaff");
-                return true;
+                return false;
             }
 
-            return false;
+            fs.UseAbility(hero);
+            Utils.Sleep(250, "Techies.ForceStaff");
+            return true;
         }
 
         /// <summary>

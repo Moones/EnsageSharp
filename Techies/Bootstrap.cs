@@ -1,6 +1,7 @@
 ﻿namespace Techies
 {
     using Ensage;
+    using Ensage.Common;
 
     using global::Techies.Utility;
 
@@ -32,7 +33,7 @@
                 module.OnLoad();
             }
 
-            Game.OnUpdate += this.Techies.Game_OnUpdate;
+            Events.OnUpdate += this.Techies.Game_OnUpdate;
             Drawing.OnDraw += this.Techies.Drawing_OnDraw;
             Game.OnWndProc += this.Techies.Game_OnWndProc;
 

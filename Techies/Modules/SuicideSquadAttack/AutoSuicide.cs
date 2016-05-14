@@ -3,6 +3,7 @@
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Extensions.SharpDX;
 
     using global::Techies.Utility;
 
@@ -73,38 +74,39 @@
                 return false;
             }
 
-            if (Variables.Damage.GetSuicideDamage()[hero.ClassID] >= hero.Health)
+            if (!(Variables.Damage.GetSuicideDamage()[hero.ClassID] >= hero.Health))
             {
-                var pos = hero.NetworkPosition;
-                if (hero.NetworkActivity == NetworkActivity.Move)
-                {
-                    pos = Prediction.InFront(
-                        hero, 
-                        (float)(((Game.Ping / 1000) + Variables.Techies.GetTurnTime(hero)) * hero.MovementSpeed));
-                }
-
-                if (pos.Distance2D(Variables.Techies) < hero.Distance2D(Variables.Techies))
-                {
-                    pos = hero.Position;
-                }
-
-                if (!(pos.Distance2D(Variables.Techies) < this.SuicideRadius))
-                {
-                    return false;
-                }
-
-                if (Variables.Techies.Distance2D(pos) > 100)
-                {
-                    pos = (pos - (Variables.Techies.Position * 99 / pos.Distance2D(Variables.Techies)))
-                          + Variables.Techies.Position;
-                }
-
-                Variables.SuicideAbility.UseAbility(pos);
-                Utils.Sleep(500, "Techies.Suicide");
-                return true;
+                return false;
             }
 
-            return false;
+            var pos = hero.NetworkPosition;
+            if (hero.NetworkActivity == NetworkActivity.Move)
+            {
+                pos = Prediction.InFront(
+                    hero, 
+                    (float)(((Game.Ping / 1000) + Variables.Techies.GetTurnTime(hero)) * hero.MovementSpeed));
+            }
+
+            if (pos.Distance2D(Variables.Techies) < hero.Distance2D(Variables.Techies))
+            {
+                pos = Prediction.InFront(hero, Game.Ping / 1000);
+            }
+
+            if (
+                !(pos.Distance2D(Variables.Techies)
+                  < this.SuicideRadius + hero.HullRadius + Variables.Techies.HullRadius))
+            {
+                return false;
+            }
+
+            if (Variables.Techies.Distance2D(pos) > 100)
+            {
+                pos = Variables.Techies.Position.Extend(pos, 99);
+            }
+
+            Variables.SuicideAbility.UseAbility(pos);
+            Utils.Sleep(500, "Techies.Suicide");
+            return true;
         }
 
         /// <summary>

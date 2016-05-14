@@ -5,7 +5,7 @@
 
     using Ensage;
     using Ensage.Common;
-    using Ensage.Common.Extensions;
+    using Ensage.Common.Menu;
     using Ensage.Common.Menu.Transitions;
     using Ensage.Common.Objects;
     using Ensage.Common.Objects.DrawObjects;
@@ -39,6 +39,11 @@
         private readonly DrawText healthText;
 
         /// <summary>
+        ///     The key text.
+        /// </summary>
+        private readonly DrawText keyText;
+
+        /// <summary>
         ///     The move camera text.
         /// </summary>
         private readonly DrawText moveCameraText;
@@ -57,11 +62,6 @@
         ///     The transition.
         /// </summary>
         private readonly Transition transition;
-
-        /// <summary>
-        ///     The allies nearby.
-        /// </summary>
-        private int alliesNearby;
 
         /// <summary>
         ///     The hero icon position.
@@ -93,7 +93,7 @@
             this.positionOff = position + new Vector2(1, 0);
             this.Size = size;
             this.Visible = true;
-            this.HeroIconSize = new Vector2((float)(size.X / 1.2), (float)(size.Y / 1.5));
+            this.HeroIconSize = new Vector2((float)(size.X / 2.9), (float)(size.Y / 1.5));
             this.chargeText = new DrawText
                                   {
                                       Text = "DETONATE", Color = Color.White, FontFlags = FontFlags.AntiAlias, 
@@ -110,6 +110,12 @@
                                           Position = new Vector2(), 
                                           TextSize = new Vector2((float)(this.HeroIconSize.Y / 3.4))
                                       };
+
+            this.keyText = new DrawText
+                               {
+                                   Text = string.Empty, Color = Color.White, FontFlags = FontFlags.AntiAlias, 
+                                   Position = new Vector2(), TextSize = new Vector2((float)(this.HeroIconSize.Y / 2.5))
+                               };
             this.transition = new QuadEaseOut(1.5);
             this.transition.Start(this.positionOn, this.positionOff);
         }
@@ -117,27 +123,6 @@
         #endregion
 
         #region Public Properties
-
-        /// <summary>
-        ///     Gets the allies nearby.
-        /// </summary>
-        public int AlliesNearby
-        {
-            get
-            {
-                if (this.alliesNearbySleeper.Sleeping)
-                {
-                    return this.alliesNearby;
-                }
-
-                this.alliesNearby =
-                    Heroes.GetByTeam(Variables.Techies.Team)
-                        .Count(
-                            x => x.IsValid && x.IsAlive && !x.Equals(Variables.Techies) && x.Distance2D(this.Hero) < 700);
-                this.alliesNearbySleeper.Sleep(500);
-                return this.alliesNearby;
-            }
-        }
 
         /// <summary>
         ///     Gets the display time.
@@ -212,7 +197,7 @@
         /// </param>
         public void Click(Vector2 mousePosition)
         {
-            if (!this.Visible)
+            if (this.IsHidden || !this.Visible)
             {
                 return;
             }
@@ -224,6 +209,11 @@
                 this.HeroIconSize.X, 
                 this.HeroIconSize.Y / 2))
             {
+                if (this.RemoteMines.Any(x => x.Distance(this.Hero.Position) - this.Hero.HullRadius > x.Radius))
+                {
+                    return;
+                }
+
                 foreach (var remoteMine in this.RemoteMines)
                 {
                     remoteMine.Detonate();
@@ -367,6 +357,49 @@
                 new Color(45, 45, 45, hover ? 210 : 80));
 
             this.moveCameraText.Draw();
+
+            this.keyText.Text = "Press '"
+                                + Utils.KeyToText(
+                                    Variables.Menu.DetonationMenu.Item("Techies.MoveCameraAndDetonate")
+                                      .GetValue<KeyBind>()
+                                      .Key) + "' to detonate";
+            this.keyText.Position = this.heroIconPosition
+                                    + new Vector2(
+                                          this.HeroIconSize.X + 1, 
+                                          (this.HeroIconSize.Y / 2) - (this.keyText.Size.Y / 3));
+            this.keyText.Draw();
+        }
+
+        /// <summary>
+        ///     The move camera and detonate.
+        /// </summary>
+        public void MoveCameraAndDetonate()
+        {
+            if (this.IsHidden || !this.Visible)
+            {
+                return;
+            }
+
+            Utils.MoveCamera(this.Hero.Position);
+            if (this.RemoteMines.Any(x => x.Distance(this.Hero.Position) - this.Hero.HullRadius > x.Radius))
+            {
+                return;
+            }
+
+            DelayAction.Add(
+                Variables.Menu.DetonationMenu.Item("Techies.KeyDetonationDelay").GetValue<Slider>().Value, 
+                () =>
+                    {
+                        if (this.RemoteMines.Any(x => x.Distance(this.Hero.Position) - this.Hero.HullRadius > x.Radius))
+                        {
+                            return;
+                        }
+
+                        foreach (var remoteMine in this.RemoteMines)
+                        {
+                            remoteMine.Detonate();
+                        }
+                    });
         }
 
         /// <summary>

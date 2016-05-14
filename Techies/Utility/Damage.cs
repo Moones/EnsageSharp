@@ -43,7 +43,7 @@
         public Damage()
         {
             this.CurrentLandMineDamage = Variables.LandMinesAbility.GetAbilityData("damage");
-            Game.OnUpdate += this.Game_OnUpdate;
+            Events.OnUpdate += this.Game_OnUpdate;
             this.CurrentRemoteMineDamage = Variables.Techies.AghanimState()
                                                ? Variables.RemoteMinesAbility.GetAbilityData("damage_scepter")
                                                : Variables.RemoteMinesAbility.GetAbilityData("damage");
@@ -151,7 +151,7 @@
         /// </summary>
         public void OnClose()
         {
-            Game.OnUpdate -= this.Game_OnUpdate;
+            Events.OnUpdate -= this.Game_OnUpdate;
         }
 
         /// <summary>
@@ -159,7 +159,7 @@
         /// </summary>
         public void OnLoad()
         {
-            Game.OnUpdate += this.Game_OnUpdate;
+            Events.OnUpdate += this.Game_OnUpdate;
             this.remoteMineDamageDictionary = new Dictionary<uint, Dictionary<ClassID, float>>();
             this.suicideDamageDictionary = new Dictionary<ClassID, float>();
             this.landMineDamageDictionary = new Dictionary<uint, Dictionary<ClassID, float>>();

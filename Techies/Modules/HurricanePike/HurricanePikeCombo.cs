@@ -160,7 +160,7 @@
             var blinkPosition = stack.Position.Extend(heroPosition, stack.Position.Distance2D(hero) + 300);
             this.blinkDagger.UseAbility(blinkPosition);
             var sleeper = new Sleeper();
-            GameUpdate update = args =>
+            Events.OnUpdateDelegate update = args =>
                 {
                     if (sleeper.Sleeping || !this.hurricanePike.CanBeCasted())
                     {
@@ -170,10 +170,10 @@
                     this.hurricanePike.UseAbility(hero);
                     sleeper.Sleep(150);
                 };
-            DelayAction.Add((float)(me.GetTurnTime(blinkPosition) * 1000), () => { Game.OnUpdate += update; });
+            DelayAction.Add((float)(me.GetTurnTime(blinkPosition) * 1000), () => { Events.OnUpdate += update; });
             DelayAction.Add(
                 (float)((me.GetTurnTime(blinkPosition) * 1000) + 50 + Game.Ping), 
-                () => { Game.OnUpdate -= update; });
+                () => { Events.OnUpdate -= update; });
             this.comboSleeper.Sleep(1000);
             return true;
         }

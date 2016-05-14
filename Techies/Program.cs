@@ -35,7 +35,7 @@
                 module.OnClose();
             }
 
-            Game.OnUpdate -= Variables.Instance.Techies.Game_OnUpdate;
+            Events.OnUpdate -= Variables.Instance.Techies.Game_OnUpdate;
             Drawing.OnDraw -= Variables.Instance.Techies.Drawing_OnDraw;
             Game.OnWndProc -= Variables.Instance.Techies.Game_OnWndProc;
             Variables.Damage.OnClose();

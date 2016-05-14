@@ -56,12 +56,23 @@
             {
                 prediction +=
                     VectorExtensions.FromPolarCoordinates(1f, (float)(hero.NetworkRotationRad + rotSpeed)).ToVector3()
-                    * ((float)(Variables.Techies.GetTurnTime(hero) + (Game.Ping / 1000)) * hero.MovementSpeed);
+                    * ((float)(Variables.Techies.GetTurnTime(hero) + (Game.Ping / 500)) * hero.MovementSpeed);
             }
 
             var tempDamage = 0f;
             var nearestStack = Variables.Stacks.MinOrDefault(x => x.Position.Distance(heroPosition));
             if (nearestStack == null || nearestStack.Position.Distance(heroPosition) > 1000)
+            {
+                return new Tuple<float, IEnumerable<RemoteMine>, Stack>(0, detonatableMines, nearestStack);
+            }
+
+            if (inFrontDistance == 0
+                && Variables.Menu.DetonationMenu.Item("Techies.DetonateWhenOnEdge").GetValue<bool>()
+                && (prediction.Distance2D(nearestStack.Position) <= hero.Position.Distance2D(nearestStack.Position)
+                    || prediction.Distance2D(nearestStack.Position)
+                    < 425 - hero.HullRadius - 50
+                    - ((float)(Variables.Techies.GetTurnTime(hero) + (Game.Ping / 500)) * hero.MovementSpeed)
+                    || hero.NetworkActivity != NetworkActivity.Move))
             {
                 return new Tuple<float, IEnumerable<RemoteMine>, Stack>(0, detonatableMines, nearestStack);
             }

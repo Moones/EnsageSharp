@@ -155,7 +155,8 @@
                 module.Execute();
             }
 
-            foreach (var hero in Heroes.GetByTeam(Variables.EnemyTeam).Where(x => x.IsAlive && x.IsVisible))
+            foreach (
+                var hero in Heroes.GetByTeam(Variables.EnemyTeam).Where(x => !x.IsIllusion && x.IsAlive && x.IsVisible))
             {
                 foreach (var module in Variables.Modules.Where(x => x.CanBeExecuted() && x.IsHeroLoop()))
                 {
@@ -172,14 +173,14 @@
         /// </param>
         public void Game_OnWndProc(WndEventArgs args)
         {
-            if (args.Msg != (ulong)Utils.WindowsMessages.WM_LBUTTONDOWN)
-            {
-                return;
-            }
-
             foreach (var module in Variables.Modules.Where(x => x.CanDraw()))
             {
                 module.OnWndProc(args);
+            }
+
+            if (args.Msg != (ulong)Utils.WindowsMessages.WM_LBUTTONDOWN)
+            {
+                return;
             }
 
             foreach (var hero in

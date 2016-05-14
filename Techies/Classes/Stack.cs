@@ -79,7 +79,7 @@
             this.AutoDetonate = true;
             this.MinEnemiesKill = 1;
 
-            Game.OnUpdate += this.OnUpdate;
+            Events.OnUpdate += this.OnUpdate;
             Drawing.OnDraw += this.Drawing_OnDraw;
             Game.OnWndProc += this.Game_OnWndProc;
         }
@@ -89,7 +89,7 @@
         /// </summary>
         ~Stack()
         {
-            Game.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= this.OnUpdate;
             Drawing.OnDraw -= this.Drawing_OnDraw;
             Game.OnWndProc -= this.Game_OnWndProc;
             Variables.Stacks.Remove(this);
@@ -293,7 +293,7 @@
         /// </summary>
         public void Delete()
         {
-            Game.OnUpdate -= this.OnUpdate;
+            Events.OnUpdate -= this.OnUpdate;
             Drawing.OnDraw -= this.Drawing_OnDraw;
             Game.OnWndProc -= this.Game_OnWndProc;
         }

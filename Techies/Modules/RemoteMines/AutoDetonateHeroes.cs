@@ -5,6 +5,7 @@
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
+    using Ensage.Common.Menu;
     using Ensage.Common.Objects;
 
     using global::Techies.Classes;
@@ -120,7 +121,7 @@
                 this.notification = new Notification(
                     5000, 
                     new Vector2(HUDInfo.ScreenSizeX(), (float)(HUDInfo.ScreenSizeY() / 2.3)), 
-                    new Vector2(HUDInfo.ScreenSizeX() / 18, HUDInfo.ScreenSizeX() / 30));
+                    new Vector2(HUDInfo.ScreenSizeX() / 8, HUDInfo.ScreenSizeX() / 30));
             }
 
             this.notification.RemoteMines = tempDamage.Item2;
@@ -161,9 +162,21 @@
         /// </param>
         public void OnWndProc(WndEventArgs args)
         {
-            if (args.Msg == (ulong)Utils.WindowsMessages.WM_LBUTTONDOWN && this.notification != null)
+            if (this.notification == null)
+            {
+                return;
+            }
+
+            if (args.Msg == (ulong)Utils.WindowsMessages.WM_LBUTTONDOWN)
             {
                 this.notification.Click(Game.MouseScreenPosition);
+            }
+
+            if (!Game.IsChatOpen && args.Msg == (ulong)Utils.WindowsMessages.WM_KEYDOWN
+                && args.WParam
+                == Variables.Menu.DetonationMenu.Item("Techies.MoveCameraAndDetonate").GetValue<KeyBind>().Key)
+            {
+                this.notification.MoveCameraAndDetonate();
             }
         }
 
