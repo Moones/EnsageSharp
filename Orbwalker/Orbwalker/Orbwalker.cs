@@ -41,11 +41,6 @@
         private static Unit creepTarget;
 
         /// <summary>
-        ///     The loaded.
-        /// </summary>
-        private static bool loaded;
-
-        /// <summary>
         ///     The me.
         /// </summary>
         private static Hero me;
@@ -78,13 +73,52 @@
                 new MenuItem("bonusWindup", "Bonus WindUp time on kitting").SetValue(new Slider(500, 100, 2000))
                     .SetTooltip("Time between attacks in kitting mode"));
             Menu.AddToMainMenu();
-            Game.OnUpdate += Game_OnUpdate;
             Orbwalking.Load();
+            Events.OnLoad += Events_OnLoad;
+            Events.OnClose += Events_OnClose;
         }
 
         #endregion
 
         #region Methods
+
+        /// <summary>
+        ///     The events_ on close.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sender.
+        /// </param>
+        /// <param name="e">
+        ///     The e.
+        /// </param>
+        private static void Events_OnClose(object sender, EventArgs e)
+        {
+            Events.OnUpdate -= Game_OnUpdate;
+            target = null;
+            RangeDisplay.Dispose();
+        }
+
+        /// <summary>
+        ///     The events_ on load.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sender.
+        /// </param>
+        /// <param name="e">
+        ///     The e.
+        /// </param>
+        private static void Events_OnLoad(object sender, EventArgs e)
+        {
+            me = ObjectManager.LocalHero;
+            controllableUnits = new ControllableUnits(me.Team);
+            orbwalkerDictionary = new Dictionary<float, orb>();
+            target = null;
+            RangeDisplay.Dispose();
+            Game.PrintMessage(
+                "<font face='Tahoma'><font color='#000000'>[--</font> <font color='#33ff66'>Orbwalker</font> by <font color='#999999'>MOON</font><font color='#ff9900'>ES</font> loaded! <font color='#000000'>--]</font></font>", 
+                MessageType.LogMessage);
+            Events.OnUpdate += Game_OnUpdate;
+        }
 
         /// <summary>
         ///     The game_ on update.
@@ -94,34 +128,6 @@
         /// </param>
         private static void Game_OnUpdate(EventArgs args)
         {
-            if (!loaded)
-            {
-                me = ObjectManager.LocalHero;
-                if (!Game.IsInGame || me == null)
-                {
-                    return;
-                }
-
-                controllableUnits = new ControllableUnits(me.Team);
-                orbwalkerDictionary = new Dictionary<float, orb>();
-                loaded = true;
-                target = null;
-                RangeDisplay.Dispose();
-                Game.PrintMessage(
-                    "<font face='Tahoma'><font color='#000000'>[--</font> <font color='#33ff66'>Orbwalker</font> by <font color='#999999'>MOON</font><font color='#ff9900'>ES</font> loaded! <font color='#000000'>--]</font></font>", 
-                    MessageType.LogMessage);
-            }
-
-            if (me == null || !me.IsValid)
-            {
-                loaded = false;
-                me = ObjectManager.LocalHero;
-
-                target = null;
-                RangeDisplay.Dispose();
-                return;
-            }
-
             RangeDisplay.Me();
 
             if (Game.IsPaused)

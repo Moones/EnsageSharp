@@ -1,6 +1,9 @@
 ﻿namespace Orbwalker
 {
+    using System;
+
     using Ensage;
+    using Ensage.Common;
     using Ensage.Common.Extensions;
 
     using SharpDX;
@@ -36,6 +39,7 @@
         /// </summary>
         public RangeDrawing()
         {
+            Events.OnLoad += this.Events_OnLoad;
             this.me = ObjectManager.LocalHero;
             this.rangeDisplay = null;
         }
@@ -75,7 +79,7 @@
         /// </summary>
         public void Dispose()
         {
-            if (this.IsDisposed())
+            if (this.IsDisposed() || this.rangeDisplay == null || this.rangeDisplay.IsDestroyed)
             {
                 return;
             }
@@ -146,6 +150,24 @@
             this.rangeDisplay.SetControlPoint(1, new Vector3(255, 80, 50));
             this.rangeDisplay.SetControlPoint(3, new Vector3(15, 0, 0));
             this.rangeDisplay.SetControlPoint(2, new Vector3(this.lastRange, 255, 0));
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        ///     The events_ on load.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sender.
+        /// </param>
+        /// <param name="e">
+        ///     The e.
+        /// </param>
+        private void Events_OnLoad(object sender, EventArgs e)
+        {
+            this.me = ObjectManager.LocalHero;
         }
 
         #endregion
