@@ -64,7 +64,7 @@
         /// </returns>
         public bool Execute(Hero hero)
         {
-            if (!Variables.Damage.GetSuicideDamage().ContainsKey(hero.ClassID))
+            if (!Variables.Damage.GetSuicideDamage().ContainsKey(hero.Handle))
             {
                 return false;
             }
@@ -74,7 +74,7 @@
                 return false;
             }
 
-            if (!(Variables.Damage.GetSuicideDamage()[hero.ClassID] >= hero.Health))
+            if (!(Variables.Damage.GetSuicideDamage()[hero.Handle] >= hero.Health))
             {
                 return false;
             }

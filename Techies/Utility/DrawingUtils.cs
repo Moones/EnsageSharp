@@ -5,6 +5,7 @@
 
     using Ensage;
     using Ensage.Common;
+    using Ensage.Heroes;
 
     using SharpDX;
 
@@ -18,8 +19,8 @@
         /// <summary>
         ///     The draw land mine number.
         /// </summary>
-        /// <param name="classId">
-        ///     The class id.
+        /// <param name="handle">
+        ///     The handle.
         /// </param>
         /// <param name="health">
         ///     The health.
@@ -33,9 +34,18 @@
         /// <param name="enabled">
         ///     The enabled.
         /// </param>
-        public static void DrawLandMineNumber(ClassID classId, float health, double x, double sizey, bool enabled)
+        /// <param name="hero">
+        ///     The hero.
+        /// </param>
+        public static void DrawLandMineNumber(
+            uint handle, 
+            float health, 
+            double x, 
+            double sizey, 
+            bool enabled, 
+            Hero hero)
         {
-            var landMinesDmg = Variables.Damage.GetLandMineDamage(Variables.LandMinesAbility.Level, classId);
+            var landMinesDmg = Variables.Damage.GetLandMineDamage(Variables.LandMinesAbility.Level, handle);
             if (!(landMinesDmg > 0))
             {
                 return;
@@ -53,8 +63,8 @@
         /// <summary>
         ///     The draw remote mine number.
         /// </summary>
-        /// <param name="classId">
-        ///     The class id.
+        /// <param name="handle">
+        ///     The handle.
         /// </param>
         /// <param name="health">
         ///     The health.
@@ -71,15 +81,19 @@
         /// <param name="enabled">
         ///     The enabled.
         /// </param>
+        /// <param name="hero">
+        ///     The hero.
+        /// </param>
         public static void DrawRemoteMineNumber(
-            ClassID classId, 
+            uint handle, 
             float health, 
             double x, 
             double sizeX, 
             double sizey, 
-            bool enabled)
+            bool enabled, 
+            Hero hero)
         {
-            var remoteDmg = Variables.Damage.GetRemoteMineDamage(Variables.RemoteMinesAbility.Level, classId);
+            var remoteDmg = Variables.Damage.GetRemoteMineDamage(Variables.RemoteMinesAbility.Level, handle);
             if (!(remoteDmg > 0))
             {
                 return;
@@ -97,8 +111,8 @@
         /// <summary>
         ///     The draw suicide.
         /// </summary>
-        /// <param name="classId">
-        ///     The class id.
+        /// <param name="handle">
+        ///     The handle.
         /// </param>
         /// <param name="health">
         ///     The health.
@@ -119,7 +133,7 @@
         ///     The hero.
         /// </param>
         public static void DrawSuicide(
-            ClassID classId, 
+            uint handle, 
             float health, 
             double x, 
             double sizey, 
@@ -127,7 +141,7 @@
             bool enabled, 
             Unit hero)
         {
-            var suicideAttackDmg = Variables.Damage.GetSuicideDamage()[classId];
+            var suicideAttackDmg = Variables.Damage.GetSuicideDamage()[handle];
             if (!(suicideAttackDmg > 0))
             {
                 return;
@@ -135,7 +149,9 @@
 
             var dmg = health - suicideAttackDmg;
             var canKill = dmg <= 0;
-            if (Variables.Menu.DrawingsMenu.Item("drawTopPanel").GetValue<bool>())
+            var meepo = hero as Meepo;
+            if ((meepo == null || meepo.WhichMeepo == 0)
+                && Variables.Menu.DrawingsMenu.Item("drawTopPanel").GetValue<bool>())
             {
                 Drawing.DrawText(
                     canKill ? "Yes" : "No", 

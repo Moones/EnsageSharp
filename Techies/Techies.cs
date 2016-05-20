@@ -8,6 +8,7 @@
     using Ensage.Common;
     using Ensage.Common.Extensions;
     using Ensage.Common.Objects;
+    using Ensage.Heroes;
 
     using global::Techies.Classes;
     using global::Techies.Utility;
@@ -93,7 +94,7 @@
                 module.Draw();
             }
 
-            foreach (var hero in Heroes.GetByTeam(Variables.EnemyTeam))
+            foreach (var hero in Heroes.GetByTeam(Variables.EnemyTeam).Where(x => x.IsValid && !x.IsIllusion))
             {
                 var classId = hero.ClassID;
                 bool enabled;
@@ -121,18 +122,20 @@
                 var sizeX = topPanel[0];
                 var x = topPanel[1];
                 var sizey = topPanel[2];
-                if (Variables.Menu.DrawingsMenu.Item("drawTopPanel").GetValue<bool>())
+                var meepo = hero as Meepo;
+                if ((meepo == null || meepo.WhichMeepo == 0)
+                    && Variables.Menu.DrawingsMenu.Item("drawTopPanel").GetValue<bool>())
                 {
-                    DrawingUtils.DrawRemoteMineNumber(classId, health, x, sizeX, sizey, enabled);
-                    DrawingUtils.DrawLandMineNumber(classId, health, x, sizey, enabled);
+                    DrawingUtils.DrawRemoteMineNumber(hero.Handle, health, x, sizeX, sizey, enabled, hero);
+                    DrawingUtils.DrawLandMineNumber(hero.Handle, health, x, sizey, enabled, hero);
                 }
 
-                if (!Variables.Damage.GetSuicideDamage().ContainsKey(classId))
+                if (!Variables.Damage.GetSuicideDamage().ContainsKey(hero.Handle))
                 {
                     continue;
                 }
 
-                DrawingUtils.DrawSuicide(classId, health, x, sizey, sizeX, enabled, hero);
+                DrawingUtils.DrawSuicide(hero.Handle, health, x, sizey, sizeX, enabled, hero);
             }
         }
 
@@ -184,7 +187,7 @@
             }
 
             foreach (var hero in
-                from play in Heroes.GetByTeam(Variables.EnemyTeam)
+                from play in Heroes.GetByTeam(Variables.EnemyTeam).Where(x => x.IsValid && !x.IsIllusion)
                 select play
                 into hero
                 let sizeX = (float)HUDInfo.GetTopPanelSizeX(hero)

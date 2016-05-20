@@ -262,7 +262,7 @@
                     return nearestStack;
                 }
 
-                tempDamage += Variables.Damage.GetLandMineDamage(landMine.Level, hero.ClassID);
+                tempDamage += Variables.Damage.GetLandMineDamage(landMine.Level, hero.Handle);
             }
 
             foreach (var remoteMine in
@@ -277,7 +277,7 @@
                 }
 
                 detonatableMines.Add(remoteMine);
-                tempDamage += Variables.Damage.GetRemoteMineDamage(remoteMine.Level, hero.ClassID, hero);
+                tempDamage += Variables.Damage.GetRemoteMineDamage(remoteMine.Level, hero.Handle, hero);
             }
 
             return !(tempDamage >= hero.Health) ? null : nearestStack;

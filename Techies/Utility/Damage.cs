@@ -19,19 +19,19 @@
         /// <summary>
         ///     The land mine damage dictionary.
         /// </summary>
-        private Dictionary<uint, Dictionary<ClassID, float>> landMineDamageDictionary =
-            new Dictionary<uint, Dictionary<ClassID, float>>();
+        private Dictionary<uint, Dictionary<uint, float>> landMineDamageDictionary =
+            new Dictionary<uint, Dictionary<uint, float>>();
 
         /// <summary>
         ///     The remote mine damage dictionary.
         /// </summary>
-        private Dictionary<uint, Dictionary<ClassID, float>> remoteMineDamageDictionary =
-            new Dictionary<uint, Dictionary<ClassID, float>>();
+        private Dictionary<uint, Dictionary<uint, float>> remoteMineDamageDictionary =
+            new Dictionary<uint, Dictionary<uint, float>>();
 
         /// <summary>
         ///     The suicide damage dictionary.
         /// </summary>
-        private Dictionary<ClassID, float> suicideDamageDictionary = new Dictionary<ClassID, float>();
+        private Dictionary<uint, float> suicideDamageDictionary = new Dictionary<uint, float>();
 
         #endregion
 
@@ -73,25 +73,27 @@
         /// <param name="level">
         ///     The level.
         /// </param>
-        /// <param name="classId">
-        ///     The class id.
+        /// <param name="handle">
+        ///     The handle.
         /// </param>
         /// <returns>
         ///     The <see cref="float" />.
         /// </returns>
-        public float GetLandMineDamage(uint level, ClassID classId)
+        public float GetLandMineDamage(uint level, uint handle)
         {
-            Dictionary<ClassID, float> dictionary;
+            Dictionary<uint, float> dictionary;
             if (!this.landMineDamageDictionary.TryGetValue(level, out dictionary))
             {
                 var damage = Variables.LandMinesAbility.GetAbilityData("damage", level);
-                dictionary = Heroes.GetByTeam(Variables.EnemyTeam)
-                    .ToDictionary(
-                        hero => hero.ClassID, 
-                        hero => hero.DamageTaken(damage, DamageType.Physical, Variables.Techies));
+                dictionary =
+                    Heroes.GetByTeam(Variables.EnemyTeam)
+                        .Where(x => x.IsValid && !x.IsIllusion)
+                        .ToDictionary(
+                            hero => hero.Handle, 
+                            hero => hero.DamageTaken(damage, DamageType.Physical, Variables.Techies));
             }
 
-            return !dictionary.ContainsKey(classId) ? 0 : dictionary[classId];
+            return !dictionary.ContainsKey(handle) ? 0 : dictionary[handle];
         }
 
         /// <summary>
@@ -100,8 +102,8 @@
         /// <param name="level">
         ///     The level.
         /// </param>
-        /// <param name="classId">
-        ///     The class id.
+        /// <param name="handle">
+        ///     The handle.
         /// </param>
         /// <param name="creep">
         ///     The creep.
@@ -109,30 +111,31 @@
         /// <returns>
         ///     The <see cref="float" />.
         /// </returns>
-        public float GetRemoteMineDamage(uint level, ClassID classId, Unit creep = null)
+        public float GetRemoteMineDamage(uint level, uint handle, Unit creep = null)
         {
-            Dictionary<ClassID, float> dictionary;
+            Dictionary<uint, float> dictionary;
             if (!this.remoteMineDamageDictionary.TryGetValue(level, out dictionary))
             {
                 var damage = Variables.Techies.AghanimState()
                                  ? Variables.RemoteMinesAbility.GetAbilityData("damage_scepter", level)
                                  : Variables.RemoteMinesAbility.GetAbilityData("damage", level);
-                dictionary = Heroes.GetByTeam(Variables.EnemyTeam)
-                    .ToDictionary(
-                        hero => hero.ClassID, 
-                        hero => hero.DamageTaken(damage, DamageType.Magical, Variables.Techies));
+                dictionary =
+                    Heroes.GetByTeam(Variables.EnemyTeam)
+                        .Where(x => x.IsValid && !x.IsIllusion)
+                        .ToDictionary(
+                            hero => hero.Handle, 
+                            hero => hero.DamageTaken(damage, DamageType.Magical, Variables.Techies));
             }
 
-            if (!dictionary.ContainsKey(classId)
-                && (classId == ClassID.CDOTA_BaseNPC_Creep || classId == ClassID.CDOTA_BaseNPC_Creep_Lane
-                    || classId == ClassID.CDOTA_BaseNPC_Creep_Siege))
+            if (!dictionary.ContainsKey(1) && creep != null)
             {
+                handle = 1;
                 dictionary.Add(
-                    classId, 
+                    1, 
                     creep.DamageTaken(this.CurrentRemoteMineDamage, DamageType.Magical, Variables.Techies));
             }
 
-            return !dictionary.ContainsKey(classId) ? 0 : dictionary[classId];
+            return !dictionary.ContainsKey(handle) ? 0 : dictionary[handle];
         }
 
         /// <summary>
@@ -141,7 +144,7 @@
         /// <returns>
         ///     The <see cref="Dictionary" />.
         /// </returns>
-        public Dictionary<ClassID, float> GetSuicideDamage()
+        public Dictionary<uint, float> GetSuicideDamage()
         {
             return this.suicideDamageDictionary;
         }
@@ -160,9 +163,9 @@
         public void OnLoad()
         {
             Events.OnUpdate += this.Game_OnUpdate;
-            this.remoteMineDamageDictionary = new Dictionary<uint, Dictionary<ClassID, float>>();
-            this.suicideDamageDictionary = new Dictionary<ClassID, float>();
-            this.landMineDamageDictionary = new Dictionary<uint, Dictionary<ClassID, float>>();
+            this.remoteMineDamageDictionary = new Dictionary<uint, Dictionary<uint, float>>();
+            this.suicideDamageDictionary = new Dictionary<uint, float>();
+            this.landMineDamageDictionary = new Dictionary<uint, Dictionary<uint, float>>();
             this.CurrentLandMineDamage = Variables.LandMinesAbility.GetAbilityData("damage");
             this.CurrentRemoteMineDamage = Variables.Techies.AghanimState()
                                                ? Variables.RemoteMinesAbility.GetAbilityData("damage_scepter")
@@ -195,47 +198,41 @@
                                                ? Variables.RemoteMinesAbility.GetAbilityData("damage_scepter")
                                                : Variables.RemoteMinesAbility.GetAbilityData("damage");
             this.CurrentLandMineDamage = Variables.LandMinesAbility.GetAbilityData("damage");
-            this.suicideDamageDictionary = Heroes.GetByTeam(Variables.EnemyTeam)
-                .ToDictionary(
-                    hero => hero.ClassID, 
-                    hero =>
-                    hero.DamageTaken(
-                        Variables.SuicideAbility.GetAbilityData("damage"), 
-                        DamageType.Physical, 
-                        Variables.Techies));
+            var heroes = Heroes.GetByTeam(Variables.EnemyTeam).Where(x => x.IsValid && !x.IsIllusion).ToList();
+            this.suicideDamageDictionary = heroes.ToDictionary(
+                hero => hero.Handle, 
+                hero =>
+                hero.DamageTaken(
+                    Variables.SuicideAbility.GetAbilityData("damage"), 
+                    DamageType.Physical, 
+                    Variables.Techies));
             var level = Variables.LandMinesAbility.Level;
             if (!this.landMineDamageDictionary.ContainsKey(level))
             {
-                var damage = Heroes.GetByTeam(Variables.EnemyTeam)
-                    .ToDictionary(
-                        hero => hero.ClassID, 
-                        hero => hero.DamageTaken(this.CurrentLandMineDamage, DamageType.Physical, Variables.Techies));
+                var damage = heroes.ToDictionary(
+                    hero => hero.Handle, 
+                    hero => hero.DamageTaken(this.CurrentLandMineDamage, DamageType.Physical, Variables.Techies));
                 this.landMineDamageDictionary.Add(level, damage);
                 return;
             }
 
-            this.landMineDamageDictionary[level] =
-                Heroes.GetByTeam(Variables.EnemyTeam)
-                    .ToDictionary(
-                        hero => hero.ClassID, 
-                        hero => hero.DamageTaken(this.CurrentLandMineDamage, DamageType.Physical, Variables.Techies));
+            this.landMineDamageDictionary[level] = heroes.ToDictionary(
+                hero => hero.Handle, 
+                hero => hero.DamageTaken(this.CurrentLandMineDamage, DamageType.Physical, Variables.Techies));
             Utils.Sleep(500, "Techies.Damage.Update");
             level = Variables.RemoteMinesAbility.Level;
             if (!this.remoteMineDamageDictionary.ContainsKey(level))
             {
-                var damage = Heroes.GetByTeam(Variables.EnemyTeam)
-                    .ToDictionary(
-                        hero => hero.ClassID, 
-                        hero => hero.DamageTaken(this.CurrentRemoteMineDamage, DamageType.Magical, Variables.Techies));
+                var damage = heroes.ToDictionary(
+                    hero => hero.Handle, 
+                    hero => hero.DamageTaken(this.CurrentRemoteMineDamage, DamageType.Magical, Variables.Techies));
                 this.remoteMineDamageDictionary.Add(level, damage);
                 return;
             }
 
-            this.remoteMineDamageDictionary[level] =
-                Heroes.GetByTeam(Variables.EnemyTeam)
-                    .ToDictionary(
-                        hero => hero.ClassID, 
-                        hero => hero.DamageTaken(this.CurrentRemoteMineDamage, DamageType.Magical, Variables.Techies));
+            this.remoteMineDamageDictionary[level] = heroes.ToDictionary(
+                hero => hero.Handle, 
+                hero => hero.DamageTaken(this.CurrentRemoteMineDamage, DamageType.Magical, Variables.Techies));
         }
 
         #endregion

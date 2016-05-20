@@ -86,7 +86,7 @@
                     return new Tuple<float, IEnumerable<RemoteMine>, Stack>(tempDamage, detonatableMines, nearestStack);
                 }
 
-                tempDamage += Variables.Damage.GetLandMineDamage(landMine.Level, hero.ClassID);
+                tempDamage += Variables.Damage.GetLandMineDamage(landMine.Level, hero.Handle);
             }
 
             foreach (var remoteMine in
@@ -110,12 +110,12 @@
                              Heroes.GetByTeam(Variables.EnemyTeam)
                              .Where(
                                  x =>
-                                 x.IsAlive && x.IsVisible && !x.Equals(hero)
+                                 x.IsAlive && !x.IsIllusion && x.IsVisible && !x.Equals(hero)
                                  && Utils.SleepCheck(x.ClassID + "Techies.AutoDetonate")
                                  && x.Distance2D(nearestStack.Position) < 420)
                          let tempDamage2 =
                              detonatableMines.Sum(
-                                 x => Variables.Damage.GetRemoteMineDamage(x.Level, hero2.ClassID, hero2))
+                                 x => Variables.Damage.GetRemoteMineDamage(x.Level, hero2.Handle, hero2))
                          where tempDamage2 >= hero2.Health
                          select hero2).Count();
                     if (count + 1 >= nearestStack.MinEnemiesKill)
@@ -129,12 +129,12 @@
                     }
 
                     detonatableMines.Add(remoteMine);
-                    tempDamage += Variables.Damage.GetRemoteMineDamage(remoteMine.Level, hero.ClassID, hero);
+                    tempDamage += Variables.Damage.GetRemoteMineDamage(remoteMine.Level, hero.Handle, hero);
                     continue;
                 }
 
                 detonatableMines.Add(remoteMine);
-                tempDamage += Variables.Damage.GetRemoteMineDamage(remoteMine.Level, hero.ClassID, hero);
+                tempDamage += Variables.Damage.GetRemoteMineDamage(remoteMine.Level, hero.Handle, hero);
             }
 
             if (!(tempDamage >= hero.Health))
@@ -157,11 +157,11 @@
                          Heroes.GetByTeam(Variables.EnemyTeam)
                          .Where(
                              x =>
-                             x.IsAlive && x.IsVisible && !x.Equals(hero)
+                             x.IsAlive && !x.IsIllusion && x.IsVisible && !x.Equals(hero)
                              && Utils.SleepCheck(x.ClassID + "Techies.AutoDetonate")
                              && x.Distance2D(nearestStack.Position) < 420)
                      let tempDamage2 =
-                         detonatableMines.Sum(x => Variables.Damage.GetRemoteMineDamage(x.Level, hero2.ClassID, hero2))
+                         detonatableMines.Sum(x => Variables.Damage.GetRemoteMineDamage(x.Level, hero2.Handle, hero2))
                      where tempDamage2 >= hero2.Health
                      select hero2).Count();
                 return count + 1 >= nearestStack.MinEnemiesKill
