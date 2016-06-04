@@ -1,5 +1,7 @@
 ﻿namespace Ability.AbilityMenu
 {
+    using System;
+
     using Ability.AbilityMenu.Menus.BuffsMenu;
     using Ability.AbilityMenu.Menus.NukesMenu;
     using Ability.Casting;
@@ -7,6 +9,7 @@
 
     using Ensage;
     using Ensage.Common.Menu;
+    using Ensage.Common.Objects;
 
     internal class ComboMenu
     {
@@ -22,7 +25,13 @@
             switch (name)
             {
                 case "item_blink":
-                    MyAbilities.OffensiveAbilities.Add("item_blinkblink", ability);
+                    MyAbilities.OffensiveAbilities.Add(ability.StoredName() + "blink", ability);
+                    break;
+                case "antimage_blink":
+                    MyAbilities.OffensiveAbilities.Add(ability.StoredName() + "blink", ability);
+                    break;
+                case "queenofpain_blink":
+                    MyAbilities.OffensiveAbilities.Add(ability.StoredName() + "blink", ability);
                     break;
                 case "invoker_emp":
                     {

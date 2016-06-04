@@ -119,7 +119,7 @@
             if (keyDown)
             {
                 if (Utils.SleepCheck("UpdateTarget")
-                    && (target == null || !target.IsValid || !target.IsAlive || (!target.IsVisible && targetLock == 0)
+                    && (target == null || !target.IsValid || !target.IsAlive || !target.IsVisible
                         || (target.IsVisible && targetLock <= 1)))
                 {
                     var mode =

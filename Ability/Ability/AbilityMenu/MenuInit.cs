@@ -32,7 +32,8 @@
             var myItems = AbilityMain.Me.Inventory.Items;
             var spells = mySpells as Ability[] ?? mySpells.ToArray();
             var myItems1 = myItems as Item[] ?? myItems.ToArray();
-            var blink = myItems1.FirstOrDefault(x => x.Name == "item_blink");
+            var blink = myItems1.FirstOrDefault(x => x.Name == "item_blink")
+                        ?? spells.FirstOrDefault(x => x.Name == "antimage_blink" || x.Name == "queenofpain_blink");
             MyAbilities.SoulRing = myItems1.FirstOrDefault(x => x.Name == "item_soul_ring");
             MyAbilities.ForceStaff = myItems1.FirstOrDefault(x => x.Name == "item_force_staff");
             MyAbilities.ChargeOfDarkness = spells.FirstOrDefault(x => x.Name == "spirit_breaker_charge_of_darkness");

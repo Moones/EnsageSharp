@@ -125,8 +125,8 @@
 
             Game.PrintMessage(
                 "<font face='Tahoma'><font color='#ff6600'>A</font><font color='#ffffff'>BILITY</font><font color='#ffff00'>#</font> loaded - hero <font color='#4488ff'>"
-                + id.ToString().Substring("CDOTA_Unit_Hero_".Length) + "</font>: <font color='" + color + "'>" + msg
-                + "</font></font>", 
+                + (id != ClassID.CDOTA_Unit_Hero_Zuus ? id.ToString().Substring("CDOTA_Unit_Hero_".Length) : "Zeus")
+                + "</font>: <font color='" + color + "'>" + msg + "</font></font>",
                 MessageType.LogMessage);
         }
 

@@ -168,6 +168,11 @@
                             MyAbilities.ForceStaff = item;
                             break;
                         case "item_blink":
+                            if (MyAbilities.Blink != null && MyAbilities.Blink.IsValid)
+                            {
+                                continue;
+                            }
+
                             ComboMenu.AddAbility(item.StoredName(), item);
                             RangeDrawing.AddRange(item);
                             MyAbilities.Blink = item;

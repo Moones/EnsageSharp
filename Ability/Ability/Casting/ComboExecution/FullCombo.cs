@@ -284,9 +284,9 @@
                     if (me.ClassID == ClassID.CDOTA_Unit_Hero_Tinker && toggler.IsEnabled("tinker_rearm")
                         && MyAbilities.TinkerRearm.CanBeCasted() && Utils.SleepCheck("Ability.TinkerRearm")
                         && !MyAbilities.Combo.Any(
-                            x =>
-                            x.Value.CanBeCasted()
-                            || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value))))
+                            x => x.Value.StoredName() != "item_blink" && 
+                            (x.Value.CanBeCasted()
+                            || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value)))))
                     {
                         MyAbilities.TinkerRearm.UseAbility();
                         Utils.Sleep(
