@@ -1,51 +1,89 @@
-﻿namespace SharpScreen
+﻿// <copyright file="Program.cs" company="EnsageSharp">
+//    Copyright (c) 2016 Moones.
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see http://www.gnu.org/licenses/
+// </copyright>
+namespace SharpScreen
 {
     using System;
     using System.Collections.Generic;
+    using System.Security.Permissions;
+    using System.Text;
 
     using Ensage;
+    using Ensage.Common;
 
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+
+    /// <summary>
+    ///     The program.
+    /// </summary>
     internal class Program
     {
-        #region Static Fields
+        #region Fields
 
-        private static bool loaded;
+        /// <summary>
+        ///     The commands dictionary.
+        /// </summary>
+        private readonly Dictionary<string, float> commandsDictionary =
+            JsonConvert.DeserializeObject<Dictionary<string, float>>(
+                JObject.Parse(Encoding.Default.GetString(Resource1.Commands).Substring(3)).ToString());
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Program" /> class.
+        /// </summary>
+        public Program()
+        {
+            Events.OnLoad += this.Events_OnLoad;
+        }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        ///     The main.
+        /// </summary>
+        [PermissionSet(SecurityAction.Assert, Unrestricted = true)]
+        public static void Main()
+        {
+            new Program().Events_OnLoad(null, null);
+        }
 
         #endregion
 
         #region Methods
 
-        private static void Game_OnUpdate(EventArgs args)
+        /// <summary>
+        ///     The events_ on load.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sender.
+        /// </param>
+        /// <param name="e">
+        ///     The e.
+        /// </param>
+        private void Events_OnLoad(object sender, EventArgs e)
         {
-            if (!Game.IsInGame)
-            {
-                loaded = false;
-                return;
-            }
-            if (loaded)
-            {
-                return;
-            }
-            var list = new Dictionary<string, float>
-                           {
-                               { "fog_enable", 0 }, { "fog_override", 1 }, { "fog_end", 3000 },
-                               { "dota_height_fog_scale", 0 }, { "dota_camera_distance", 1700 }, { "cam_showangles", 0 },
-                               { "cl_disable_ragdolls", 0 }, { "dota_camera_fog_end_zoomed_in", 4500 },
-                               { "dota_camera_fog_end_zoomed_out", 6000 }, { "dota_camera_fog_start_zoomed_in", 2000 },
-                               { "dota_camera_fog_start_zoomed_out", 4500 }, { "r_farz", 18000 }
-                           };
-            foreach (var data in list)
+            foreach (var data in this.commandsDictionary)
             {
                 var var = Game.GetConsoleVar(data.Key);
                 var.RemoveFlags(ConVarFlags.Cheat);
                 var.SetValue(data.Value);
             }
-            loaded = true;
-        }
-
-        private static void Main()
-        {
-            Game.OnUpdate += Game_OnUpdate;
         }
 
         #endregion
