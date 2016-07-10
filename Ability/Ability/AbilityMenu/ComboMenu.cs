@@ -42,15 +42,6 @@
                     }
 
                     break;
-                case "invoker_forge_spirit":
-                    {
-                        var menu = BuffMenu.Create("invoker_forge_spirit");
-                        Buffs.BuffsMenuDictionary.Add("invoker_forge_spirit", menu);
-                        Buffs.BuffsMenu.AddSubMenu(menu);
-                        MyAbilities.OffensiveAbilities.Add("invoker_forge_spiritbuff", ability);
-                    }
-
-                    break;
                 case "invoker_chaos_meteor":
                     {
                         var menu = NukeMenu.Create("invoker_chaos_meteor", ability);
