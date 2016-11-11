@@ -17,7 +17,7 @@
 
         public static void AddAbility(string name, Ability ability, bool defaultValue = true)
         {
-            if (name == "antimage_mana_void" || name == "axe_culling_blade")
+            if (name == "antimage_mana_void" || name == "axe_culling_blade" || name == "clinkz_searing_arrows")
             {
                 return;
             }

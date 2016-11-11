@@ -133,7 +133,7 @@
 
                 var selectedCombo = MainMenu.ComboKeysMenu.Item("abilityComboType").GetValue<StringList>().SelectedIndex;
                 var combo = false;
-                if (!invisible && target != null && Utils.SleepCheck("Orbwalk.Attack"))
+                if (!invisible && target != null && Orbwalking.CanCancelAnimation() && Utils.SleepCheck("Orbwalk.Attack"))
                 {
                     combo = FullCombo.Execute(
                         target, 
