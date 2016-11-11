@@ -166,16 +166,18 @@
                 cd = Orbwalking.AttackOnCooldown(creepTarget);
             }
 
-            if (target != null && target.IsValid && !Game.IsKeyDown(Menu.Item("farmKey").GetValue<KeyBind>().Key))
+            var isFarmKeyDown = Game.IsKeyDown(Menu.Item("farmKey").GetValue<KeyBind>().Key);
+            var allUnitsKeyDown = Game.IsKeyDown(Menu.Item("allUnitsChaseKey").GetValue<KeyBind>().Key);
+            if (target != null && target.IsValid && !isFarmKeyDown)
             {
                 cd = Orbwalking.AttackOnCooldown(target);
             }
 
-            if (canCancel || !cd)
+            if (canCancel)
             {
                 if (Utils.SleepCheck("Orbwalker.Update.Target"))
                 {
-                    if (Game.IsKeyDown(Menu.Item("allUnitsChaseKey").GetValue<KeyBind>().Key))
+                    if (allUnitsKeyDown)
                     {
                         target = me.ClosestToMouseTarget(500);
                     }
@@ -183,7 +185,7 @@
                     {
                         target = me.ClosestToMouseTarget(128);
                     }
-                    else if (target == null)
+                    else
                     {
                         var bestAa = me.BestAATarget();
                         if (bestAa != null)
@@ -194,17 +196,28 @@
 
                     Utils.Sleep(500, "Orbwalker.Update.Target");
                 }
+            }
 
-                if (!Game.IsChatOpen && Game.IsKeyDown(Menu.Item("farmKey").GetValue<KeyBind>().Key)
-                    && (creepTarget == null || !creepTarget.IsValid || !creepTarget.IsAlive || !creepTarget.IsVisible
-                        || Utils.SleepCheck("Orbwalker.Update.Creep")))
-                {
-                    creepTarget =
-                        Creeps.All.Where(
-                            x => x.IsValid && x.Team != me.Team && x.Distance2D(me) < me.GetAttackRange() + 150)
-                            .MinOrDefault(x => x.Health + x.Distance2D(me));
-                    Utils.Sleep(200, "Orbwalker.Update.Creep");
-                }
+            if (canCancel && creepTarget != null
+                && (!creepTarget.IsValid || !creepTarget.IsSpawned || creepTarget.Health <= 0 || !creepTarget.IsAlive
+                    || !creepTarget.IsVisible))
+            {
+                creepTarget = null;
+            }
+
+            if (Utils.SleepCheck("Orbwalker.Update.Creep") && !Game.IsChatOpen
+                 && isFarmKeyDown
+                 && (canCancel || creepTarget == null || !creepTarget.IsValid || !creepTarget.IsSpawned
+                     || creepTarget.Health <= 0 || !creepTarget.IsAlive || !creepTarget.IsVisible))
+            {
+                creepTarget =
+                    ObjectManager.GetEntitiesParallel<Creep>()
+                        .Where(
+                            x =>
+                            x.IsSpawned && x.IsValid && x.IsAlive && x.Team != me.Team
+                            && x.Distance2D(me) < me.GetAttackRange() + 150)
+                        .MinOrDefault(x => x.Health + x.Distance2D(me) * 1.5);
+                Utils.Sleep(230, "Orbwalker.Update.Creep");
             }
 
             if (Game.IsChatOpen)
@@ -212,7 +225,7 @@
                 return;
             }
 
-            if (Game.IsKeyDown(Menu.Item("allUnitsChaseKey").GetValue<KeyBind>().Key))
+            if (allUnitsKeyDown)
             {
                 Orbwalking.Orbwalk(target, attackmodifiers: true);
                 foreach (var unit in controllableUnits.Units.Where(x => !x.Equals(me) && x.IsValid && x.IsAlive))
@@ -238,7 +251,7 @@
                 return;
             }
 
-            if (Game.IsKeyDown(Menu.Item("farmKey").GetValue<KeyBind>().Key))
+            if (isFarmKeyDown)
             {
                 Orbwalking.Orbwalk(creepTarget);
                 return;
