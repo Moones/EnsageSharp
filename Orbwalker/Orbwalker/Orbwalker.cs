@@ -160,18 +160,9 @@
             }
 
             var canCancel = Orbwalking.CanCancelAnimation();
-            var cd = false;
-            if (creepTarget != null && creepTarget.IsValid)
-            {
-                cd = Orbwalking.AttackOnCooldown(creepTarget);
-            }
 
             var isFarmKeyDown = Game.IsKeyDown(Menu.Item("farmKey").GetValue<KeyBind>().Key);
             var allUnitsKeyDown = Game.IsKeyDown(Menu.Item("allUnitsChaseKey").GetValue<KeyBind>().Key);
-            if (target != null && target.IsValid && !isFarmKeyDown)
-            {
-                cd = Orbwalking.AttackOnCooldown(target);
-            }
 
             if (canCancel)
             {
