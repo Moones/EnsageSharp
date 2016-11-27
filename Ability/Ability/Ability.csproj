@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{604F6C7E-EBA1-43D3-96A6-43A2C320261C}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ability</RootNamespace>
+    <AssemblyName>Ability</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <OutputPath>bin\Release</OutputPath>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ensage">
+      <HintPath>C:\NvdKTVgtv\References\Ensage.dll</HintPath>
+    </Reference>
+    <Reference Include="Ensage.Common">
+      <HintPath>C:\NvdKTVgtv\References\Ensage.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>C:\NvdKTVgtv\References\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D9">
+      <HintPath>C:\NvdKTVgtv\References\SharpDX.Direct3D9.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AbilityEvents\OnClose.cs" />
+    <Compile Include="AbilityEvents\OnLoad.cs" />
+    <Compile Include="AbilityMain.cs" />
+    <Compile Include="AbilityMenu\ComboMenu.cs" />
+    <Compile Include="AbilityMenu\Items\Sliders.cs" />
+    <Compile Include="AbilityMenu\Items\Togglers.cs" />
+    <Compile Include="AbilityMenu\MenuInit.cs" />
+    <Compile Include="AbilityMenu\Menus\BuffsMenu\BuffMenu.cs" />
+    <Compile Include="AbilityMenu\Menus\BuffsMenu\Buffs.cs" />
+    <Compile Include="AbilityMenu\Menus\DisablesMenu\DisableMenu.cs" />
+    <Compile Include="AbilityMenu\Menus\DisablesMenu\Disables.cs" />
+    <Compile Include="AbilityMenu\Menus\HarrasesMenu\Harrases.cs" />
+    <Compile Include="AbilityMenu\Menus\HarrasesMenu\HarrasMenu.cs" />
+    <Compile Include="AbilityMenu\MainMenu.cs" />
+    <Compile Include="AbilityMenu\Menus\HealsMenu\HealMenu.cs" />
+    <Compile Include="AbilityMenu\Menus\HealsMenu\Heals.cs" />
+    <Compile Include="AbilityMenu\Menus\NukesMenu\NukeMenu.cs" />
+    <Compile Include="AbilityMenu\Menus\NukesMenu\Nukes.cs" />
+    <Compile Include="AbilityMenu\Menus\ShieldsMenu\Shields.cs" />
+    <Compile Include="AbilityMenu\Menus\ShieldsMenu\ShieldMenu.cs" />
+    <Compile Include="AbilityMenu\Menus\SilencesMenu\SilenceMenu.cs" />
+    <Compile Include="AbilityMenu\Menus\SilencesMenu\Silences.cs" />
+    <Compile Include="AbilityMenu\Menus\SlowsMenu\SlowMenu.cs" />
+    <Compile Include="AbilityMenu\Menus\SlowsMenu\Slows.cs" />
+    <Compile Include="AbilityMenu\Menus\SpecialsMenu\SpecialMenu.cs" />
+    <Compile Include="AbilityMenu\Menus\SpecialsMenu\Specials.cs" />
+    <Compile Include="AbilityMenu\Update.cs" />
+    <Compile Include="AutoAttack\ManageAutoAttack.cs" />
+    <Compile Include="Casting\CastingChecks.cs" />
+    <Compile Include="Casting\ComboExecution\AutoUsage.cs" />
+    <Compile Include="Casting\ComboExecution\Buff.cs" />
+    <Compile Include="Casting\ComboExecution\Disable.cs" />
+    <Compile Include="Casting\ComboExecution\FullCombo.cs" />
+    <Compile Include="Casting\ComboExecution\Harras.cs" />
+    <Compile Include="Casting\ComboExecution\Heal.cs" />
+    <Compile Include="Casting\ComboExecution\Killsteal.cs" />
+    <Compile Include="Casting\ComboExecution\Nuke.cs" />
+    <Compile Include="Casting\ComboExecution\Shield.cs" />
+    <Compile Include="Casting\ComboExecution\Silence.cs" />
+    <Compile Include="Casting\ComboExecution\Slow.cs" />
+    <Compile Include="Casting\ComboExecution\SoulRing.cs" />
+    <Compile Include="Casting\ComboExecution\Special.cs" />
+    <Compile Include="Casting\ComboOrder.cs" />
+    <Compile Include="Casting\Invoker.cs" />
+    <Compile Include="Casting\Rubick.cs" />
+    <Compile Include="DamageCalculation\Dictionaries.cs" />
+    <Compile Include="DamageCalculation\MyDamage.cs" />
+    <Compile Include="DamageCalculation\Process.cs" />
+    <Compile Include="AbilityEvents\Manage.cs" />
+    <Compile Include="DamageCalculation\DamageAmps.cs" />
+    <Compile Include="Drawings\AbilityOverlay.cs" />
+    <Compile Include="Drawings\DamageIndicator.cs" />
+    <Compile Include="Drawings\GankDamage.cs" />
+    <Compile Include="Drawings\HpBar.cs" />
+    <Compile Include="Drawings\RangeDrawing.cs" />
+    <Compile Include="Extensions\UnitExtensions.cs" />
+    <Compile Include="ObjectManager\Base.cs" />
+    <Compile Include="ObjectManager\Heroes\AllyHeroes.cs" />
+    <Compile Include="ObjectManager\Heroes\EnemyHeroes.cs" />
+    <Compile Include="ObjectManager\MyHeroInfo.cs" />
+    <Compile Include="ObjectManager\MyAbilities.cs" />
+    <Compile Include="ObjectManager\NameManager.cs" />
+    <Compile Include="ObjectManager\Players\AllyPlayers.cs" />
+    <Compile Include="ObjectManager\Players\EnemyPlayers.cs" />
+    <Compile Include="ObjectManager\Towers\AllyTowers.cs" />
+    <Compile Include="ObjectManager\Towers\EnemyTowers.cs" />
+    <Compile Include="OnUpdate\OnUpdateChecks.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\Sleeper.cs" />
+    <Compile Include="Variables.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
