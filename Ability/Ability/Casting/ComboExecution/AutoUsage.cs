@@ -109,7 +109,7 @@
                 var name = NameManager.Name(ability);
                 var category = data.Key.Substring(name.Length);
                 var handleString = ability.Handle.ToString();
-                if (category != "buff" && hero.IsMagicImmune() && ability.ImmunityType != (ImmunityType)3)
+                if (category != "buff" && hero.IsMagicImmune() && ability.SpellPierceImmunityType != SpellPierceImmunityType.EnemiesYes)
                 {
                     continue;
                 }

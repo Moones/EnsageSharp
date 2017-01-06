@@ -65,7 +65,7 @@
                     continue;
                 }
 
-                if (hero.IsMagicImmune() && ability.ImmunityType != (ImmunityType)1)
+                if (hero.IsMagicImmune() && ability.SpellPierceImmunityType != SpellPierceImmunityType.AlliesYes)
                 {
                     continue;
                 }
@@ -387,7 +387,7 @@
                             return true;
                         }
 
-                        if (category != "buff" && target.IsMagicImmune() && ability.ImmunityType != (ImmunityType)3)
+                        if (category != "buff" && target.IsMagicImmune() && ability.SpellPierceImmunityType != SpellPierceImmunityType.EnemiesYes)
                         {
                             continue;
                         }
