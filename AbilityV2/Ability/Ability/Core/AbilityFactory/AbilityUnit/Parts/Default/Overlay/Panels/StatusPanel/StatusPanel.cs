@@ -107,7 +107,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
         /// </summary>
         public Color BackgroundColor { get; set; }
 
-        public override int DefaultHealthBarPosition { get; } = (int)PanelDirection.Left;
+        public override int DefaultHealthBarPosition { get; } = 0;
 
         public override string Description { get; }
 
