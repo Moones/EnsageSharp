@@ -1,0 +1,691 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7B4214D2-7EE4-4A71-BE9A-4B1AC582081B}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ability</RootNamespace>
+    <AssemblyName>Ability</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Ability.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ensage">
+      <HintPath>C:\NvdKTVgtv\References\Ensage.dll</HintPath>
+    </Reference>
+    <Reference Include="Ensage.Common, Version=1.2.5.7, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\NvdKTVgtv\References\Ensage.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="EnsageSharp.Sandbox">
+      <HintPath>C:\NvdKTVgtv\System\EnsageSharp.Sandbox.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\NvdKTVgtv\References\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PlaySharp.Toolkit">
+      <HintPath>C:\NvdKTVgtv\References\PlaySharp.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>C:\NvdKTVgtv\References\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D9, Version=2.6.3.0, Culture=neutral, PublicKeyToken=345b829e6e492981">
+      <HintPath>C:\NvdKTVgtv\References\SharpDX.Direct3D9.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.XInput">
+      <HintPath>C:\NvdKTVgtv\References\SharpDX.XInput.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AbilityBootstrapper.cs" />
+    <Compile Include="Core\AbilityData\AbilityDataProvider.cs" />
+    <Compile Include="Core\AbilityData\ParticleEffectMoreInfo.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\Types\DotaBasePositionTracker.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\Types\EntityOwnerPositionTracker.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\HeroMenuBase.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\InvokerUnitMenu.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\PositionTracker\InvokerPositionTracker.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\PhantomAssassin\PhantomAssassinUnitComposer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\ShadowDemon\ShadowDemonUnitComposer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Weaver\WeaverUnitComposer.cs" />
+    <Compile Include="Core\AbilityFactory\Metadata\AbilityUnitMetadataAttribute.cs" />
+    <Compile Include="Core\AbilityFactory\Metadata\IAbilityUnitMetadata.cs" />
+    <Compile Include="Core\ActionQueue\AbilityAction\AbilityAction.cs" />
+    <Compile Include="Core\ActionQueue\AbilityAction\AbilityActionType.cs" />
+    <Compile Include="Core\ActionQueue\AbilityAction\IAbilityAction.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Data\AbilityCast.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Data\AbilityProjectile.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\CastingFunctions\ISkillCastingFunction.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\Charges\Charges.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\Charges\ICharges.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillInteraction\ISkillInteraction.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillLevel\SkillLevel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillOverlay\ISkillOverlayProvider.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillOverlay\SkillOverlayProvider.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillOverlay\Types\CastPointSpellOverlay.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillOverlay\Types\ChargesItemOverlay.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillOverlay\Types\ItemOverlay.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillOverlay\Types\SpellOverlay.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\TargetFind\ISkillTargetFind.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\Cooldown\Cooldown.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\Cooldown\ICooldown.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\DamageCalculator\ISkillDamageCalculator.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillCastData\ISkillCastData.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillCastData\SkillCastData.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillComposer\DefaultSkillComposer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillComposer\IAbilitySkillComposer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillDataReceiver\SkillDataReceiver.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillDataReceiver\ISkillDataReceiver.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillControl\ISkillControl.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillDrawer\ISkillDrawer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillAreaOfEffect\ISkillAreaOfEffect.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillLevel\ISkillLevel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillOverlay\ISkillOverlay.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillOverlay\SkillOverlay.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillUpdater\ISkillUpdater.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\HeroParts\Invoker\CastData\InvokerSkillCastData.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\HeroParts\Invoker\InvokerSkillComposer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\HeroParts\Invoker\Level\InvokerSkillLevel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\HeroParts\Invoker\Overlay\InvokerSkillOverlay.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\HeroParts\Invoker\Overlay\InvokerSkillOverlayProvider.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\IAbilitySkillPart.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityTeam\AbilityTeam.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityTeam\IAbilityTeam.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityTeam\Parts\IAbilityTeamPart.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityTeam\Parts\UnitManager\IUnitManager.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityTeam\Parts\UnitManager\UnitManager.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Composer\AbilityUnitComposer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Composer\IAbilityUnitComposer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Drawer\IUnitDrawer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Drawer\UnitDrawer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\PositionTrackerMenu.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\PositionTracker.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\IPositionTracker.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Health\Health.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Health\IHealth.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Health\IncomingDamage.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Level\IUnitLevel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Level\UnitLevel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Mana\IMana.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Mana\Mana.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Modifiers\IModifiers.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Modifiers\ModifierAdd.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Modifiers\ModifierRemove.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Modifiers\Modifiers.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Bars\HealthBar.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Bars\IBar.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Bars\ManaBar.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Bars\PanelField.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\IOverlayEntryProvider.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\IUnitOverlayElement.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\IUnitOverlay.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\OverlayMenu.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Panels\ObjectPanel\ObjectPanelMenu.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Panels\ObjectPanel\IObjectPanel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Panels\ObjectPanel\ObjectPanel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Panels\ObjectPanel\PanelObjectManager.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Panels\PanelBase\IPanelBase.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Panels\PanelBase\IPanelMenu.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Panels\PanelBase\PanelBase.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Panels\SkillPanel\ISkillPanel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Panels\SkillPanel\ItemPanel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Panels\SkillPanel\SkillPanel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Panels\SkillPanel\SkillPanelObject.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Panels\StatusPanel\IStatusPanel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Panels\StatusPanel\StatusPanel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\UnitOverlay.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\UnitOverlayBase.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\OverlayEntryProvider.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Position\IPosition.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Position\Position.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\ScreenInfo\IScreenInfo.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\ScreenInfo\ScreenInfo.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\SkillBook\ISkillBook.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\SkillBook\SkillAdd.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\SkillBook\SkillBook.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\SkillBook\SkillRemove.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\UnitControl\IUnitControl.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\UnitDataReceiver\IUnitDataReceiver.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\UnitDataReceiver\UnitDataReceiver.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Interaction\IUnitInteraction.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Visibility\CameOutOfFog.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Visibility\IVisibility.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Visibility\Visibility.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\InvokerUnitComposer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\Modifiers\InvokerModifiers.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\Modifiers\IOrb.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\Modifiers\OrbsUpdate.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\Modifiers\Orbs\Exort.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\Modifiers\Orbs\Quas.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\Modifiers\Orbs\Wex.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\Overlay\InvokerSkillPanel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\Overlay\InvokerUnitOverlay.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\SkillBook\InvokerSkillBook.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\LocalHero\ScreenPosition\LocalHeroScreenInfo.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\IAbilityUnitPart.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Types\LocalHero.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Data\AbilityPhase.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Data\AbilityParticle.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Data\SkillDynamic.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Data\SkillJson.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Types\IControllableSkill.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Types\IUncontrollableSkill.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\AbilitySkill.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\IAbilitySkill.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Types\ControllableSkill.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Types\UncontrollableSkill.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Data\DamageByLocalPlayer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Data\ObstacleIntersection.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Types\IControllableUnit.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Types\IUncontrollableUnit.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Types\Ally.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Types\ControllableUnit.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Types\Enemy.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Types\ControllableCreep.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Types\ControllableHero.cs" />
+    <Compile Include="Core\AbilityFactory\IAbilityFactory.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\IAbilityUnit.cs" />
+    <Compile Include="Core\AbilityFactory\Metadata\AbilitySkillMetadataAttribute.cs" />
+    <Compile Include="Core\AbilityFactory\Metadata\IAbilitySkillMetadata.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Types\ControllableMeepo.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Types\UncontrollableUnit.cs" />
+    <Compile Include="Core\AbilityFactory\Utilities\DataObserver.cs" />
+    <Compile Include="Core\AbilityFactory\Utilities\LevelUpdater.cs" />
+    <Compile Include="Core\AbilityFactory\Utilities\DataProvider.cs" />
+    <Compile Include="Core\AbilityFactory\Utilities\Notifier.cs" />
+    <Compile Include="Core\Constants.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityFactory.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\AbilityUnit.cs" />
+    <Compile Include="Core\IAbilityService.cs" />
+    <Compile Include="Core\AbilityManager\UI\AbilityManagerUserInterface.cs" />
+    <Compile Include="Core\AbilityManager\UI\Elements\Body\Bodies\IUnitOverlayEntry.cs" />
+    <Compile Include="Core\AbilityManager\UI\Elements\Body\Bodies\TeamEntry.cs" />
+    <Compile Include="Core\AbilityManager\UI\Elements\Body\Bodies\UnitOverlayEntry.cs" />
+    <Compile Include="Core\AbilityManager\UI\Elements\Body\Bodies\Units.cs" />
+    <Compile Include="Core\AbilityManager\UI\Elements\Body\Body.cs" />
+    <Compile Include="Core\AbilityManager\UI\Elements\Button\Button.cs" />
+    <Compile Include="Core\AbilityManager\UI\Elements\IUserInterfaceElement.cs" />
+    <Compile Include="Core\AbilityManager\UI\Elements\TopPanel\TopPanel.cs" />
+    <Compile Include="Core\AbilityManager\UI\Elements\Window\Window.cs" />
+    <Compile Include="Core\MenuManager\GetValue\GetValue.cs" />
+    <Compile Include="Core\MenuManager\GetValue\ValueObserver.cs" />
+    <Compile Include="Core\MenuManager\IMainMenuManager.cs" />
+    <Compile Include="Core\MenuManager\MainMenuManager.cs" />
+    <Compile Include="Core\MenuManager\MenuItems\ObservableMenuItem.cs" />
+    <Compile Include="Core\MenuManager\Menus\MainMenu.cs" />
+    <Compile Include="Core\MenuManager\Menus\SettingsMenu.cs" />
+    <Compile Include="Core\MenuManager\Menus\Submenus\UnitMenu\IHeroMenu.cs" />
+    <Compile Include="Core\MenuManager\Menus\Submenus\UnitMenu\IUnitMenu.cs" />
+    <Compile Include="Core\AbilityManager\AbilityManager.cs" />
+    <Compile Include="Core\AbilityManager\IAbilityManager.cs" />
+    <Compile Include="Core\AbilityManager\SkillEventArgs.cs" />
+    <Compile Include="Core\AbilityManager\SkillEventHandler.cs" />
+    <Compile Include="Core\AbilityManager\UnitEventArgs.cs" />
+    <Compile Include="Core\AbilityManager\UnitEventHandler.cs" />
+    <Compile Include="Utilities\Unsubscriber.cs" />
+    <Compile Include="Core\GlobalVariables.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\IFilter.cs" />
+    <Compile Include="Utilities\JsonFactory.cs" />
+    <Compile Include="Utilities\Logging.cs" />
+    <Compile Include="Utilities\LogLevel.cs" />
+    <Compile Include="Utilities\Number.cs" />
+    <Compile Include="Utilities\Pathfinding.cs" />
+    <Compile Include="Utilities\Render.cs" />
+    <Compile Include="Utilities\Resources\ResourceFactory.cs" />
+    <Compile Include="Utilities\Resources\ResourceImportAttribute.cs" />
+    <Compile Include="Utilities\Resources\ResourceLoader.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\AbilityFactory\AbilitySkill\Parts\ItemParts\" />
+    <Folder Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Leshrac\" />
+    <Folder Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Lina\" />
+    <Folder Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Puck\" />
+    <Folder Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\SkywrathMage\" />
+    <Folder Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\StormSpirit\" />
+    <Folder Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\TemplarAssassin\" />
+    <Folder Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\VengefulSpirit\" />
+    <Folder Include="Core\MenuManager\Menus\Submenus\ServiceMenu\" />
+    <Folder Include="Modules\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\npc_dota_hero_abaddon_png.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\abaddon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\abyssal_underlord.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\alchemist.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\ancient_apparition.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\antimage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\arc_warden.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\axe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\bane.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\batrider.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\beastmaster.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\bloodseeker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\bm_earth.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\bm_fire.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\bm_storm.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\bounty_hunter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\brewmaster.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\bristleback.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\broodmother.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\centaur.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\chaos_knight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\chen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\clinkz.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\crystal_maiden.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\dark_seer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\dazzle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\death_prophet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\disruptor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\doom_bringer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\dragon_knight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\drow_ranger.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\earth_spirit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\earthshaker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\elder_titan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\ember_spirit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\enchantress.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\enigma.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\faceless_void.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\furion.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\gyrocopter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\huskar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\invoker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\jakiro.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\juggernaut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\keeper_of_the_light.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\kunkka.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\legion_commander.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\leshrac.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\lich.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\life_stealer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\lina.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\lion.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\lone_druid.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\luna.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\lycan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\magnataur.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\medusa.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\meepo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\mirana.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\monkey_king.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\morphling.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\naga_siren.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\necrolyte.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\nevermore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\night_stalker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\nyx_assassin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\obsidian_destroyer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\ogre_magi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\omniknight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\oracle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\phantom_assassin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\phantom_lancer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\phoenix.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\puck.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\pudge.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\pugna.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\queenofpain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\rattletrap.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\razor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\riki.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\rubick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\sand_king.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\shadow_demon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\shadow_shaman.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\shredder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\silencer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\skeleton_king.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\skywrath_mage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\slardar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\slark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\sniper.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\spectre.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\spirit_breaker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\storm_spirit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\sven.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\techies.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\templar_assassin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\terrorblade.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\tidehunter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\tinker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\tiny.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\treant.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\troll_warlord.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\tusk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\undying.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\ursa.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\vengefulspirit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\venomancer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\viper.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\visage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\warlock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\weaver.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\windrunner.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\winter_wyvern.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\wisp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\witch_doctor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\HeroIcons\Mini\zuus.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
