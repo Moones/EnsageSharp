@@ -46,7 +46,7 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCompo
             this.AssignPart<ICooldown>(
                 skill =>
                     {
-                        if (skill.SourceAbility.GetCooldown(2) < 0)
+                        if (skill.SourceAbility.GetCooldown(2) <= 0)
                         {
                             return null;
                         }
