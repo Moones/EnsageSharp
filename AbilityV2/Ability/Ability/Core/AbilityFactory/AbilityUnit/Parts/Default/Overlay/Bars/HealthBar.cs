@@ -64,7 +64,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         private Vector2 healthLostSize;
 
         /// <summary>The lines.</summary>
-        private Dictionary<DrawVerticalLine, Func<Vector2>> lines = new Dictionary<DrawVerticalLine, Func<Vector2>>();
+        //private Dictionary<DrawVerticalLine, Func<Vector2>> lines = new Dictionary<DrawVerticalLine, Func<Vector2>>();
 
         /// <summary>
         ///     The pos.

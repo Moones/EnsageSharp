@@ -164,7 +164,7 @@ namespace Ability
             {
                 return;
             }
-
+            
             this.initialized = true;
             GlobalVariables.LocalHero = ObjectManager.LocalHero;
             GlobalVariables.EnemyTeam = UnitExtensions.GetEnemyTeam(GlobalVariables.LocalHero);
