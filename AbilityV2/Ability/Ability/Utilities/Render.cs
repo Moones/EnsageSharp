@@ -69,7 +69,7 @@ namespace Ability.Utilities
         static Render()
         {
             Drawing.OnEndScene += Drawing_OnEndScene;
-            Drawing.OnDraw += Drawing_OnDraw;
+            //Drawing.OnDraw += Drawing_OnDraw;
             var thread = new Thread(PrepareObjects);
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
@@ -1801,16 +1801,31 @@ namespace Ability.Utilities
 
                 this._texture = Texture.FromMemory(
                     Device,
-                    (byte[])new ImageConverter().ConvertTo(newBitmap, typeof(byte[])),
-                    this.Width,
-                    this.Height,
-                    0,
-                    Usage.None,
-                    Format.A1,
-                    Pool.Managed,
-                    Filter.Default,
-                    Filter.Default,
-                    0);
+                    (byte[])new ImageConverter().ConvertTo(newBitmap, typeof(byte[])));
+                //this._texture = Texture.FromMemory(
+                //    Device,
+                //    (byte[])new ImageConverter().ConvertTo(newBitmap, typeof(byte[])),
+                //    this.Width,
+                //    this.Height,
+                //    0,
+                //    Usage.None,
+                //    Format.A1,
+                //    Pool.Managed,
+                //    Filter.Default,
+                //    Filter.Default,
+                //    0);
+                //this._texture = Texture.FromMemory(
+                //    Device,
+                //    (byte[])new ImageConverter().ConvertTo(newBitmap, typeof(byte[])),
+                //    this.Width,
+                //    this.Height,
+                //    0,
+                //    Usage.AutoGenerateMipMap,
+                //    Format.Unknown,
+                //    Pool.Managed,
+                //    Filter.None,
+                //    Filter.None,
+                //    0);
 
                 if (this._originalTexture == null)
                 {

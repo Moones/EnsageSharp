@@ -39,7 +39,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer
             this.Icon = unit.SourceUnit is Hero ? Textures.GetHeroRoundTexture(this.Unit.Name) : null;
             this.MinimapIcon = unit.SourceUnit is Hero ? Textures.GetTexture("ensage_ui/miniheroes/" + name) : null;
             this.WorldIconSize = new Vector2(HUDInfo.GetHpBarSizeY() * 6);
-            this.MinimapIconSize = new Vector2(HUDInfo.GetHpBarSizeY() * 2);
+            this.MinimapIconSize = new Vector2((float)(HUDInfo.GetHpBarSizeY() * 1.5));
 
             var icon = (Bitmap)Resources.ResourceManager.GetObject(name);
             if (icon == null)
