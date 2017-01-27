@@ -21,6 +21,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.P
     using Ability.Core.MenuManager.MenuItems;
     using Ability.Core.MenuManager.Menus.Submenus.UnitMenu;
 
+    using Ensage.Common;
     using Ensage.Common.Menu;
 
     using SharpDX;
@@ -156,7 +157,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.P
         public virtual void ConnectSizeIncreaseToMenu()
         {
             this.Menu.SizeIncreaseMenuItem.Provider.Subscribe(
-                new DataObserver<Slider>(slider => { this.SizeIncrease = (float)slider.Value / 20; }));
+                new DataObserver<Slider>(
+                    slider => { this.SizeIncrease = (float)((slider.Value * (1080 / HUDInfo.ScreenSizeY())) / 20); }));
         }
 
         /// <summary>
@@ -244,7 +246,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.P
         {
             this.Menu.SizeIncreaseMenuItem =
                 new ObservableMenuItem<Slider>(this.MenuName + nameof(this.Menu.SizeIncreaseMenuItem), "Size");
-            this.Menu.SizeIncreaseMenuItem.SetValue(new Slider(15, 7, 21));
+            this.Menu.SizeIncreaseMenuItem.SetValue(new Slider(15, 7, 32));
         }
 
         /// <summary>

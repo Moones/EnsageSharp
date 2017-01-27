@@ -733,7 +733,7 @@ namespace Ability.Core.AbilityManager
                     if (skill.AbilityType != AbilityType.Attribute
                         && !abilityUnit.SkillBook.AllSkills.ContainsKey(skill.Handle))
                     {
-                        var abilitySkill = this.AbilityFactory.Value.CreateNewControllableSkill(skill, abilityUnit);
+                        var abilitySkill = this.AbilityFactory.Value.CreateNewSkill(skill, abilityUnit);
 
                         // if (abilitySkill.SkillControl.SkillCastingFunction == null)
                         // {
@@ -748,6 +748,18 @@ namespace Ability.Core.AbilityManager
             catch (EntityNotFoundException)
             {
                 Console.WriteLine("invalid spells for unit: " + unit.Name);
+            }
+
+            foreach (var physicalItem in ObjectManager.GetEntities<PhysicalItem>())
+            {
+                var owner = physicalItem.Item?.OldOwner ?? physicalItem.Item?.Owner;
+                if (owner != null && owner.Handle.Equals(unit.Handle)
+                    && !physicalItem.Item.IsRecipe && abilityUnit.SkillBook.IsValid(physicalItem.Item))
+                {
+                    var abilitySkill = this.AbilityFactory.Value.CreateNewSkill(physicalItem.Item, abilityUnit);
+                    abilityUnit.SkillBook.AddSkill(abilitySkill);
+                    this.OnSkillAdded(new SkillEventArgs { AbilitySkill = abilitySkill });
+                }
             }
 
             if (unit.Inventory == null)
@@ -767,7 +779,7 @@ namespace Ability.Core.AbilityManager
 
                     // if (item.CommonProperties() != null)
                     // {
-                    var abilitySkill = this.AbilityFactory.Value.CreateNewControllableSkill(item, abilityUnit);
+                    var abilitySkill = this.AbilityFactory.Value.CreateNewSkill(item, abilityUnit);
 
                     // if (abilitySkill.SkillControl.SkillCastingFunction == null)
                     // {
@@ -793,7 +805,7 @@ namespace Ability.Core.AbilityManager
 
                     // if (item.CommonProperties() != null)
                     // {
-                    var abilitySkill = this.AbilityFactory.Value.CreateNewControllableSkill(item, abilityUnit);
+                    var abilitySkill = this.AbilityFactory.Value.CreateNewSkill(item, abilityUnit);
 
                     // if (abilitySkill.SkillControl.SkillCastingFunction == null)
                     // {
@@ -819,7 +831,7 @@ namespace Ability.Core.AbilityManager
 
                     // if (item.CommonProperties() != null)
                     // {
-                    var abilitySkill = this.AbilityFactory.Value.CreateNewControllableSkill(item, abilityUnit);
+                    var abilitySkill = this.AbilityFactory.Value.CreateNewSkill(item, abilityUnit);
 
                     // if (abilitySkill.SkillControl.SkillCastingFunction == null)
                     // {

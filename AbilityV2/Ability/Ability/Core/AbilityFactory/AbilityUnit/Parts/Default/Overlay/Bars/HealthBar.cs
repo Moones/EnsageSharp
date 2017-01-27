@@ -15,6 +15,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
 
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health;
     using Ability.Core.MenuManager.Menus.Submenus.UnitMenu;
@@ -64,7 +65,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         private Vector2 healthLostSize;
 
         /// <summary>The lines.</summary>
-        //private Dictionary<DrawVerticalLine, Func<Vector2>> lines = new Dictionary<DrawVerticalLine, Func<Vector2>>();
+        private Dictionary<float, HealthSeparator> lines = new Dictionary<float, HealthSeparator>();
 
         /// <summary>
         ///     The pos.
@@ -76,6 +77,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         /// </summary>
         private Vector2 size;
 
+        private float lastSeparatedValue;
+
         #endregion
 
         #region Constructors and Destructors
@@ -85,6 +88,42 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
             this.Unit = unit;
             this.Unit.Health.Subscribe(this);
             this.Size = size;
+            this.lastSeparatedValue = 0;
+            this.UpdateSeparators();
+            this.Unit.Health.MaximumHealthChange.Subscribe(this.UpdateSeparators);
+        }
+
+        /// <summary>The update separators.</summary>
+        private void UpdateSeparators()
+        {
+            foreach (var healthSeparator in this.lines)
+            {
+                healthSeparator.Value.MaxHealthChange();
+            }
+
+            if (this.lastSeparatedValue > this.Unit.Health.Maximum)
+            {
+                var count = 0f;
+                for (var i = this.lastSeparatedValue; i > this.Unit.Health.Maximum; i -= 500)
+                {
+                    this.lines.Remove(i);
+                    this.lastSeparatedValue = i;
+                    count++;
+                }
+                
+                this.lastSeparatedValue -= 500;
+            }
+            else if (this.lastSeparatedValue + 500 < this.Unit.Health.Maximum)
+            {
+                var count = 0f;
+                this.lastSeparatedValue += 500;
+                for (var i = this.lastSeparatedValue; i < this.Unit.Health.Maximum; i += 500)
+                {
+                    this.lines.Add(i, new HealthSeparator(i, this));
+                    this.lastSeparatedValue = i;
+                    count++;
+                }
+            }
         }
 
         #endregion
@@ -158,6 +197,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
             {
                 this.pos = value;
                 this.barPos = this.pos + new Vector2(this.size.X / 40);
+                foreach (var healthSeparator in this.lines)
+                {
+                    healthSeparator.Value.HealthBarPositionChange();
+                }
             }
         }
 
@@ -238,6 +281,16 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
                 var color = new Color(255, 255, 255, 255 - (int)this.healthLostTransition.GetValue());
                 Drawing.DrawRect(this.barPos + new Vector2(this.fillSize.X, 0), this.healthLostSize, color);
             }
+            
+            foreach (var healthSeparator in this.lines)
+            {
+                if (!healthSeparator.Value.Visible)
+                {
+                    return;
+                }
+
+                healthSeparator.Value.Draw();
+            }
         }
 
         /// <summary>
@@ -284,24 +337,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         {
             this.FillPercentage = value.Percentage;
 
-            // this.lines = new Dictionary<DrawVerticalLine, Func<Vector2>>();
-            // for (var i = 500; i < value.Maximum; i += 500)
-            // {
-            // Color color;
-            // if (i == 1000 || i == 2000 || i == 3000)
-            // {
-            // color = Color.Black;
-            // }
-            // else
-            // {
-            // color = new Color(40, 40, 40, 180);
-            // }
-
-            // var i1 = i;
-            // this.lines.Add(
-            // new DrawVerticalLine(this.Size.Y, color),
-            // () => new Vector2(this.Position.X + (this.Size.X * (i1 / value.Maximum)), this.Position.Y));
-            // }
+            foreach (var healthSeparator in this.lines)
+            {
+                healthSeparator.Value.HealthChange();
+            }
         }
 
         /// <summary>

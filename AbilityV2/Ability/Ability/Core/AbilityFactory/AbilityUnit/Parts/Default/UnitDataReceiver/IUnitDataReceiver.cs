@@ -13,6 +13,9 @@
 // </copyright>
 namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver
 {
+    using System;
+    using System.Collections.Generic;
+
     using Ability.Core.AbilityData;
 
     using Ensage;
@@ -22,6 +25,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver
     /// </summary>
     public interface IUnitDataReceiver : IAbilityUnitPart
     {
+        /// <summary>Gets the updates.</summary>
+        ICollection<Action> Updates { get; }
+
         #region Public Methods and Operators
 
         /// <summary>

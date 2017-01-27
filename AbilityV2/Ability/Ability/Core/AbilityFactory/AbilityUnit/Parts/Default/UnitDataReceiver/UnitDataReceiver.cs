@@ -13,6 +13,10 @@
 // </copyright>
 namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+
     using Ability.Core.AbilityData;
 
     using Ensage;
@@ -47,6 +51,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver
         public virtual void Dispose()
         {
         }
+
+        /// <summary>Gets the updates.</summary>
+        public ICollection<Action> Updates { get; } = new Collection<Action>();
 
         /// <summary>
         ///     The entity_ on bool property change.
@@ -195,6 +202,11 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver
                 // return;
                 // }
                 keyValuePair.Value.DataReceiver.Game_OnUpdate();
+            }
+
+            foreach (var update in this.Updates)
+            {
+                update.Invoke();
             }
 
             this.Unit.Mana.Current = this.Unit.SourceUnit.Mana;

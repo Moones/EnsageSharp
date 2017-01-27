@@ -24,7 +24,6 @@ namespace Ability.Core.AbilityFactory.Metadata
     /// <summary>
     ///     The skills attribute.
     /// </summary>
-    [PermissionSet(SecurityAction.Assert, Unrestricted = true)]
     [MetadataAttribute, AttributeUsage(AttributeTargets.Class)]
     public sealed class AbilitySkillMetadataAttribute : Attribute, IAbilitySkillMetadata
     {
@@ -33,7 +32,6 @@ namespace Ability.Core.AbilityFactory.Metadata
         /// <summary>Initializes a new instance of the <see cref="AbilitySkillMetadataAttribute" /> class.</summary>
         /// <param name="ownerClassId">The owner class id.</param>
         /// <param name="abilityIds">The skill ids.</param>
-        [PermissionSet(SecurityAction.Assert, Unrestricted = true)]
         public AbilitySkillMetadataAttribute(ClassID ownerClassId, params uint[] abilityIds)
         {
             this.OwnerClassId = ownerClassId;
@@ -47,30 +45,7 @@ namespace Ability.Core.AbilityFactory.Metadata
 
         /// <summary>Gets the ability ids.</summary>
         public uint[] AbilityIds { get; }
-
-        // public AbilitySkillMetadataAttribute(ClassID ownerClassId, params ItemId[] itemIds)
-        // {
-        // this.OwnerClassId = ownerClassId;
-        // this.ItemIds = itemIds;
-        // this.Owner = true;
-        // }
-
-        ///// <summary>Initializes a new instance of the <see cref="AbilitySkillMetadataAttribute"/> class.</summary>
-        ///// <param name="abilityIds">The skill ids.</param>
-        // public AbilitySkillMetadataAttribute(params AbilityId[] abilityIds)
-        // {
-        // this.AbilityIds = abilityIds;
-        // }
-
-        ///// <summary>Initializes a new instance of the <see cref="AbilitySkillMetadataAttribute"/> class.</summary>
-        ///// <param name="itemIds">The item ids.</param>
-        // public AbilitySkillMetadataAttribute(params ItemId[] itemIds)
-        // {
-        // this.ItemIds = itemIds;
-        // }
-        /// <summary>Initializes a new instance of the <see cref="AbilitySkillMetadataAttribute" /> class.</summary>
-        /// <param name="ownerClassId">The owner class id.</param>
-        /// <param name="itemIds">The item ids.</param>
+        
         /// <summary>Gets a value indicating whether owner.</summary>
         public bool Owner { get; }
 

@@ -31,6 +31,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health
 
         private Collection<IncomingDamage> incomingDamages = new Collection<IncomingDamage>();
 
+        private float maximum;
+
         #endregion
 
         #region Constructors and Destructors
@@ -38,6 +40,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health
         public Health(IAbilityUnit abilityUnit)
         {
             this.Unit = abilityUnit;
+            this.Maximum = this.Unit.SourceUnit.MaximumHealth;
             this.Current = this.Unit.SourceUnit.Health;
             this.Percentage = 100;
         }
@@ -72,7 +75,29 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health
         /// <summary>
         ///     Gets the maximum.
         /// </summary>
-        public float Maximum => this.Unit.SourceUnit.MaximumHealth;
+        public float Maximum
+        {
+            get
+            {
+                return this.maximum;
+            }
+
+            set
+            {
+                if (this.maximum != value)
+                {
+                    this.maximum = value;
+                    this.MaximumHealthChange.Notify();
+                }
+                else
+                {
+                    this.maximum = value;
+                }
+            }
+        }
+
+        /// <summary>Gets the maximum health change.</summary>
+        public Notifier MaximumHealthChange { get; } = new Notifier();
 
         /// <summary>
         ///     Gets or sets the percentage.
@@ -108,8 +133,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health
         {
         }
 
+        /// <summary>The initialize.</summary>
         public virtual void Initialize()
         {
+            this.Unit.DataReceiver.Updates.Add(() => this.Maximum = this.Unit.SourceUnit.MaximumHealth);
         }
 
         /// <summary>
@@ -144,6 +171,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health
 
         private void NewValueReceived()
         {
+            this.Maximum = this.Unit.SourceUnit.MaximumHealth;
             this.Percentage = this.current * 100 / this.Maximum;
             this.Next(this);
         }

@@ -94,6 +94,7 @@
     <Compile Include="Core\AbilityData\AbilityDataProvider.cs" />
     <Compile Include="Core\AbilityData\ParticleEffectMoreInfo.cs" />
     <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillLevel\ItemLevel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Bars\HealthSeparator.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\Types\DotaBasePositionTracker.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\Types\EntityOwnerPositionTracker.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\HeroMenuBase.cs" />

@@ -25,10 +25,11 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Rubick.SkillBook
         #region Fields
 
         /// <summary>The spell steal.</summary>
-        public IAbilitySkill SpellSteal;
+        public IAbilitySkill SpellSteal { get; set; }
+
 
         /// <summary>The stolen spell.</summary>
-        public IAbilitySkill StolenSpell;
+        public IAbilitySkill StolenSpell { get; set; }
 
         #endregion
 
@@ -51,7 +52,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Rubick.SkillBook
             {
                 this.SpellSteal = skill;
             }
-            else if (!skill.Name.Contains("rubick"))
+            else if (!skill.IsItem && !skill.Name.Contains("rubick"))
             {
                 if (this.StolenSpell != null)
                 {

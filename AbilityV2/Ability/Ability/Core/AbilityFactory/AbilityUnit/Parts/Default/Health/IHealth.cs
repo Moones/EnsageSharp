@@ -15,6 +15,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health
 {
     using System;
 
+    using Ability.Core.AbilityFactory.Utilities;
+
     /// <summary>
     ///     The Health interface.
     /// </summary>
@@ -31,6 +33,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health
         ///     Gets the maximum.
         /// </summary>
         float Maximum { get; }
+
+        /// <summary>Gets the maximum health change.</summary>
+        Notifier MaximumHealthChange { get; }
 
         /// <summary>
         ///     Gets or sets the percentage.
