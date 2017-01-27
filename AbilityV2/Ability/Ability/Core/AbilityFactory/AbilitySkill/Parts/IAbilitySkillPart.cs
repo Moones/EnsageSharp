@@ -27,6 +27,10 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts
         /// </summary>
         IAbilitySkill Skill { get; set; }
 
+        #endregion
+
+        #region Public Methods and Operators
+
         /// <summary>The initialize.</summary>
         void Initialize();
 

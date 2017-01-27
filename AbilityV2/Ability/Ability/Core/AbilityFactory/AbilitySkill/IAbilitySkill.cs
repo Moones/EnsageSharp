@@ -45,9 +45,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill
     {
         #region Public Properties
 
-        /// <summary>Gets the parts.</summary>
-        IReadOnlyDictionary<Type, IAbilitySkillPart> Parts { get; }
-
         /// <summary>
         ///     Gets or sets the ability cast.
         /// </summary>
@@ -163,6 +160,9 @@ namespace Ability.Core.AbilityFactory.AbilitySkill
         /// </summary>
         IAbilityUnit Owner { get; set; }
 
+        /// <summary>Gets the parts.</summary>
+        IReadOnlyDictionary<Type, IAbilitySkillPart> Parts { get; }
+
         /// <summary>
         ///     Gets or sets the skill color.
         /// </summary>
@@ -226,16 +226,11 @@ namespace Ability.Core.AbilityFactory.AbilitySkill
         #endregion
 
         #region Public Methods and Operators
-        
+
         /// <summary>The add part.</summary>
         /// <typeparam name="T">The type of part</typeparam>
         /// <param name="partFactory">The part Factory.</param>
         void AddPart<T>(Func<IAbilitySkill, T> partFactory) where T : IAbilitySkillPart;
-
-        /// <summary>The get part.</summary>
-        /// <typeparam name="T">The type of part</typeparam>
-        /// <returns>The <see cref="T"/>.</returns>
-        T GetPart<T>() where T : IAbilitySkillPart;
 
         /// <summary>
         ///     Checks if skill can be safely used on target and if target is in range
@@ -291,6 +286,11 @@ namespace Ability.Core.AbilityFactory.AbilitySkill
         ///     The <see cref="float" />.
         /// </returns>
         float DamageDealt(Unit hero);
+
+        /// <summary>The get part.</summary>
+        /// <typeparam name="T">The type of part</typeparam>
+        /// <returns>The <see cref="T" />.</returns>
+        T GetPart<T>() where T : IAbilitySkillPart;
 
         /// <summary>
         ///     The hit delay.

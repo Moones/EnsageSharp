@@ -37,17 +37,13 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
         /// </summary>
         public IAbilityUnit Unit { get; set; }
 
-        public virtual void Initialize()
-        {
-        }
+        #endregion
+
+        #region Public Methods and Operators
 
         public virtual void Dispose()
         {
         }
-
-        #endregion
-
-        #region Public Methods and Operators
 
         /// <summary>
         ///     The generate.
@@ -61,6 +57,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
         public IUnitOverlayEntry Generate(IUserInterfaceElement parent)
         {
             return new UnitOverlayEntry(this.Unit, parent);
+        }
+
+        public virtual void Initialize()
+        {
         }
 
         #endregion

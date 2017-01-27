@@ -19,6 +19,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook
 
     using Ability.Core.AbilityFactory.AbilitySkill;
 
+    using Ensage;
     using Ensage.Common.Extensions;
 
     /// <summary>
@@ -268,10 +269,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook
             this.SkillAdd.Skill = skill;
         }
 
-        public virtual void Initialize()
-        {
-        }
-
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose()
         {
@@ -288,6 +285,19 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook
             this.spells.Clear();
         }
 
+        public virtual void Initialize()
+        {
+        }
+
+        /// <summary>The is valid.</summary>
+        /// <param name="ability">The ability.</param>
+        /// <returns>The <see cref="bool" />.</returns>
+        public virtual bool IsValid(Ability ability)
+        {
+            return !ability.Name.Contains("special_bonus") && !ability.Name.Contains("empty")
+                   && !ability.Name.Contains("hidden");
+        }
+
         /// <summary>
         ///     The remove skill.
         /// </summary>
@@ -296,7 +306,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook
         /// </param>
         public virtual void RemoveSkill(T skill)
         {
-            //Console.WriteLine("remove: " + skill.Name);
+            // Console.WriteLine("remove: " + skill.Name);
             if (skill.Json.IsDamageAmp)
             {
                 var newDamageAmps = this.damageAmps.ToDictionary(x => x.Key, x => x.Value);

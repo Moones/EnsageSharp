@@ -72,7 +72,8 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Data
         {
             this.StartTime = Game.RawGameTime - Game.Ping / 1000;
             this.Running = true;
-            //this.AbilitySkill.AreaOfEffect.AbilityPhase(true);
+
+            // this.AbilitySkill.AreaOfEffect.AbilityPhase(true);
             foreach (var castStartObserver in this.castStartObservers)
             {
                 castStartObserver.OnNext(this);
@@ -85,7 +86,8 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Data
         public void Stop()
         {
             this.Running = false;
-            //this.AbilitySkill.AreaOfEffect.AbilityPhase(false);
+
+            // this.AbilitySkill.AreaOfEffect.AbilityPhase(false);
             foreach (var castStartObserver in this.castStartObservers)
             {
                 castStartObserver.OnNext(this);

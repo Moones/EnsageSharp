@@ -93,12 +93,15 @@
     <Compile Include="AbilityBootstrapper.cs" />
     <Compile Include="Core\AbilityData\AbilityDataProvider.cs" />
     <Compile Include="Core\AbilityData\ParticleEffectMoreInfo.cs" />
+    <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillLevel\ItemLevel.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\Types\DotaBasePositionTracker.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\Types\EntityOwnerPositionTracker.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\HeroMenuBase.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\InvokerUnitMenu.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\PositionTracker\InvokerPositionTracker.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\PhantomAssassin\PhantomAssassinUnitComposer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Rubick\RubickUnitComposer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Rubick\SkillBook\RubickSkillBook.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\ShadowDemon\ShadowDemonUnitComposer.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Weaver\WeaverUnitComposer.cs" />
     <Compile Include="Core\AbilityFactory\Metadata\AbilityUnitMetadataAttribute.cs" />

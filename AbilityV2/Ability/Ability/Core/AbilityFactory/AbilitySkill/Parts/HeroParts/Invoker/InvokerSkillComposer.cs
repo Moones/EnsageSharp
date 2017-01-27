@@ -31,58 +31,58 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.HeroParts.Invoker
     ///     The invoker skill composer.
     /// </summary>
     [Export(typeof(IAbilitySkillComposer))]
-    [AbilitySkillMetadata(ClassID.CDOTA_Unit_Hero_Invoker, (uint)AbilityId.invoker_sun_strike, (uint)AbilityId.invoker_alacrity,
-        (uint)AbilityId.invoker_chaos_meteor, (uint)AbilityId.invoker_forge_spirit, (uint)AbilityId.invoker_deafening_blast,
-        (uint)AbilityId.invoker_ghost_walk, (uint)AbilityId.invoker_tornado, (uint)AbilityId.invoker_emp, (uint)AbilityId.invoker_cold_snap,
-        (uint)AbilityId.invoker_ice_wall)]
+    [AbilitySkillMetadata(ClassID.CDOTA_Unit_Hero_Invoker, (uint)AbilityId.invoker_sun_strike,
+        (uint)AbilityId.invoker_alacrity, (uint)AbilityId.invoker_chaos_meteor, (uint)AbilityId.invoker_forge_spirit,
+        (uint)AbilityId.invoker_deafening_blast, (uint)AbilityId.invoker_ghost_walk, (uint)AbilityId.invoker_tornado,
+        (uint)AbilityId.invoker_emp, (uint)AbilityId.invoker_cold_snap, (uint)AbilityId.invoker_ice_wall)]
     internal class InvokerSkillComposer : DefaultSkillComposer
     {
         #region Fields
 
         /// <summary>The orb count dictionary.</summary>
         private readonly Dictionary<AbilityId, uint[]> orbCountDictionary = new Dictionary<AbilityId, uint[]>
-                                                                       {
-                                                                           {
-                                                                               AbilityId.invoker_sun_strike,
-                                                                               new uint[] { 0, 0, 3 }
-                                                                           },
-                                                                           {
-                                                                               AbilityId.invoker_alacrity,
-                                                                               new uint[] { 0, 2, 1 }
-                                                                           },
-                                                                           {
-                                                                               AbilityId.invoker_chaos_meteor,
-                                                                               new uint[] { 0, 1, 2 }
-                                                                           },
-                                                                           {
-                                                                               AbilityId.invoker_forge_spirit,
-                                                                               new uint[] { 1, 0, 2 }
-                                                                           },
-                                                                           {
-                                                                               AbilityId.invoker_deafening_blast,
-                                                                               new uint[] { 1, 1, 1 }
-                                                                           },
-                                                                           {
-                                                                               AbilityId.invoker_ghost_walk,
-                                                                               new uint[] { 2, 1, 0 }
-                                                                           },
-                                                                           {
-                                                                               AbilityId.invoker_tornado,
-                                                                               new uint[] { 1, 2, 0 }
-                                                                           },
-                                                                           {
-                                                                               AbilityId.invoker_emp,
-                                                                               new uint[] { 0, 3, 0 }
-                                                                           },
-                                                                           {
-                                                                               AbilityId.invoker_cold_snap,
-                                                                               new uint[] { 3, 0, 0 }
-                                                                           },
-                                                                           {
-                                                                               AbilityId.invoker_ice_wall,
-                                                                               new uint[] { 2, 0, 1 }
-                                                                           }
-                                                                       };
+                                                                                {
+                                                                                    {
+                                                                                        AbilityId.invoker_sun_strike,
+                                                                                        new uint[] { 0, 0, 3 }
+                                                                                    },
+                                                                                    {
+                                                                                        AbilityId.invoker_alacrity,
+                                                                                        new uint[] { 0, 2, 1 }
+                                                                                    },
+                                                                                    {
+                                                                                        AbilityId.invoker_chaos_meteor,
+                                                                                        new uint[] { 0, 1, 2 }
+                                                                                    },
+                                                                                    {
+                                                                                        AbilityId.invoker_forge_spirit,
+                                                                                        new uint[] { 1, 0, 2 }
+                                                                                    },
+                                                                                    {
+                                                                                        AbilityId.invoker_deafening_blast,
+                                                                                        new uint[] { 1, 1, 1 }
+                                                                                    },
+                                                                                    {
+                                                                                        AbilityId.invoker_ghost_walk,
+                                                                                        new uint[] { 2, 1, 0 }
+                                                                                    },
+                                                                                    {
+                                                                                        AbilityId.invoker_tornado,
+                                                                                        new uint[] { 1, 2, 0 }
+                                                                                    },
+                                                                                    {
+                                                                                        AbilityId.invoker_emp,
+                                                                                        new uint[] { 0, 3, 0 }
+                                                                                    },
+                                                                                    {
+                                                                                        AbilityId.invoker_cold_snap,
+                                                                                        new uint[] { 3, 0, 0 }
+                                                                                    },
+                                                                                    {
+                                                                                        AbilityId.invoker_ice_wall,
+                                                                                        new uint[] { 2, 0, 1 }
+                                                                                    }
+                                                                                };
 
         #endregion
 

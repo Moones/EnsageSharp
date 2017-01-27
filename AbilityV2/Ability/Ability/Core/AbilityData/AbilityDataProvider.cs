@@ -209,8 +209,9 @@ namespace Ability.Core.AbilityData
         /// </returns>
         private void Drawing_OnDraw(EventArgs args)
         {
-            if (!Game.IsInGame || Game.IsPaused)
+            if (!Game.IsInGame)
             {
+                // || Game.IsPaused)
                 return;
             }
 

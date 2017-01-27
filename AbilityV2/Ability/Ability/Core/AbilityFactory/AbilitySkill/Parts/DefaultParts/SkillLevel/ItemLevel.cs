@@ -1,4 +1,4 @@
-﻿// <copyright file="IAbilityUnitMetadata.cs" company="EnsageSharp">
+﻿// <copyright file="ItemLevel.cs" company="EnsageSharp">
 //    Copyright (c) 2017 Moones.
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -11,19 +11,29 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see http://www.gnu.org/licenses/
 // </copyright>
-namespace Ability.Core.AbilityFactory.Metadata
+namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillLevel
 {
-    using System.Collections.Generic;
-
-    using Ensage;
-
-    /// <summary>The AbilityUnitMetadata interface.</summary>
-    public interface IAbilityUnitMetadata
+    public class ItemLevel : SkillLevel
     {
-        #region Public Properties
+        #region Constructors and Destructors
 
-        /// <summary>Gets the class ids.</summary>
-        ICollection<ClassID> ClassIds { get; }
+        public ItemLevel(IAbilitySkill skill)
+            : base(skill)
+        {
+            this.Current = 1;
+        }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public override void Dispose()
+        {
+        }
+
+        public override void Initialize()
+        {
+        }
 
         #endregion
     }

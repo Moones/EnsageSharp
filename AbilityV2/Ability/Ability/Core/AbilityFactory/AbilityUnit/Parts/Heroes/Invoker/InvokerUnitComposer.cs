@@ -13,8 +13,6 @@
 // </copyright>
 namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker
 {
-    using System;
-    using System.Collections.Generic;
     using System.ComponentModel.Composition;
 
     using Ability.Core.AbilityFactory.AbilitySkill;
@@ -22,8 +20,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Modifiers;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker;
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker.Types;
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.ScreenInfo;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Modifiers;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Overlay;
@@ -40,7 +36,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker
     [AbilityUnitMetadata(ClassID.CDOTA_Unit_Hero_Invoker)]
     public class InvokerUnitComposer : AbilityUnitComposer
     {
-        /// <summary>Initializes a new instance of the <see cref="InvokerUnitComposer"/> class.</summary>
+        #region Constructors and Destructors
+
+        /// <summary>Initializes a new instance of the <see cref="InvokerUnitComposer" /> class.</summary>
         public InvokerUnitComposer()
         {
             this.AssignPart<IUnitOverlay>(unit => new InvokerUnitOverlay(unit));
@@ -49,13 +47,15 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker
             this.AssignPart<IPositionTracker>(unit => new InvokerPositionTracker(unit));
         }
 
+        #endregion
+
         /// <summary>The custom composition.</summary>
         /// <param name="unit">The unit.</param>
-        //public override void CustomComposition(IAbilityUnit unit)
-        //{
-        //    unit.Overlay = new InvokerUnitOverlay(unit);
-        //    unit.SkillBook = new InvokerSkillBook(unit);
-        //    unit.Modifiers = new InvokerModifiers(unit);
-        //}
+        // public override void CustomComposition(IAbilityUnit unit)
+        // {
+        // unit.Overlay = new InvokerUnitOverlay(unit);
+        // unit.SkillBook = new InvokerSkillBook(unit);
+        // unit.Modifiers = new InvokerModifiers(unit);
+        // }
     }
 }

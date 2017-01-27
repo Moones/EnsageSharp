@@ -14,6 +14,7 @@
 namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
 {
     using System;
+    using System.Collections.Generic;
 
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health;
     using Ability.Core.MenuManager.Menus.Submenus.UnitMenu;
@@ -61,6 +62,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         ///     The health lost size.
         /// </summary>
         private Vector2 healthLostSize;
+
+        /// <summary>The lines.</summary>
+        private Dictionary<DrawVerticalLine, Func<Vector2>> lines = new Dictionary<DrawVerticalLine, Func<Vector2>>();
 
         /// <summary>
         ///     The pos.
@@ -279,6 +283,25 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         public void OnNext(IHealth value)
         {
             this.FillPercentage = value.Percentage;
+
+            // this.lines = new Dictionary<DrawVerticalLine, Func<Vector2>>();
+            // for (var i = 500; i < value.Maximum; i += 500)
+            // {
+            // Color color;
+            // if (i == 1000 || i == 2000 || i == 3000)
+            // {
+            // color = Color.Black;
+            // }
+            // else
+            // {
+            // color = new Color(40, 40, 40, 180);
+            // }
+
+            // var i1 = i;
+            // this.lines.Add(
+            // new DrawVerticalLine(this.Size.Y, color),
+            // () => new Vector2(this.Position.X + (this.Size.X * (i1 / value.Maximum)), this.Position.Y));
+            // }
         }
 
         /// <summary>

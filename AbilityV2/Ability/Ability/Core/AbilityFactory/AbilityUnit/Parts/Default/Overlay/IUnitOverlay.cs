@@ -34,13 +34,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
         /// </summary>
         PanelField BotPanel { get; }
 
-        /// <summary>Gets or sets the stick to screen.</summary>
-        GetValue<bool, bool> StickToScreen { get; set; }
-
         /// <summary>Gets or sets the distance from local hero.</summary>
         GetValue<Slider, float> DistanceFromLocalHero { get; set; }
 
-            /// <summary>
+        /// <summary>
         ///     Gets or sets the elements.
         /// </summary>
         ICollection<IUnitOverlayElement> Elements { get; }
@@ -74,6 +71,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
         ///     Gets the right panel.
         /// </summary>
         PanelField RightPanel { get; }
+
+        /// <summary>Gets or sets the stick to screen.</summary>
+        GetValue<bool, bool> StickToScreen { get; set; }
 
         /// <summary>
         ///     Gets the top panel.

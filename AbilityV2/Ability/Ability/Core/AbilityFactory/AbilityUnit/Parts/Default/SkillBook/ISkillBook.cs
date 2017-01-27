@@ -19,6 +19,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook
 
     using Ability.Core.AbilityFactory.AbilitySkill;
 
+    using Ensage;
+
     /// <summary>
     ///     The SkillBook interface.
     /// </summary>
@@ -101,6 +103,11 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook
         ///     The skill.
         /// </param>
         void AddSkill(T skill);
+
+        /// <summary>The is valid.</summary>
+        /// <param name="ability">The ability.</param>
+        /// <returns>The <see cref="bool" />.</returns>
+        bool IsValid(Ability ability);
 
         /// <summary>
         ///     The remove skill.

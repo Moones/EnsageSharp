@@ -97,17 +97,17 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Position
         /// </summary>
         public IAbilityUnit Unit { get; set; }
 
-        public virtual void Initialize()
-        {
-        }
+        #endregion
+
+        #region Public Methods and Operators
 
         public virtual void Dispose()
         {
         }
 
-        #endregion
-
-        #region Public Methods and Operators
+        public virtual void Initialize()
+        {
+        }
 
         /// <summary>
         ///     The predict.

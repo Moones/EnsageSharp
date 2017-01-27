@@ -14,7 +14,6 @@
 namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverlay
 {
     using System;
-    using System.Globalization;
 
     using Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.Cooldown;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Mana;
@@ -22,7 +21,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
     using Ability.Utilities;
 
     using Ensage;
-    using Ensage.Common;
     using Ensage.Common.Objects.DrawObjects;
 
     using SharpDX;
@@ -30,7 +28,7 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
     /// <summary>
     ///     The skill overlay.
     /// </summary>
-    public class SkillOverlay : ISkillOverlay, IObserver<ICooldown>, IObserver<IMana>
+    public class SkillOverlay : ISkillOverlay, IObserver<ICooldown>
     {
         #region Fields
 
@@ -49,12 +47,19 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
         /// </summary>
         private readonly DrawRect icon;
 
+        /// <summary>The mana observer.</summary>
+        private readonly DataObserver<IMana> manaObserver;
+
         /// <summary>
         ///     The mana text.
         /// </summary>
         private readonly DrawText manaText;
 
+        private Number cooldownNumber;
+
         private Vector2 levelRectsSize;
+
+        private Number manaNumber;
 
         /// <summary>
         ///     The position.
@@ -67,10 +72,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
         ///     The size.
         /// </summary>
         private Vector2 size;
-
-        private Number cooldownNumber;
-
-        private Number manaNumber;
 
         #endregion
 
@@ -99,29 +100,29 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
                 true,
                 this.Skill.Owner.Overlay.HealthBar.Size.Y / 2);
             this.manaNumber = new Number(NumberTextureColor.Blue, true);
-            this.Skill.DisposeNotifier.Subscribe(() => { this.removed = true; });
-
+            this.Skill.DisposeNotifier.Subscribe(this.Dispose);
 
             if (this.Skill.Cooldown == null)
             {
                 return;
             }
 
-            this.Skill.Owner.Mana.Subscribe(this);
+            this.manaObserver = new DataObserver<IMana>(this.OnNext);
+            this.manaObserver.Subscribe(this.Skill.Owner.Mana);
             this.OnNext(this.Skill.Owner.Mana);
             this.Skill.Cooldown.Subscribe(this);
             this.Skill.Cooldown.OffCooldownProvider.Subscribe(
                 new DataObserver<ICooldown>(
                     cooldown =>
-                    {
-                        if (!this.Skill.CastData.EnoughMana)
                         {
-                            this.BorderColor = this.NotEnoughManaColor;
-                            return;
-                        }
+                            if (!this.Skill.CastData.EnoughMana)
+                            {
+                                this.BorderColor = this.NotEnoughManaColor;
+                                return;
+                            }
 
-                        this.BorderColor = this.ReadyColor;
-                    }));
+                            this.BorderColor = this.ReadyColor;
+                        }));
         }
 
         #endregion
@@ -209,11 +210,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
         /// </summary>
         public IAbilitySkill Skill { get; set; }
 
-        /// <summary>The initialize.</summary>
-        public virtual void Initialize()
-        {
-        }
-
         #endregion
 
         #region Public Methods and Operators
@@ -221,6 +217,8 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public virtual void Dispose()
         {
+            this.removed = true;
+            this.manaObserver?.Dispose();
         }
 
         /// <summary>
@@ -264,12 +262,17 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
             }
             else if (!enoughMana)
             {
-                //this.manaText.Draw();
+                // this.manaText.Draw();
                 this.manaNumber.Draw();
             }
         }
 
         public virtual void DrawElements()
+        {
+        }
+
+        /// <summary>The initialize.</summary>
+        public virtual void Initialize()
         {
         }
 
@@ -343,10 +346,11 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
             {
                 this.manaNumber.Value = Math.Min(Math.Floor(this.Skill.SourceAbility.ManaCost - value.Current), 99);
                 this.manaNumber.CenterOnRectangle(this.blackOverlay);
-                //this.manaText.Text =
-                //    Math.Min(Math.Floor(this.Skill.SourceAbility.ManaCost - value.Current), 99)
-                //        .ToString(CultureInfo.CurrentCulture);
-                //this.manaText.CenterOnRectangle(this.blackOverlay);
+
+                // this.manaText.Text =
+                // Math.Min(Math.Floor(this.Skill.SourceAbility.ManaCost - value.Current), 99)
+                // .ToString(CultureInfo.CurrentCulture);
+                // this.manaText.CenterOnRectangle(this.blackOverlay);
                 this.BorderColor = this.NotEnoughManaColor;
             }
             else

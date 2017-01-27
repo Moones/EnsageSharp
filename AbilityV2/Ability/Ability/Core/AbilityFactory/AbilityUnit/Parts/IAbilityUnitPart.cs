@@ -13,10 +13,12 @@
 // </copyright>
 namespace Ability.Core.AbilityFactory.AbilityUnit.Parts
 {
+    using System;
+
     /// <summary>
     ///     The AbilityUnitPart interface.
     /// </summary>
-    public interface IAbilityUnitPart : System.IDisposable
+    public interface IAbilityUnitPart : IDisposable
     {
         #region Public Properties
 
@@ -24,6 +26,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts
         ///     Gets or sets the unit.
         /// </summary>
         IAbilityUnit Unit { get; set; }
+
+        #endregion
+
+        #region Public Methods and Operators
 
         /// <summary>The initialize.</summary>
         void Initialize();

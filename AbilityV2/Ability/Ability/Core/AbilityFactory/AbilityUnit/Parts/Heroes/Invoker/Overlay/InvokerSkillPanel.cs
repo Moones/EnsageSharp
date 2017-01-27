@@ -14,15 +14,10 @@
 namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Overlay
 {
     using System;
-    using System.Linq;
 
     using Ability.Core.AbilityFactory.AbilitySkill;
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.ObjectPanel;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.SkillPanel;
-    using Ability.Core.MenuManager.Menus.Submenus.UnitMenu;
-
-    using Ensage.Common.Menu;
 
     using SharpDX;
 
@@ -44,6 +39,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Overlay
 
         #region Public Properties
 
+        /// <summary>Gets the default health bar position.</summary>
+        public override int DefaultHealthBarPosition { get; } = (int)PanelDirection.Top;
+
         /// <summary>
         ///     Gets a value indicating whether generate menu.
         /// </summary>
@@ -59,27 +57,21 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Overlay
         /// </summary>
         public override string MenuName { get; } = nameof(InvokerSkillPanel);
 
-        /// <summary>Gets the default health bar position.</summary>
-        public override int DefaultHealthBarPosition { get; } = (int)PanelDirection.Top;
-
         #endregion
 
-        #region Public Methods and Operators
+        ///     The menu.
+        /// <param name="menu">
+        /// </summary>
+        ///     The add submenu.
 
         /// <summary>
-        ///     The add submenu.
-        /// </summary>
-        /// <param name="menu">
-        ///     The menu.
         /// </param>
         /// <returns>
         ///     The <see cref="Ensage.Common.Menu.Menu" />.
         /// </returns>
-        //public override Menu AddSubmenu(IUnitMenu menu)
-        //{
-        //    return menu.Menu.AddSubMenu(this.Menu as Menu);
-        //}
-
-        #endregion
+        // public override Menu AddSubmenu(IUnitMenu menu)
+        // {
+        // return menu.Menu.AddSubMenu(this.Menu as Menu);
+        // }
     }
 }

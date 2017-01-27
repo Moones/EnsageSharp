@@ -1,4 +1,4 @@
-﻿// <copyright file="IAbilityMetadata.cs" company="EnsageSharp">
+﻿// <copyright file="IAbilitySkillMetadata.cs" company="EnsageSharp">
 //    Copyright (c) 2017 Moones.
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -13,11 +13,9 @@
 // </copyright>
 namespace Ability.Core.AbilityFactory.Metadata
 {
-    using System.Collections.Generic;
     using System.ComponentModel;
 
     using Ensage;
-    using Ensage.Common.Enums;
 
     /// <summary>
     ///     The AbilitySkillMetadata interface.
@@ -26,15 +24,15 @@ namespace Ability.Core.AbilityFactory.Metadata
     {
         #region Public Properties
 
+        /// <summary>Gets the skill ids.</summary>
+        [DefaultValue(new uint[0])]
+        uint[] AbilityIds { get; }
+
         /// <summary>Gets a value indicating whether owner.</summary>
         bool Owner { get; }
 
         /// <summary>Gets the owner class id.</summary>
         ClassID OwnerClassId { get; }
-
-        /// <summary>Gets the skill ids.</summary>
-        [DefaultValue(new uint[0])]
-        uint[] AbilityIds { get; }
 
         #endregion
     }

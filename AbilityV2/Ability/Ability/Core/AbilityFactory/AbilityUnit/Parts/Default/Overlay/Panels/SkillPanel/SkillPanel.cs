@@ -94,6 +94,18 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
                             add.Skill.Level.Subscribe(
                                 new DataObserver<ISkillLevel>(level => { this.ObjectManager.UpdateSize(); }));
                         }));
+
+            unit.SkillBook.SkillRemove.Subscribe(
+                new DataObserver<SkillRemove>(
+                    remove =>
+                        {
+                            if (!this.SelectionCondition.Invoke(remove.Skill))
+                            {
+                                return;
+                            }
+
+                            this.RemoveObject(this.TempDictionary[remove.Skill.SkillHandle]);
+                        }));
         }
 
         #endregion

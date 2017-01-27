@@ -25,7 +25,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
 
     using Ensage;
     using Ensage.Common.Menu;
-    using Ensage.Common.Objects;
     using Ensage.Common.Objects.DrawObjects;
 
     using SharpDX;
@@ -41,6 +40,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
 
         private DrawRect circleIcon;
 
+        private bool connectedToMenu;
+
         /// <summary>
         ///     The level.
         /// </summary>
@@ -49,6 +50,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
         private Number levelNumber;
 
         private DataObserver<IUnitLevel> levelObserver;
+
+        private Vector2 position;
 
         private Vector2 size;
 
@@ -77,12 +80,12 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
                                  Color = Color.PapayaWhip, Text = unit.SourceUnit.Level.ToString(),
                                  TextSize = new Vector2((float)(size.Y / 2)), Shadow = true
                              };
-            this.levelNumber = new Number(NumberTextureColor.Default, true, (float)(size.Y )) { Value = 0 };
+            this.levelNumber = new Number(NumberTextureColor.Default, true, (float)size.Y) { Value = 0 };
             this.Background = new DrawRect(this.BackgroundColor) { Size = size };
             this.levelObserver = new DataObserver<IUnitLevel>(
                 unitLevel =>
                     {
-                        //this.level.Text = unitLevel.Current.ToString();
+                        // this.level.Text = unitLevel.Current.ToString();
                         this.levelNumber.Value = (int)unitLevel.Current;
                         this.Panel?.UpdateSize();
                     });
@@ -126,6 +129,24 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
         /// </summary>
         public override string MenuName { get; } = nameof(StatusPanel);
 
+        public override Vector2 Position
+        {
+            get
+            {
+                return this.position;
+            }
+
+            set
+            {
+                this.position = value;
+                this.circleIcon.Position = this.position + new Vector2(0, -this.circleIcon.Size.X / 10);
+                this.levelNumber.Position = this.position
+                                            + new Vector2(
+                                                (float)(this.circleIcon.Size.X / 1.2),
+                                                this.circleIcon.Size.X / 12);
+            }
+        }
+
         /// <summary>
         ///     Gets the position from health bar.
         /// </summary>
@@ -138,15 +159,18 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
         {
             get
             {
-                return new Vector2(this.circleIcon.Size.X + this.levelNumber.Size.X - this.circleIcon.Size.X / 4, this.circleIcon.Size.Y);
+                return new Vector2(
+                    this.circleIcon.Size.X + this.levelNumber.Size.X - this.circleIcon.Size.X / 4,
+                    this.circleIcon.Size.Y);
             }
 
             set
             {
                 this.size = value;
-                //this.unitName.TextSize = new Vector2((float)(this.size.Y / 2));
-                //this.level.TextSize = new Vector2((float)(this.size.Y / 2));
-                //this.Background.Size = new Vector2(this.Background.Size.X, this.size.Y);
+
+                // this.unitName.TextSize = new Vector2((float)(this.size.Y / 2));
+                // this.level.TextSize = new Vector2((float)(this.size.Y / 2));
+                // this.Background.Size = new Vector2(this.Background.Size.X, this.size.Y);
             }
         }
 
@@ -175,72 +199,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
         {
         }
 
-        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
-        public void Dispose()
-        {
-            this.levelObserver.Dispose();
-        }
-
-        public override Vector2 Position
-        {
-            get
-            {
-                return this.position;
-            }
-
-            set
-            {
-                this.position = value;
-                this.circleIcon.Position = this.position + new Vector2(0, -this.circleIcon.Size.X / 10);
-                this.levelNumber.Position = this.position + new Vector2((float)(this.circleIcon.Size.X / 1.2), this.circleIcon.Size.X / 12);
-            }
-        }
-
-        /// <summary>
-        ///     The draw.
-        /// </summary>
-        public override void Draw()
-        {
-            if (!this.Enabled)
-            {
-                return;
-            }
-
-            //this.Background.Position = this.Position;
-            //this.Background.Color = this.BackgroundColor;
-            //this.Background.Draw();
-
-            // this.unitName.Position = this.Position + new Vector2(1, 0);
-            // this.unitName.Draw();
-            this.circleIcon.Draw();
-
-            this.levelNumber.Draw();
-
-            // this.level.Position = this.unitName.Position + new Vector2(this.unitName.Size.X +1, 0);
-            // this.level.Draw();
-        }
-
-        /// <summary>
-        ///     The generate size increase.
-        /// </summary>
-        public override void GenerateSizeIncrease()
-        {
-        }
-
-        public override void GenerateHealthBarPosition()
-        {
-            this.Menu.HealthBarPositionMenuItem =
-                new ObservableMenuItem<StringList>(
-                    this.MenuName + nameof(this.Menu.HealthBarPositionMenuItem),
-                    "Position");
-            this.Menu.HealthBarPositionMenuItem.SetValue(
-                new StringList(new[] { "Left", "Right" }, this.DefaultHealthBarPosition));
-        }
-
-        private bool connectedToMenu;
-
-        private Vector2 position;
-
         public override void ConnectToMenu(IUnitMenu menu, Menu subMenu)
         {
             if (this.connectedToMenu)
@@ -256,19 +214,66 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
                 this.Menu.HealthBarPositionMenuItem.Provider.Subscribe(
                     new DataObserver<StringList>(
                         list =>
-                        {
-                            if (list.SelectedIndex == 0)
                             {
-                                this.ChangePosition(PanelDirection.Left);
-                            }
-                            else
-                            {
-                                this.ChangePosition(PanelDirection.Right);
-                            }
+                                if (list.SelectedIndex == 0)
+                                {
+                                    this.ChangePosition(PanelDirection.Left);
+                                }
+                                else
+                                {
+                                    this.ChangePosition(PanelDirection.Right);
+                                }
 
-                            this.Panel?.UpdateSize();
-                        }));
+                                this.Panel?.UpdateSize();
+                            }));
             }
+        }
+
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public void Dispose()
+        {
+            this.levelObserver.Dispose();
+        }
+
+        /// <summary>
+        ///     The draw.
+        /// </summary>
+        public override void Draw()
+        {
+            if (!this.Enabled)
+            {
+                return;
+            }
+
+            // this.Background.Position = this.Position;
+            // this.Background.Color = this.BackgroundColor;
+            // this.Background.Draw();
+
+            // this.unitName.Position = this.Position + new Vector2(1, 0);
+            // this.unitName.Draw();
+            this.circleIcon.Draw();
+
+            this.levelNumber.Draw();
+
+            // this.level.Position = this.unitName.Position + new Vector2(this.unitName.Size.X +1, 0);
+            // this.level.Draw();
+        }
+
+        public override void GenerateHealthBarPosition()
+        {
+            this.Menu.HealthBarPositionMenuItem =
+                new ObservableMenuItem<StringList>(
+                    this.MenuName + nameof(this.Menu.HealthBarPositionMenuItem),
+                    "Position");
+            this.Menu.HealthBarPositionMenuItem.SetValue(
+                new StringList(new[] { "Left", "Right" }, this.DefaultHealthBarPosition));
+        }
+
+        /// <summary>
+        ///     The generate size increase.
+        /// </summary>
+        public override void GenerateSizeIncrease()
+        {
         }
 
         #endregion

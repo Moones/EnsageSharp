@@ -30,10 +30,13 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
         {
         }
 
+        #endregion
+
+        #region Public Methods and Operators
+
         public override void Initialize()
         {
             base.Initialize();
-
 
             var itemPanel = new ItemPanel(
                 this.Unit,

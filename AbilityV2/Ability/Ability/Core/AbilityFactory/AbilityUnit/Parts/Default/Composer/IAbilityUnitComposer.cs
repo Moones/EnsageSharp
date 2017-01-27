@@ -13,8 +13,6 @@
 // </copyright>
 namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
 {
-    using System;
-
     /// <summary>
     ///     The AbilityUnitComposer interface.
     /// </summary>

@@ -19,9 +19,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
     using System.Linq;
 
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars;
-    using Ability.Core.AbilityFactory.Utilities;
-    using Ability.Core.MenuManager.GetValue;
-    using Ability.Core.MenuManager.MenuItems;
     using Ability.Core.MenuManager.Menus.Submenus.UnitMenu;
 
     using Ensage.Common.Menu;
@@ -47,20 +44,20 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
         {
             this.Menu = new Menu("Overlay", Constants.AssemblyName + nameof(IUnitOverlay));
 
-            //this.DistanceFromLocalHero = new ObservableMenuItem<Slider>(
-            //    this.Menu.Name + "maxDistanceFromLocalHero",
-            //    "Distance");
-            //this.DistanceFromLocalHero.SetValue(new Slider(2000, 500, 5000));
-            //this.DistanceFromLocalHero.SetTooltip(
-            //    "Distance must be less then specified value in order to draw overlay out of screen");
+            // this.DistanceFromLocalHero = new ObservableMenuItem<Slider>(
+            // this.Menu.Name + "maxDistanceFromLocalHero",
+            // "Distance");
+            // this.DistanceFromLocalHero.SetValue(new Slider(2000, 500, 5000));
+            // this.DistanceFromLocalHero.SetTooltip(
+            // "Distance must be less then specified value in order to draw overlay out of screen");
             ////var added = false;
-            //this.DrawOutOfDisplay = new ObservableMenuItem<bool>(
-            //    this.Menu.Name + "drawWhenOutOfDisplay",
-            //    "Stick to side of screen");
-            //this.DrawOutOfDisplay.SetValue(true)
-            //    .SetTooltip(
-            //        "Stick the overlay to side of screen when distance from your hero is less then specified value");
-            //this.Menu.AddItem(this.DistanceFromLocalHero);
+            // this.DrawOutOfDisplay = new ObservableMenuItem<bool>(
+            // this.Menu.Name + "drawWhenOutOfDisplay",
+            // "Stick to side of screen");
+            // this.DrawOutOfDisplay.SetValue(true)
+            // .SetTooltip(
+            // "Stick the overlay to side of screen when distance from your hero is less then specified value");
+            // this.Menu.AddItem(this.DistanceFromLocalHero);
             ////this.DrawOutOfDisplay.Provider.Subscribe(
             ////    new DataObserver<bool>(
             ////        b =>
@@ -77,7 +74,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
             ////                }
             ////            }));
 
-            //this.Menu.AddItem(this.DrawOutOfDisplay);
+            // this.Menu.AddItem(this.DrawOutOfDisplay);
         }
 
         #endregion
@@ -85,11 +82,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
         #region Public Properties
 
         /// <summary>Gets the distance from local hero.</summary>
-        //public ObservableMenuItem<Slider> DistanceFromLocalHero { get; }
+        // public ObservableMenuItem<Slider> DistanceFromLocalHero { get; }
 
         ///// <summary>Gets the draw out of display.</summary>
-        //public ObservableMenuItem<bool> DrawOutOfDisplay { get; }
-
+        // public ObservableMenuItem<bool> DrawOutOfDisplay { get; }
         /// <summary>
         ///     Gets or sets the menu.
         /// </summary>
@@ -118,10 +114,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
         /// </param>
         public void ConnectToUnit(IAbilityUnit unit)
         {
-            //unit.Overlay.StickToScreen = new GetValue<bool, bool>(this.DrawOutOfDisplay, b => b);
-            //unit.Overlay.DistanceFromLocalHero = new GetValue<Slider, float>(
-            //    this.DistanceFromLocalHero,
-            //    slider => slider.Value);
+            // unit.Overlay.StickToScreen = new GetValue<bool, bool>(this.DrawOutOfDisplay, b => b);
+            // unit.Overlay.DistanceFromLocalHero = new GetValue<Slider, float>(
+            // this.DistanceFromLocalHero,
+            // slider => slider.Value);
             foreach (var unitOverlayElement in unit.Overlay.Panels)
             {
                 var panelField = unitOverlayElement as PanelField;

@@ -31,7 +31,6 @@ namespace Ability.Core.AbilityFactory
 
     using Ensage;
     using Ensage.Common.Extensions;
-    using Ensage.Common.Objects;
     using Ensage.Heroes;
 
     /// <summary>
@@ -52,8 +51,7 @@ namespace Ability.Core.AbilityFactory
 
         public AbilityFactory()
         {
-            //AbilityBootstrapper.ComposeParts(this);
-
+            // AbilityBootstrapper.ComposeParts(this);
             this.defaultSkillComposer = new DefaultSkillComposer();
 
             Logging.Write()(LogLevel.Info, "AbilityFactory Initialized");
@@ -68,7 +66,6 @@ namespace Ability.Core.AbilityFactory
         /// </summary>
         // [Import(typeof(IAbilityDatabase))]
         // protected Lazy<IAbilityDatabase> AbilityDatabase { get; set; }
-
         [ImportMany]
         protected IEnumerable<Lazy<IAbilitySkillComposer, IAbilitySkillMetadata>> SkillComposers { get; set; }
 
@@ -91,10 +88,13 @@ namespace Ability.Core.AbilityFactory
         /// </returns>
         public IControllableSkill CreateNewControllableSkill(Ability skill, IAbilityUnit owner)
         {
-            var abilitySkill = new ControllableSkill(skill) { // Json =
-                                                                // this.AbilityDatabase.Value.GetSkillData(skill.StoredName())
-                                                                // ?? new SkillJson(),
-                                                                Json = new SkillJson(), Owner = owner };
+            var abilitySkill = new ControllableSkill(skill)
+                                   {
+                                       // Json =
+                                       // this.AbilityDatabase.Value.GetSkillData(skill.StoredName())
+                                       // ?? new SkillJson(),
+                                       Json = new SkillJson(), Owner = owner
+                                   };
 
             // abilitySkill.Json.CastPriority = this.AbilityDatabase.Value.GetCastPriority(
             // skill.StoredName(),
@@ -152,7 +152,9 @@ namespace Ability.Core.AbilityFactory
             }
 
             team.UnitManager.AddUnit(controllableUnit);
-            var composer = this.UnitComposers.FirstOrDefault(x => x.Metadata.ClassIds.Contains(controllableUnit.SourceUnit.ClassID));
+            var composer =
+                this.UnitComposers.FirstOrDefault(
+                    x => x.Metadata.ClassIds.Contains(controllableUnit.SourceUnit.ClassID));
             if (composer != null)
             {
                 composer.Value.Compose(controllableUnit);
@@ -176,10 +178,13 @@ namespace Ability.Core.AbilityFactory
         /// </returns>
         public IUncontrollableSkill CreateNewSkill(Ability skill, IAbilityUnit owner)
         {
-            var abilitySkill = new UncontrollableSkill(skill) { // Json =
-                                                                  // this.AbilityDatabase.Value.GetSkillData(skill.StoredName())
-                                                                  // ?? new SkillJson(),
-                                                                  Json = new SkillJson(), Owner = owner };
+            var abilitySkill = new UncontrollableSkill(skill)
+                                   {
+                                       // Json =
+                                       // this.AbilityDatabase.Value.GetSkillData(skill.StoredName())
+                                       // ?? new SkillJson(),
+                                       Json = new SkillJson(), Owner = owner
+                                   };
 
             // abilitySkill.Json.CastPriority = this.AbilityDatabase.Value.GetCastPriority(
             // skill.StoredName(),

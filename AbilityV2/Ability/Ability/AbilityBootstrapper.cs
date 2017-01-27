@@ -26,7 +26,6 @@ namespace Ability
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
-    using Ensage.Common.Objects;
 
     /// <summary>
     ///     The program.
@@ -168,7 +167,7 @@ namespace Ability
 
             this.initialized = true;
             GlobalVariables.LocalHero = ObjectManager.LocalHero;
-            GlobalVariables.EnemyTeam = GlobalVariables.LocalHero.GetEnemyTeam();
+            GlobalVariables.EnemyTeam = UnitExtensions.GetEnemyTeam(GlobalVariables.LocalHero);
             GlobalVariables.Team = GlobalVariables.LocalHero.Team;
 
             // An aggregate catalog that combines multiple catalogs
@@ -184,10 +183,10 @@ namespace Ability
             // catalog.Catalogs.Add(new AssemblyCatalog());
             container = new CompositionContainer(catalog);
 
-            //foreach (var c in catalog)
-            //{
-            //    Console.WriteLine(c);
-            //}
+            foreach (var c in catalog)
+            {
+                Console.WriteLine(c);
+            }
 
             ComposeParts(this);
 
@@ -205,16 +204,15 @@ namespace Ability
                         }
                     });
 
-
-            //DelayAction.Add(
-            //    500,
-            //    () =>
-            //        {
-            //            foreach (var abilityService in this.AbilityServices)
-            //            {
-            //                Console.WriteLine("Service: " + abilityService.Value);
-            //            }
-            //        });
+            DelayAction.Add(
+                500,
+                () =>
+                    {
+                        foreach (var abilityService in this.AbilityServices)
+                        {
+                            Console.WriteLine("Service: " + abilityService.Value);
+                        }
+                    });
         }
 
         #endregion

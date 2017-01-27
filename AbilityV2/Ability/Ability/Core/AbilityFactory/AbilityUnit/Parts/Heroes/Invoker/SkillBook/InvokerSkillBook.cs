@@ -58,6 +58,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.SkillBook
         /// </summary>
         public IAbilitySkill InvokableSkill { get; set; }
 
+        public Notifier InvokableSkillChange { get; } = new Notifier();
+
         public IAbilitySkill Invoke { get; set; }
 
         public List<IAbilitySkill> PossibleCombo { get; set; } = new List<IAbilitySkill>(5);
@@ -117,6 +119,12 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.SkillBook
             base.AddSkill(skill);
         }
 
+        public override void Initialize()
+        {
+            this.modifiers = this.Unit.Modifiers as InvokerModifiers;
+            base.Initialize();
+        }
+
         /// <summary>Notifies the observer that the provider has finished sending push-based notifications.</summary>
         public void OnCompleted()
         {
@@ -129,14 +137,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.SkillBook
         {
             throw new NotImplementedException();
         }
-
-        public override void Initialize()
-        {
-            this.modifiers = this.Unit.Modifiers as InvokerModifiers;
-            base.Initialize();
-        }
-
-        public Notifier InvokableSkillChange { get; } = new Notifier();
 
         /// <summary>Provides the observer with new data.</summary>
         /// <param name="value">The current notification information.</param>

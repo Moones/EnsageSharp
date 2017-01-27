@@ -68,7 +68,7 @@ namespace Ability.Core.AbilityManager
 
         public AbilityManager()
         {
-            //AbilityBootstrapper.ComposeParts(this);
+            // AbilityBootstrapper.ComposeParts(this);
         }
 
         #endregion
@@ -334,7 +334,8 @@ namespace Ability.Core.AbilityManager
                             if (this.enemies.TryGetValue(owner.Handle, out enemy)
                                 && !enemy.SkillBook.AllSkills.ContainsKey(skill.Handle)
                                 && (skill is Item || owner.ClassID == ClassID.CDOTA_Unit_Hero_Rubick
-                                    || owner.ClassID == ClassID.CDOTA_Unit_Hero_DoomBringer))
+                                    || owner.ClassID == ClassID.CDOTA_Unit_Hero_DoomBringer)
+                                && enemy.SkillBook.IsValid(skill))
                             {
                                 var abilitySkill = this.AbilityFactory.Value.CreateNewSkill(skill, enemy);
                                 enemy.SkillBook.AddSkill(abilitySkill);
@@ -348,7 +349,8 @@ namespace Ability.Core.AbilityManager
                         if (this.controllableUnits.TryGetValue(owner.Handle, out ally)
                             && !ally.SkillBook.AllSkills.ContainsKey(skill.Handle)
                             && (skill is Item || owner.ClassID == ClassID.CDOTA_Unit_Hero_Rubick
-                                || owner.ClassID == ClassID.CDOTA_Unit_Hero_DoomBringer))
+                                || owner.ClassID == ClassID.CDOTA_Unit_Hero_DoomBringer)
+                            && ally.SkillBook.IsValid(skill))
                         {
                             var abilitySkill = this.AbilityFactory.Value.CreateNewControllableSkill(skill, ally);
                             ally.SkillBook.AddSkill(abilitySkill);
@@ -390,26 +392,26 @@ namespace Ability.Core.AbilityManager
                                 };
             this.LocalTeam.OtherTeams.Add(enemyTeam);
             this.Teams = new List<IAbilityTeam> { this.LocalTeam, enemyTeam };
-            //foreach (var unit in ObjectManager.GetEntities<Unit>())
-            //{
-            //    if (!(unit is Hero) || unit.Team == GlobalVariables.EnemyTeam && !(unit is Hero)
-            //        || unit.ClassID == ClassID.CDOTA_BaseNPC_Creep_Lane
-            //        || unit.ClassID == ClassID.CDOTA_BaseNPC_Creep_Siege || unit.IsIllusion)
-            //    {
-            //        continue;
-            //    }
 
-            //    this.AddUnit(unit);
-            //}
+            // foreach (var unit in ObjectManager.GetEntities<Unit>())
+            // {
+            // if (!(unit is Hero) || unit.Team == GlobalVariables.EnemyTeam && !(unit is Hero)
+            // || unit.ClassID == ClassID.CDOTA_BaseNPC_Creep_Lane
+            // || unit.ClassID == ClassID.CDOTA_BaseNPC_Creep_Siege || unit.IsIllusion)
+            // {
+            // continue;
+            // }
 
-            //var delay = Game.GameTime < 0 ? 3000 : 500;
-            //DelayAction.Add(
-            //    delay,
-            //    () =>
-            //        {
-                        
-            //        });
+            // this.AddUnit(unit);
+            // }
 
+            // var delay = Game.GameTime < 0 ? 3000 : 500;
+            // DelayAction.Add(
+            // delay,
+            // () =>
+            // {
+
+            // });
             foreach (var hero in Heroes.All)
             {
                 this.AddUnit(hero);
@@ -714,24 +716,29 @@ namespace Ability.Core.AbilityManager
 
         private void AssignControllableSkills(Unit unit, IControllableUnit abilityUnit)
         {
+            this.AssignSkills(unit, abilityUnit);
+        }
+
+        private void AssignSkills(Unit unit, IAbilityUnit abilityUnit)
+        {
             try
             {
                 foreach (var skill in unit.Spellbook.Spells)
                 {
-                    if (!skill.IsValid)
+                    if (!skill.IsValid || !abilityUnit.SkillBook.IsValid(skill))
                     {
-                        return;
+                        continue;
                     }
 
                     if (skill.AbilityType != AbilityType.Attribute
                         && !abilityUnit.SkillBook.AllSkills.ContainsKey(skill.Handle))
                     {
                         var abilitySkill = this.AbilityFactory.Value.CreateNewControllableSkill(skill, abilityUnit);
-                        //if (abilitySkill.SkillControl.SkillCastingFunction == null)
-                        //{
-                        //    continue;
-                        //}
 
+                        // if (abilitySkill.SkillControl.SkillCastingFunction == null)
+                        // {
+                        // continue;
+                        // }
                         abilityUnit.SkillBook.AddSkill(abilitySkill);
 
                         this.OnSkillAdded(new SkillEventArgs { AbilitySkill = abilitySkill });
@@ -743,12 +750,17 @@ namespace Ability.Core.AbilityManager
                 Console.WriteLine("invalid spells for unit: " + unit.Name);
             }
 
-            if (unit.Inventory?.Items != null)
+            if (unit.Inventory == null)
+            {
+                return;
+            }
+
+            if (unit.Inventory.Items != null)
             {
                 var items = unit.Inventory.Items;
                 foreach (var item in items)
                 {
-                    if (item.IsRecipe)
+                    if (item.IsRecipe || !abilityUnit.SkillBook.IsValid(item))
                     {
                         continue;
                     }
@@ -756,11 +768,11 @@ namespace Ability.Core.AbilityManager
                     // if (item.CommonProperties() != null)
                     // {
                     var abilitySkill = this.AbilityFactory.Value.CreateNewControllableSkill(item, abilityUnit);
-                    //if (abilitySkill.SkillControl.SkillCastingFunction == null)
-                    //{
-                    //    continue;
-                    //}
 
+                    // if (abilitySkill.SkillControl.SkillCastingFunction == null)
+                    // {
+                    // continue;
+                    // }
                     abilityUnit.SkillBook.AddSkill(abilitySkill);
 
                     this.OnSkillAdded(new SkillEventArgs { AbilitySkill = abilitySkill });
@@ -768,48 +780,51 @@ namespace Ability.Core.AbilityManager
                     // }
                 }
             }
-        }
 
-        private void AssignSkills(Unit unit, IUncontrollableUnit abilityUnit)
-        {
-            try
+            if (unit.Inventory.Backpack != null)
             {
-                foreach (var skill in unit.Spellbook.Spells)
-                {
-                    if (!skill.IsValid)
-                    {
-                        return;
-                    }
-
-                    if (skill.AbilityType != AbilityType.Attribute
-                        && !abilityUnit.SkillBook.AllSkills.ContainsKey(skill.Handle))
-                    {
-                        var abilitySkill = this.AbilityFactory.Value.CreateNewSkill(skill, abilityUnit);
-
-                        abilityUnit.SkillBook.AddSkill(abilitySkill);
-
-                        this.OnSkillAdded(new SkillEventArgs { AbilitySkill = abilitySkill });
-                    }
-                }
-            }
-            catch (EntityNotFoundException)
-            {
-                Console.WriteLine("invalid spells for unit: " + unit.Name);
-            }
-
-            if (unit.Inventory?.Items != null)
-            {
-                var items = unit.Inventory.Items;
+                var items = unit.Inventory.Backpack;
                 foreach (var item in items)
                 {
-                    if (item.IsRecipe)
+                    if (item.IsRecipe || !abilityUnit.SkillBook.IsValid(item))
                     {
                         continue;
                     }
 
                     // if (item.CommonProperties() != null)
                     // {
-                    var abilitySkill = this.AbilityFactory.Value.CreateNewSkill(item, abilityUnit);
+                    var abilitySkill = this.AbilityFactory.Value.CreateNewControllableSkill(item, abilityUnit);
+
+                    // if (abilitySkill.SkillControl.SkillCastingFunction == null)
+                    // {
+                    // continue;
+                    // }
+                    abilityUnit.SkillBook.AddSkill(abilitySkill);
+
+                    this.OnSkillAdded(new SkillEventArgs { AbilitySkill = abilitySkill });
+
+                    // }
+                }
+            }
+
+            if (unit.Inventory.Stash != null)
+            {
+                var items = unit.Inventory.Stash;
+                foreach (var item in items)
+                {
+                    if (item.IsRecipe || !abilityUnit.SkillBook.IsValid(item))
+                    {
+                        continue;
+                    }
+
+                    // if (item.CommonProperties() != null)
+                    // {
+                    var abilitySkill = this.AbilityFactory.Value.CreateNewControllableSkill(item, abilityUnit);
+
+                    // if (abilitySkill.SkillControl.SkillCastingFunction == null)
+                    // {
+                    // continue;
+                    // }
                     abilityUnit.SkillBook.AddSkill(abilitySkill);
 
                     this.OnSkillAdded(new SkillEventArgs { AbilitySkill = abilitySkill });

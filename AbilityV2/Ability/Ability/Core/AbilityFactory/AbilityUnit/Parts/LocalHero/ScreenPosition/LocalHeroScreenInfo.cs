@@ -45,7 +45,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.LocalHero.ScreenPosition
         {
             return this.Position
                    + new Vector2(
-                       (float)(-HUDInfo.HpBarX * 1.07 * HUDInfo.Monitor),
+                       (float)(-HUDInfo.HpBarX * 1.11 * HUDInfo.Monitor),
                        (float)(-HUDInfo.HpBarY * 1.38 * HUDInfo.Monitor));
         }
 

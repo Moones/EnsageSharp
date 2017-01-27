@@ -47,6 +47,16 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
 
         #region Public Methods and Operators
 
+        /// <summary>The dota base.</summary>
+        /// <param name="dotaBase">The dota base.</param>
+        /// <returns>The <see cref="bool" />.</returns>
+        bool DotaBase(Unit dotaBase);
+
+        /// <summary>The entity.</summary>
+        /// <param name="entity">The entity.</param>
+        /// <returns>The <see cref="bool" />.</returns>
+        bool Entity(Entity entity);
+
         /// <summary>
         ///     The particle is from hero.
         /// </summary>
@@ -60,6 +70,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
         ///     The info.
         /// </param>
         void ParticleIsFromHero(Entity sender, ParticleEffectAddedEventArgs args, ParticleEffectMoreInfo info);
+
+        /// <summary>The position updated.</summary>
+        /// <param name="position">The position.</param>
+        void PositionUpdated(Vector3 position);
 
         /// <summary>
         ///     The sender is hero.
@@ -75,23 +89,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
         /// </param>
         void SenderIsHero(Entity sender, ParticleEffectAddedEventArgs args, ParticleEffectMoreInfo info);
 
-        /// <summary>The position updated.</summary>
-        /// <param name="position">The position.</param>
-        void PositionUpdated(Vector3 position);
-
-        /// <summary>The dota base.</summary>
-        /// <param name="dotaBase">The dota base.</param>
-        /// <returns>The <see cref="bool"/>.</returns>
-        bool DotaBase(Unit dotaBase);
-
-        /// <summary>The entity.</summary>
-        /// <param name="entity">The entity.</param>
-        /// <returns>The <see cref="bool"/>.</returns>
-        bool Entity(Entity entity);
-
         /// <summary>The thinker.</summary>
         /// <param name="thinker">The thinker.</param>
-        /// <returns>The <see cref="bool"/>.</returns>
+        /// <returns>The <see cref="bool" />.</returns>
         bool Thinker(Entity thinker);
 
         #endregion

@@ -20,28 +20,25 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Overlay
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.ObjectPanel;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.SkillPanel;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook;
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Visibility;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Modifiers;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.SkillBook;
 
     using Ensage;
-    using Ensage.Common;
 
     using SharpDX;
 
     /// <summary>
     ///     The invoker unit overlay.
     /// </summary>
-    public class InvokerUnitOverlay : UnitOverlayBase,
-                                      IObserver<AbilityCast>,
-                                      IObserver<SkillAdd>
+    public class InvokerUnitOverlay : UnitOverlayBase, IObserver<AbilityCast>, IObserver<SkillAdd>
     {
         #region Fields
 
-        private InvokerSkillBook skillbook;
-        private SkillPanel spellPanel2;
-
         private InvokerModifiers modifiers;
+
+        private InvokerSkillBook skillbook;
+
+        private SkillPanel spellPanel2;
 
         #endregion
 
@@ -50,12 +47,15 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Overlay
         public InvokerUnitOverlay(IAbilityUnit unit)
             : base(unit)
         {
-            
         }
 
         #endregion
 
+        #region Public Properties
+
         public InvokerSkillPanel InvokerSkillPanel { get; set; }
+
+        #endregion
 
         #region Public Methods and Operators
 
@@ -110,11 +110,11 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Overlay
             this.modifiers = this.Unit.Modifiers as InvokerModifiers;
             this.Unit.SkillBook.SkillAdd.Subscribe(this);
             this.skillbook.InvokableSkillChange.Subscribe(
-                (() =>
+                () =>
                     {
                         this.InvokerSkillPanel.UpdateSkills();
                         this.spellPanel2.UpdateSkills();
-                    }));
+                    });
             this.Unit.Visibility.CameOutOfFogNotifier.Subscribe(
                 () =>
                     {

@@ -13,8 +13,6 @@
 // </copyright>
 namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Visibility
 {
-    using System;
-
     using Ability.Core.AbilityFactory.Utilities;
 
     using Ensage;
@@ -62,14 +60,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Visibility
         /// </summary>
         public IAbilityUnit Unit { get; set; }
 
-        public virtual void Initialize()
-        {
-        }
-
-        public virtual void Dispose()
-        {
-        }
-
         /// <summary>
         ///     Gets or sets a value indicating whether visible.
         /// </summary>
@@ -96,8 +86,19 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Visibility
                 {
                     this.visible = value;
                 }
-
             }
+        }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public virtual void Dispose()
+        {
+        }
+
+        public virtual void Initialize()
+        {
         }
 
         #endregion

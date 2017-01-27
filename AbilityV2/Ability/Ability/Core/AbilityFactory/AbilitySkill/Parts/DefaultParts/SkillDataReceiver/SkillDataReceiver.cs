@@ -48,11 +48,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillDataR
         /// </summary>
         public IAbilitySkill Skill { get; set; }
 
-        /// <summary>The initialize.</summary>
-        public void Initialize()
-        {
-        }
-
         /// <summary>Gets the updates.</summary>
         public Collection<Action> Updates { get; } = new Collection<Action>();
 
@@ -63,7 +58,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillDataR
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public virtual void Dispose()
         {
-
         }
 
         /// <summary>
@@ -131,6 +125,11 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillDataR
             {
                 update.Invoke();
             }
+        }
+
+        /// <summary>The initialize.</summary>
+        public void Initialize()
+        {
         }
 
         /// <summary>

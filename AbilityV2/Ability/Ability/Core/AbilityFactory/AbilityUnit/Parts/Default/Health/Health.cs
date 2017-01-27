@@ -84,14 +84,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health
         /// </summary>
         public IAbilityUnit Unit { get; set; }
 
-        public virtual void Initialize()
-        {
-        }
-
-        public virtual void Dispose()
-        {
-        }
-
         #endregion
 
         #region Public Methods and Operators
@@ -110,6 +102,14 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health
             var incomingDamage = new IncomingDamage(damage, delay);
             this.incomingDamages.Add(incomingDamage);
             DelayAction.Add(delay, () => { this.incomingDamages.Remove(incomingDamage); });
+        }
+
+        public virtual void Dispose()
+        {
+        }
+
+        public virtual void Initialize()
+        {
         }
 
         /// <summary>

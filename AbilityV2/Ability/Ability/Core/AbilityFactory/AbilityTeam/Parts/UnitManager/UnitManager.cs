@@ -13,7 +13,6 @@
 // </copyright>
 namespace Ability.Core.AbilityFactory.AbilityTeam.Parts.UnitManager
 {
-    using System;
     using System.Collections.Generic;
 
     using Ability.Core.AbilityFactory.AbilityUnit;

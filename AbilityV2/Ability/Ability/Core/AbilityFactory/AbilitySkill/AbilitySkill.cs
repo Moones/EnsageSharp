@@ -49,14 +49,14 @@ namespace Ability.Core.AbilityFactory.AbilitySkill
     {
         #region Fields
 
+        /// <summary>The parts.</summary>
+        private readonly Dictionary<Type, IAbilitySkillPart> parts = new Dictionary<Type, IAbilitySkillPart>();
+
         /// <summary>The charges.</summary>
         private ICharges charges;
 
         /// <summary>The cooldown.</summary>
         private ICooldown cooldown;
-
-        /// <summary>The parts.</summary>
-        private readonly Dictionary<Type, IAbilitySkillPart> parts = new Dictionary<Type, IAbilitySkillPart>();
 
         #endregion
 
@@ -98,16 +98,17 @@ namespace Ability.Core.AbilityFactory.AbilitySkill
             // this.Variables.RefillsMana = true;
             // this.Variables.BonusMana = sourceAbility.GetAbilityData("mana_gain");
             // }
-
             if (this.Name.Contains("item_"))
             {
                 this.Texture = Textures.GetItemTexture(this.Name);
-                //this.IconSize = new Vector2(HUDInfo.GetHPBarSizeX() / 6, (float)(HUDInfo.GetHPBarSizeX() / 6 / 1.24));
+
+                // this.IconSize = new Vector2(HUDInfo.GetHPBarSizeX() / 6, (float)(HUDInfo.GetHPBarSizeX() / 6 / 1.24));
             }
             else
             {
                 this.Texture = Textures.GetSpellTexture(this.Name);
-                //this.IconSize = new Vector2(HUDInfo.GetHPBarSizeX() / 6, HUDInfo.GetHPBarSizeX() / 6 + 1);
+
+                // this.IconSize = new Vector2(HUDInfo.GetHPBarSizeX() / 6, HUDInfo.GetHPBarSizeX() / 6 + 1);
             }
 
             // this.AbilityPhase = new AbilityPhase(this);
@@ -137,9 +138,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill
         #endregion
 
         #region Public Properties
-
-        /// <summary>The parts.</summary>
-        public IReadOnlyDictionary<Type, IAbilitySkillPart> Parts => this.parts;
 
         /// <summary>
         ///     Gets or sets the ability cast.
@@ -278,6 +276,9 @@ namespace Ability.Core.AbilityFactory.AbilitySkill
         /// </summary>
         public IAbilityUnit Owner { get; set; }
 
+        /// <summary>The parts.</summary>
+        public IReadOnlyDictionary<Type, IAbilitySkillPart> Parts => this.parts;
+
         /// <summary>
         ///     Gets or sets the skill color.
         /// </summary>
@@ -361,14 +362,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill
 
             this.GetType().GetProperties().FirstOrDefault(x => x.PropertyType == type)?.SetValue(this, part);
             this.parts.Add(type, part);
-        }
-
-        /// <summary>The get part.</summary>
-        /// <typeparam name="T">The type of part</typeparam>
-        /// <returns>The <see cref="T"/>.</returns>
-        public T GetPart<T>() where T : IAbilitySkillPart
-        {
-            return (T)this.Parts[typeof(T)];
         }
 
         /// <summary>
@@ -481,7 +474,12 @@ namespace Ability.Core.AbilityFactory.AbilitySkill
         {
             GC.SuppressFinalize(this);
             this.DisposeNotifier.Notify();
-            this.CastData.Dispose();
+            foreach (var keyValuePair in this.Parts)
+            {
+                keyValuePair.Value.Dispose();
+            }
+
+            // this.CastData.Dispose();
             this.CastData = null;
             this.DataReceiver = null;
             this.Cooldown = null;
@@ -494,8 +492,15 @@ namespace Ability.Core.AbilityFactory.AbilitySkill
             this.Updater = null;
             this.Drawer = null;
             this.DamageCalculator = null;
-            //this.SkillTargetFind.Dispose();
-            //this.SkillTargetFind = null;
+            this.SkillTargetFind = null;
+        }
+
+        /// <summary>The get part.</summary>
+        /// <typeparam name="T">The type of part</typeparam>
+        /// <returns>The <see cref="T" />.</returns>
+        public T GetPart<T>() where T : IAbilitySkillPart
+        {
+            return (T)this.Parts[typeof(T)];
         }
 
         /// <summary>

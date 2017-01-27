@@ -33,10 +33,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
         /// </summary>
         public IAbilitySkill Skill { get; set; }
 
-        public virtual void Initialize()
-        {
-        }
-
         #endregion
 
         #region Public Methods and Operators
@@ -65,6 +61,10 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
                             ? new CastPointSpellOverlay(this.Skill)
                             : new SpellOverlay(this.Skill))
                        : new ItemOverlay(this.Skill);
+        }
+
+        public virtual void Initialize()
+        {
         }
 
         #endregion

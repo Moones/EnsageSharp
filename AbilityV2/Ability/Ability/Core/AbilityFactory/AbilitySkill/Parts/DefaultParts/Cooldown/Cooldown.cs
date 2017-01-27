@@ -35,6 +35,13 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.Cooldown
         /// </summary>
         private float current;
 
+        /// <summary>The last change time.</summary>
+        private float lastChangeTime;
+
+        private double lastValue;
+
+        private bool manualCalculation;
+
         /// <summary>
         ///     The was ready.
         /// </summary>
@@ -57,9 +64,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.Cooldown
         }
 
         #endregion
-
-        /// <summary>The last change time.</summary>
-        private float lastChangeTime;
 
         #region Public Properties
 
@@ -127,15 +131,24 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.Cooldown
         /// </summary>
         public IAbilitySkill Skill { get; set; }
 
-        private double lastValue;
+        #endregion
 
-        private bool manualCalculation;
+        #region Public Methods and Operators
+
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public virtual void Dispose()
+        {
+        }
 
         /// <summary>The initialize.</summary>
         public virtual void Initialize()
         {
             this.Skill.DataReceiver.Updates.Add(this.Update);
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>The update.</summary>
         private void Update()
@@ -163,7 +176,7 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.Cooldown
 
             if (!this.cooldownSleeper.Sleeping)
             {
-                this.lastValue = this.Skill.SourceAbility.Cooldown - (Math.Min(Game.AvgPing, 1000) / 1000);
+                this.lastValue = this.Skill.SourceAbility.Cooldown - Math.Min(Game.AvgPing, 1000) / 1000;
                 this.Current = (float)Math.Ceiling(this.lastValue);
                 this.cooldownSleeper.Sleep(250);
             }
@@ -179,15 +192,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.Cooldown
                 this.Current = (float)Math.Ceiling(this.lastValue);
                 this.cooldownSleeper.Sleep(1000);
             }
-        }
-
-        #endregion
-
-        #region Public Methods and Operators
-
-        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
-        public virtual void Dispose()
-        {
         }
 
         #endregion

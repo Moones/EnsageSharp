@@ -103,16 +103,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.Charges
         /// </summary>
         public IAbilitySkill Skill { get; set; }
 
-        public virtual void Initialize()
-        {
-            this.Skill.DataReceiver.Updates.Add(
-                () =>
-                {
-                    this.Primary = this.Skill.SourceItem.CurrentCharges;
-                    this.Secondary = this.Skill.SourceItem.SecondaryCharges;
-                });
-        }
-
         #endregion
 
         #region Public Methods and Operators
@@ -120,6 +110,16 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.Charges
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose()
         {
+        }
+
+        public virtual void Initialize()
+        {
+            this.Skill.DataReceiver.Updates.Add(
+                () =>
+                    {
+                        this.Primary = this.Skill.SourceItem.CurrentCharges;
+                        this.Secondary = this.Skill.SourceItem.SecondaryCharges;
+                    });
         }
 
         #endregion

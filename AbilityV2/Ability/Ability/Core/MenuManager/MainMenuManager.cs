@@ -28,10 +28,6 @@ namespace Ability.Core.MenuManager
     [Export(typeof(IMainMenuManager))]
     public class MainMenuManager : IMainMenuManager
     {
-        #region Fields
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -61,15 +57,15 @@ namespace Ability.Core.MenuManager
         [Import(typeof(IAbilityManager), AllowRecomposition = true)]
         internal Lazy<IAbilityManager> AbilityUnitManager { get; set; }
 
+        /// <summary>Gets or sets the hero menus.</summary>
+        [ImportMany]
+        internal IEnumerable<Lazy<IHeroMenu>> HeroMenus { get; set; }
+
         /// <summary>
         ///     Gets or sets the unit menus.
         /// </summary>
         [ImportMany]
         internal IEnumerable<Lazy<IUnitMenu>> UnitMenus { get; set; }
-
-        /// <summary>Gets or sets the hero menus.</summary>
-        [ImportMany]
-        internal IEnumerable<Lazy<IHeroMenu>> HeroMenus { get; set; }
 
         #endregion
 

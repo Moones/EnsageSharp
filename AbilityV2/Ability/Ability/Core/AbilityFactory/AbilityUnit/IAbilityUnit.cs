@@ -43,10 +43,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
     {
         #region Public Properties
 
-        /// <summary>Gets the parts.</summary>
-        IReadOnlyDictionary<Type, IAbilityUnitPart> Parts { get; }
-
-            /// <summary>
+        /// <summary>
         ///     Gets the data receiver.
         /// </summary>
         IUnitDataReceiver DataReceiver { get; set; }
@@ -111,15 +108,18 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         /// </summary>
         IOverlayEntryProvider OverlayEntryProvider { get; set; }
 
-        /// <summary>
-        ///     Gets the particle tracker.
-        /// </summary>
-        IPositionTracker PositionTracker { get; set; }
+        /// <summary>Gets the parts.</summary>
+        IReadOnlyDictionary<Type, IAbilityUnitPart> Parts { get; }
 
         /// <summary>
         ///     Gets the position.
         /// </summary>
         IPosition Position { get; set; }
+
+        /// <summary>
+        ///     Gets the particle tracker.
+        /// </summary>
+        IPositionTracker PositionTracker { get; set; }
 
         /// <summary>
         ///     Gets the screen position.
@@ -165,11 +165,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
 
         #region Public Methods and Operators
 
-        /// <summary>
-        ///     The on draw.
-        /// </summary>
-        void OnDraw();
-
         /// <summary>The add part.</summary>
         /// <typeparam name="T">The type of part</typeparam>
         /// <param name="partFactory">The part Factory.</param>
@@ -177,8 +172,13 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
 
         /// <summary>The get part.</summary>
         /// <typeparam name="T">The type of part</typeparam>
-        /// <returns>The <see cref="T"/>.</returns>
+        /// <returns>The <see cref="T" />.</returns>
         T GetPart<T>() where T : IAbilityUnitPart;
+
+        /// <summary>
+        ///     The on draw.
+        /// </summary>
+        void OnDraw();
 
         #endregion
     }

@@ -53,7 +53,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer
 
             var percent = this.MinimapIconSize.X / this.EndSceneIcon.Size.X;
 
-            //Console.WriteLine(percent);
+            // Console.WriteLine(percent);
             this.EndSceneIcon.Scale = new Vector2(percent, percent);
             this.EndSceneIcon.SetSaturation(1.5f);
 
@@ -71,6 +71,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer
         /// </summary>
         public DotaTexture Icon { get; set; }
 
+        public DotaTexture MinimapIcon { get; set; }
+
         /// <summary>
         ///     Gets or sets the minimap icon size.
         /// </summary>
@@ -81,14 +83,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer
         /// </summary>
         public IAbilityUnit Unit { get; set; }
 
-        public virtual void Initialize()
-        {
-        }
-
-        public virtual void Dispose()
-        {
-        }
-
         /// <summary>
         ///     Gets or sets the world icon size.
         /// </summary>
@@ -97,6 +91,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer
         #endregion
 
         #region Public Methods and Operators
+
+        public virtual void Dispose()
+        {
+        }
 
         /// <summary>
         ///     The draw icon on map.
@@ -132,7 +130,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer
             Drawing.DrawRect(minpos, this.MinimapIconSize, this.Icon);
         }
 
-        public DotaTexture MinimapIcon { get; set; }
+        public virtual void Initialize()
+        {
+        }
 
         #endregion
     }

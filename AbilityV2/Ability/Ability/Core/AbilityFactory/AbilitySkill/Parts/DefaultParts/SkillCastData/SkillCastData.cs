@@ -17,7 +17,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCastD
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Mana;
     using Ability.Core.AbilityFactory.Utilities;
 
-    using Ensage.Common;
     using Ensage.Common.Extensions;
 
     /// <summary>
@@ -31,11 +30,11 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCastD
 
         private LevelUpdater<IAbilitySkill, float> castRangeUpdate;
 
+        private DataObserver<ICooldown> cooldownObserver;
+
         private DataObserver<IMana> manaObserver;
 
         private LevelUpdater<IAbilitySkill, float> speedUpdate;
-
-        private DataObserver<ICooldown> cooldownObserver;
 
         #endregion
 
@@ -80,6 +79,22 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCastD
         /// </summary>
         public IAbilitySkill Skill { get; set; }
 
+        /// <summary>
+        ///     Gets the speed.
+        /// </summary>
+        public float Speed => this.speedUpdate?.Value ?? this.Skill.SourceAbility.GetProjectileSpeed();
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public void Dispose()
+        {
+            this.manaObserver.Dispose();
+            this.cooldownObserver?.Dispose();
+        }
+
         public virtual void Initialize()
         {
             this.castPointUpdate = new LevelUpdater<IAbilitySkill, double>(
@@ -107,22 +122,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCastD
                         });
                 this.cooldownObserver.Subscribe(this.Skill.Cooldown);
             }
-        }
-
-        /// <summary>
-        ///     Gets the speed.
-        /// </summary>
-        public float Speed => this.speedUpdate?.Value ?? this.Skill.SourceAbility.GetProjectileSpeed();
-
-        #endregion
-
-        #region Public Methods and Operators
-
-        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
-        public void Dispose()
-        {
-            this.manaObserver.Dispose();
-            this.cooldownObserver?.Dispose();
         }
 
         #endregion

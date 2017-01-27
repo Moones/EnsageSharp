@@ -42,10 +42,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
                         {
                             return false;
                         }
-                        
-                        //Console.WriteLine(skill.Name + " " + skill.SourceItem.IsHidden);
+
+                        // Console.WriteLine(skill.Name + " " + skill.SourceItem.IsHidden);
                         return skill.IsItem;
-                        
                     },
                 orderFunction,
                 (o, vector2) =>

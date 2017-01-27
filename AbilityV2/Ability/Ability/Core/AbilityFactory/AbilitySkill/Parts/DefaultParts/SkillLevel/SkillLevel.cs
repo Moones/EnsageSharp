@@ -17,8 +17,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillLevel
 
     using Ability.Core.AbilityFactory.Utilities;
 
-    using Ensage.Common;
-
     /// <summary>
     ///     The skill level.
     /// </summary>
@@ -76,12 +74,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillLevel
         /// </summary>
         public IAbilitySkill Skill { get; set; }
 
-        /// <summary>The initialize.</summary>
-        public virtual void Initialize()
-        {
-            this.Skill.DataReceiver.Updates.Add(this.Update);
-        }
-
         #endregion
 
         #region Public Methods and Operators
@@ -89,6 +81,13 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillLevel
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public virtual void Dispose()
         {
+            this.Skill.DataReceiver.Updates.Remove(this.Update);
+        }
+
+        /// <summary>The initialize.</summary>
+        public virtual void Initialize()
+        {
+            this.Skill.DataReceiver.Updates.Add(this.Update);
         }
 
         /// <summary>Notifies the provider that an observer is to receive notifications.</summary>

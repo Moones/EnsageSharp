@@ -1,4 +1,4 @@
-﻿// <copyright file="AbilityMetadataAttribute.cs" company="EnsageSharp">
+﻿// <copyright file="AbilitySkillMetadataAttribute.cs" company="EnsageSharp">
 //    Copyright (c) 2017 Moones.
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -14,13 +14,10 @@
 namespace Ability.Core.AbilityFactory.Metadata
 {
     using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.ComponentModel.Composition;
     using System.Security.Permissions;
 
     using Ensage;
-    using Ensage.Common.Enums;
 
     using Attribute = System.Attribute;
 
@@ -31,8 +28,9 @@ namespace Ability.Core.AbilityFactory.Metadata
     [MetadataAttribute, AttributeUsage(AttributeTargets.Class)]
     public sealed class AbilitySkillMetadataAttribute : Attribute, IAbilitySkillMetadata
     {
+        #region Constructors and Destructors
 
-        /// <summary>Initializes a new instance of the <see cref="AbilitySkillMetadataAttribute"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="AbilitySkillMetadataAttribute" /> class.</summary>
         /// <param name="ownerClassId">The owner class id.</param>
         /// <param name="abilityIds">The skill ids.</param>
         [PermissionSet(SecurityAction.Assert, Unrestricted = true)]
@@ -43,37 +41,42 @@ namespace Ability.Core.AbilityFactory.Metadata
             this.Owner = true;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="AbilitySkillMetadataAttribute"/> class.</summary>
-        /// <param name="ownerClassId">The owner class id.</param>
-        /// <param name="itemIds">The item ids.</param>
-        //public AbilitySkillMetadataAttribute(ClassID ownerClassId, params ItemId[] itemIds)
-        //{
-        //    this.OwnerClassId = ownerClassId;
-        //    this.ItemIds = itemIds;
-        //    this.Owner = true;
-        //}
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>Gets the ability ids.</summary>
+        public uint[] AbilityIds { get; }
+
+        // public AbilitySkillMetadataAttribute(ClassID ownerClassId, params ItemId[] itemIds)
+        // {
+        // this.OwnerClassId = ownerClassId;
+        // this.ItemIds = itemIds;
+        // this.Owner = true;
+        // }
 
         ///// <summary>Initializes a new instance of the <see cref="AbilitySkillMetadataAttribute"/> class.</summary>
         ///// <param name="abilityIds">The skill ids.</param>
-        //public AbilitySkillMetadataAttribute(params AbilityId[] abilityIds)
-        //{
-        //    this.AbilityIds = abilityIds;
-        //}
+        // public AbilitySkillMetadataAttribute(params AbilityId[] abilityIds)
+        // {
+        // this.AbilityIds = abilityIds;
+        // }
 
         ///// <summary>Initializes a new instance of the <see cref="AbilitySkillMetadataAttribute"/> class.</summary>
         ///// <param name="itemIds">The item ids.</param>
-        //public AbilitySkillMetadataAttribute(params ItemId[] itemIds)
-        //{
-        //    this.ItemIds = itemIds;
-        //}
-
+        // public AbilitySkillMetadataAttribute(params ItemId[] itemIds)
+        // {
+        // this.ItemIds = itemIds;
+        // }
+        /// <summary>Initializes a new instance of the <see cref="AbilitySkillMetadataAttribute" /> class.</summary>
+        /// <param name="ownerClassId">The owner class id.</param>
+        /// <param name="itemIds">The item ids.</param>
         /// <summary>Gets a value indicating whether owner.</summary>
         public bool Owner { get; }
 
         /// <summary>Gets the owner class id.</summary>
         public ClassID OwnerClassId { get; }
 
-        /// <summary>Gets the ability ids.</summary>
-        public uint[] AbilityIds { get; }
+        #endregion
     }
 }

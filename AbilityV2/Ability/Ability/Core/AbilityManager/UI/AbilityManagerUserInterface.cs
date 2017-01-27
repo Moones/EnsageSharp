@@ -53,12 +53,7 @@ namespace Ability.Core.AbilityManager.UI
             var menu = new Menu("AbilityManagerUI", this.MainMenuManager.Value.MainMenu.Name + "abilityManagerUi");
             var enable = new ObservableMenuItem<bool>(menu.Name + "enable", "Enable");
             menu.AddItem(enable.SetValue(false));
-            enable.Provider.Subscribe(
-                new DataObserver<bool>(
-                    b =>
-                        {
-                            this.window.Visible = b;
-                        }));
+            enable.Provider.Subscribe(new DataObserver<bool>(b => { this.window.Visible = b; }));
             this.MainMenuManager.Value.MainMenu.SettingsMenu.AddSubMenu(menu);
             Game.OnWndProc += this.Game_OnWndProc;
             Drawing.OnDraw += this.Drawing_OnDraw;
@@ -66,9 +61,24 @@ namespace Ability.Core.AbilityManager.UI
 
         #endregion
 
+        #region Properties
+
         /// <summary>Gets or sets the main menu manager.</summary>
         [Import(typeof(IMainMenuManager))]
         protected Lazy<IMainMenuManager> MainMenuManager { get; set; }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>The dispose.</summary>
+        public void Dispose()
+        {
+            Game.OnWndProc -= this.Game_OnWndProc;
+            Drawing.OnDraw -= this.Drawing_OnDraw;
+        }
+
+        #endregion
 
         #region Methods
 
@@ -105,13 +115,6 @@ namespace Ability.Core.AbilityManager.UI
                 var mousePosition = Game.MouseScreenPosition;
                 this.window.MouseMove(mousePosition);
             }
-        }
-
-        /// <summary>The dispose.</summary>
-        public void Dispose()
-        {
-            Game.OnWndProc -= this.Game_OnWndProc;
-            Drawing.OnDraw -= this.Drawing_OnDraw;
         }
 
         #endregion

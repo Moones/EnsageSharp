@@ -15,10 +15,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Globalization;
     using System.Linq;
-    using System.Reflection;
 
     using Ability.Core.AbilityFactory.AbilitySkill;
     using Ability.Core.AbilityFactory.AbilityTeam;
@@ -38,7 +36,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitControl;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Visibility;
-    using Ability.Core.AbilityFactory.Utilities;
 
     using Ensage;
     using Ensage.Common.Objects;
@@ -50,6 +47,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
     {
         #region Fields
 
+        private readonly Dictionary<Type, IAbilityUnitPart> parts = new Dictionary<Type, IAbilityUnitPart>();
+
         /// <summary>The data receiver.</summary>
         private IUnitDataReceiver dataReceiver;
 
@@ -59,8 +58,12 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         /// <summary>The health.</summary>
         private IHealth health;
 
+        private IUnitInteraction interaction;
+
         /// <summary>The last intersection data.</summary>
         private ObstacleIntersection lastIntersectionData;
+
+        private IUnitLevel level;
 
         /// <summary>The mana.</summary>
         private IMana mana;
@@ -71,11 +74,15 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         /// <summary>The overlay.</summary>
         private IUnitOverlay overlay;
 
-        /// <summary>The particle tracker.</summary>
-        private IPositionTracker positionTracker;
+        private IOverlayEntryProvider overlayEntryProvider;
 
         /// <summary>The position.</summary>
         private IPosition position;
+
+        /// <summary>The particle tracker.</summary>
+        private IPositionTracker positionTracker;
+
+        private IScreenInfo screenInfo;
 
         /// <summary>The skill book.</summary>
         private ISkillBook<IAbilitySkill> skillBook;
@@ -85,16 +92,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
 
         /// <summary>The visibility.</summary>
         private IVisibility visibility;
-
-        private readonly Dictionary<Type, IAbilityUnitPart> parts = new Dictionary<Type, IAbilityUnitPart>();
-
-        private IUnitInteraction interaction;
-
-        private IUnitLevel level;
-
-        private IOverlayEntryProvider overlayEntryProvider;
-
-        private IScreenInfo screenInfo;
 
         #endregion
 
@@ -113,7 +110,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
             this.UnitHandleString = unit.Handle.ToString(CultureInfo.CurrentCulture);
             this.Name = unit.StoredName();
 
-            
             // foreach (var hero in Heroes.GetByTeam(GlobalVariables.EnemyTeam))
             // {
             // this.DamageDealtDictionary.Add(hero.Handle, 0);
@@ -123,9 +119,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         #endregion
 
         #region Public Properties
-
-        /// <summary>Gets the parts.</summary>
-        public IReadOnlyDictionary<Type, IAbilityUnitPart> Parts => this.parts;
 
         /// <summary>
         ///     Gets or sets the data receiver.
@@ -192,15 +185,18 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         /// </summary>
         public IOverlayEntryProvider OverlayEntryProvider { get; set; }
 
-        /// <summary>
-        ///     Gets or sets the fog of war exploit.
-        /// </summary>
-        public IPositionTracker PositionTracker { get; set; }
+        /// <summary>Gets the parts.</summary>
+        public IReadOnlyDictionary<Type, IAbilityUnitPart> Parts => this.parts;
 
         /// <summary>
         ///     Gets or sets the position.
         /// </summary>
         public IPosition Position { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the fog of war exploit.
+        /// </summary>
+        public IPositionTracker PositionTracker { get; set; }
 
         /// <summary>
         ///     Gets or sets the screen position.
@@ -246,29 +242,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
 
         #region Public Methods and Operators
 
-        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-            foreach (var keyValuePair in this.Parts)
-            {
-                keyValuePair.Value.Dispose();
-            }
-        }
-
-        /// <summary>
-        ///     The on draw.
-        /// </summary>
-        public virtual void OnDraw()
-        {
-            if (Game.IsPaused)
-            {
-                return;
-            }
-
-            this.Overlay.OnDraw();
-        }
-
         /// <summary>The add part.</summary>
         /// <typeparam name="T">The type of part</typeparam>
         /// <param name="partFactory">The part Factory.</param>
@@ -290,12 +263,35 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
             this.parts.Add(type, part);
         }
 
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            foreach (var keyValuePair in this.Parts)
+            {
+                keyValuePair.Value.Dispose();
+            }
+        }
+
         /// <summary>The get part.</summary>
         /// <typeparam name="T">The type of part</typeparam>
-        /// <returns>The <see cref="T"/>.</returns>
+        /// <returns>The <see cref="T" />.</returns>
         public T GetPart<T>() where T : IAbilityUnitPart
         {
             return (T)this.Parts[typeof(T)];
+        }
+
+        /// <summary>
+        ///     The on draw.
+        /// </summary>
+        public virtual void OnDraw()
+        {
+            if (Game.IsPaused)
+            {
+                return;
+            }
+
+            this.Overlay.OnDraw();
         }
 
         #endregion

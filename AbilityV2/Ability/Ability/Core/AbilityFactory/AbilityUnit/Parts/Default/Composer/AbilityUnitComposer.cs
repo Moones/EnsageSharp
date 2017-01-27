@@ -15,8 +15,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Linq;
 
     using Ability.Core.AbilityFactory.AbilitySkill;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer;
@@ -31,19 +29,18 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Visibility;
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.SkillBook;
-    using Ability.Core.AbilityFactory.Metadata;
 
     /// <summary>
     ///     The ability unit composer.
     /// </summary>
     public class AbilityUnitComposer : IAbilityUnitComposer
     {
-        /// <summary>Initializes a new instance of the <see cref="AbilityUnitComposer"/> class.</summary>
+        #region Constructors and Destructors
+
+        /// <summary>Initializes a new instance of the <see cref="AbilityUnitComposer" /> class.</summary>
         public AbilityUnitComposer()
         {
             this.AssignPart<IOverlayEntryProvider>(abilityUnit => new OverlayEntryProvider(abilityUnit));
-            this.AssignPart<ISkillBook<IAbilitySkill>>(abilityUnit => new SkillBook<IAbilitySkill>(abilityUnit));
             this.AssignPart<IScreenInfo>(abilityUnit => new ScreenInfo(abilityUnit));
             this.AssignPart<IHealth>(abilityUnit => new Health(abilityUnit));
             this.AssignPart<IMana>(abilityUnit => new Mana(abilityUnit));
@@ -55,7 +52,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
             this.AssignPart<IUnitOverlay>(abilityUnit => new UnitOverlay(abilityUnit));
             this.AssignPart<IVisibility>(abilityUnit => new Visibility(abilityUnit));
             this.AssignPart<IUnitDataReceiver>(abilityUnit => new UnitDataReceiver(abilityUnit));
+            this.AssignPart<ISkillBook<IAbilitySkill>>(abilityUnit => new SkillBook<IAbilitySkill>(abilityUnit));
         }
+
+        #endregion
 
         #region Public Properties
 
@@ -66,6 +66,15 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
         #endregion
 
         #region Public Methods and Operators
+
+        /// <summary>The assign part.</summary>
+        /// <param name="factory">The factory.</param>
+        /// <typeparam name="T">The type of part</typeparam>
+        public void AssignPart<T>(Func<IAbilityUnit, T> factory) where T : IAbilityUnitPart
+        {
+            var type = typeof(T);
+            this.Assignments[type] = unit => unit.AddPart(factory);
+        }
 
         /// <summary>
         ///     The compose.
@@ -79,7 +88,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
             // {
             // this.AssignPart<IUnitControl>(abilityUnit => new UnitControl(abilityUnit));
             // }
-
             foreach (var keyValuePair in this.Assignments)
             {
                 keyValuePair.Value.Invoke(unit);
@@ -92,15 +100,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
 
             // unit.Interaction = new UnitInteraction(unit);
             // unit.Updater = new AbilityUnitUpdater(unit);
-        }
-
-        /// <summary>The assign part.</summary>
-        /// <param name="factory">The factory.</param>
-        /// <typeparam name="T">The type of part</typeparam>
-        public void AssignPart<T>(Func<IAbilityUnit, T> factory) where T : IAbilityUnitPart
-        {
-            var type = typeof(T);
-            this.Assignments[type] = unit => unit.AddPart(factory);
         }
 
         #endregion

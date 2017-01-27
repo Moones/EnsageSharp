@@ -105,10 +105,55 @@ namespace Ability.Core.AbilityManager.UI.Elements.Window
 
         #region Public Properties
 
+        public Body Body1
+        {
+            get
+            {
+                return this.body;
+            }
+        }
+
+        /// <summary>
+        ///     The close button.
+        /// </summary>
+        public Button CloseButton
+        {
+            get
+            {
+                return this.closeButton;
+            }
+
+            set
+            {
+                this.closeButton = value;
+            }
+        }
+
         /// <summary>
         ///     Gets or sets the color.
         /// </summary>
         public Color Color { get; set; }
+
+        public Button HideButton
+        {
+            get
+            {
+                return this.hideButton;
+            }
+
+            set
+            {
+                this.hideButton = value;
+            }
+        }
+
+        public TopPanel Panel
+        {
+            get
+            {
+                return this.topPanel;
+            }
+        }
 
         /// <summary>
         ///     Gets or sets the parent.
@@ -142,49 +187,6 @@ namespace Ability.Core.AbilityManager.UI.Elements.Window
                 this.hideButton.Visible = this.visible;
                 this.body.Visible = this.visible;
                 this.topPanel.Visible = this.visible;
-            }
-        }
-
-        /// <summary>
-        ///     The close button.
-        /// </summary>
-        public Button CloseButton
-        {
-            get
-            {
-                return this.closeButton;
-            }
-            set
-            {
-                this.closeButton = value;
-            }
-        }
-
-        public Button HideButton
-        {
-            get
-            {
-                return this.hideButton;
-            }
-            set
-            {
-                this.hideButton = value;
-            }
-        }
-
-        public Body Body1
-        {
-            get
-            {
-                return this.body;
-            }
-        }
-
-        public TopPanel Panel
-        {
-            get
-            {
-                return this.topPanel;
             }
         }
 

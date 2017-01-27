@@ -1,4 +1,4 @@
-﻿// <copyright file="ParticleTracker.cs" company="EnsageSharp">
+﻿// <copyright file="PositionTracker.cs" company="EnsageSharp">
 //    Copyright (c) 2017 Moones.
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -13,8 +13,6 @@
 // </copyright>
 namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
 {
-    using System;
-
     using Ability.Core.AbilityData;
     using Ability.Core.MenuManager.GetValue;
     using Ability.Utilities;
@@ -71,17 +69,40 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
         /// </summary>
         public IAbilityUnit Unit { get; set; }
 
-        public void Initialize()
-        {
-        }
+        #endregion
+
+        #region Public Methods and Operators
 
         public void Dispose()
         {
         }
 
-        #endregion
+        /// <summary>The dota base.</summary>
+        /// <param name="dotaBase">The dota base.</param>
+        /// <returns>The <see cref="bool" />.</returns>
+        public virtual bool DotaBase(Unit dotaBase)
+        {
+            return false;
+        }
 
-        #region Public Methods and Operators
+        /// <summary>The entity.</summary>
+        /// <param name="entity">The entity.</param>
+        /// <returns>The <see cref="bool" />.</returns>
+        public virtual bool Entity(Entity entity)
+        {
+            if (this.sleeper.Sleeping || this.Unit.Visibility.Visible
+                || !entity.Owner.Handle.Equals(this.Unit.UnitHandle))
+            {
+                return false;
+            }
+
+            this.PositionUpdated(entity.NetworkPosition);
+            return true;
+        }
+
+        public void Initialize()
+        {
+        }
 
         /// <summary>
         ///     The particle is from hero.
@@ -95,28 +116,12 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
         /// <param name="info">
         ///     The info.
         /// </param>
-        public virtual void ParticleIsFromHero(Entity sender, ParticleEffectAddedEventArgs args, ParticleEffectMoreInfo info)
+        public virtual void ParticleIsFromHero(
+            Entity sender,
+            ParticleEffectAddedEventArgs args,
+            ParticleEffectMoreInfo info)
         {
-            //Console.WriteLine(this.Unit.Name + " ParticleIsFromHero : " + info.StringContainingHeroName + " was detected " + sender.Name);
-            var pos = args.ParticleEffect.GetControlPoint(0);
-            this.PositionUpdated(pos);
-        }
-
-        /// <summary>
-        ///     The sender is hero.
-        /// </summary>
-        /// <param name="sender">
-        ///     The sender.
-        /// </param>
-        /// <param name="args">
-        ///     The args.
-        /// </param>
-        /// <param name="info">
-        ///     The info.
-        /// </param>
-        public virtual void SenderIsHero(Entity sender, ParticleEffectAddedEventArgs args, ParticleEffectMoreInfo info)
-        {
-            //Console.WriteLine(this.Unit.Name + " SenderIsHero : " + info.StringContainingHeroName + " was detected " + sender.Name);
+            // Console.WriteLine(this.Unit.Name + " ParticleIsFromHero : " + info.StringContainingHeroName + " was detected " + sender.Name);
             var pos = args.ParticleEffect.GetControlPoint(0);
             this.PositionUpdated(pos);
         }
@@ -162,31 +167,28 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
             this.sleeper.Sleep(2000);
         }
 
-        /// <summary>The dota base.</summary>
-        /// <param name="dotaBase">The dota base.</param>
-        /// <returns>The <see cref="bool"/>.</returns>
-        public virtual bool DotaBase(Unit dotaBase)
+        /// <summary>
+        ///     The sender is hero.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sender.
+        /// </param>
+        /// <param name="args">
+        ///     The args.
+        /// </param>
+        /// <param name="info">
+        ///     The info.
+        /// </param>
+        public virtual void SenderIsHero(Entity sender, ParticleEffectAddedEventArgs args, ParticleEffectMoreInfo info)
         {
-            return false;
-        }
-
-        /// <summary>The entity.</summary>
-        /// <param name="entity">The entity.</param>
-        /// <returns>The <see cref="bool"/>.</returns>
-        public virtual bool Entity(Entity entity)
-        {
-            if (this.sleeper.Sleeping || this.Unit.Visibility.Visible || !entity.Owner.Handle.Equals(this.Unit.UnitHandle))
-            {
-                return false;
-            }
-
-            this.PositionUpdated(entity.NetworkPosition);
-            return true;
+            // Console.WriteLine(this.Unit.Name + " SenderIsHero : " + info.StringContainingHeroName + " was detected " + sender.Name);
+            var pos = args.ParticleEffect.GetControlPoint(0);
+            this.PositionUpdated(pos);
         }
 
         /// <summary>The thinker.</summary>
         /// <param name="thinker">The thinker.</param>
-        /// <returns>The <see cref="bool"/>.</returns>
+        /// <returns>The <see cref="bool" />.</returns>
         public virtual bool Thinker(Entity thinker)
         {
             return false;

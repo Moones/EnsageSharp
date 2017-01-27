@@ -69,7 +69,8 @@ namespace Ability.Utilities
         static Render()
         {
             Drawing.OnEndScene += Drawing_OnEndScene;
-            //Drawing.OnDraw += Drawing_OnDraw;
+
+            // Drawing.OnDraw += Drawing_OnDraw;
             var thread = new Thread(PrepareObjects);
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
@@ -160,8 +161,7 @@ namespace Ability.Utilities
                 return;
             }
 
-            Device.SetRenderState(RenderState.AlphaBlendEnable, true);
-
+            // Device.SetRenderState(RenderState.AlphaBlendEnable, true);
             foreach (var renderObject in _renderVisibleObjects)
             {
                 renderObject.OnEndScene();
@@ -1335,7 +1335,8 @@ namespace Ability.Utilities
             {
                 Drawing.OnPreReset += delegate { this.OnPreReset(); };
                 Drawing.OnPostReset += delegate { this.OnPostReset(); };
-                AppDomain.CurrentDomain.DomainUnload += delegate { this.OnPreReset(); };
+
+                // AppDomain.CurrentDomain.DomainUnload += delegate { this.OnPreReset(); };
             }
 
             #endregion
@@ -1454,7 +1455,7 @@ namespace Ability.Utilities
             /// </summary>
             private Sprite()
             {
-                Game.OnUpdate += this.Game_OnUpdate;
+                // Game.OnUpdate += this.Game_OnUpdate;
                 this.SubscribeToResetEvents();
             }
 
@@ -1664,7 +1665,8 @@ namespace Ability.Utilities
             public override void Dispose()
             {
                 this.OnPreReset();
-                Game.OnUpdate -= this.Game_OnUpdate;
+
+                // Game.OnUpdate -= this.Game_OnUpdate;
                 if (!this._sprite.IsDisposed)
                 {
                     this._sprite.Dispose();
@@ -1710,27 +1712,28 @@ namespace Ability.Utilities
             /// </summary>
             public override void OnEndScene()
             {
-                try
+                // try
+                // {
+                if (this._sprite.IsDisposed || this._texture.IsDisposed || !this.Position.IsValid() || this._hide)
                 {
-                    if (this._sprite.IsDisposed || this._texture.IsDisposed || !this.Position.IsValid() || this._hide)
-                    {
-                        return;
-                    }
+                    return;
+                }
 
-                    this._sprite.Begin();
-                    var matrix = this._sprite.Transform;
-                    var nMatrix = Matrix.Scaling(this.Scale.X, this.Scale.Y, 0) * Matrix.RotationZ(this.Rotation)
-                                  * Matrix.Translation(this.Position.X, this.Position.Y, 0);
-                    this._sprite.Transform = nMatrix;
-                    this._sprite.Draw(this._texture, this._color, this._crop);
-                    this._sprite.Transform = matrix;
-                    this._sprite.End();
-                }
-                catch (Exception e)
-                {
-                    this.Reset();
-                    Console.WriteLine(@"Common.Render.Sprite.OnEndScene: " + e);
-                }
+                this._sprite.Begin();
+                var matrix = this._sprite.Transform;
+                var nMatrix = Matrix.Scaling(this.Scale.X, this.Scale.Y, 0) * Matrix.RotationZ(this.Rotation)
+                              * Matrix.Translation(this.Position.X, this.Position.Y, 0);
+                this._sprite.Transform = nMatrix;
+                this._sprite.Draw(this._texture, this._color, this._crop);
+                this._sprite.Transform = matrix;
+                this._sprite.End();
+
+                // }
+                // catch (Exception e)
+                // {
+                // this.Reset();
+                // Console.WriteLine(@"Common.Render.Sprite.OnEndScene: " + e);
+                // }
             }
 
             /// <summary>
@@ -1738,6 +1741,11 @@ namespace Ability.Utilities
             /// </summary>
             public override void OnPostReset()
             {
+                if (Device == null || Device.IsDisposed)
+                {
+                    return;
+                }
+
                 this._sprite.OnResetDevice();
             }
 
@@ -1746,7 +1754,12 @@ namespace Ability.Utilities
             /// </summary>
             public override void OnPreReset()
             {
-                this._sprite.OnLostDevice();
+                if (Device == null || Device.IsDisposed)
+                {
+                    return;
+                }
+
+                this._sprite?.OnLostDevice();
             }
 
             /// <summary>
@@ -1802,31 +1815,31 @@ namespace Ability.Utilities
                 this._texture = Texture.FromMemory(
                     Device,
                     (byte[])new ImageConverter().ConvertTo(newBitmap, typeof(byte[])));
-                //this._texture = Texture.FromMemory(
-                //    Device,
-                //    (byte[])new ImageConverter().ConvertTo(newBitmap, typeof(byte[])),
-                //    this.Width,
-                //    this.Height,
-                //    0,
-                //    Usage.None,
-                //    Format.A1,
-                //    Pool.Managed,
-                //    Filter.Default,
-                //    Filter.Default,
-                //    0);
-                //this._texture = Texture.FromMemory(
-                //    Device,
-                //    (byte[])new ImageConverter().ConvertTo(newBitmap, typeof(byte[])),
-                //    this.Width,
-                //    this.Height,
-                //    0,
-                //    Usage.AutoGenerateMipMap,
-                //    Format.Unknown,
-                //    Pool.Managed,
-                //    Filter.None,
-                //    Filter.None,
-                //    0);
 
+                // this._texture = Texture.FromMemory(
+                // Device,
+                // (byte[])new ImageConverter().ConvertTo(newBitmap, typeof(byte[])),
+                // this.Width,
+                // this.Height,
+                // 0,
+                // Usage.None,
+                // Format.A1,
+                // Pool.Managed,
+                // Filter.Default,
+                // Filter.Default,
+                // 0);
+                // this._texture = Texture.FromMemory(
+                // Device,
+                // (byte[])new ImageConverter().ConvertTo(newBitmap, typeof(byte[])),
+                // this.Width,
+                // this.Height,
+                // 0,
+                // Usage.AutoGenerateMipMap,
+                // Format.Unknown,
+                // Pool.Managed,
+                // Filter.None,
+                // Filter.None,
+                // 0);
                 if (this._originalTexture == null)
                 {
                     this._originalTexture = this._texture;

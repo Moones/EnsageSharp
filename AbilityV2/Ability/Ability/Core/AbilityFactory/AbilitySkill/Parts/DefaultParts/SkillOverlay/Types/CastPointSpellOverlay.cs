@@ -14,7 +14,6 @@
 namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverlay.Types
 {
     using System;
-    using System.Globalization;
 
     using Ability.Core.AbilityFactory.AbilitySkill.Data;
     using Ability.Core.AbilityFactory.Utilities;
@@ -57,6 +56,7 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
             : base(skill)
         {
             this.abilityPhaseNumber = new Number(NumberTextureColor.Red, true);
+
             // this.abilityPhaseObserver = new DataObserver<AbilityPhase>(
             // phase =>
             // {
@@ -79,11 +79,11 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
             base.Draw();
             if (this.Skill.AbilityPhase.Running)
             {
-                //this.abilityPhaseCount.Text =
-                //    (Math.Ceiling(this.Skill.AbilityPhase.TimeRemaining * 10) / 10).ToString(CultureInfo.CurrentCulture);
-                //this.abilityPhaseCount.CenterOnRectangle(this.abilityPhaseBackground);
-                //Console.WriteLine((int)(Math.Ceiling(this.Skill.AbilityPhase.TimeRemaining * 10) / 10));
-                this.abilityPhaseNumber.Value = (Math.Ceiling(this.Skill.AbilityPhase.TimeRemaining * 10) / 10);
+                // this.abilityPhaseCount.Text =
+                // (Math.Ceiling(this.Skill.AbilityPhase.TimeRemaining * 10) / 10).ToString(CultureInfo.CurrentCulture);
+                // this.abilityPhaseCount.CenterOnRectangle(this.abilityPhaseBackground);
+                // Console.WriteLine((int)(Math.Ceiling(this.Skill.AbilityPhase.TimeRemaining * 10) / 10));
+                this.abilityPhaseNumber.Value = Math.Ceiling(this.Skill.AbilityPhase.TimeRemaining * 10) / 10;
                 this.abilityPhaseNumber.CenterOnRectangle(this.abilityPhaseBackground);
                 this.abilityPhaseBackground.Draw();
                 this.abilityPhaseNumber.Draw();

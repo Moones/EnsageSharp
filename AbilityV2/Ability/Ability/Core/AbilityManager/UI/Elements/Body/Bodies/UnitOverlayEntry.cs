@@ -211,16 +211,6 @@ namespace Ability.Core.AbilityManager.UI.Elements.Body.Bodies
         /// </summary>
         public IAbilityUnit Unit { get; set; }
 
-        public void Initialize()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         ///     Gets or sets a value indicating whether visible.
         /// </summary>
@@ -229,6 +219,11 @@ namespace Ability.Core.AbilityManager.UI.Elements.Body.Bodies
         #endregion
 
         #region Public Methods and Operators
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         ///     The draw.
@@ -249,6 +244,11 @@ namespace Ability.Core.AbilityManager.UI.Elements.Body.Bodies
             {
                 skillOverlay.Value.Draw();
             }
+        }
+
+        public void Initialize()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

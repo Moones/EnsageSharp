@@ -24,7 +24,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
     using Ability.Core.MenuManager.GetValue;
 
     using Ensage.Common;
-    using Ensage.Common.Extensions;
     using Ensage.Common.Menu;
 
     using SharpDX;
@@ -35,6 +34,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
     public abstract class UnitOverlayBase : IUnitOverlay
     {
         #region Fields
+
+        private float distanceFromSide;
 
         private bool offScreen;
 
@@ -53,6 +54,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
         #region Public Properties
 
         public PanelField BotPanel { get; set; }
+
+        public GetValue<Slider, float> DistanceFromLocalHero { get; set; }
 
         /// <summary>
         ///     Gets or sets the elements.
@@ -83,6 +86,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
 
         public PanelField RightPanel { get; set; }
 
+        public GetValue<bool, bool> StickToScreen { get; set; }
+
         public PanelField TopPanel { get; set; }
 
         /// <summary>
@@ -90,23 +95,29 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
         /// </summary>
         public IAbilityUnit Unit { get; set; }
 
+        #endregion
+
+        #region Public Methods and Operators
+
+        public virtual void Dispose()
+        {
+        }
+
         public virtual void Initialize()
         {
-
             this.HealthBar = new HealthBar(this.Unit, this.Unit.ScreenInfo.HealthBarSize)
-            {
-                Color = this.Unit.IsEnemy ? new Color(230, 70, 70) : new Color(90, 200, 70),
-                BackgroundColor = Color.Black
-            };
+                                 {
+                                     Color = this.Unit.IsEnemy ? new Color(230, 70, 70) : new Color(90, 200, 70),
+                                     BackgroundColor = Color.Black
+                                 };
             this.LeftPanel = new PanelField(
                                  this.Unit,
                                  this.HealthBar,
                                  () => this.HealthBar.Position,
                                  PanelDirection.Left,
-                                 element => -new Vector2(element.Size.X, 0))
-            {
-                Size = this.HealthBar.Size
-            };
+                                 element => -new Vector2(element.Size.X, 0)) {
+                                                                                Size = this.HealthBar.Size 
+                                                                             };
             this.Panels.Add(this.LeftPanel);
             this.TopPanel = new PanelField(
                                 this.Unit,
@@ -114,10 +125,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
                                 () => this.HealthBar.Position,
                                 PanelDirection.Top,
                                 element => -new Vector2(0, element.Size.Y),
-                                vertical: true)
-            {
-                Size = this.HealthBar.Size
-            };
+                                vertical: true) {
+                                                   Size = this.HealthBar.Size 
+                                                };
             this.Panels.Add(this.TopPanel);
             this.RightPanel = new PanelField(
                                   this.Unit,
@@ -125,17 +135,18 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
                                   () => this.HealthBar.Position + new Vector2(this.HealthBar.Size.X, 0),
                                   PanelDirection.Right,
                                   positionFromLastElement: element => new Vector2(element.Size.X, 0))
-            {
-                Size = this.HealthBar.Size
-            };
+                                  {
+                                     Size = this.HealthBar.Size 
+                                  };
             this.Panels.Add(this.RightPanel);
 
             // this.Elements.Add(this.HealthBar);
-            this.ManaBar = new ManaBar(this.Unit, new Vector2(this.HealthBar.Size.X, (float)(this.HealthBar.Size.Y / 2)))
-            {
-                Color = new Color(70, 90, 200),
-                BackgroundColor = Color.Black
-            };
+            this.ManaBar = new ManaBar(
+                               this.Unit,
+                               new Vector2(this.HealthBar.Size.X, (float)(this.HealthBar.Size.Y / 2)))
+                               {
+                                  Color = new Color(70, 90, 200), BackgroundColor = Color.Black 
+                               };
 
             this.BotPanel = new PanelField(
                                 this.Unit,
@@ -143,10 +154,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
                                 () => this.ManaBar.Position + new Vector2(0, this.ManaBar.Size.Y),
                                 PanelDirection.Bottom,
                                 positionFromLastElement: element => new Vector2(0, element.Size.Y),
-                                vertical: true)
-            {
-                Size = this.ManaBar.Size
-            };
+                                vertical: true) {
+                                                   Size = this.ManaBar.Size 
+                                                };
             this.Panels.Add(this.BotPanel);
 
             ///this.Elements.Add(this.ManaBar);
@@ -158,17 +168,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
             // this.circleIcon = new DrawRect(Textures.GetHeroRoundTexture(this.Unit.Name))
             // { Size = new Vector2((float)(this.HealthBar.Size.Y * 2.5)) };
         }
-
-        public virtual void Dispose()
-        {
-
-        }
-
-        #endregion
-
-        #region Public Methods and Operators
-
-        private float distanceFromSide;
 
         /// <summary>
         ///     The on draw.
@@ -187,13 +186,12 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
 
             if (this.offScreen)
             {
-                //if (!this.StickToScreen.Value
-                //    || this.DistanceFromLocalHero.Value
-                //    < this.Unit.Position.Current.Distance2D(GlobalVariables.LocalHero.Position))
-                //{
-                //    return;
-                //}
-
+                // if (!this.StickToScreen.Value
+                // || this.DistanceFromLocalHero.Value
+                // < this.Unit.Position.Current.Distance2D(GlobalVariables.LocalHero.Position))
+                // {
+                // return;
+                // }
                 this.HealthBar.Draw();
             }
 
@@ -254,10 +252,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
             this.TopPanel.Position = this.TopPanel.BasePosition.Invoke();
             this.BotPanel.Position = this.BotPanel.BasePosition.Invoke();
         }
-
-        public GetValue<bool, bool> StickToScreen { get; set; }
-
-        public GetValue<Slider, float> DistanceFromLocalHero { get; set; }
 
         #endregion
     }

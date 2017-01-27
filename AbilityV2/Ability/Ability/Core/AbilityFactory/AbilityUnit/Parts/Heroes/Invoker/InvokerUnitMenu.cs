@@ -21,6 +21,13 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker
     /// <summary>The invoker unit menu.</summary>
     internal class InvokerUnitMenu : HeroMenuBase
     {
+        #region Fields
+
+        /// <summary>The skill panel sub menu.</summary>
+        private Menu skillPanelSubMenu;
+
+        #endregion
+
         #region Public Properties
 
         /// <summary>Gets the hero name.</summary>
@@ -29,8 +36,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker
         /// <summary>Gets the menu display name.</summary>
         public override string MenuDisplayName { get; } = "Invoker";
 
-        /// <summary>The skill panel sub menu.</summary>
-        private Menu skillPanelSubMenu;
+        #endregion
+
+        #region Public Methods and Operators
 
         /// <summary>The connect unit.</summary>
         /// <param name="unit">The unit.</param>
@@ -46,7 +54,5 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker
         }
 
         #endregion
-
-
     }
 }

@@ -15,7 +15,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.HeroParts.Invoker.Overl
 {
     using Ability.Core.AbilityFactory.AbilitySkill.Data;
     using Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverlay;
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Visibility;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.SkillBook;
     using Ability.Core.AbilityFactory.Utilities;
 

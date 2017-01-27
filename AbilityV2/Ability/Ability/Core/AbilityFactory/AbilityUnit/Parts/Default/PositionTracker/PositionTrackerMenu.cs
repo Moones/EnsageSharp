@@ -1,4 +1,4 @@
-﻿// <copyright file="ParticleTrackerMenu.cs" company="EnsageSharp">
+﻿// <copyright file="PositionTrackerMenu.cs" company="EnsageSharp">
 //    Copyright (c) 2017 Moones.
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by

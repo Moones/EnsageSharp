@@ -15,10 +15,8 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCompo
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     using Ability.Core.AbilityFactory.AbilitySkill.Data;
-    using Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.CastingFunctions;
     using Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.Charges;
     using Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.Cooldown;
     using Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCastData;
@@ -26,33 +24,23 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCompo
     using Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillLevel;
     using Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverlay;
     using Ability.Core.AbilityFactory.AbilitySkill.Types;
-    using Ability.Utilities;
 
     using Ensage;
     using Ensage.Common.Extensions;
-
-    using PlaySharp.Toolkit.Helper.Annotations;
 
     /// <summary>
     ///     The unit target skill composer.
     /// </summary>
     internal class DefaultSkillComposer : IAbilitySkillComposer
     {
-        /// <summary>Initializes a new instance of the <see cref="DefaultSkillComposer"/> class.</summary>
+        #region Constructors and Destructors
+
+        /// <summary>Initializes a new instance of the <see cref="DefaultSkillComposer" /> class.</summary>
         public DefaultSkillComposer()
         {
             this.AssignPart<ISkillDataReceiver>(skill => new SkillDataReceiver(skill));
-            this.AssignPart<ISkillLevel>(skill => new SkillLevel(skill));
-            this.AssignPart<ICooldown>(
-                skill =>
-                    {
-                        if (skill.SourceAbility.GetCooldown(2) <= 0)
-                        {
-                            return null;
-                        }
-
-                        return new Cooldown(skill);
-                    });
+            this.AssignPart<ISkillLevel>(skill => skill.IsItem ? new ItemLevel(skill) : new SkillLevel(skill));
+            this.AssignPart<ICooldown>(skill => skill.SourceAbility.GetCooldown(2) <= 0 ? null : new Cooldown(skill));
             this.AssignPart<ISkillCastData>(skill => new SkillCastData(skill));
             this.AssignPart<ICharges>(
                 skill =>
@@ -69,6 +57,8 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCompo
             this.AssignPart<ISkillOverlayProvider>(skill => new SkillOverlayProvider(skill));
         }
 
+        #endregion
+
         #region Public Properties
 
         /// <summary>Gets the assignments.</summary>
@@ -78,8 +68,6 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCompo
         #endregion
 
         #region Public Methods and Operators
-
-
 
         /// <summary>The assign part.</summary>
         /// <param name="factory">The factory.</param>
@@ -108,7 +96,7 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCompo
             {
                 keyValuePair.Value.Invoke(skill);
             }
-            
+
             if (skill.AbilityPhase == null && skill.CastData.CastPoint > 0)
             {
                 skill.AbilityPhase = new AbilityPhase(skill);
@@ -133,7 +121,7 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCompo
             {
                 keyValuePair.Value.Initialize();
             }
-            
+
             // if (skill.DamageCalculator == null)
             // {
             // skill.DamageCalculator = new DefaultSkillDamageCalculator(skill);
@@ -148,20 +136,20 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCompo
             // {
             // skill.Updater = new DefaultSkillUpdater(skill);
             // }
-            //if (!skill.IsControllable)
-            //{
-            //    this.ComposeUncontrollableSkill(skill);
-            //    return;
-            //}
+            // if (!skill.IsControllable)
+            // {
+            // this.ComposeUncontrollableSkill(skill);
+            // return;
+            // }
 
-            //var controllableSkill = skill as IControllableSkill;
-            //if (controllableSkill == null)
-            //{
-            //    Logging.Write()(LogLevel.Error, "ControllableSkill was null");
-            //    return;
-            //}
+            // var controllableSkill = skill as IControllableSkill;
+            // if (controllableSkill == null)
+            // {
+            // Logging.Write()(LogLevel.Error, "ControllableSkill was null");
+            // return;
+            // }
 
-            //this.ComposeControllableSkill(controllableSkill);
+            // this.ComposeControllableSkill(controllableSkill);
         }
 
         /// <summary>
@@ -173,13 +161,13 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillCompo
         public virtual void ComposeControllableSkill(IControllableSkill controllableSkill)
         {
             // controllableSkill.SkillControl = new SkillControl(controllableSkill);
-            //Func<IControllableSkill, ISkillCastingFunction> castingFunctionInitialize;
-            //if (this.CastingFunctions != null
-            //    && this.CastingFunctions.TryGetValue(controllableSkill.Name, out castingFunctionInitialize))
-            //{
-            //    controllableSkill.SkillControl.SkillCastingFunction = castingFunctionInitialize.Invoke(
-            //        controllableSkill);
-            //}
+            // Func<IControllableSkill, ISkillCastingFunction> castingFunctionInitialize;
+            // if (this.CastingFunctions != null
+            // && this.CastingFunctions.TryGetValue(controllableSkill.Name, out castingFunctionInitialize))
+            // {
+            // controllableSkill.SkillControl.SkillCastingFunction = castingFunctionInitialize.Invoke(
+            // controllableSkill);
+            // }
 
             // if (controllableSkill.SourceAbility.IsAbilityBehavior(AbilityBehavior.UnitTarget))
             // {

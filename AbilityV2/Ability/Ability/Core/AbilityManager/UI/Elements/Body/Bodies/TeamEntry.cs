@@ -13,7 +13,6 @@
 // </copyright>
 namespace Ability.Core.AbilityManager.UI.Elements.Body.Bodies
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 

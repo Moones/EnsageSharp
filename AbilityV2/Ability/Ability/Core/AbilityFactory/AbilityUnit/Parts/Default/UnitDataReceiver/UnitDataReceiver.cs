@@ -40,18 +40,13 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver
         /// </summary>
         public IAbilityUnit Unit { get; set; }
 
-        public virtual void Initialize()
-        {
-            
-        }
+        #endregion
+
+        #region Public Methods and Operators
 
         public virtual void Dispose()
         {
         }
-
-        #endregion
-
-        #region Public Methods and Operators
 
         /// <summary>
         ///     The entity_ on bool property change.
@@ -205,13 +200,17 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver
             this.Unit.Mana.Current = this.Unit.SourceUnit.Mana;
 
             // this.Unit.Position.Update();
-            //this.Unit.Visibility.Visible = this.Unit.SourceUnit.IsVisible;
+            // this.Unit.Visibility.Visible = this.Unit.SourceUnit.IsVisible;
             this.Unit.Level.Current = this.Unit.SourceUnit.Level;
         }
 
         public void HealthChange(float value)
         {
             this.Unit.Health.Current = value;
+        }
+
+        public virtual void Initialize()
+        {
         }
 
         /// <summary>

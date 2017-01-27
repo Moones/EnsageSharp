@@ -37,9 +37,9 @@ namespace Ability.Utilities
             new Dictionary<NumberTextureColor, string>
                 {
                     { NumberTextureColor.BabyBlue, "128x128/default_bold_blue" }, { NumberTextureColor.Black, "black" },
-                    { NumberTextureColor.Blue, "128x128/default_bold_blue" }, { NumberTextureColor.Default, "128x128/default_bold" },
-                    { NumberTextureColor.Gray, "gray" }, { NumberTextureColor.Green, "green" },
-                    { NumberTextureColor.Red, "128x128/default_bold_red" }
+                    { NumberTextureColor.Blue, "128x128/default_bold_blue" },
+                    { NumberTextureColor.Default, "128x128/default_bold" }, { NumberTextureColor.Gray, "gray" },
+                    { NumberTextureColor.Green, "green" }, { NumberTextureColor.Red, "128x128/default_bold_red" }
                 };
 
         /// <summary>
@@ -145,17 +145,19 @@ namespace Ability.Utilities
                 for (var i = 0; i < 10; i++)
                 {
                     var c = Convert.ToChar(i.ToString());
-                    //if (this.Color == NumberTextureColor.Default)
-                    //{
-                        this.textureDictionary[c] =
-                            Textures.GetTexture("ensage_ui/other/fonts/" + this.colorName + "/" + i + border);
-                    //}
-                    //else
-                    //{
-                    //    this.textureDictionary[c] =
-                    //        Textures.GetTexture(
-                    //            "ensage_ui/other/fonts/" + this.colorName + "/" + i + "_" + this.colorName + border);
-                    //}
+
+                    // if (this.Color == NumberTextureColor.Default)
+                    // {
+                    this.textureDictionary[c] =
+                        Textures.GetTexture("ensage_ui/other/fonts/" + this.colorName + "/" + i + border);
+
+                    // }
+                    // else
+                    // {
+                    // this.textureDictionary[c] =
+                    // Textures.GetTexture(
+                    // "ensage_ui/other/fonts/" + this.colorName + "/" + i + "_" + this.colorName + border);
+                    // }
                 }
 
                 this.textureDictionary[Convert.ToChar(".")] =

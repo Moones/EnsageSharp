@@ -121,6 +121,19 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.ScreenInfo
         /// </summary>
         public IAbilityUnit Unit { get; set; }
 
+        /// <summary>
+        ///     Gets the update provider.
+        /// </summary>
+        public DataProvider<IScreenInfo> UpdateProvider { get; } = new DataProvider<IScreenInfo>();
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public virtual void Dispose()
+        {
+        }
+
         public virtual void Initialize()
         {
             this.Unit.Position.Subscribe(
@@ -134,19 +147,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.ScreenInfo
                             this.minimapPosition = position.Current.WorldToMinimap();
                         }));
         }
-
-        public virtual void Dispose()
-        {
-        }
-
-        /// <summary>
-        ///     Gets the update provider.
-        /// </summary>
-        public DataProvider<IScreenInfo> UpdateProvider { get; } = new DataProvider<IScreenInfo>();
-
-        #endregion
-
-        #region Public Methods and Operators
 
         public void Update()
         {

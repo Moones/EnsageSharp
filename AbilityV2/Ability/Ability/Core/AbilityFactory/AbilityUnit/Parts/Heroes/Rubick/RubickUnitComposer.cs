@@ -1,4 +1,4 @@
-﻿// <copyright file="ShadowDemonUnitComposer.cs" company="EnsageSharp">
+﻿// <copyright file="RubickUnitComposer.cs" company="EnsageSharp">
 //    Copyright (c) 2017 Moones.
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -11,28 +11,28 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see http://www.gnu.org/licenses/
 // </copyright>
-namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.ShadowDemon
+namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Rubick
 {
     using System.ComponentModel.Composition;
 
+    using Ability.Core.AbilityFactory.AbilitySkill;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer;
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker;
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker.Types;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Rubick.SkillBook;
     using Ability.Core.AbilityFactory.Metadata;
 
     using Ensage;
 
-    /// <summary>The shadow demon unit composer.</summary>
+    /// <summary>The rubick unit composer.</summary>
     [Export(typeof(IAbilityUnitComposer))]
-    [AbilityUnitMetadata(ClassID.CDOTA_Unit_Hero_Shadow_Demon)]
-    internal class ShadowDemonUnitComposer : AbilityUnitComposer
+    [AbilityUnitMetadata(ClassID.CDOTA_Unit_Hero_Rubick)]
+    internal class RubickUnitComposer : AbilityUnitComposer
     {
         #region Constructors and Destructors
 
-        /// <summary>Initializes a new instance of the <see cref="ShadowDemonUnitComposer" /> class.</summary>
-        public ShadowDemonUnitComposer()
+        internal RubickUnitComposer()
         {
-            this.AssignPart<IPositionTracker>(unit => new DotaBasePositionTracker(unit, 400));
+            this.AssignPart<ISkillBook<IAbilitySkill>>(unit => new RubickSkillBook(unit));
         }
 
         #endregion
