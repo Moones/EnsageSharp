@@ -228,6 +228,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         {
             Drawing.DrawRect(this.Position, this.Size, this.BackgroundColor);
             Drawing.DrawRect(this.barPos, this.fillSize, this.Color);
+
             if (this.healthLostTransition.Moving)
             {
                 var color = new Color(255, 255, 255, 255 - (int)this.healthLostTransition.GetValue());

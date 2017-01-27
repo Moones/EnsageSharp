@@ -42,7 +42,15 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer
             this.MinimapIconSize = new Vector2(HUDInfo.GetHpBarSizeY() * 2);
 
             var icon = (Bitmap)Resources.ResourceManager.GetObject(name);
-            this.EndSceneIcon = new Render.Sprite(icon, new Vector2(100, 700));
+            if (icon == null)
+            {
+                Console.WriteLine("Ability#: could not find " + name + " minimap icon");
+            }
+            else
+            {
+                this.EndSceneIcon = new Render.Sprite(icon, new Vector2(100, 700));
+            }
+
             var percent = this.MinimapIconSize.X / this.EndSceneIcon.Size.X;
 
             //Console.WriteLine(percent);

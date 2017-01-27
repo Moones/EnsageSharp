@@ -66,11 +66,6 @@ namespace Ability.Utilities
         {
             return (logLevel, value, args) =>
                 {
-                    if (Environment.UserName != "moone_000")
-                    {
-                        return;
-                    }
-
                     var finalMessage = value;
                     if (args.Length > 0)
                     {
