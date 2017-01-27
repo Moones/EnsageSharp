@@ -20,6 +20,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
 
     using Ensage.Common.Menu;
 
+    using SharpDX;
+
     /// <summary>
     ///     The position tracker menu.
     /// </summary>
@@ -42,6 +44,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
             this.Menu.AddItem(
                 new MenuItem(this.Menu.Name + "description", "Position Tracker").SetTooltip(
                     "Uses various methods to track position of enemy heroes in fog of war"));
+            this.Menu.AddItem(
+                    new MenuItem(this.Menu.Name + "notification", "Minimap drawing requires -dx9").SetTooltip(
+                        "You need to go to steam>library>right click on dota2>properties>set launch options and input -dx9"))
+                .SetFontColor(Color.OrangeRed);
 
             this.drawonmap =
                 this.Menu.AddItem(new MenuItem(this.Menu.Name + "drawonmap", "Draw on world").SetValue(true));
