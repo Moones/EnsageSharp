@@ -45,7 +45,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker.
         /// <returns>The <see cref="bool" />.</returns>
         public override bool DotaBase(Unit dotaBase)
         {
-            if (dotaBase.DayVision != this.dayVision)
+            if (this.Unit.Visibility.Visible || dotaBase.DayVision != this.dayVision)
             {
                 return false;
             }
