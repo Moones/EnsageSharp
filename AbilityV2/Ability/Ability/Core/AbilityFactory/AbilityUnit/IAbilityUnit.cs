@@ -19,8 +19,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
     using Ability.Core.AbilityFactory.AbilitySkill;
     using Ability.Core.AbilityFactory.AbilityTeam;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts;
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.IconDrawer;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Interaction;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Level;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Mana;
@@ -59,14 +60,14 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         bool Draw { get; set; }
 
         /// <summary>
-        ///     Gets the drawer.
-        /// </summary>
-        IUnitDrawer Drawer { get; set; }
-
-        /// <summary>
         ///     Gets the health.
         /// </summary>
         IHealth Health { get; set; }
+
+        /// <summary>
+        ///     Gets the drawer.
+        /// </summary>
+        IUnitIconDrawer IconDrawer { get; set; }
 
         /// <summary>
         ///     Gets the interaction.
@@ -77,6 +78,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         ///     Gets a value indicating whether is enemy.
         /// </summary>
         bool IsEnemy { get; }
+
+        /// <summary>Gets a value indicating whether is local hero.</summary>
+        bool IsLocalHero { get; set; }
 
         /// <summary>
         ///     Gets the level.
@@ -141,6 +145,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         /// </summary>
         IAbilityTeam Team { get; set; }
 
+        /// <summary>Gets or sets the unit composer.</summary>
+        IAbilityUnitComposer UnitComposer { get; set; }
+
         /// <summary>
         ///     Gets the unit control.
         /// </summary>
@@ -179,6 +186,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         ///     The on draw.
         /// </summary>
         void OnDraw();
+
+        /// <summary>The remove part.</summary>
+        /// <typeparam name="T">The type of part</typeparam>
+        void RemovePart<T>() where T : IAbilityUnitPart;
 
         #endregion
     }

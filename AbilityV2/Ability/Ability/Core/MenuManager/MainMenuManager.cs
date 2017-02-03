@@ -22,6 +22,8 @@ namespace Ability.Core.MenuManager
     using Ability.Core.MenuManager.Menus.Submenus.UnitMenu;
     using Ability.Utilities;
 
+    using Ensage.Common.Menu;
+
     /// <summary>
     ///     The main menu manager.
     /// </summary>
@@ -42,6 +44,9 @@ namespace Ability.Core.MenuManager
 
         #region Public Properties
 
+        /// <summary>Gets a value indicating whether generate menu.</summary>
+        public bool GenerateMenu { get; } = false;
+
         /// <summary>
         ///     Gets the main menu.
         /// </summary>
@@ -51,10 +56,14 @@ namespace Ability.Core.MenuManager
 
         #region Properties
 
+        /// <summary>Gets or sets the ability services.</summary>
+        [ImportMany]
+        internal IEnumerable<Lazy<IAbilityService>> AbilityServices { get; set; }
+
         /// <summary>
         ///     Gets or sets the ability unit manager.
         /// </summary>
-        [Import(typeof(IAbilityManager), AllowRecomposition = true)]
+        [Import(typeof(IAbilityManager))]
         internal Lazy<IAbilityManager> AbilityUnitManager { get; set; }
 
         /// <summary>Gets or sets the hero menus.</summary>
@@ -70,6 +79,13 @@ namespace Ability.Core.MenuManager
         #endregion
 
         #region Public Methods and Operators
+
+        /// <summary>The menu.</summary>
+        /// <returns>The <see cref="Menu" />.</returns>
+        public Menu Menu()
+        {
+            return null;
+        }
 
         /// <summary>
         ///     The on close.
@@ -102,6 +118,16 @@ namespace Ability.Core.MenuManager
                 {
                     unitMenu.Value.ConnectToUnit(keyValuePair.Value);
                 }
+            }
+
+            foreach (var abilityService in this.AbilityServices)
+            {
+                if (!abilityService.Value.GenerateMenu)
+                {
+                    continue;
+                }
+
+                this.MainMenu.SettingsMenu.Services.AddSubMenu(abilityService.Value.Menu());
             }
 
             this.AbilityUnitManager.Value.UnitAdded += this.Value_UnitAdded;

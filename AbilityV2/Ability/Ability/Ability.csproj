@@ -94,9 +94,16 @@
     <Compile Include="Core\AbilityData\AbilityDataProvider.cs" />
     <Compile Include="Core\AbilityData\ParticleEffectMoreInfo.cs" />
     <Compile Include="Core\AbilityFactory\AbilitySkill\Parts\DefaultParts\SkillLevel\ItemLevel.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\IconDrawer\UnitIconDrawerMenu.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Bars\HealthSeparator.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\PanelFields\DirectionOriented\BotPanelField.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\PanelFields\DirectionOriented\LeftPanelField.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\PanelFields\DirectionOriented\RightPanelField.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\PanelFields\DirectionOriented\TopPanelField.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\ScreenStickingRectangle.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\Types\DotaBasePositionTracker.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\Types\EntityOwnerPositionTracker.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\WorldIcon.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\HeroMenuBase.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\InvokerUnitMenu.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\PositionTracker\InvokerPositionTracker.cs" />
@@ -153,8 +160,8 @@
     <Compile Include="Core\AbilityFactory\AbilityTeam\Parts\UnitManager\UnitManager.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Composer\AbilityUnitComposer.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Composer\IAbilityUnitComposer.cs" />
-    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Drawer\IUnitDrawer.cs" />
-    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Drawer\UnitDrawer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\IconDrawer\IUnitIconDrawer.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\IconDrawer\UnitIconDrawer.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\PositionTrackerMenu.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\PositionTracker.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\IPositionTracker.cs" />
@@ -172,7 +179,7 @@
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Bars\HealthBar.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Bars\IBar.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Bars\ManaBar.cs" />
-    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\Bars\PanelField.cs" />
+    <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\PanelFields\PanelField.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\IOverlayEntryProvider.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\IUnitOverlayElement.cs" />
     <Compile Include="Core\AbilityFactory\AbilityUnit\Parts\Default\Overlay\IUnitOverlay.cs" />

@@ -22,8 +22,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
     using Ability.Core.AbilityFactory.AbilityTeam;
     using Ability.Core.AbilityFactory.AbilityUnit.Data;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts;
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.IconDrawer;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Interaction;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Level;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Mana;
@@ -52,11 +53,11 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         /// <summary>The data receiver.</summary>
         private IUnitDataReceiver dataReceiver;
 
-        /// <summary>The drawer.</summary>
-        private IUnitDrawer drawer;
-
         /// <summary>The health.</summary>
         private IHealth health;
+
+        /// <summary>The drawer.</summary>
+        private IUnitIconDrawer iconDrawer;
 
         private IUnitInteraction interaction;
 
@@ -136,14 +137,14 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         public bool Draw { get; set; }
 
         /// <summary>
-        ///     Gets or sets the drawer.
-        /// </summary>
-        public IUnitDrawer Drawer { get; set; }
-
-        /// <summary>
         ///     Gets or sets the health.
         /// </summary>
         public IHealth Health { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the drawer.
+        /// </summary>
+        public IUnitIconDrawer IconDrawer { get; set; }
 
         /// <summary>
         ///     Gets or sets the interaction.
@@ -154,6 +155,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         ///     Gets or sets a value indicating whether is enemy.
         /// </summary>
         public bool IsEnemy { get; set; }
+
+        /// <summary>Gets a value indicating whether is local hero.</summary>
+        public bool IsLocalHero { get; set; }
 
         /// <summary>
         ///     Gets or sets the level.
@@ -218,6 +222,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         /// </summary>
         public IAbilityTeam Team { get; set; }
 
+        /// <summary>Gets or sets the unit composer.</summary>
+        public IAbilityUnitComposer UnitComposer { get; set; }
+
         /// <summary>
         ///     Gets or sets the unit control.
         /// </summary>
@@ -278,7 +285,13 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         /// <returns>The <see cref="T" />.</returns>
         public T GetPart<T>() where T : IAbilityUnitPart
         {
-            return (T)this.Parts[typeof(T)];
+            IAbilityUnitPart part;
+            if (!this.Parts.TryGetValue(typeof(T), out part))
+            {
+                return (T)part;
+            }
+
+            return (T)part;
         }
 
         /// <summary>
@@ -286,12 +299,18 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         /// </summary>
         public virtual void OnDraw()
         {
-            if (Game.IsPaused)
-            {
-                return;
-            }
+            // if (Game.IsPaused)
+            // {
+            // return;
+            // }
+            // this.Overlay.OnDraw();
+        }
 
-            this.Overlay.OnDraw();
+        /// <summary>The remove part.</summary>
+        /// <typeparam name="T">The type of part</typeparam>
+        public void RemovePart<T>() where T : IAbilityUnitPart
+        {
+            this.parts.Remove(typeof(T));
         }
 
         #endregion

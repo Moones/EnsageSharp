@@ -22,9 +22,11 @@ namespace Ability.Core.AbilityData
     using Ability.Core.AbilityFactory.AbilitySkill;
     using Ability.Core.AbilityFactory.AbilityUnit;
     using Ability.Core.AbilityManager;
+    using Ability.Core.MenuManager.GetValue;
 
     using Ensage;
     using Ensage.Common;
+    using Ensage.Common.Menu;
     using Ensage.Common.Objects.UtilityObjects;
 
     using SharpDX;
@@ -34,6 +36,9 @@ namespace Ability.Core.AbilityData
     internal class AbilityDataProvider : IAbilityService
     {
         #region Fields
+
+        /// <summary>The menu.</summary>
+        private readonly Menu menu;
 
         /// <summary>
         ///     The update sleeper.
@@ -54,13 +59,33 @@ namespace Ability.Core.AbilityData
         /// </summary>
         private Dictionary<double, IAbilitySkill> projectileSkills = new Dictionary<double, IAbilitySkill>();
 
+        /// <summary>The update interval.</summary>
+        private GetValue<Slider, float> updateInterval;
+
         #endregion
 
         #region Constructors and Destructors
 
+        /// <summary>Initializes a new instance of the <see cref="AbilityDataProvider" /> class.</summary>
         internal AbilityDataProvider()
         {
+            this.menu = new Menu(nameof(AbilityDataProvider), Constants.AssemblyName + nameof(AbilityDataProvider));
+            this.updateInterval =
+                new GetValue<Slider, float>(
+                    this.menu.AddItem(
+                        new MenuItem(this.menu.Name + nameof(this.updateInterval), "Data update interval (ms)").SetValue
+                            (new Slider(25, 0, 300))
+                            .SetTooltip(
+                                "If you are experiencing FPS drops while ONLY THIS ASSEMBLY is loaded, increase the interval")),
+                    slider => slider.Value);
         }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>Gets a value indicating whether generate menu.</summary>
+        public bool GenerateMenu { get; } = true;
 
         #endregion
 
@@ -75,6 +100,13 @@ namespace Ability.Core.AbilityData
         #endregion
 
         #region Public Methods and Operators
+
+        /// <summary>The menu.</summary>
+        /// <returns>The <see cref="Menu" />.</returns>
+        public Menu Menu()
+        {
+            return this.menu;
+        }
 
         /// <summary>
         ///     The on close.
@@ -220,7 +252,7 @@ namespace Ability.Core.AbilityData
                 keyValuePair.Value.Visibility.Visible = keyValuePair.Value.SourceUnit.IsVisible;
                 keyValuePair.Value.Position.Update();
                 keyValuePair.Value.ScreenInfo.Update();
-                keyValuePair.Value.OnDraw();
+                keyValuePair.Value.DataReceiver.Drawing_OnDraw();
             }
         }
 
@@ -458,7 +490,7 @@ namespace Ability.Core.AbilityData
                 return;
             }
 
-            this.updateSleeper.Sleep(25);
+            this.updateSleeper.Sleep(this.updateInterval.Value);
 
             foreach (var keyValuePair in this.AbilityUnitManager.Value.Units)
             {

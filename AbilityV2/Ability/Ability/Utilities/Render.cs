@@ -1240,15 +1240,6 @@ namespace Ability.Utilities
 
             #endregion
 
-            #region Constructors and Destructors
-
-            ~RenderObject()
-            {
-                this.OnPreReset();
-            }
-
-            #endregion
-
             #region Delegates
 
             /// <summary>

@@ -22,10 +22,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.O
 
     using SharpDX;
 
-    /// <summary>
-    ///     The object panel.
-    /// </summary>
-    public class ObjectPanel<TObject> : PanelBase, IObjectPanel<TObject>
+    /// <summary>The object panel.</summary>
+    /// <typeparam name="TObject">Type of object</typeparam>
+    public abstract class ObjectPanel<TObject> : PanelBase, IObjectPanel<TObject>
         where TObject : class, IUnitOverlayElement
     {
         #region Fields
@@ -36,7 +35,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.O
 
         #region Constructors and Destructors
 
-        public ObjectPanel(
+        protected ObjectPanel(
             IAbilityUnit unit,
             PanelDirection direction,
             Vector2 defaultObjectSize,
@@ -93,7 +92,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.O
         /// <summary>
         ///     Gets the object manager.
         /// </summary>
-        public PanelObjectManager<TObject> ObjectManager { get; }
+        public PanelObjectManager<TObject> ObjectManager { get; set; }
 
         /// <summary>
         ///     Gets or sets the size.
@@ -143,6 +142,14 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.O
         {
             this.ObjectManager.AddObject(panelObject);
             this.Panel?.UpdateSize();
+        }
+
+        /// <summary>The dispose.</summary>
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.ObjectManager.Dispose();
+            this.ObjectManager = null;
         }
 
         /// <summary>

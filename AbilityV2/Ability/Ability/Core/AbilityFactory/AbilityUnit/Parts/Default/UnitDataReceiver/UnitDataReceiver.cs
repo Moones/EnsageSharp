@@ -39,10 +39,16 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver
 
         #region Public Properties
 
+        /// <summary>Gets the drawings.</summary>
+        public ICollection<Action> Drawings { get; } = new Collection<Action>();
+
         /// <summary>
         ///     Gets or sets the unit.
         /// </summary>
         public IAbilityUnit Unit { get; set; }
+
+        /// <summary>Gets the updates.</summary>
+        public ICollection<Action> Updates { get; } = new Collection<Action>();
 
         #endregion
 
@@ -52,8 +58,14 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver
         {
         }
 
-        /// <summary>Gets the updates.</summary>
-        public ICollection<Action> Updates { get; } = new Collection<Action>();
+        /// <summary>The drawing_ on draw.</summary>
+        public void Drawing_OnDraw()
+        {
+            foreach (var drawing in this.Drawings)
+            {
+                drawing.Invoke();
+            }
+        }
 
         /// <summary>
         ///     The entity_ on bool property change.

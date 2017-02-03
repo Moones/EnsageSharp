@@ -1,4 +1,4 @@
-﻿// <copyright file="UnitDrawer.cs" company="EnsageSharp">
+﻿// <copyright file="UnitIconDrawer.cs" company="EnsageSharp">
 //    Copyright (c) 2017 Moones.
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -11,7 +11,7 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see http://www.gnu.org/licenses/
 // </copyright>
-namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer
+namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.IconDrawer
 {
     using System;
     using System.Drawing;
@@ -28,18 +28,23 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer
     /// <summary>
     ///     The unit drawer.
     /// </summary>
-    public class UnitDrawer : IUnitDrawer
+    public class UnitIconDrawer : IUnitIconDrawer
     {
+        #region Fields
+
+        private Vector2 minimapIconSize;
+
+        #endregion
+
         #region Constructors and Destructors
 
-        public UnitDrawer(IAbilityUnit unit)
+        public UnitIconDrawer(IAbilityUnit unit)
         {
             this.Unit = unit;
             var name = this.Unit.SourceUnit.Name.Substring("npc_dota_hero_".Length);
             this.Icon = unit.SourceUnit is Hero ? Textures.GetHeroRoundTexture(this.Unit.Name) : null;
             this.MinimapIcon = unit.SourceUnit is Hero ? Textures.GetTexture("ensage_ui/miniheroes/" + name) : null;
             this.WorldIconSize = new Vector2(HUDInfo.GetHpBarSizeY() * 6);
-            this.MinimapIconSize = new Vector2((float)(HUDInfo.GetHpBarSizeY() * 1.5));
 
             var icon = (Bitmap)Resources.ResourceManager.GetObject(name);
             if (icon == null)
@@ -51,10 +56,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer
                 this.EndSceneIcon = new Render.Sprite(icon, new Vector2(100, 700));
             }
 
-            var percent = this.MinimapIconSize.X / this.EndSceneIcon.Size.X;
+            this.MinimapIconSize = new Vector2((float)(HUDInfo.GetHpBarSizeY() * 1.5));
 
-            // Console.WriteLine(percent);
-            this.EndSceneIcon.Scale = new Vector2(percent, percent);
             this.EndSceneIcon.SetSaturation(1.5f);
 
             // sprite.Add();
@@ -76,7 +79,23 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer
         /// <summary>
         ///     Gets or sets the minimap icon size.
         /// </summary>
-        public Vector2 MinimapIconSize { get; set; }
+        public Vector2 MinimapIconSize
+        {
+            get
+            {
+                return this.minimapIconSize;
+            }
+
+            set
+            {
+                this.minimapIconSize = value;
+
+                var percent = this.minimapIconSize.X / this.EndSceneIcon.Size.X;
+
+                // Console.WriteLine(percent);
+                this.EndSceneIcon.Scale = new Vector2(percent, percent);
+            }
+        }
 
         /// <summary>
         ///     Gets or sets the unit.

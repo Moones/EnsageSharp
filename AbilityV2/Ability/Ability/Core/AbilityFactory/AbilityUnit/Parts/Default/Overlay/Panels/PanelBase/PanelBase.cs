@@ -15,7 +15,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.P
 {
     using System;
 
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.PanelFields;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.ObjectPanel;
     using Ability.Core.AbilityFactory.Utilities;
     using Ability.Core.MenuManager.MenuItems;
@@ -35,6 +35,12 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.P
 
         private bool connectedToMenu;
 
+        private DataObserver<bool> enableObserver;
+
+        private DataObserver<StringList> positionObserver;
+
+        private DataObserver<Slider> sizeIncreaseObserver;
+
         #endregion
 
         #region Constructors and Destructors
@@ -42,6 +48,17 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.P
         protected PanelBase(IAbilityUnit unit)
         {
             this.Unit = unit;
+            this.sizeIncreaseObserver =
+                new DataObserver<Slider>(
+                    slider => { this.SizeIncrease = (float)(slider.Value * (1080 / HUDInfo.ScreenSizeY()) / 20); });
+            this.enableObserver = new DataObserver<bool>(this.EnabledAction());
+            this.positionObserver = new DataObserver<StringList>(
+                list =>
+                    {
+                        this.HealthBarPositionAction().Invoke(list);
+                        this.ChangePosition((PanelDirection)list.SelectedIndex);
+                        this.Panel?.UpdateSize();
+                    });
         }
 
         #endregion
@@ -156,9 +173,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.P
 
         public virtual void ConnectSizeIncreaseToMenu()
         {
-            this.Menu.SizeIncreaseMenuItem.Provider.Subscribe(
-                new DataObserver<Slider>(
-                    slider => { this.SizeIncrease = (float)((slider.Value * (1080 / HUDInfo.ScreenSizeY())) / 20); }));
+            this.sizeIncreaseObserver.Subscribe(this.Menu.SizeIncreaseMenuItem.Provider);
         }
 
         /// <summary>
@@ -178,17 +193,18 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.P
             this.Menu = subMenu as IPanelMenu;
             if (this.Menu != null)
             {
-                this.Menu.EnableMenuItem.Provider.Subscribe(new DataObserver<bool>(this.EnabledAction()));
+                this.enableObserver.Subscribe(this.Menu.EnableMenuItem.Provider);
                 this.ConnectSizeIncreaseToMenu();
-                this.Menu.HealthBarPositionMenuItem.Provider.Subscribe(
-                    new DataObserver<StringList>(
-                        list =>
-                            {
-                                this.HealthBarPositionAction().Invoke(list);
-                                this.ChangePosition((PanelDirection)list.SelectedIndex);
-                                this.Panel?.UpdateSize();
-                            }));
+                this.positionObserver.Subscribe(this.Menu.HealthBarPositionMenuItem.Provider);
             }
+        }
+
+        /// <summary>The dispose.</summary>
+        public virtual void Dispose()
+        {
+            this.sizeIncreaseObserver.Dispose();
+            this.enableObserver.Dispose();
+            this.positionObserver.Dispose();
         }
 
         /// <summary>

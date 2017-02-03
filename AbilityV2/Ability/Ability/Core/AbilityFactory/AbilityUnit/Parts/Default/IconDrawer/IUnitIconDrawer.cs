@@ -1,4 +1,4 @@
-﻿// <copyright file="IUnitDrawer.cs" company="EnsageSharp">
+﻿// <copyright file="IUnitIconDrawer.cs" company="EnsageSharp">
 //    Copyright (c) 2017 Moones.
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -11,7 +11,7 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see http://www.gnu.org/licenses/
 // </copyright>
-namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer
+namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.IconDrawer
 {
     using Ability.Utilities;
 
@@ -22,7 +22,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer
     /// <summary>
     ///     The UnitDrawer interface.
     /// </summary>
-    public interface IUnitDrawer : IAbilityUnitPart
+    public interface IUnitIconDrawer : IAbilityUnitPart
     {
         #region Public Properties
 

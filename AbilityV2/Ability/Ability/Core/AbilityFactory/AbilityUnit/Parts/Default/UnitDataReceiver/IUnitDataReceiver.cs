@@ -25,10 +25,20 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver
     /// </summary>
     public interface IUnitDataReceiver : IAbilityUnitPart
     {
+        #region Public Properties
+
+        /// <summary>Gets the drawings.</summary>
+        ICollection<Action> Drawings { get; }
+
         /// <summary>Gets the updates.</summary>
         ICollection<Action> Updates { get; }
 
+        #endregion
+
         #region Public Methods and Operators
+
+        /// <summary>The drawing_ on draw.</summary>
+        void Drawing_OnDraw();
 
         /// <summary>
         ///     The entity_ on bool property change.

@@ -15,7 +15,6 @@ namespace Ability.Core.AbilityFactory.Metadata
 {
     using System;
     using System.ComponentModel.Composition;
-    using System.Security.Permissions;
 
     using Ensage;
 
@@ -45,7 +44,7 @@ namespace Ability.Core.AbilityFactory.Metadata
 
         /// <summary>Gets the ability ids.</summary>
         public uint[] AbilityIds { get; }
-        
+
         /// <summary>Gets a value indicating whether owner.</summary>
         public bool Owner { get; }
 

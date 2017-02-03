@@ -16,6 +16,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
     using System;
 
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Mana;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.PanelFields;
+    using Ability.Core.AbilityFactory.Utilities;
     using Ability.Core.MenuManager.Menus.Submenus.UnitMenu;
 
     using Ensage;
@@ -27,7 +29,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
     /// <summary>
     ///     The mana bar.
     /// </summary>
-    public class ManaBar : DrawObject, IBar, IObserver<IMana>
+    public class ManaBar : DrawObject, IBar
     {
         #region Fields
 
@@ -51,6 +53,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         /// </summary>
         private Vector2 fillSize;
 
+        private DataObserver<IMana> manaObserver;
+
         /// <summary>
         ///     The pos.
         /// </summary>
@@ -68,7 +72,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         public ManaBar(IAbilityUnit unit, Vector2 size)
         {
             this.Unit = unit;
-            this.Unit.Mana.Subscribe(this);
+            this.manaObserver = new DataObserver<IMana>(this.OnNext);
+            this.Unit.Mana.Subscribe(this.manaObserver);
             this.Size = size;
         }
 
@@ -148,7 +153,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         /// <summary>
         ///     Gets or sets the size.
         /// </summary>
-        public override Vector2 Size
+        public override sealed Vector2 Size
         {
             get
             {
@@ -200,6 +205,12 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         public void ConnectToMenu(IUnitMenu menu, Menu subMenu)
         {
             // this.BotPanel.ConnectToMenu(menu, subMenu);
+        }
+
+        /// <summary>The dispose.</summary>
+        public void Dispose()
+        {
+            this.manaObserver.Dispose();
         }
 
         /// <summary>

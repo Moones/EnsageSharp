@@ -84,11 +84,10 @@ namespace Ability.Core.AbilityManager.UI
 
         private void Drawing_OnDraw(EventArgs args)
         {
-            if (Game.IsPaused)
-            {
-                return;
-            }
-
+            // if (Game.IsPaused)
+            // {
+            // return;
+            // }
             this.window.Draw();
         }
 

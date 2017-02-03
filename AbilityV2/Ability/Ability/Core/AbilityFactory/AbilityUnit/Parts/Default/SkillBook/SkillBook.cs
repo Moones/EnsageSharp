@@ -294,7 +294,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook
         /// <returns>The <see cref="bool" />.</returns>
         public virtual bool IsValid(Ability ability)
         {
-            return !ability.Name.Contains("special_bonus") && !ability.Name.Contains("empty")
+            var item = ability as Item;
+
+            return (item == null || !item.IsRecipe) && !ability.Name.Contains("recipe")
+                   && !ability.Name.Contains("special_bonus") && !ability.Name.Contains("empty")
                    && !ability.Name.Contains("hidden");
         }
 

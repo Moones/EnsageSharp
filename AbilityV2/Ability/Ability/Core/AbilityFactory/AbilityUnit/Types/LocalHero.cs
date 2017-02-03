@@ -29,6 +29,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Types
             : base(unit)
         {
             this.AddPart<IScreenInfo>(abilityUnit => new LocalHeroScreenInfo(abilityUnit));
+            this.IsLocalHero = true;
         }
 
         #endregion

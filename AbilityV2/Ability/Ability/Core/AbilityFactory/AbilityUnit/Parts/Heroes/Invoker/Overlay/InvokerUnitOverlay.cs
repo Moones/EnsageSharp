@@ -22,6 +22,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Overlay
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Modifiers;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.SkillBook;
+    using Ability.Core.AbilityFactory.Utilities;
 
     using Ensage;
 
@@ -34,7 +35,13 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Overlay
     {
         #region Fields
 
+        private Action becomeVisibleAction;
+
+        private Action invokableSkillChangeAction;
+
         private InvokerModifiers modifiers;
+
+        private DataObserver<SkillAdd> skillAddObserver;
 
         private InvokerSkillBook skillbook;
 
@@ -58,6 +65,15 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Overlay
         #endregion
 
         #region Public Methods and Operators
+
+        /// <summary>The dispose.</summary>
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.skillAddObserver.Dispose();
+            this.skillbook.InvokableSkillChange.Reacters.Remove(this.invokableSkillChangeAction);
+            this.Unit.Visibility.BecomeVisibleNotifier.Reacters.Remove(this.becomeVisibleAction);
+        }
 
         public override void Initialize()
         {
@@ -106,21 +122,20 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Overlay
             // this.spellPanel2.PositionFromHealthBarLeftFunc =
             // () => new Vector2(-this.spellPanel1.Size.X - this.spellPanel2.Size.X, 0);
             this.LeftPanel.AddElement(this.spellPanel2);
-
+            this.skillAddObserver = new DataObserver<SkillAdd>(this.OnNext);
             this.modifiers = this.Unit.Modifiers as InvokerModifiers;
-            this.Unit.SkillBook.SkillAdd.Subscribe(this);
-            this.skillbook.InvokableSkillChange.Subscribe(
-                () =>
-                    {
-                        this.InvokerSkillPanel.UpdateSkills();
-                        this.spellPanel2.UpdateSkills();
-                    });
-            this.Unit.Visibility.CameOutOfFogNotifier.Subscribe(
-                () =>
-                    {
-                        this.InvokerSkillPanel.UpdateSkills();
-                        this.spellPanel2.UpdateSkills();
-                    });
+            this.invokableSkillChangeAction = () =>
+                {
+                    this.InvokerSkillPanel.UpdateSkills();
+                    this.spellPanel2.UpdateSkills();
+                };
+            this.skillbook.InvokableSkillChange.Subscribe(this.invokableSkillChangeAction);
+            this.becomeVisibleAction = () =>
+                {
+                    this.InvokerSkillPanel.UpdateSkills();
+                    this.spellPanel2.UpdateSkills();
+                };
+            this.Unit.Visibility.BecomeVisibleNotifier.Subscribe(this.becomeVisibleAction);
         }
 
         /// <summary>Notifies the observer that the provider has finished sending push-based notifications.</summary>

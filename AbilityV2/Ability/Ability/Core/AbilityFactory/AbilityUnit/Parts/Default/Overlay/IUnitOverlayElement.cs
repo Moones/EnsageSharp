@@ -13,7 +13,9 @@
 // </copyright>
 namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
 {
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars;
+    using System;
+
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.PanelFields;
     using Ability.Core.MenuManager.Menus.Submenus.UnitMenu;
 
     using Ensage.Common.Menu;
@@ -23,7 +25,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
     /// <summary>
     ///     The HealthBarBounding interface.
     /// </summary>
-    public interface IUnitOverlayElement
+    public interface IUnitOverlayElement : IDisposable
     {
         #region Public Properties
 

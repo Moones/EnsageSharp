@@ -13,8 +13,6 @@
 // </copyright>
 namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.StatusPanel
 {
-    using System;
-
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Level;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.ObjectPanel;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.PanelBase;
@@ -32,7 +30,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
     /// <summary>
     ///     The status panel.
     /// </summary>
-    public class StatusPanel : PanelBase, IStatusPanel, IDisposable
+    public sealed class StatusPanel : PanelBase, IStatusPanel
     {
         #region Fields
 
@@ -41,6 +39,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
         private DrawRect circleIcon;
 
         private bool connectedToMenu;
+
+        private DataObserver<bool> enableObserver;
+
+        private DataObserver<StringList> healthbarPosObserver;
 
         /// <summary>
         ///     The level.
@@ -90,8 +92,27 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
                         this.Panel?.UpdateSize();
                     });
             this.levelObserver.Subscribe(this.Unit.Level);
-            this.circleIcon = new DrawRect(this.Unit.Drawer.MinimapIcon) { Size = new Vector2((float)(size.Y * 1.5)) };
+            this.circleIcon = new DrawRect(this.Unit.IconDrawer.MinimapIcon)
+                                  {
+                                     Size = new Vector2((float)(size.Y * 1.5)) 
+                                  };
             this.setSize = size;
+            this.enableObserver = new DataObserver<bool>(this.EnabledAction());
+
+            this.healthbarPosObserver = new DataObserver<StringList>(
+                list =>
+                    {
+                        if (list.SelectedIndex == 0)
+                        {
+                            this.ChangePosition(PanelDirection.Left);
+                        }
+                        else
+                        {
+                            this.ChangePosition(PanelDirection.Right);
+                        }
+
+                        this.Panel?.UpdateSize();
+                    });
 
             // this.Size = size;
         }
@@ -210,29 +231,21 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
             this.Menu = subMenu as IPanelMenu;
             if (this.Menu != null)
             {
-                this.Menu.EnableMenuItem.Provider.Subscribe(new DataObserver<bool>(this.EnabledAction()));
-                this.Menu.HealthBarPositionMenuItem.Provider.Subscribe(
-                    new DataObserver<StringList>(
-                        list =>
-                            {
-                                if (list.SelectedIndex == 0)
-                                {
-                                    this.ChangePosition(PanelDirection.Left);
-                                }
-                                else
-                                {
-                                    this.ChangePosition(PanelDirection.Right);
-                                }
-
-                                this.Panel?.UpdateSize();
-                            }));
+                this.Menu.EnableMenuItem.Provider.Subscribe(this.enableObserver);
+                this.Menu.HealthBarPositionMenuItem.Provider.Subscribe(this.healthbarPosObserver);
             }
         }
 
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
-        public void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
             this.levelObserver.Dispose();
+            this.levelObserver = null;
+            this.enableObserver.Dispose();
+            this.enableObserver = null;
+            this.healthbarPosObserver.Dispose();
+            this.healthbarPosObserver = null;
         }
 
         /// <summary>

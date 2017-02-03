@@ -25,7 +25,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.O
     /// <typeparam name="TObject">
     ///     The type of objects
     /// </typeparam>
-    public class PanelObjectManager<TObject>
+    public class PanelObjectManager<TObject> : IDisposable
         where TObject : class, IUnitOverlayElement
     {
         #region Fields
@@ -188,6 +188,16 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.O
             this.Objects = temp;
         }
 
+        public void Dispose()
+        {
+            foreach (var o in this.Objects)
+            {
+                o.Dispose();
+            }
+
+            this.Objects.Clear();
+        }
+
         public void DrawObjects()
         {
             var position = this.ObjectPanel.Position;
@@ -281,7 +291,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.O
                 this.SetObjectSize(o);
             }
 
-            this.ObjectPanel.Panel.UpdateSize();
+            this.ObjectPanel.Panel?.UpdateSize();
         }
 
         #endregion

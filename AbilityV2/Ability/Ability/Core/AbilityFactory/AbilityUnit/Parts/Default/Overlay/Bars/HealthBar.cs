@@ -15,9 +15,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
 
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.PanelFields;
+    using Ability.Core.AbilityFactory.Utilities;
     using Ability.Core.MenuManager.Menus.Submenus.UnitMenu;
 
     using Ensage;
@@ -30,7 +31,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
     /// <summary>
     ///     The health bar.
     /// </summary>
-    public class HealthBar : DrawObject, IBar, IObserver<IHealth>
+    public class HealthBar : DrawObject, IBar
     {
         #region Fields
 
@@ -64,8 +65,14 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         /// </summary>
         private Vector2 healthLostSize;
 
+        private DataObserver<IHealth> healthObserver;
+
+        private float lastSeparatedValue;
+
         /// <summary>The lines.</summary>
         private Dictionary<float, HealthSeparator> lines = new Dictionary<float, HealthSeparator>();
+
+        private Action maxHealthObserver;
 
         /// <summary>
         ///     The pos.
@@ -77,8 +84,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         /// </summary>
         private Vector2 size;
 
-        private float lastSeparatedValue;
-
         #endregion
 
         #region Constructors and Destructors
@@ -86,44 +91,13 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         public HealthBar(IAbilityUnit unit, Vector2 size)
         {
             this.Unit = unit;
-            this.Unit.Health.Subscribe(this);
+            this.healthObserver = new DataObserver<IHealth>(this.UpdateHealth);
+            this.maxHealthObserver = this.UpdateSeparators;
+            this.healthObserver.Subscribe(this.Unit.Health);
             this.Size = size;
             this.lastSeparatedValue = 0;
             this.UpdateSeparators();
-            this.Unit.Health.MaximumHealthChange.Subscribe(this.UpdateSeparators);
-        }
-
-        /// <summary>The update separators.</summary>
-        private void UpdateSeparators()
-        {
-            foreach (var healthSeparator in this.lines)
-            {
-                healthSeparator.Value.MaxHealthChange();
-            }
-
-            if (this.lastSeparatedValue > this.Unit.Health.Maximum)
-            {
-                var count = 0f;
-                for (var i = this.lastSeparatedValue; i > this.Unit.Health.Maximum; i -= 500)
-                {
-                    this.lines.Remove(i);
-                    this.lastSeparatedValue = i;
-                    count++;
-                }
-                
-                this.lastSeparatedValue -= 500;
-            }
-            else if (this.lastSeparatedValue + 500 < this.Unit.Health.Maximum)
-            {
-                var count = 0f;
-                this.lastSeparatedValue += 500;
-                for (var i = this.lastSeparatedValue; i < this.Unit.Health.Maximum; i += 500)
-                {
-                    this.lines.Add(i, new HealthSeparator(i, this));
-                    this.lastSeparatedValue = i;
-                    count++;
-                }
-            }
+            this.Unit.Health.MaximumHealthChange.Subscribe(this.maxHealthObserver);
         }
 
         #endregion
@@ -212,7 +186,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         /// <summary>
         ///     Gets or sets the size.
         /// </summary>
-        public override Vector2 Size
+        public override sealed Vector2 Size
         {
             get
             {
@@ -268,6 +242,13 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
             // this.RightPanel.ConnectToMenu(menu, subMenu);
         }
 
+        /// <summary>The dispose.</summary>
+        public void Dispose()
+        {
+            this.healthObserver.Dispose();
+            this.Unit.Health.MaximumHealthChange.Reacters.Remove(this.maxHealthObserver);
+        }
+
         /// <summary>
         ///     The draw.
         /// </summary>
@@ -281,7 +262,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
                 var color = new Color(255, 255, 255, 255 - (int)this.healthLostTransition.GetValue());
                 Drawing.DrawRect(this.barPos + new Vector2(this.fillSize.X, 0), this.healthLostSize, color);
             }
-            
+
             foreach (var healthSeparator in this.lines)
             {
                 if (!healthSeparator.Value.Visible)
@@ -318,31 +299,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
             throw new NotImplementedException();
         }
 
-        /// <summary>Notifies the observer that the provider has finished sending push-based notifications.</summary>
-        public void OnCompleted()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>Notifies the observer that the provider has experienced an error condition.</summary>
-        /// <param name="error">An object that provides additional information about the error.</param>
-        public void OnError(Exception error)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>Provides the observer with new data.</summary>
-        /// <param name="value">The current notification information.</param>
-        public void OnNext(IHealth value)
-        {
-            this.FillPercentage = value.Percentage;
-
-            foreach (var healthSeparator in this.lines)
-            {
-                healthSeparator.Value.HealthChange();
-            }
-        }
-
         /// <summary>
         ///     The set position.
         /// </summary>
@@ -352,6 +308,53 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         public void SetPosition(Vector2 healthbarPosition)
         {
             this.Position = healthbarPosition;
+        }
+
+        public void UpdateHealth(IHealth value)
+        {
+            this.FillPercentage = value.Percentage;
+
+            foreach (var healthSeparator in this.lines)
+            {
+                healthSeparator.Value.HealthChange();
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>The update separators.</summary>
+        private void UpdateSeparators()
+        {
+            foreach (var healthSeparator in this.lines)
+            {
+                healthSeparator.Value.MaxHealthChange();
+            }
+
+            if (this.lastSeparatedValue > this.Unit.Health.Maximum)
+            {
+                var count = 0f;
+                for (var i = this.lastSeparatedValue; i > this.Unit.Health.Maximum; i -= 500)
+                {
+                    this.lines.Remove(i);
+                    this.lastSeparatedValue = i;
+                    count++;
+                }
+
+                this.lastSeparatedValue -= 500;
+            }
+            else if (this.lastSeparatedValue + 500 < this.Unit.Health.Maximum)
+            {
+                var count = 0f;
+                this.lastSeparatedValue += 500;
+                for (var i = this.lastSeparatedValue; i < this.Unit.Health.Maximum; i += 500)
+                {
+                    this.lines.Add(i, new HealthSeparator(i, this));
+                    this.lastSeparatedValue = i;
+                    count++;
+                }
+            }
         }
 
         #endregion

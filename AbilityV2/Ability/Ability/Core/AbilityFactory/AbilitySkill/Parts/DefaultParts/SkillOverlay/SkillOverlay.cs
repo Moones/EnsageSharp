@@ -28,7 +28,7 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
     /// <summary>
     ///     The skill overlay.
     /// </summary>
-    public class SkillOverlay : ISkillOverlay, IObserver<ICooldown>
+    public class SkillOverlay : ISkillOverlay
     {
         #region Fields
 
@@ -42,6 +42,9 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
         /// </summary>
         private readonly DrawRect blueOverlay;
 
+        /// <summary>The cool down observer.</summary>
+        private readonly DataObserver<ICooldown> coolDownObserver;
+
         /// <summary>
         ///     The icon.
         /// </summary>
@@ -54,6 +57,9 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
         ///     The mana text.
         /// </summary>
         private readonly DrawText manaText;
+
+        /// <summary>The off cooldown observer.</summary>
+        private readonly DataObserver<ICooldown> offCooldownObserver;
 
         private Number cooldownNumber;
 
@@ -98,7 +104,7 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
             this.cooldownNumber = new Number(
                 NumberTextureColor.Default,
                 true,
-                this.Skill.Owner.Overlay.HealthBar.Size.Y / 2);
+                this.Skill.Owner.ScreenInfo.HealthBarSize.Y / 2);
             this.manaNumber = new Number(NumberTextureColor.Blue, true);
             this.Skill.DisposeNotifier.Subscribe(this.Dispose);
 
@@ -110,19 +116,21 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
             this.manaObserver = new DataObserver<IMana>(this.OnNext);
             this.manaObserver.Subscribe(this.Skill.Owner.Mana);
             this.OnNext(this.Skill.Owner.Mana);
-            this.Skill.Cooldown.Subscribe(this);
-            this.Skill.Cooldown.OffCooldownProvider.Subscribe(
-                new DataObserver<ICooldown>(
-                    cooldown =>
-                        {
-                            if (!this.Skill.CastData.EnoughMana)
-                            {
-                                this.BorderColor = this.NotEnoughManaColor;
-                                return;
-                            }
+            this.coolDownObserver = new DataObserver<ICooldown>(this.OnNext);
+            this.coolDownObserver.Subscribe(this.Skill.Cooldown);
 
-                            this.BorderColor = this.ReadyColor;
-                        }));
+            this.offCooldownObserver = new DataObserver<ICooldown>(
+                cooldown =>
+                    {
+                        if (!this.Skill.CastData.EnoughMana)
+                        {
+                            this.BorderColor = this.NotEnoughManaColor;
+                            return;
+                        }
+
+                        this.BorderColor = this.ReadyColor;
+                    });
+            this.offCooldownObserver.Subscribe(this.Skill.Cooldown.OffCooldownProvider);
         }
 
         #endregion
@@ -219,6 +227,8 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverl
         {
             this.removed = true;
             this.manaObserver?.Dispose();
+            this.coolDownObserver?.Dispose();
+            this.offCooldownObserver?.Dispose();
         }
 
         /// <summary>

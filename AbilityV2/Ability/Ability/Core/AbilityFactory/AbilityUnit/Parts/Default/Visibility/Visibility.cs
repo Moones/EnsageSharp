@@ -48,7 +48,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Visibility
         #region Public Properties
 
         /// <summary>Gets the came out of fog notifier.</summary>
-        public Notifier CameOutOfFogNotifier { get; } = new Notifier();
+        public Notifier BecomeVisibleNotifier { get; } = new Notifier();
 
         /// <summary>
         ///     Gets the fog time.
@@ -75,7 +75,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Visibility
                 if (!this.visible && value)
                 {
                     this.visible = true;
-                    this.CameOutOfFogNotifier.Notify();
+                    this.BecomeVisibleNotifier.Notify();
                 }
                 else if (!value && this.visible)
                 {

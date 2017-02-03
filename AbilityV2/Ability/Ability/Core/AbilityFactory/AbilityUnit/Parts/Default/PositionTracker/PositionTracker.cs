@@ -36,6 +36,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
         /// </summary>
         private Sleeper sleeper = new Sleeper();
 
+        private WorldIcon worldIcon;
+
         #endregion
 
         #region Constructors and Destructors
@@ -43,6 +45,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
         public PositionTracker(IAbilityUnit unit)
         {
             this.Unit = unit;
+            this.worldIcon = new WorldIcon(this.Unit);
         }
 
         #endregion
@@ -137,30 +140,41 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
 
             var pos = position;
             this.Unit.Position.Update(pos);
-            DrawingDraw draw = eventArgs =>
-                {
-                    if (this.DrawOnMap.Value)
-                    {
-                        this.Unit.Drawer.DrawIconOnMap(pos);
-                    }
-                };
-            if (this.DrawOnMinimap.Value)
+
+            // DrawingDraw draw = eventArgs =>
+            // {
+            // if (this.DrawOnMap.Value)
+            // {
+            // this.Unit.IconDrawer.DrawIconOnMap(pos);
+            // }
+            // };
+            if (this.DrawOnMap.Value)
             {
-                this.Unit.Drawer.EndSceneIcon.Position = pos.WorldToMinimap()
-                                                         - new Vector2(
-                                                             (float)(this.Unit.Drawer.EndSceneIcon.Width / 2.6));
-                this.Unit.Drawer.EndSceneIcon.Add();
+                this.worldIcon.StartDrawing();
             }
 
-            Drawing.OnDraw += draw;
+            if (this.DrawOnMinimap.Value)
+            {
+                this.Unit.IconDrawer.EndSceneIcon.Position = pos.WorldToMinimap()
+                                                             - new Vector2(
+                                                                 (float)(this.Unit.IconDrawer.EndSceneIcon.Width / 2.6));
+                this.Unit.IconDrawer.EndSceneIcon.Add();
+            }
+
+            // Drawing.OnDraw += draw;
             DelayAction.Add(
                 2000,
                 () =>
                     {
-                        Drawing.OnDraw -= draw;
+                        // Drawing.OnDraw -= draw;
                         if (this.DrawOnMinimap.Value)
                         {
-                            this.Unit.Drawer.EndSceneIcon.Remove();
+                            this.Unit.IconDrawer.EndSceneIcon.Remove();
+                        }
+
+                        if (this.DrawOnMap.Value)
+                        {
+                            this.worldIcon.EndDrawing();
                         }
                     });
 

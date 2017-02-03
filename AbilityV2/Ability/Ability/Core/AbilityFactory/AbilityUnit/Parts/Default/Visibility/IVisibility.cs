@@ -22,8 +22,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Visibility
     {
         #region Public Properties
 
-        /// <summary>Gets the came out of fog notifier.</summary>
-        Notifier CameOutOfFogNotifier { get; }
+        /// <summary>Gets the become visible notifier.</summary>
+        Notifier BecomeVisibleNotifier { get; }
 
         /// <summary>
         ///     Gets the fog time.

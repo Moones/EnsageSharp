@@ -40,7 +40,7 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.HeroParts.Invoker.Overl
                         skillbook?.Invoke.AbilityCast.Subscribe(
                             new DataObserver<AbilityCast>(cast => { this.Update(); }));
                     });
-            this.Skill.Owner.Visibility.CameOutOfFogNotifier.Subscribe(this.Update);
+            this.Skill.Owner.Visibility.BecomeVisibleNotifier.Subscribe(this.Update);
             this.Update();
         }
 

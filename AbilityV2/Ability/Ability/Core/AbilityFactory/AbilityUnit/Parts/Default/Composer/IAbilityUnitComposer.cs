@@ -13,11 +13,21 @@
 // </copyright>
 namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     ///     The AbilityUnitComposer interface.
     /// </summary>
     public interface IAbilityUnitComposer
     {
+        #region Public Properties
+
+        /// <summary>Gets the assignments.</summary>
+        IDictionary<Type, Action<IAbilityUnit>> Assignments { get; }
+
+        #endregion
+
         #region Public Methods and Operators
 
         /// <summary>

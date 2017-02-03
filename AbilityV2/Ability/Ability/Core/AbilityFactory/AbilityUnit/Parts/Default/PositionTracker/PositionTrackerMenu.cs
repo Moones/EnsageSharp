@@ -38,7 +38,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
 
         #region Constructors and Destructors
 
-        /// <summary>Initializes a new instance of the <see cref="PositionTrackerMenu"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="PositionTrackerMenu" /> class.</summary>
         internal PositionTrackerMenu()
         {
             this.Menu = new Menu("PositionTracker", Constants.AssemblyName + "PositionTracker");

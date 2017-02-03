@@ -54,6 +54,11 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Level
 
             set
             {
+                if (this.current.Equals(value))
+                {
+                    return;
+                }
+
                 this.current = value;
                 this.Next(this);
             }

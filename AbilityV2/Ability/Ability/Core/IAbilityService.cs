@@ -13,12 +13,25 @@
 // </copyright>
 namespace Ability.Core
 {
+    using Ensage.Common.Menu;
+
     /// <summary>
     ///     The AbilityService interface.
     /// </summary>
     public interface IAbilityService
     {
+        #region Public Properties
+
+        /// <summary>Gets a value indicating whether generates menu.</summary>
+        bool GenerateMenu { get; }
+
+        #endregion
+
         #region Public Methods and Operators
+
+        /// <summary>The menu.</summary>
+        /// <returns>The <see cref="Menu" />.</returns>
+        Menu Menu();
 
         /// <summary>
         ///     The on close.

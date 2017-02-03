@@ -19,15 +19,21 @@ namespace Ability.Core.AbilityFactory.Utilities
     /// <summary>
     ///     The notifier.
     /// </summary>
-    public class Notifier
+    public class Notifier : IDisposable
     {
         #region Public Properties
 
-        public Collection<Action> Reacters { get; } = new Collection<Action>();
+        public Collection<Action> Reacters { get; set; } = new Collection<Action>();
 
         #endregion
 
         #region Public Methods and Operators
+
+        public void Dispose()
+        {
+            this.Reacters.Clear();
+            this.Reacters = null;
+        }
 
         public void Notify()
         {

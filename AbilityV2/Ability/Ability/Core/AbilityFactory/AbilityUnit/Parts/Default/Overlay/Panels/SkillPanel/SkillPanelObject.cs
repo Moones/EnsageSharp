@@ -17,7 +17,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
 
     using Ability.Core.AbilityFactory.AbilitySkill;
     using Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillOverlay;
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.PanelFields;
     using Ability.Core.MenuManager.Menus.Submenus.UnitMenu;
 
     using Ensage.Common.Menu;
@@ -172,6 +172,13 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
         public void ConnectToMenu(IUnitMenu menu, Menu subMenu)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>The dispose.</summary>
+        public void Dispose()
+        {
+            this.overlay.Dispose();
+            this.overlay = null;
         }
 
         /// <summary>

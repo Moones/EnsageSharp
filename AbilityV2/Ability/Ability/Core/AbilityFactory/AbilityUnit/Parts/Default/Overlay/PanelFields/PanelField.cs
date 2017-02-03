@@ -11,13 +11,14 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see http://www.gnu.org/licenses/
 // </copyright>
-namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
+namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.PanelFields
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.ObjectPanel;
+    using Ability.Core.AbilityFactory.Utilities;
     using Ability.Core.MenuManager.Menus.Submenus.UnitMenu;
 
     using Ensage.Common.Menu;
@@ -27,7 +28,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
     /// <summary>
     ///     The panel field.
     /// </summary>
-    public class PanelField : IUnitOverlayElement
+    public abstract class PanelField : IUnitOverlayElement
     {
         #region Fields
 
@@ -42,14 +43,13 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
 
         #region Constructors and Destructors
 
-        public PanelField(
+        protected PanelField(
             IAbilityUnit unit,
             IUnitOverlayElement parent,
             Func<Vector2> basePosition,
             PanelDirection panelDirection,
             Func<IUnitOverlayElement, Vector2> positionFromHealthbar = null,
-            Func<IUnitOverlayElement, Vector2> positionFromLastElement = null,
-            bool vertical = false)
+            Func<IUnitOverlayElement, Vector2> positionFromLastElement = null)
         {
             this.Unit = unit;
             this.BasePosition = basePosition;
@@ -59,7 +59,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
             this.Position = this.BasePosition.Invoke();
             this.PositionFromElementHealthbarFunc = positionFromHealthbar;
             this.PositionFromLastElementFunc = positionFromLastElement;
-            this.Vertical = vertical;
+            this.Vertical = panelDirection == PanelDirection.Top || panelDirection == PanelDirection.Bottom;
+            this.Size = parent.Size;
         }
 
         #endregion
@@ -112,28 +113,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
                 var baseposition = this.position;
                 foreach (var unitOverlayElement in this.StoredElements)
                 {
-                    if (!unitOverlayElement.Enabled)
-                    {
-                        continue;
-                    }
-
-                    if (this.PositionFromElementHealthbarFunc != null)
-                    {
-                        baseposition += this.PositionFromElementHealthbarFunc.Invoke(unitOverlayElement);
-                    }
-
-                    unitOverlayElement.Position = baseposition;
-
-                    if (this.Vertical)
-                    {
-                        unitOverlayElement.Position +=
-                            new Vector2(this.Unit.ScreenInfo.HealthBarSize.X / 2 - unitOverlayElement.Size.X / 2, 0);
-                    }
-
-                    if (this.PositionFromLastElementFunc != null)
-                    {
-                        baseposition += this.PositionFromLastElementFunc.Invoke(unitOverlayElement);
-                    }
+                    baseposition += this.UpdateElementPosition(unitOverlayElement, baseposition);
                 }
             }
         }
@@ -157,6 +137,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         ///     Gets or sets the size.
         /// </summary>
         public Vector2 Size { get; set; }
+
+        /// <summary>Gets the size changed.</summary>
+        public Notifier SizeChanged { get; } = new Notifier();
 
         /// <summary>
         ///     Gets or sets the size increase.
@@ -205,21 +188,23 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
             var tempList = this.StoredElements.ToList();
             element.Panel = this;
             tempList.Add(element);
-            switch (this.PanelDirection)
-            {
-                case PanelDirection.Left:
-                    this.StoredElements = tempList.OrderByDescending(x => x.Size.Y + x.Size.X / 2).ToList();
-                    break;
-                case PanelDirection.Right:
-                    this.StoredElements = tempList.OrderByDescending(x => x.Size.Y + x.Size.X / 2).ToList();
-                    break;
-                case PanelDirection.Bottom:
-                    this.StoredElements = tempList.OrderByDescending(x => x.Size.X + x.Size.Y / 2).ToList();
-                    break;
-                default:
-                    this.StoredElements = tempList.OrderByDescending(x => x.Size.X + x.Size.Y / 2).ToList();
-                    break;
-            }
+            this.StoredElements = tempList.OrderByDescending(this.ElementPriority).ToList();
+
+            // switch (this.PanelDirection)
+            // {
+            // case PanelDirection.Left:
+            // this.StoredElements = tempList.OrderByDescending(x => x.Size.Y + x.Size.X / 2).ToList();
+            // break;
+            // case PanelDirection.Right:
+            // this.StoredElements = tempList.OrderByDescending(x => x.Size.Y + x.Size.X / 2).ToList();
+            // break;
+            // case PanelDirection.Bottom:
+            // this.StoredElements = tempList.OrderByDescending(x => x.Size.X + x.Size.Y / 2).ToList();
+            // break;
+            // default:
+            // this.StoredElements = tempList.OrderByDescending(x => x.Size.X + x.Size.Y / 2).ToList();
+            // break;
+            // }
         }
 
         /// <summary>
@@ -247,6 +232,18 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
         /// </param>
         public void ConnectToMenu(IUnitMenu menu, Menu subMenu)
         {
+        }
+
+        public void Dispose()
+        {
+            this.SizeChanged.Reacters.Clear();
+
+            foreach (var unitOverlayElement in this.storedElements)
+            {
+                unitOverlayElement.Dispose();
+            }
+
+            this.storedElements.Clear();
         }
 
         /// <summary>
@@ -288,6 +285,11 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
             }
         }
 
+        /// <summary>The element priority.</summary>
+        /// <param name="element">The element.</param>
+        /// <returns>The <see cref="float" />.</returns>
+        public abstract float ElementPriority(IUnitOverlayElement element);
+
         /// <summary>
         ///     The generate menu.
         /// </summary>
@@ -327,72 +329,115 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars
             this.StoredElements = tempList;
         }
 
+        /// <summary>The update element position.</summary>
+        /// <param name="unitOverlayElement">The unit overlay element.</param>
+        /// <param name="basePosition">The base position.</param>
+        /// <returns>The <see cref="Vector2" />.</returns>
+        public virtual Vector2 UpdateElementPosition(IUnitOverlayElement unitOverlayElement, Vector2 basePosition)
+        {
+            if (!unitOverlayElement.Enabled)
+            {
+                return Vector2.Zero;
+            }
+
+            var addition = Vector2.Zero;
+            if (this.PositionFromElementHealthbarFunc != null)
+            {
+                addition += this.PositionFromElementHealthbarFunc.Invoke(unitOverlayElement);
+            }
+
+            unitOverlayElement.Position = addition + basePosition;
+
+            // if (this.Vertical)
+            // {
+            // unitOverlayElement.Position +=
+            // new Vector2(this.Unit.ScreenInfo.HealthBarSize.X / 2 - unitOverlayElement.Size.X / 2, 0);
+            // }
+            if (this.PositionFromLastElementFunc != null)
+            {
+                addition += this.PositionFromLastElementFunc.Invoke(unitOverlayElement);
+            }
+
+            return addition;
+        }
+
+        /// <summary>The update panel field size.</summary>
+        public abstract void UpdatePanelFieldSize();
+
         /// <summary>The update size.</summary>
         public void UpdateSize()
         {
-            switch (this.PanelDirection)
-            {
-                case PanelDirection.Top:
-                    this.Size = new Vector2(this.ParentElement.Size.X, 0);
-                    foreach (var unitOverlayElement in this.storedElements)
-                    {
-                        if (!unitOverlayElement.Enabled)
-                        {
-                            continue;
-                        }
+            this.UpdatePanelFieldSize();
 
-                        this.Size = new Vector2(
-                            Math.Max(this.Size.X, unitOverlayElement.Size.X),
-                            this.Size.Y + unitOverlayElement.Size.Y);
-                    }
+            // if (this is TopPanelField)
+            // {
+            // Console.WriteLine("toppanel " + this.SizeChanged.Reacters.Count + " " + this.Size);
+            // }
+            this.SizeChanged.Notify();
 
-                    break;
-                case PanelDirection.Bottom:
-                    this.Size = new Vector2(this.ParentElement.Size.X, 0);
-                    foreach (var unitOverlayElement in this.storedElements)
-                    {
-                        if (!unitOverlayElement.Enabled)
-                        {
-                            continue;
-                        }
+            // switch (this.PanelDirection)
+            // {
+            // case PanelDirection.Top:
+            // this.Size = new Vector2(this.ParentElement.Size.X, 0);
+            // foreach (var unitOverlayElement in this.storedElements)
+            // {
+            // if (!unitOverlayElement.Enabled)
+            // {
+            // continue;
+            // }
 
-                        this.Size = new Vector2(
-                            Math.Max(this.Size.X, unitOverlayElement.Size.X),
-                            this.Size.Y + unitOverlayElement.Size.Y);
-                    }
+            // this.Size = new Vector2(
+            // Math.Max(this.Size.X, unitOverlayElement.Size.X),
+            // this.Size.Y + unitOverlayElement.Size.Y);
+            // }
 
-                    break;
-                case PanelDirection.Left:
-                    this.Size = new Vector2(0, this.ParentElement.Size.Y);
-                    foreach (var unitOverlayElement in this.storedElements)
-                    {
-                        if (!unitOverlayElement.Enabled)
-                        {
-                            continue;
-                        }
+            // break;
+            // case PanelDirection.Bottom:
+            // this.Size = new Vector2(this.ParentElement.Size.X, 0);
+            // foreach (var unitOverlayElement in this.storedElements)
+            // {
+            // if (!unitOverlayElement.Enabled)
+            // {
+            // continue;
+            // }
 
-                        this.Size = new Vector2(
-                            this.Size.X + unitOverlayElement.Size.X,
-                            Math.Max(this.Size.Y, unitOverlayElement.Size.Y));
-                    }
+            // this.Size = new Vector2(
+            // Math.Max(this.Size.X, unitOverlayElement.Size.X),
+            // this.Size.Y + unitOverlayElement.Size.Y);
+            // }
 
-                    break;
-                case PanelDirection.Right:
-                    this.Size = new Vector2(0, this.ParentElement.Size.Y);
-                    foreach (var unitOverlayElement in this.storedElements)
-                    {
-                        if (!unitOverlayElement.Enabled)
-                        {
-                            continue;
-                        }
+            // break;
+            // case PanelDirection.Left:
+            // this.Size = new Vector2(0, this.ParentElement.Size.Y);
+            // foreach (var unitOverlayElement in this.storedElements)
+            // {
+            // if (!unitOverlayElement.Enabled)
+            // {
+            // continue;
+            // }
 
-                        this.Size = new Vector2(
-                            this.Size.X + unitOverlayElement.Size.X,
-                            Math.Max(this.Size.Y, unitOverlayElement.Size.Y));
-                    }
+            // this.Size = new Vector2(
+            // this.Size.X + unitOverlayElement.Size.X,
+            // Math.Max(this.Size.Y, unitOverlayElement.Size.Y));
+            // }
 
-                    break;
-            }
+            // break;
+            // case PanelDirection.Right:
+            // this.Size = new Vector2(0, this.ParentElement.Size.Y);
+            // foreach (var unitOverlayElement in this.storedElements)
+            // {
+            // if (!unitOverlayElement.Enabled)
+            // {
+            // continue;
+            // }
+
+            // this.Size = new Vector2(
+            // this.Size.X + unitOverlayElement.Size.X,
+            // Math.Max(this.Size.Y, unitOverlayElement.Size.Y));
+            // }
+
+            // break;
+            // }
         }
 
         #endregion

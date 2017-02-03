@@ -59,12 +59,12 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker.Overlay
 
         #endregion
 
-        ///     The menu.
-        /// <param name="menu">
-        /// </summary>
-        ///     The add submenu.
-
         /// <summary>
+        ///     The add submenu.
+        /// </summary>
+        /// <param name="menu">
+
+        ///     The menu.
         /// </param>
         /// <returns>
         ///     The <see cref="Ensage.Common.Menu.Menu" />.

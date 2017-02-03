@@ -16,8 +16,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
     using System;
 
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.ObjectPanel;
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook;
-    using Ability.Core.AbilityFactory.Utilities;
 
     using SharpDX;
 
@@ -57,17 +55,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
                         return vector2;
                     })
         {
-            unit.SkillBook.SkillRemove.Subscribe(
-                new DataObserver<SkillRemove>(
-                    remove =>
-                        {
-                            if (!this.SelectionCondition.Invoke(remove.Skill))
-                            {
-                                return;
-                            }
-
-                            this.RemoveObject(this.TempDictionary[remove.Skill.SkillHandle]);
-                        }));
         }
 
         #endregion

@@ -22,23 +22,22 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Rubick.SkillBook
     /// <summary>The rubick skill book.</summary>
     public class RubickSkillBook : SkillBook<IAbilitySkill>
     {
-        #region Fields
-
-        /// <summary>The spell steal.</summary>
-        public IAbilitySkill SpellSteal { get; set; }
-
-
-        /// <summary>The stolen spell.</summary>
-        public IAbilitySkill StolenSpell { get; set; }
-
-        #endregion
-
         #region Constructors and Destructors
 
         public RubickSkillBook(IAbilityUnit unit)
             : base(unit)
         {
         }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>The spell steal.</summary>
+        public IAbilitySkill SpellSteal { get; set; }
+
+        /// <summary>The stolen spell.</summary>
+        public IAbilitySkill StolenSpell { get; set; }
 
         #endregion
 

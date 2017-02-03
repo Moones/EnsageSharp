@@ -32,7 +32,13 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
     {
         #region Fields
 
+        private DataObserver<ISkillLevel> levelObserver;
+
         private Func<IAbilitySkill, bool> selectionCondition;
+
+        private DataObserver<SkillAdd> skillAddObserver;
+
+        private DataObserver<SkillRemove> skillRemoveObserver;
 
         /// <summary>The temp dictionary.</summary>
         private Dictionary<double, SkillPanelObject> tempDictionary = new Dictionary<double, SkillPanelObject>();
@@ -67,45 +73,47 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
                     }))
         {
             this.Unit = unit;
+            this.levelObserver = new DataObserver<ISkillLevel>(level => { this.ObjectManager.UpdateSize(); });
             this.SelectionCondition = selectionCondition;
-            foreach (var keyValuePair in this.Unit.SkillBook.AllSkills)
-            {
-                if (this.SelectionCondition.Invoke(keyValuePair.Value))
-                {
-                    var o = new SkillPanelObject(keyValuePair.Value);
-                    this.tempDictionary.Add(keyValuePair.Key, o);
-                    this.AddObject(o);
-                    keyValuePair.Value.Level.Subscribe(
-                        new DataObserver<ISkillLevel>(level => { this.ObjectManager.UpdateSize(); }));
-                }
-            }
 
-            this.Unit.SkillBook.SkillAdd.Subscribe(
-                new DataObserver<SkillAdd>(
-                    add =>
+            // Console.WriteLine(this.tempDictionary.Count);
+            // foreach (var keyValuePair in this.Unit.SkillBook.AllSkills)
+            // {
+            // if (this.SelectionCondition.Invoke(keyValuePair.Value))
+            // {
+            // var o = new SkillPanelObject(keyValuePair.Value);
+            // Console.WriteLine(keyValuePair.Value.Name);
+            // this.tempDictionary.Add(keyValuePair.Key, o);
+            // this.AddObject(o);
+            // this.levelObserver.Subscribe(keyValuePair.Value.Level);
+            // }
+            // }
+            this.skillAddObserver = new DataObserver<SkillAdd>(
+                add =>
+                    {
+                        if (this.SelectionCondition.Invoke(add.Skill))
                         {
-                            if (this.SelectionCondition.Invoke(add.Skill))
-                            {
-                                var o = new SkillPanelObject(add.Skill);
-                                this.tempDictionary.Add(add.Skill.SkillHandle, o);
-                                this.AddObject(o);
-                            }
+                            var o = new SkillPanelObject(add.Skill);
+                            this.tempDictionary.Add(add.Skill.SkillHandle, o);
+                            this.AddObject(o);
+                        }
 
-                            add.Skill.Level.Subscribe(
-                                new DataObserver<ISkillLevel>(level => { this.ObjectManager.UpdateSize(); }));
-                        }));
+                        this.levelObserver.Subscribe(add.Skill.Level);
+                    });
+            this.skillAddObserver.Subscribe(this.Unit.SkillBook.SkillAdd);
 
-            unit.SkillBook.SkillRemove.Subscribe(
-                new DataObserver<SkillRemove>(
-                    remove =>
+            this.skillRemoveObserver = new DataObserver<SkillRemove>(
+                remove =>
+                    {
+                        if (!this.SelectionCondition.Invoke(remove.Skill))
                         {
-                            if (!this.SelectionCondition.Invoke(remove.Skill))
-                            {
-                                return;
-                            }
+                            return;
+                        }
 
-                            this.RemoveObject(this.TempDictionary[remove.Skill.SkillHandle]);
-                        }));
+                        this.RemoveObject(this.TempDictionary[remove.Skill.SkillHandle]);
+                    });
+
+            this.skillRemoveObserver.Subscribe(unit.SkillBook.SkillRemove);
         }
 
         #endregion
@@ -185,6 +193,17 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
 
         #region Public Methods and Operators
 
+        /// <summary>The dispose.</summary>
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.tempDictionary.Clear();
+            this.levelObserver.Dispose();
+            this.skillAddObserver.Dispose();
+            this.skillRemoveObserver.Dispose();
+        }
+
         /// <summary>
         ///     The update skills.
         /// </summary>
@@ -203,6 +222,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
                 {
                     o = new SkillPanelObject(keyValuePair.Value);
                     this.tempDictionary.Add(keyValuePair.Key, o);
+                    this.levelObserver.Subscribe(keyValuePair.Value.Level);
                 }
 
                 // this.tempDictionary.Add(keyValuePair.Key, o);
@@ -212,6 +232,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Panels.S
             if (newskills.Count == 0 || this.ObjectManager.OrderFunction == null)
             {
                 this.ObjectManager.Objects = newskills;
+                this.Panel?.UpdateSize();
                 return;
             }
 

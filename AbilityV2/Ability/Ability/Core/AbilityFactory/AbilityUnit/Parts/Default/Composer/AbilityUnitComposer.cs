@@ -17,8 +17,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
     using System.Collections.Generic;
 
     using Ability.Core.AbilityFactory.AbilitySkill;
-    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Drawer;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.IconDrawer;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Level;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Mana;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Modifiers;
@@ -45,7 +45,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
             this.AssignPart<IHealth>(abilityUnit => new Health(abilityUnit));
             this.AssignPart<IMana>(abilityUnit => new Mana(abilityUnit));
             this.AssignPart<IPosition>(abilityUnit => new Position(abilityUnit));
-            this.AssignPart<IUnitDrawer>(abilityUnit => new UnitDrawer(abilityUnit));
+            this.AssignPart<IUnitIconDrawer>(abilityUnit => new UnitIconDrawer(abilityUnit));
             this.AssignPart<IPositionTracker>(abilityUnit => new PositionTracker(abilityUnit));
             this.AssignPart<IModifiers>(abilityUnit => new Modifiers(abilityUnit));
             this.AssignPart<IUnitLevel>(abilityUnit => new UnitLevel(abilityUnit));
@@ -88,6 +88,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
             // {
             // this.AssignPart<IUnitControl>(abilityUnit => new UnitControl(abilityUnit));
             // }
+            unit.UnitComposer = this;
             foreach (var keyValuePair in this.Assignments)
             {
                 keyValuePair.Value.Invoke(unit);

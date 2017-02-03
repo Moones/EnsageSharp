@@ -164,7 +164,7 @@ namespace Ability
             {
                 return;
             }
-            
+
             this.initialized = true;
             GlobalVariables.LocalHero = ObjectManager.LocalHero;
             GlobalVariables.EnemyTeam = UnitExtensions.GetEnemyTeam(GlobalVariables.LocalHero);
@@ -190,8 +190,6 @@ namespace Ability
 
             ComposeParts(this);
 
-            this.MainMenuManager.Value.OnLoad();
-
             var delay = Game.GameTime < 0 ? 3000 : 500;
             DelayAction.Add(
                 delay,
@@ -202,6 +200,8 @@ namespace Ability
                         {
                             abilityService.Value.OnLoad();
                         }
+
+                        this.MainMenuManager.Value.OnLoad();
                     });
 
             DelayAction.Add(

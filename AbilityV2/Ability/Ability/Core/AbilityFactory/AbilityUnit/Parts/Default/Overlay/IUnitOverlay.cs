@@ -16,6 +16,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
     using System.Collections.Generic;
 
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.Bars;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay.PanelFields;
     using Ability.Core.MenuManager.GetValue;
 
     using Ensage.Common.Menu;
@@ -36,6 +37,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
 
         /// <summary>Gets or sets the distance from local hero.</summary>
         GetValue<Slider, float> DistanceFromLocalHero { get; set; }
+
+        /// <summary>Gets or sets the distance from screen edge.</summary>
+        GetValue<Slider, float> DistanceFromScreen { get; set; }
 
         /// <summary>
         ///     Gets or sets the elements.

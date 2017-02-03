@@ -91,6 +91,12 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.ScreenInfo
 
             set
             {
+                if (value.Equals(this.screenPosition))
+                {
+                    // || value.Equals(Vector2.Zero))
+                    return;
+                }
+
                 this.screenPosition = value;
                 if (this.screenPosition == Vector2.Zero)
                 {

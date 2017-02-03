@@ -31,6 +31,7 @@ namespace Ability.Core.AbilityManager
 
     using Ensage;
     using Ensage.Common;
+    using Ensage.Common.Menu;
     using Ensage.Common.Objects;
 
     using SharpDX;
@@ -134,6 +135,9 @@ namespace Ability.Core.AbilityManager
                 this.enemies = value.ToDictionary(x => x.Key, x => x.Value);
             }
         }
+
+        /// <summary>Gets a value indicating whether generate menu.</summary>
+        public bool GenerateMenu { get; } = false;
 
         /// <summary>
         ///     Gets or sets the local team.
@@ -262,6 +266,13 @@ namespace Ability.Core.AbilityManager
 
             this.units.Add(unit.Handle, abilityUnit);
             this.OnUnitAdded(new UnitEventArgs { AbilityUnit = abilityUnit });
+        }
+
+        /// <summary>The menu.</summary>
+        /// <returns>The <see cref="Menu" />.</returns>
+        public Menu Menu()
+        {
+            return null;
         }
 
         /// <summary>
@@ -753,8 +764,8 @@ namespace Ability.Core.AbilityManager
             foreach (var physicalItem in ObjectManager.GetEntities<PhysicalItem>())
             {
                 var owner = physicalItem.Item?.OldOwner ?? physicalItem.Item?.Owner;
-                if (owner != null && owner.Handle.Equals(unit.Handle)
-                    && !physicalItem.Item.IsRecipe && abilityUnit.SkillBook.IsValid(physicalItem.Item))
+                if (owner != null && owner.Handle.Equals(unit.Handle) && !physicalItem.Item.IsRecipe
+                    && abilityUnit.SkillBook.IsValid(physicalItem.Item))
                 {
                     var abilitySkill = this.AbilityFactory.Value.CreateNewSkill(physicalItem.Item, abilityUnit);
                     abilityUnit.SkillBook.AddSkill(abilitySkill);
