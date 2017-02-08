@@ -138,6 +138,7 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.Cooldown
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public virtual void Dispose()
         {
+            this.Skill.DataReceiver.Updates.Remove(this.Update);
         }
 
         /// <summary>The initialize.</summary>
