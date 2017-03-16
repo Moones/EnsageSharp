@@ -24,7 +24,7 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.HeroParts.Invoker
     using Ability.Core.AbilityFactory.Metadata;
 
     using Ensage;
-    using Ensage.Common.Enums;
+    using AbilityId = Ensage.Common.Enums.AbilityId;
     using Ensage.Common.Extensions;
 
     /// <summary>
