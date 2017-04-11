@@ -296,8 +296,8 @@ namespace Ability.Core.AbilityManager
                         var isHero = unit is Hero && !unit.IsIllusion;
 
                         // if (args.Entity is Creep
-                        // && (args.Entity.ClassID == ClassID.CDOTA_BaseNPC_Creep_Lane
-                        // || args.Entity.ClassID == ClassID.CDOTA_BaseNPC_Creep_Siege))
+                        // && (args.Entity.ClassId == ClassId.CDOTA_BaseNPC_Creep_Lane
+                        // || args.Entity.ClassId == ClassId.CDOTA_BaseNPC_Creep_Siege))
                         // {
                         // foreach (var abilityUnit in this.controllableUnits)
                         // {
@@ -344,8 +344,8 @@ namespace Ability.Core.AbilityManager
                             Enemy enemy;
                             if (this.enemies.TryGetValue(owner.Handle, out enemy)
                                 && !enemy.SkillBook.AllSkills.ContainsKey(skill.Handle)
-                                && (skill is Item || owner.ClassID == ClassID.CDOTA_Unit_Hero_Rubick
-                                    || owner.ClassID == ClassID.CDOTA_Unit_Hero_DoomBringer)
+                                && (skill is Item || owner.ClassId == ClassId.CDOTA_Unit_Hero_Rubick
+                                    || owner.ClassId == ClassId.CDOTA_Unit_Hero_DoomBringer)
                                 && enemy.SkillBook.IsValid(skill))
                             {
                                 var abilitySkill = this.AbilityFactory.Value.CreateNewSkill(skill, enemy);
@@ -359,8 +359,8 @@ namespace Ability.Core.AbilityManager
                         IControllableUnit ally;
                         if (this.controllableUnits.TryGetValue(owner.Handle, out ally)
                             && !ally.SkillBook.AllSkills.ContainsKey(skill.Handle)
-                            && (skill is Item || owner.ClassID == ClassID.CDOTA_Unit_Hero_Rubick
-                                || owner.ClassID == ClassID.CDOTA_Unit_Hero_DoomBringer)
+                            && (skill is Item || owner.ClassId == ClassId.CDOTA_Unit_Hero_Rubick
+                                || owner.ClassId == ClassId.CDOTA_Unit_Hero_DoomBringer)
                             && ally.SkillBook.IsValid(skill))
                         {
                             var abilitySkill = this.AbilityFactory.Value.CreateNewControllableSkill(skill, ally);
@@ -407,8 +407,8 @@ namespace Ability.Core.AbilityManager
             // foreach (var unit in ObjectManager.GetEntities<Unit>())
             // {
             // if (!(unit is Hero) || unit.Team == GlobalVariables.EnemyTeam && !(unit is Hero)
-            // || unit.ClassID == ClassID.CDOTA_BaseNPC_Creep_Lane
-            // || unit.ClassID == ClassID.CDOTA_BaseNPC_Creep_Siege || unit.IsIllusion)
+            // || unit.ClassId == ClassId.CDOTA_BaseNPC_Creep_Lane
+            // || unit.ClassId == ClassId.CDOTA_BaseNPC_Creep_Siege || unit.IsIllusion)
             // {
             // continue;
             // }
@@ -477,13 +477,13 @@ namespace Ability.Core.AbilityManager
                 return;
             }
 
-            var skill = args.Entity.ClassID == ClassID.CDOTA_Item || args.Entity is Ability || args.Entity is Item
+            var skill = args.Entity.ClassId == ClassId.CDOTA_Item || args.Entity is Ability || args.Entity is Item
                             ? args.Entity as Ability
                             : null;
 
             var owner = skill?.Owner as Unit;
 
-            // Console.WriteLine((skill == null) + " " + (owner == null) + " " + (args.Entity.ClassID == ClassID.CDOTA_Item) + " " + args.Entity.ClassID);
+            // Console.WriteLine((skill == null) + " " + (owner == null) + " " + (args.Entity.ClassId == ClassId.CDOTA_Item) + " " + args.Entity.ClassId);
             if (owner == null)
             {
                 if (skill == null)

@@ -185,7 +185,7 @@
                 new MenuItem("Ability#.BlinkMaxEnemiesAround", "Maximum enemies around target to use blink").SetValue(
                     new Slider(2, 0, 3)))
                 .SetTooltip("If theres more enemies around then specified value, blink will not be used");
-            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker)
+            if (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Invoker)
             {
                 MainMenu.OptionsMenu.AddSubMenu(MainMenu.InvokerMenu);
                 MainMenu.InvokerMenu.AddItem(

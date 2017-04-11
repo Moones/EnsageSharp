@@ -577,8 +577,8 @@ namespace Ability.Core.AbilityData
                         if (args.Entity.Name == "npc_dota_thinker")
                         {
                             if (args.Entity.Owner == null
-                                || args.Entity.Owner.ClassID == ClassID.CDOTA_Unit_Hero_Invoker
-                                || args.Entity.Owner.ClassID == ClassID.CDOTA_Unit_Hero_Kunkka
+                                || args.Entity.Owner.ClassId == ClassId.CDOTA_Unit_Hero_Invoker
+                                || args.Entity.Owner.ClassId == ClassId.CDOTA_Unit_Hero_Kunkka
                                 || args.Entity.Owner.IsVisible)
                             {
                                 return;

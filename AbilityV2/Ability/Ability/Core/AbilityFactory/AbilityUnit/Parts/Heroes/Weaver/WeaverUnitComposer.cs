@@ -24,7 +24,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Weaver
 
     /// <summary>The weaver unit composer.</summary>
     [Export(typeof(IAbilityUnitComposer))]
-    [AbilityUnitMetadata(ClassID.CDOTA_Unit_Hero_Weaver)]
+    [AbilityUnitMetadata(ClassId.CDOTA_Unit_Hero_Weaver)]
     internal class WeaverUnitComposer : AbilityUnitComposer
     {
         #region Constructors and Destructors

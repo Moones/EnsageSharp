@@ -2142,8 +2142,8 @@ namespace Ability.Utilities
                         && !string.IsNullOrEmpty(value))
                     {
                         var size = this._textFont.MeasureText(null, value, 0);
-                        this.Width = size.Width;
-                        this.Height = size.Height;
+                        this.Width = size.Left;
+                        this.Height = size.Right;
                         this._textFont.PreloadText(value);
                     }
 

@@ -105,7 +105,7 @@ namespace Ability.Core.AbilityFactory
             var composer =
                 this.SkillComposers.FirstOrDefault(
                     x =>
-                        (!x.Metadata.Owner || x.Metadata.OwnerClassId.Equals(owner.SourceUnit.ClassID))
+                        (!x.Metadata.Owner || x.Metadata.OwnerClassId.Equals(owner.SourceUnit.ClassId))
                         && x.Metadata.AbilityIds.Contains((uint)skill.GetAbilityId()));
             if (composer != null)
             {
@@ -154,7 +154,7 @@ namespace Ability.Core.AbilityFactory
             team.UnitManager.AddUnit(controllableUnit);
             var composer =
                 this.UnitComposers.FirstOrDefault(
-                    x => x.Metadata.ClassIds.Contains(controllableUnit.SourceUnit.ClassID));
+                    x => x.Metadata.ClassIds.Contains(controllableUnit.SourceUnit.ClassId));
             if (composer != null)
             {
                 composer.Value.Compose(controllableUnit);
@@ -195,7 +195,7 @@ namespace Ability.Core.AbilityFactory
             var composer =
                 this.SkillComposers.FirstOrDefault(
                     x =>
-                        (!x.Metadata.Owner || x.Metadata.OwnerClassId.Equals(owner.SourceUnit.ClassID))
+                        (!x.Metadata.Owner || x.Metadata.OwnerClassId.Equals(owner.SourceUnit.ClassId))
                         && x.Metadata.AbilityIds.Contains((uint)skill.GetAbilityId()));
             if (composer != null)
             {
@@ -232,7 +232,7 @@ namespace Ability.Core.AbilityFactory
 
             team.UnitManager.AddUnit(abilityUnit);
             var composer =
-                this.UnitComposers.FirstOrDefault(x => x.Metadata.ClassIds.Contains(abilityUnit.SourceUnit.ClassID));
+                this.UnitComposers.FirstOrDefault(x => x.Metadata.ClassIds.Contains(abilityUnit.SourceUnit.ClassId));
             if (composer != null)
             {
                 composer.Value.Compose(abilityUnit);

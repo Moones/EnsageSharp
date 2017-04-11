@@ -31,7 +31,7 @@ namespace Ability.Core.AbilityFactory.Metadata
         /// <summary>Initializes a new instance of the <see cref="AbilitySkillMetadataAttribute" /> class.</summary>
         /// <param name="ownerClassId">The owner class id.</param>
         /// <param name="abilityIds">The skill ids.</param>
-        public AbilitySkillMetadataAttribute(ClassID ownerClassId, params uint[] abilityIds)
+        public AbilitySkillMetadataAttribute(ClassId ownerClassId, params uint[] abilityIds)
         {
             this.OwnerClassId = ownerClassId;
             this.AbilityIds = abilityIds;
@@ -49,7 +49,7 @@ namespace Ability.Core.AbilityFactory.Metadata
         public bool Owner { get; }
 
         /// <summary>Gets the owner class id.</summary>
-        public ClassID OwnerClassId { get; }
+        public ClassId OwnerClassId { get; }
 
         #endregion
     }

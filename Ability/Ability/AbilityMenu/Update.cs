@@ -47,7 +47,7 @@
                 MainMenu.ComboKeysMenu.Item("comboAbilitiesToggler").GetValue<AbilityToggler>().Remove(name);
                 MainMenu.ComboKeysMenu.Item("Ability#.ComboOrder").GetValue<PriorityChanger>().Remove(name);
 
-                // if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
+                // if (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Rubick)
                 // {
                 // if (!Rubick.MyCdDictionary.ContainsKey(name))
                 // {
@@ -253,7 +253,7 @@
                     }
                 }
 
-                if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
+                if (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Rubick)
                 {
                     foreach (var item in AllyHeroes.AbilityDictionary[NameManager.Name(AbilityMain.Me)])
                     {

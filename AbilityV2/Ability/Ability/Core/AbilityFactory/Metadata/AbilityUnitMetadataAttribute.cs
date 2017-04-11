@@ -31,7 +31,7 @@ namespace Ability.Core.AbilityFactory.Metadata
 
         /// <summary>Initializes a new instance of the <see cref="AbilityUnitMetadataAttribute" /> class.</summary>
         /// <param name="classIds">The class Ids.</param>
-        public AbilityUnitMetadataAttribute(params ClassID[] classIds)
+        public AbilityUnitMetadataAttribute(params ClassId[] classIds)
         {
             this.ClassIds = classIds;
         }
@@ -41,7 +41,7 @@ namespace Ability.Core.AbilityFactory.Metadata
         #region Public Properties
 
         /// <summary>Gets the class ids.</summary>
-        public ICollection<ClassID> ClassIds { get; }
+        public ICollection<ClassId> ClassIds { get; }
 
         #endregion
     }

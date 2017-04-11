@@ -271,7 +271,7 @@
                         return false;
                     }
 
-                    if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_TemplarAssassin)
+                    if (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_TemplarAssassin)
                     {
                         var r = MyAbilities.Combo.FirstOrDefault(x => x.Key == "templar_assassin_psionic_trapslow");
                         var modifier = target.FindModifier("modifier_templar_assassin_trap_slow");
@@ -281,7 +281,7 @@
                         }
                     }
 
-                    if (me.ClassID == ClassID.CDOTA_Unit_Hero_Tinker && toggler.IsEnabled("tinker_rearm")
+                    if (me.ClassId == ClassId.CDOTA_Unit_Hero_Tinker && toggler.IsEnabled("tinker_rearm")
                         && MyAbilities.TinkerRearm.CanBeCasted() && Utils.SleepCheck("Ability.TinkerRearm")
                         && !MyAbilities.Combo.Any(
                             x => x.Value.StoredName() != "item_blink" && 
@@ -323,7 +323,7 @@
                             && (x.Value.CanBeCasted() || x.Value.CanInvoke()
                                 || (x.Value.CanBeCasted(SoulRing.ManaGained) && SoulRing.Check(x.Value)))
                             && (!x.Value.IsAbilityBehavior(AbilityBehavior.Hidden)
-                                || (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker
+                                || (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Invoker
                                     && (x.Value.CanBeCasted() || x.Value.CanInvoke())))
                             && ((x.Value is Item && me.CanUseItems()) || (!(x.Value is Item) && me.CanCast()))
                             && (Utils.SleepCheck(x.Value.Handle.ToString())
@@ -469,7 +469,7 @@
 
                         if (!ability.CanHit(target, MyHeroInfo.Position, name) && category != "buff"
                             && (!target.HasModifier("modifier_pudge_meat_hook")
-                                || me.ClassID != ClassID.CDOTA_Unit_Hero_Pudge || target.Distance2D(me) > 600))
+                                || me.ClassId != ClassId.CDOTA_Unit_Hero_Pudge || target.Distance2D(me) > 600))
                         {
                             Variables.DealtDamage = 0;
                             if (name == "templar_assassin_meld")
@@ -491,7 +491,7 @@
 
                             if (ability.IsAbilityBehavior(AbilityBehavior.NoTarget, NameManager.Name(ability))
                                 && target.PredictedPosition().Distance2D(MyHeroInfo.Position)
-                                < ability.GetRadius() + 150 && me.ClassID != ClassID.CDOTA_Unit_Hero_Pudge)
+                                < ability.GetRadius() + 150 && me.ClassId != ClassId.CDOTA_Unit_Hero_Pudge)
                             {
                                 if (Utils.SleepCheck("Ability.Move"))
                                 {
@@ -503,7 +503,7 @@
                                 return true;
                             }
 
-                            if (me.ClassID == ClassID.CDOTA_Unit_Hero_Pudge)
+                            if (me.ClassId == ClassId.CDOTA_Unit_Hero_Pudge)
                             {
                                 return false;
                             }

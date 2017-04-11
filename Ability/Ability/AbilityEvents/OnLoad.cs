@@ -38,7 +38,7 @@
             GankDamage.IncomingDamages = new Dictionary<string, float>();
             HpBar.HpBarPositionDictionary = new Dictionary<string, Vector2>();
             NameManager.NameDictionary = new Dictionary<float, string>();
-            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
+            if (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Rubick)
             {
                 Rubick.CdDictionary = new Dictionary<string, bool>();
                 Rubick.LastCastedDictionary = new Dictionary<string, Ability>();
@@ -64,60 +64,60 @@
             AllyHeroes.ItemDictionary = new Dictionary<string, List<Item>>();
             EnemyHeroes.ItemDictionary = new Dictionary<string, List<Item>>();
             Manage.SubscribeAllEvents();
-            var id = AbilityMain.Me.ClassID;
+            var id = AbilityMain.Me.ClassId;
             var msg = "Fully supported";
             var color = "#009900";
-            if (id == ClassID.CDOTA_Unit_Hero_Invoker)
+            if (id == ClassId.CDOTA_Unit_Hero_Invoker)
             {
                 msg = "Fully supported (configure combo order in Menu>Options>ComboKeys)";
                 color = "#009900";
             }
-            else if (id == ClassID.CDOTA_Unit_Hero_EarthSpirit)
+            else if (id == ClassId.CDOTA_Unit_Hero_EarthSpirit)
             {
                 msg = "Not supported (only items will be used)";
                 color = "#ff0000";
             }
-            else if (id == ClassID.CDOTA_Unit_Hero_EmberSpirit)
+            else if (id == ClassId.CDOTA_Unit_Hero_EmberSpirit)
             {
                 msg = "Not supported (only items will be used)";
                 color = "#ff0000";
             }
-            else if (id == ClassID.CDOTA_Unit_Hero_Shredder)
+            else if (id == ClassId.CDOTA_Unit_Hero_Shredder)
             {
                 msg = "Not supported (only items will be used)";
                 color = "#ff0000";
             }
-            else if (id == ClassID.CDOTA_Unit_Hero_Wisp)
+            else if (id == ClassId.CDOTA_Unit_Hero_Wisp)
             {
                 msg = "Not supported (only items will be used)";
                 color = "#ff0000";
             }
-            else if (id == ClassID.CDOTA_Unit_Hero_Meepo)
+            else if (id == ClassId.CDOTA_Unit_Hero_Meepo)
             {
                 msg = "Not supported (only items will be used)";
                 color = "#ff0000";
             }
-            else if (id == ClassID.CDOTA_Unit_Hero_AncientApparition)
+            else if (id == ClassId.CDOTA_Unit_Hero_AncientApparition)
             {
                 msg = "Partially supported (will not use ultimate)";
                 color = "#ff4400";
             }
-            else if (id == ClassID.CDOTA_Unit_Hero_Obsidian_Destroyer)
+            else if (id == ClassId.CDOTA_Unit_Hero_Obsidian_Destroyer)
             {
                 msg = "Partially supported (will not use ultimate)";
                 color = "#ff4400";
             }
-            else if (id == ClassID.CDOTA_Unit_Hero_Chen)
+            else if (id == ClassId.CDOTA_Unit_Hero_Chen)
             {
                 msg = "Partially supported (will not control creeps)";
                 color = "#ff4400";
             }
-            else if (id == ClassID.CDOTA_Unit_Hero_Warlock)
+            else if (id == ClassId.CDOTA_Unit_Hero_Warlock)
             {
                 msg = "Partially supported (will not use ultimate)";
                 color = "#ff4400";
             }
-            else if (id == ClassID.CDOTA_Unit_Hero_StormSpirit)
+            else if (id == ClassId.CDOTA_Unit_Hero_StormSpirit)
             {
                 msg = "Partially supported (will not use ultimate)";
                 color = "#ff4400";
@@ -125,7 +125,7 @@
 
             Game.PrintMessage(
                 "<font face='Tahoma'><font color='#ff6600'>A</font><font color='#ffffff'>BILITY</font><font color='#ffff00'>#</font> loaded - hero <font color='#4488ff'>"
-                + (id != ClassID.CDOTA_Unit_Hero_Zuus ? id.ToString().Substring("CDOTA_Unit_Hero_".Length) : "Zeus")
+                + (id != ClassId.CDOTA_Unit_Hero_Zuus ? id.ToString().Substring("CDOTA_Unit_Hero_".Length) : "Zeus")
                 + "</font>: <font color='" + color + "'>" + msg + "</font></font>",
                 MessageType.LogMessage);
         }

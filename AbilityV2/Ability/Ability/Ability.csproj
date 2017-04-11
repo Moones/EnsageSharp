@@ -53,30 +53,33 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ensage">
-      <HintPath>C:\NvdKTVgtv\References\Ensage.dll</HintPath>
+      <HintPath>..\..\..\..\Dota 2\EnsageSharp\References\Ensage.dll</HintPath>
     </Reference>
     <Reference Include="Ensage.Common">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\NvdKTVgtv\References\Ensage.Common.dll</HintPath>
+      <HintPath>..\..\..\..\Dota 2\EnsageSharp\References\Ensage.Common.dll</HintPath>
     </Reference>
     <Reference Include="EnsageSharp.Sandbox">
-      <HintPath>C:\NvdKTVgtv\System\EnsageSharp.Sandbox.dll</HintPath>
+      <HintPath>..\..\..\..\Dota 2\EnsageSharp\System\EnsageSharp.Sandbox.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\NvdKTVgtv\References\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\..\Dota 2\EnsageSharp\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PlaySharp.Toolkit">
-      <HintPath>C:\NvdKTVgtv\References\PlaySharp.Toolkit.dll</HintPath>
+      <HintPath>..\..\..\..\Dota 2\EnsageSharp\References\PlaySharp.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\NvdKTVgtv\References\SharpDX.dll</HintPath>
+      <HintPath>..\..\..\..\Dota 2\EnsageSharp\References\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>C:\NvdKTVgtv\References\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>..\..\..\..\Dota 2\EnsageSharp\References\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.XInput">
-      <HintPath>C:\NvdKTVgtv\References\SharpDX.XInput.dll</HintPath>
+    <Reference Include="SharpDX.DXGI">
+      <HintPath>..\..\..\..\Dota 2\EnsageSharp\References\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Mathematics">
+      <HintPath>..\..\..\..\Dota 2\EnsageSharp\References\SharpDX.Mathematics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
