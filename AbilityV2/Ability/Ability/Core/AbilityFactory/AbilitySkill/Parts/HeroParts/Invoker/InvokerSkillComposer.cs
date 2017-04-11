@@ -31,7 +31,7 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.HeroParts.Invoker
     ///     The invoker skill composer.
     /// </summary>
     [Export(typeof(IAbilitySkillComposer))]
-    [AbilitySkillMetadata(ClassID.CDOTA_Unit_Hero_Invoker, (uint)AbilityId.invoker_sun_strike,
+    [AbilitySkillMetadata(ClassId.CDOTA_Unit_Hero_Invoker, (uint)AbilityId.invoker_sun_strike,
         (uint)AbilityId.invoker_alacrity, (uint)AbilityId.invoker_chaos_meteor, (uint)AbilityId.invoker_forge_spirit,
         (uint)AbilityId.invoker_deafening_blast, (uint)AbilityId.invoker_ghost_walk, (uint)AbilityId.invoker_tornado,
         (uint)AbilityId.invoker_emp, (uint)AbilityId.invoker_cold_snap, (uint)AbilityId.invoker_ice_wall)]

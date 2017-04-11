@@ -23,7 +23,7 @@ namespace Ability.Core.AbilityFactory.Metadata
         #region Public Properties
 
         /// <summary>Gets the class ids.</summary>
-        ICollection<ClassID> ClassIds { get; }
+        ICollection<ClassId> ClassIds { get; }
 
         #endregion
     }

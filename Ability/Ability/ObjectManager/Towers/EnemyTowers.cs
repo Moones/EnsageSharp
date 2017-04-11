@@ -19,7 +19,7 @@
         {
             Towers =
                 ObjectManager.GetEntities<Building>()
-                    .Where(x => x.ClassID == ClassID.CDOTA_BaseNPC_Tower && x.Team == AbilityMain.Me.Team && x.IsAlive)
+                    .Where(x => x.ClassId == ClassId.CDOTA_BaseNPC_Tower && x.Team == AbilityMain.Me.Team && x.IsAlive)
                     .ToList();
         }
 

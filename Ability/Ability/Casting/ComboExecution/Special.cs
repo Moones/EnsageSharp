@@ -36,13 +36,13 @@
             {
                 Game.ExecuteCommand("dota_player_units_auto_attack_mode 0");
                 ManageAutoAttack.AutoAttackDisabled = true;
-                if (ability.ClassID == ClassID.CDOTA_Item_SentryWard)
+                if (ability.ClassId == ClassId.CDOTA_Item_SentryWard)
                 {
                     var sentry =
                         ObjectManager.GetEntities<Entity>()
                             .FirstOrDefault(
                                 x =>
-                                x.ClassID == ClassID.CDOTA_NPC_Observer_Ward_TrueSight && x.Distance2D(target) < 800);
+                                x.ClassId == ClassId.CDOTA_NPC_Observer_Ward_TrueSight && x.Distance2D(target) < 800);
                     if (sentry != null)
                     {
                         return false;
@@ -68,7 +68,7 @@
                     return false;
                 }
 
-                if (ability.ClassID == ClassID.CDOTA_Item_SentryWard)
+                if (ability.ClassId == ClassId.CDOTA_Item_SentryWard)
                 {
                     Utils.Sleep(20000, ability.Handle.ToString());
                 }

@@ -24,7 +24,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.PhantomAssassin
 
     /// <summary>The shadow demon unit composer.</summary>
     [Export(typeof(IAbilityUnitComposer))]
-    [AbilityUnitMetadata(ClassID.CDOTA_Unit_Hero_PhantomAssassin)]
+    [AbilityUnitMetadata(ClassId.CDOTA_Unit_Hero_PhantomAssassin)]
     internal class PhantomAssassinUnitComposer : AbilityUnitComposer
     {
         #region Constructors and Destructors

@@ -33,7 +33,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Invoker
     ///     The invoker unit composer.
     /// </summary>
     [Export(typeof(IAbilityUnitComposer))]
-    [AbilityUnitMetadata(ClassID.CDOTA_Unit_Hero_Invoker)]
+    [AbilityUnitMetadata(ClassId.CDOTA_Unit_Hero_Invoker)]
     public class InvokerUnitComposer : AbilityUnitComposer
     {
         #region Constructors and Destructors

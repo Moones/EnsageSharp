@@ -61,7 +61,7 @@
             Silences.SilencesMenu = new Menu("Silences", "silencesMenu" + AbilityMain.Me.Name);
             BlinkMenu = new Menu("Blink Configuration", "Ability#.Blink");
             OptionsMenu = new Menu("Options", "abilityOptions");
-            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker)
+            if (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Invoker)
             {
                 InvokerMenu = new Menu("Invoker Configuration", "Ability#.InvokerConfig");
             }

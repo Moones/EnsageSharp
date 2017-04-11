@@ -24,7 +24,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.ShadowDemon
 
     /// <summary>The shadow demon unit composer.</summary>
     [Export(typeof(IAbilityUnitComposer))]
-    [AbilityUnitMetadata(ClassID.CDOTA_Unit_Hero_Shadow_Demon)]
+    [AbilityUnitMetadata(ClassId.CDOTA_Unit_Hero_Shadow_Demon)]
     internal class ShadowDemonUnitComposer : AbilityUnitComposer
     {
         #region Constructors and Destructors

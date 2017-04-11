@@ -32,7 +32,7 @@ namespace Ability.Core.AbilityFactory.Metadata
         bool Owner { get; }
 
         /// <summary>Gets the owner class id.</summary>
-        ClassID OwnerClassId { get; }
+        ClassId OwnerClassId { get; }
 
         #endregion
     }

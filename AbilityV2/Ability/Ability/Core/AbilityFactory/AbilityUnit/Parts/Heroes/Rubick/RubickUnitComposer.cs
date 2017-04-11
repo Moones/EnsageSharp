@@ -25,7 +25,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Heroes.Rubick
 
     /// <summary>The rubick unit composer.</summary>
     [Export(typeof(IAbilityUnitComposer))]
-    [AbilityUnitMetadata(ClassID.CDOTA_Unit_Hero_Rubick)]
+    [AbilityUnitMetadata(ClassId.CDOTA_Unit_Hero_Rubick)]
     internal class RubickUnitComposer : AbilityUnitComposer
     {
         #region Constructors and Destructors

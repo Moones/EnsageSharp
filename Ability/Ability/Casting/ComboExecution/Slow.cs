@@ -53,7 +53,7 @@
                 return casted;
             }
 
-            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker && !ability.CanBeCasted())
+            if (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Invoker && !ability.CanBeCasted())
             {
                 var invoked = ability.Invoke();
                 if (!invoked)
@@ -96,7 +96,7 @@
                 ObjectManager.GetEntities<Unit>()
                     .Where(
                         x =>
-                        x.ClassID == ClassID.CDOTA_BaseNPC_Additive && x.Team == AbilityMain.Me.Team && x.IsAlive
+                        x.ClassId == ClassId.CDOTA_BaseNPC_Additive && x.Team == AbilityMain.Me.Team && x.IsAlive
                         && x.IsVisible && x.Distance2D(target) < 400
                         && x.FindSpell("templar_assassin_self_trap") != null
                         && x.FindSpell("templar_assassin_self_trap").CanBeCasted())

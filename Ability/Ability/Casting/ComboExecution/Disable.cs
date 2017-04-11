@@ -16,7 +16,7 @@
 
         public static bool Cast(Ability ability, Unit target, string name)
         {
-            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Pudge && name == "pudge_dismember"
+            if (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Pudge && name == "pudge_dismember"
                 && Utils.SleepCheck("rotToggle") && AbilityMain.Me.Distance2D(target) < 400
                 && Utils.ChainStun(target, Game.Ping, null, false))
             {
@@ -34,7 +34,7 @@
                                          .GetValue<Slider>()
                                          .Value / 1000
                                    : 1;
-            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker && !ability.CanBeCasted())
+            if (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Invoker && !ability.CanBeCasted())
             {
                 var invoked = ability.Invoke();
                 if (!invoked)

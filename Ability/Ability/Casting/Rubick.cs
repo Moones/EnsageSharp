@@ -50,7 +50,7 @@
                 if (Specials.SpecialsMenuDictionary["rubick_spell_steal"].Item(heroName) == null)
                 {
                     Specials.SpecialsMenuDictionary["rubick_spell_steal"].AddItem(
-                        new MenuItem(heroName, hero.ClassID.ToString().Substring("CDOTA_Unit_Hero_".Length) + ":")
+                        new MenuItem(heroName, hero.ClassId.ToString().Substring("CDOTA_Unit_Hero_".Length) + ":")
                             .SetValue(new AbilityToggler(new Dictionary<string, bool>())));
                 }
 
