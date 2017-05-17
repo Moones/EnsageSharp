@@ -231,10 +231,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Overlay
                 }
             }
 
-            if (this.Unit.IsEnemy || this.offScreen)
+            /*if (this.Unit.IsEnemy || this.offScreen)
             {
                 this.ManaBar.Draw();
-            }
+            }*/
 
             this.LeftPanel.Draw();
             this.TopPanel.Draw();
