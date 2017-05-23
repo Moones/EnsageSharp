@@ -14,6 +14,7 @@
     using Ensage.Common.Menu;
 
     using SharpDX;
+    using Ensage.Common.Objects;
 
     internal class AbilityOverlay
     {
@@ -26,9 +27,17 @@
 
         private static float boxSizeY;
 
+        private static float boxExtraPosX;
+
+        private static float boxExtraPosY;
+
         private static float itemBoxSizeX;
 
         private static float itemBoxSizeY;
+
+        private static float itemboxExtraPosX;
+
+        private static float itemboxExtraPosY;
 
         #endregion
 
@@ -53,19 +62,22 @@
                 return;
             }
 
-            if (Utils.SleepCheck("AbilityOverlay.UpdateSize"))
+            if (Utils.SleepCheck("AbilityOverlay.Update"))
             {
-                boxSizeX = HpBar.SizeX / 6
-                           + MainMenu.AbilityOverlayMenu.Item("sizeSliderSpell").GetValue<Slider>().Value;
+                boxSizeX = HpBar.SizeX / 6 + MainMenu.AbilityOverlayMenu.Item("sizeSliderSpell").GetValue<Slider>().Value;
                 boxSizeY = boxSizeX + 1;
-                itemBoxSizeX = HpBar.SizeX / 6
-                               + MainMenu.AbilityOverlayMenu.Item("sizeSliderItem").GetValue<Slider>().Value;
+                boxExtraPosX = MainMenu.AbilityOverlayMenu.Item("ExtraPosSliderSpellX").GetValue<Slider>().Value * (float)0.5;
+                boxExtraPosY = MainMenu.AbilityOverlayMenu.Item("ExtraPosSliderSpellY").GetValue<Slider>().Value * (float)0.5;
+                itemBoxSizeX = HpBar.SizeX / 6 + MainMenu.AbilityOverlayMenu.Item("sizeSliderItem").GetValue<Slider>().Value;
                 itemBoxSizeY = (float)(itemBoxSizeX / 1.24);
-                Utils.Sleep(100, "AbilityOverlay.UpdateSize");
+                itemboxExtraPosX = MainMenu.AbilityOverlayMenu.Item("ExtraPosSliderItemX").GetValue<Slider>().Value * (float)0.5;
+                itemboxExtraPosY = MainMenu.AbilityOverlayMenu.Item("ExtraPosSliderItemY").GetValue<Slider>().Value * (float)0.5;
+                Utils.Sleep(100, "AbilityOverlay.Update");
             }
 
             var size = new Vector2(HpBar.SizeX, (float)(HpBar.SizeY / 2.8));
             var spellOverlayEnabledEnemy = MainMenu.AbilityOverlayMenu.Item("enableSpellOverlayEnemy").GetValue<bool>();
+            var enableManaBar = MainMenu.ManaBarMenu.Item("enableManaBar").GetValue<bool>();
             try
             {
                 foreach (var hero in EnemyHeroes.UsableHeroes)
@@ -79,12 +91,14 @@
                     {
                         continue;
                     }
-
-                    var start = hpbarpos + new Vector2(0, HpBar.SizeY + 1);
-                    var manaperc = mana / maxMana;
-                    Drawing.DrawRect(start, size + new Vector2(1, 1), new Color(0, 0, 50, 150));
-                    Drawing.DrawRect(start, new Vector2(size.X * manaperc, size.Y), new Color(70, 120, 220));
-                    Drawing.DrawRect(start + new Vector2(-1, -1), size + new Vector2(3, 3), Color.Black, true);
+                    if (enableManaBar)
+                    {
+                        var start = hpbarpos + new Vector2(0, HpBar.SizeY + 1);
+                        var manaperc = mana / maxMana;
+                        Drawing.DrawRect(start, size + new Vector2(1, 1), new Color(0, 0, 50, 150));
+                        Drawing.DrawRect(start, new Vector2(size.X * manaperc, size.Y), new Color(70, 120, 220));
+                        Drawing.DrawRect(start + new Vector2(-1, -1), size + new Vector2(3, 3), Color.Black, true);
+                    }                    
                     if (EnemyHeroes.AbilityDictionary.ContainsKey(heroName) && spellOverlayEnabledEnemy)
                     {
                         var abilities =
@@ -96,7 +110,7 @@
                                                HpBar.SizeX / 2
                                                - Math.Max((abilities.Count() / 2) * boxSizeX, HpBar.SizeX / 2), 
                                                HpBar.SizeY + size.Y + 3);
-                        var position = defaultPos;
+                        var position = defaultPos + new Vector2(boxExtraPosX, boxExtraPosY);
                         foreach (var ability in abilities)
                         {
                             DrawAbilityOverlay(ability, position, heroName, mana);
@@ -109,18 +123,18 @@
                         if (!EnemyHeroes.ItemDictionary.ContainsKey(heroName))
                         {
                             continue;
-                        }
-
+                        }                        
                         var items = EnemyHeroes.ItemDictionary[heroName].Where(ability => ability.IsValid).ToList();
                         var itemPos = hpbarpos
                                       - new Vector2(
                                             -HpBar.SizeX / 2
                                             + Math.Max((items.Count / 2) * itemBoxSizeX, HpBar.SizeX / 2), 
                                             itemBoxSizeY);
+                        var ItemPosExtra = itemPos + new Vector2(itemboxExtraPosX, itemboxExtraPosY);
                         foreach (var ability in items)
                         {
-                            DrawItemOverlay(ability, itemPos, mana);
-                            itemPos += new Vector2(itemBoxSizeX, 0);
+                            DrawItemOverlay(ability, ItemPosExtra, mana);
+                            ItemPosExtra += new Vector2(itemBoxSizeX, 0);
                         }
                     }
                 }
@@ -161,7 +175,7 @@
                             defaultPos += new Vector2(-3, 3);
                         }
 
-                        var position = defaultPos;
+                        var position = defaultPos + new Vector2(boxExtraPosX, boxExtraPosY);
                         foreach (var ability in abilities)
                         {
                             DrawAbilityOverlay(ability, position, heroName, mana);
@@ -182,15 +196,16 @@
                                             -HpBar.SizeX / 2
                                             + Math.Max((items.Count / 2) * itemBoxSizeX, HpBar.SizeX / 2), 
                                             itemBoxSizeY);
+                        var ItemPosExtra = itemPos + new Vector2(itemboxExtraPosX, itemboxExtraPosY);
                         if (hero.Equals(AbilityMain.Me))
                         {
-                            itemPos += new Vector2(-3, 1);
+                            ItemPosExtra += new Vector2(-3, 1);
                         }
 
                         foreach (var ability in items)
                         {
-                            DrawItemOverlay(ability, itemPos, mana);
-                            itemPos += new Vector2(itemBoxSizeX, 0);
+                            DrawItemOverlay(ability, ItemPosExtra, mana);
+                            ItemPosExtra += new Vector2(itemBoxSizeX, 0);
                         }
                     }
                 }
@@ -219,7 +234,7 @@
             DotaTexture texture;
             if (!TextureDictionary.TryGetValue(name, out texture))
             {
-                texture = Drawing.GetTexture("materials/ensage_ui/spellicons/" + name + ".vmat");
+                texture = Textures.GetTexture("materials/ensage_ui/spellicons/" + name + ".vmat");
                 TextureDictionary.Add(name, texture);
             }
 
@@ -308,98 +323,104 @@
 
         private static void DrawItemOverlay(Item ability, Vector2 position, float mana)
         {
-            var name = NameManager.Name(ability);
-            var enoughMana = mana >= ability.ManaCost;
-            DotaTexture texture;
-            if (!TextureDictionary.TryGetValue(name, out texture))
+            try
             {
-                texture = Drawing.GetTexture("materials/ensage_ui/items/" + name.Substring("item_".Length) + ".vmat");
-                TextureDictionary.Add(name, texture);
-            }
-
-            Drawing.DrawRect(
-                position + new Vector2(1, 0), 
-                new Vector2((float)(itemBoxSizeX + itemBoxSizeX / 2.6), itemBoxSizeY), 
-                texture);
-            var cooldown = Math.Ceiling(ability.Cooldown);
-            if (cooldown > 0 || !enoughMana)
-            {
-                Drawing.DrawRect(
-                    position + new Vector2(1, 0), 
-                    new Vector2(itemBoxSizeX - 1, itemBoxSizeY), 
-                    enoughMana ? new Color(40, 40, 40, 180) : new Color(25, 25, 130, 190));
-            }
-            else
-            {
-                Drawing.DrawRect(
-                    position + new Vector2(1, 0), 
-                    new Vector2(itemBoxSizeX - 1, itemBoxSizeY), 
-                    new Color(0, 0, 0, 100));
-            }
-
-            if (cooldown > 0)
-            {
-                var h = Math.Min(cooldown, 99).ToString(CultureInfo.InvariantCulture);
-                var hsize = cooldown > 9
-                                ? new Vector2(Math.Min(itemBoxSizeY - 1, 15), 15)
-                                : new Vector2(Math.Min(itemBoxSizeY + 1, 15), 25);
-                var textSize = Drawing.MeasureText(h, "Arial", hsize, FontFlags.AntiAlias);
-                var pos = position
-                          + new Vector2(itemBoxSizeX / 2 - textSize.X / 2, (itemBoxSizeY / 2) - (textSize.Y / 2));
-                Drawing.DrawText(h, pos, hsize, Color.WhiteSmoke, FontFlags.AntiAlias);
-            }
-
-            if (!enoughMana && cooldown <= 0)
-            {
-                var h = Math.Min(Math.Ceiling(ability.ManaCost - mana), 999).ToString(CultureInfo.InvariantCulture);
-                var textSize = Drawing.MeasureText(
-                    h, 
-                    "Arial", 
-                    new Vector2(Math.Min(itemBoxSizeY - 2, 15), 1), 
-                    FontFlags.AntiAlias);
-                var pos = position
-                          + new Vector2(itemBoxSizeX / 2 - textSize.X / 2, (itemBoxSizeY / 2) - (textSize.Y / 2));
-                Drawing.DrawText(
-                    h, 
-                    pos, 
-                    new Vector2(Math.Min(itemBoxSizeY - 2, 15), 1), 
-                    Color.LightBlue, 
-                    FontFlags.AntiAlias);
-            }
-
-            if ((ability.IsRequiringCharges || NameManager.Name(ability) == "item_ward_dispenser"
-                 || NameManager.Name(ability) == "item_ward_observer" || NameManager.Name(ability) == "item_ward_sentry")
-                && cooldown <= 0)
-            {
-                var s = ability.CurrentCharges.ToString();
-                var tSize = new Vector2(Math.Min(itemBoxSizeY - 2, 15), 1);
-                var textSize = Drawing.MeasureText(s, "Arial", tSize, FontFlags.AntiAlias);
-                var tPos = position + new Vector2(itemBoxSizeX - textSize.X - 2, itemBoxSizeY - textSize.Y - 1);
-                Drawing.DrawRect(
-                    tPos - new Vector2(1, 0), 
-                    new Vector2(textSize.X + 1, textSize.Y + 1), 
-                    new Color(0, 0, 0, 220));
-                Drawing.DrawText(s, tPos, tSize, new Color(168, 168, 168), FontFlags.AntiAlias | FontFlags.StrikeOut);
-                var secondcharges = ability.SecondaryCharges;
-                if (secondcharges > 0)
+                var name = NameManager.Name(ability);
+                var enoughMana = mana >= ability.ManaCost;
+                DotaTexture texture;
+                if (!TextureDictionary.TryGetValue(name, out texture))
                 {
-                    tPos = position + new Vector2(2, itemBoxSizeY - textSize.Y - 1);
-                    s = secondcharges.ToString();
-                    tSize = new Vector2(Math.Min(itemBoxSizeY - 2, 15), 1);
-                    var textSize1 = Drawing.MeasureText(s, "Arial", tSize, FontFlags.AntiAlias);
+                    texture = Textures.GetTexture("materials/ensage_ui/items/" + name.Substring("item_".Length) + ".vmat");
+                    TextureDictionary.Add(name, texture);
+                }
+
+                Drawing.DrawRect(
+                    position + new Vector2(1, 0),
+                    new Vector2((float)(itemBoxSizeX + itemBoxSizeX / 2.6), itemBoxSizeY),
+                    texture);
+                var cooldown = Math.Ceiling(ability.Cooldown);
+                if (cooldown > 0 || !enoughMana)
+                {
                     Drawing.DrawRect(
-                        tPos - new Vector2(1, 0), 
-                        new Vector2(textSize1.X + 1, textSize1.Y + 1), 
-                        new Color(0, 0, 0, 220));
+                        position + new Vector2(1, 0),
+                        new Vector2(itemBoxSizeX - 1, itemBoxSizeY),
+                        enoughMana ? new Color(40, 40, 40, 180) : new Color(25, 25, 130, 190));
+                }
+                else
+                {
+                    Drawing.DrawRect(
+                        position + new Vector2(1, 0),
+                        new Vector2(itemBoxSizeX - 1, itemBoxSizeY),
+                        new Color(0, 0, 0, 100));
+                }
+
+                if (cooldown > 0)
+                {
+                    var h = Math.Min(cooldown, 99).ToString(CultureInfo.InvariantCulture);
+                    var hsize = cooldown > 9
+                                    ? new Vector2(Math.Min(itemBoxSizeY - 1, 15), 15)
+                                    : new Vector2(Math.Min(itemBoxSizeY + 1, 15), 25);
+                    var textSize = Drawing.MeasureText(h, "Arial", hsize, FontFlags.AntiAlias);
+                    var pos = position
+                              + new Vector2(itemBoxSizeX / 2 - textSize.X / 2, (itemBoxSizeY / 2) - (textSize.Y / 2));
+                    Drawing.DrawText(h, pos, hsize, Color.WhiteSmoke, FontFlags.AntiAlias);
+                }
+
+                if (!enoughMana && cooldown <= 0)
+                {
+                    var h = Math.Min(Math.Ceiling(ability.ManaCost - mana), 999).ToString(CultureInfo.InvariantCulture);
+                    var textSize = Drawing.MeasureText(
+                        h,
+                        "Arial",
+                        new Vector2(Math.Min(itemBoxSizeY - 2, 15), 1),
+                        FontFlags.AntiAlias);
+                    var pos = position
+                              + new Vector2(itemBoxSizeX / 2 - textSize.X / 2, (itemBoxSizeY / 2) - (textSize.Y / 2));
                     Drawing.DrawText(
-                        s, 
-                        tPos, 
-                        tSize, 
-                        new Color(168, 168, 168), 
-                        FontFlags.AntiAlias | FontFlags.StrikeOut);
+                        h,
+                        pos,
+                        new Vector2(Math.Min(itemBoxSizeY - 2, 15), 1),
+                        Color.LightBlue,
+                        FontFlags.AntiAlias);
+                }
+
+                if ((ability.IsRequiringCharges || NameManager.Name(ability) == "item_ward_dispenser"
+                     || NameManager.Name(ability) == "item_ward_observer" || NameManager.Name(ability) == "item_ward_sentry")
+                    && cooldown <= 0)
+                {
+                    var s = ability.CurrentCharges.ToString();
+                    var tSize = new Vector2(Math.Min(itemBoxSizeY - 2, 15), 1);
+                    var textSize = Drawing.MeasureText(s, "Arial", tSize, FontFlags.AntiAlias);
+                    var tPos = position + new Vector2(itemBoxSizeX - textSize.X - 2, itemBoxSizeY - textSize.Y - 1);
+                    Drawing.DrawRect(
+                        tPos - new Vector2(1, 0),
+                        new Vector2(textSize.X + 1, textSize.Y + 1),
+                        new Color(0, 0, 0, 220));
+                    Drawing.DrawText(s, tPos, tSize, new Color(168, 168, 168), FontFlags.AntiAlias | FontFlags.StrikeOut);
+                    var secondcharges = ability.SecondaryCharges;
+                    if (secondcharges > 0)
+                    {
+                        tPos = position + new Vector2(2, itemBoxSizeY - textSize.Y - 1);
+                        s = secondcharges.ToString();
+                        tSize = new Vector2(Math.Min(itemBoxSizeY - 2, 15), 1);
+                        var textSize1 = Drawing.MeasureText(s, "Arial", tSize, FontFlags.AntiAlias);
+                        Drawing.DrawRect(
+                            tPos - new Vector2(1, 0),
+                            new Vector2(textSize1.X + 1, textSize1.Y + 1),
+                            new Color(0, 0, 0, 220));
+                        Drawing.DrawText(
+                            s,
+                            tPos,
+                            tSize,
+                            new Color(168, 168, 168),
+                            FontFlags.AntiAlias | FontFlags.StrikeOut);
+                    }
                 }
             }
-
+            catch (Exception)
+            {
+                // ignored
+            }
             Drawing.DrawRect(position, new Vector2(itemBoxSizeX + 1, itemBoxSizeY), Color.Black, true);
         }
 

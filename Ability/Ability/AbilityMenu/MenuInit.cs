@@ -43,10 +43,10 @@
             MyAbilities.InvokerE = AbilityMain.Me.Spellbook.Spells.FirstOrDefault(x => x.Name == "invoker_exort");
             MainMenu.Menu.AddItem(new MenuItem("Ability#.EnableAutoKillSteal", "Enable AutoKillSteal:"))
                 .SetValue(true)
-                .SetFontStyle(fontColor: Color.DarkOrange);
+                .SetFontColor(fontColor: Color.DarkOrange);
             MainMenu.Menu.AddItem(new MenuItem("Ability#.EnableAutoUsage", "Enable AutoUsage:"))
                 .SetValue(true)
-                .SetFontStyle(fontColor: Color.DarkOrange);
+                .SetFontColor(fontColor: Color.DarkOrange);
             Nukes.AddAllNukes(spells, myItems1);
             Disables.AddAllDisables(spells, myItems1);
             Slows.AddAllSlows(spells, myItems1);
@@ -70,9 +70,16 @@
                 new MenuItem("abilityDamageIndicatorDrawHits", "Draw hits").SetValue(true));
             MainMenu.DamageIndicatorMenu.AddItem(
                 new MenuItem("abilityDamageIndicatorTextSize", "Increase text size").SetValue(new Slider(0, 0, 5)));
+
+            MainMenu.DrawingsMenu.AddSubMenu(MainMenu.ManaBarMenu);
+            MainMenu.ManaBarMenu.AddItem(
+                new MenuItem("manaBar", "MANA BAR:").SetFontColor(fontColor: Color.White));
+            MainMenu.ManaBarMenu.AddItem(
+               new MenuItem("enableManaBar", "Enable Mana Bar: ").SetValue(true));
+
             MainMenu.DrawingsMenu.AddSubMenu(MainMenu.AbilityOverlayMenu);
             MainMenu.AbilityOverlayMenu.AddItem(
-                new MenuItem("spellOverlay", "SPELLS OVERLAY:").SetFontStyle(fontColor: Color.White));
+                new MenuItem("spellOverlay", "SPELLS OVERLAY:").SetFontColor(fontColor: Color.White));
             MainMenu.AbilityOverlayMenu.AddItem(
                 new MenuItem("enableSpellOverlayEnemy", "Enable for enemies: ").SetValue(true));
             MainMenu.AbilityOverlayMenu.AddItem(
@@ -80,33 +87,41 @@
             MainMenu.AbilityOverlayMenu.AddItem(
                 new MenuItem("sizeSliderSpell", "Increase the size: ").SetValue(new Slider(0, 0, 25)));
             MainMenu.AbilityOverlayMenu.AddItem(
-                new MenuItem("itemOverlay", "ITEMS OVERLAY:").SetFontStyle(fontColor: Color.White));
+                new MenuItem("ExtraPosSliderSpellX", "Extra Pos X: ").SetValue(new Slider(0, -400, 400)));
+            MainMenu.AbilityOverlayMenu.AddItem(
+                new MenuItem("ExtraPosSliderSpellY", "Extra Pos Y: ").SetValue(new Slider(0, -400, 400)));
+            MainMenu.AbilityOverlayMenu.AddItem(
+                new MenuItem("itemOverlay", "ITEMS OVERLAY:").SetFontColor(fontColor: Color.White));
             MainMenu.AbilityOverlayMenu.AddItem(
                 new MenuItem("enableItemOverlayEnemy", "Enable for enemies: ").SetValue(true));
             MainMenu.AbilityOverlayMenu.AddItem(
                 new MenuItem("enableItemOverlayAlly", "Enable for allies: ").SetValue(true));
             MainMenu.AbilityOverlayMenu.AddItem(
                 new MenuItem("sizeSliderItem", "Increase the size: ").SetValue(new Slider(0, 0, 25)));
+            MainMenu.AbilityOverlayMenu.AddItem(
+                new MenuItem("ExtraPosSliderItemX", "Extra Pos X: ").SetValue(new Slider(0, -400, 400)));
+            MainMenu.AbilityOverlayMenu.AddItem(
+                new MenuItem("ExtraPosSliderItemY", "Extra Pos Y: ").SetValue(new Slider(0, -400, 400)));
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("unfinishedFeature", "This feature is currently unfinished!"))
-                .SetFontStyle(fontColor: Color.OrangeRed)
+                .SetFontColor(fontColor: Color.OrangeRed)
                 .SetTooltip("Contains unfinished stuff, not all combos are tweaked/in right order.");
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("abilityKey1", "Combo Key"))
                 .SetValue(new KeyBind('G', KeyBindType.Press));
             var priorityChanger =
                 new MenuItem("Ability#.ComboOrder", "Custom Order: ").SetValue(
-                    new PriorityChanger(new List<string>(), "Ability#.ComboOrder")).SetFontStyle(fontColor: Color.Gray);
+                    new PriorityChanger(new List<string>(), "Ability#.ComboOrder")).SetFontColor(fontColor: Color.Gray);
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("abilityComboType", "Combo Order"))
                 .SetValue(new StringList(new[] { "Normal", "Maximum Disable", "Maximum Damage", "Custom" }))
                 .ValueChanged +=
                 (sender, args) =>
                     {
-                        priorityChanger.SetFontStyle(
+                        priorityChanger.SetFontColor(
                             fontColor: args.GetNewValue<StringList>().SelectedIndex == 3 ? Color.Green : Color.Gray);
                     };
 
             if (MainMenu.ComboKeysMenu.Item("abilityComboType").GetValue<StringList>().SelectedIndex == 3)
             {
-                priorityChanger.SetFontStyle(fontColor: Color.Green);
+                priorityChanger.SetFontColor(fontColor: Color.Green);
             }
 
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("Ability.KeyCombo.Mode", "Move mode"))
@@ -120,7 +135,7 @@
                 .SetValue(new StringList(new[] { "None", "WhenTheyGoToFog", "WhenKeyIsPressed" }));
             MainMenu.ComboKeysMenu.AddItem(
                 new MenuItem("Ability#.MaximizeDamage", "Maximize damage (beta feature)").SetValue(false)
-                    .SetFontStyle(fontColor: Color.Aqua)
+                    .SetFontColor(fontColor: Color.Aqua)
                     .SetTooltip(
                         "Enabling this option will make sure that all damage/damage amplifying abilities are used right away"));
             MainMenu.ComboKeysMenu.AddItem(new MenuItem("comboAbilitiesToggler", "Abilities in combo: "))

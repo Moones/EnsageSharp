@@ -54,7 +54,7 @@
             menu.AddItem(new MenuItem(name + "rangeenable", "Show range")).SetValue(false).ValueChanged +=
                 (sender, args) => { RangeVisible(ability, args.GetNewValue<bool>()); };
             menu.AddItem(new MenuItem(name + "red", "Red:"))
-                .SetFontStyle(fontColor: Color.Red)
+                .SetFontColor(fontColor: Color.Red)
                 .SetValue(new Slider(100, 0, 255))
                 .ValueChanged += (sender, args) =>
                     {
@@ -69,7 +69,7 @@
                         }
                     };
             menu.AddItem(new MenuItem(name + "green", "Green:"))
-                .SetFontStyle(fontColor: Color.Green)
+                .SetFontColor(fontColor: Color.Green)
                 .SetValue(new Slider(100, 0, 255))
                 .ValueChanged += (sender, args) =>
                     {
@@ -84,7 +84,7 @@
                         }
                     };
             menu.AddItem(new MenuItem(name + "blue", "Blue:"))
-                .SetFontStyle(fontColor: Color.Blue)
+                .SetFontColor(fontColor: Color.Blue)
                 .SetValue(new Slider(100, 0, 255))
                 .ValueChanged += (sender, args) =>
                     {
