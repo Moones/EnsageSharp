@@ -34,7 +34,7 @@
                 menu.AddItem(
                     new MenuItem(name + "missinghpslider", "Use when missing HP is higher then: ").SetValue(
                         new Slider(500, 100, 1000)));
-                menu.AddItem(new MenuItem(name + "orsign", "   OR").SetFontStyle(FontStyle.Bold, Color.White));
+                menu.AddItem(new MenuItem(name + "orsign", "   OR").SetFontColor(Color.White));
                 menu.AddItem(
                     new MenuItem(name + "belowhpslider", "Use when HP is below: ").SetValue(new Slider(1000, 500, 5000)));
             }

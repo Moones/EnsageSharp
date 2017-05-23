@@ -23,6 +23,8 @@
 
         public static Menu AbilityOverlayMenu;
 
+        public static Menu ManaBarMenu;
+
         public static Menu BlinkMenu;
 
         public static Menu ComboKeysMenu;
@@ -68,6 +70,7 @@
 
             DamageIndicatorMenu = new Menu("DamageIndicator", "abilityDamageIndicator");
             GankDamageMenu = new Menu("GankDamage", "abilityGankDamage");
+            ManaBarMenu = new Menu("Mana Bar", "manaBar");
             AbilityOverlayMenu = new Menu("Ability Overlay", "abilityOverlayMenu");
             ComboKeysMenu = new Menu("Combo Keys", "comboKeysMenu");
             RangeDrawingMenu = new Menu("Ability Ranges", "Ability.RangeMenu");
