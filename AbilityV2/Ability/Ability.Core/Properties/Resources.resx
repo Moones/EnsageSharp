@@ -1,0 +1,475 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="abaddon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\abaddon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="abyssal_underlord" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\abyssal_underlord.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="alchemist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\alchemist.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ancient_apparition" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\ancient_apparition.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="antimage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\antimage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="arc_warden" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\arc_warden.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="axe" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\axe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bane" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\bane.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="batrider" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\batrider.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="beastmaster" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\beastmaster.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bloodseeker" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\bloodseeker.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bm_earth" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\bm_earth.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bm_fire" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\bm_fire.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bm_storm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\bm_storm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bounty_hunter" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\bounty_hunter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="brewmaster" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\brewmaster.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bristleback" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\bristleback.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="broodmother" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\broodmother.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="centaur" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\centaur.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="chaos_knight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\chaos_knight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="chen" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\chen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="clinkz" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\clinkz.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crystal_maiden" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\crystal_maiden.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_seer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\dark_seer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dazzle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\dazzle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="death_prophet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\death_prophet.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="disruptor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\disruptor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="doom_bringer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\doom_bringer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dragon_knight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\dragon_knight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="drow_ranger" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\drow_ranger.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="earthshaker" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\earthshaker.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="earth_spirit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\earth_spirit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="elder_titan" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\elder_titan.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ember_spirit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\ember_spirit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enchantress" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\enchantress.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enigma" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\enigma.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="faceless_void" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\faceless_void.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="furion" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\furion.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gyrocopter" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\gyrocopter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="huskar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\huskar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="invoker" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\invoker.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="jakiro" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\jakiro.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="juggernaut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\juggernaut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="keeper_of_the_light" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\keeper_of_the_light.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="kunkka" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\kunkka.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="legion_commander" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\legion_commander.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="leshrac" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\leshrac.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lich" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\lich.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="life_stealer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\life_stealer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lina" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\lina.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lion" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\lion.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lone_druid" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\lone_druid.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="luna" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\luna.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lycan" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\lycan.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="magnataur" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\magnataur.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="medusa" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\medusa.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="meepo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\meepo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="mirana" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\mirana.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="monkey_king" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\monkey_king.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="morphling" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\morphling.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="naga_siren" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\naga_siren.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="necrolyte" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\necrolyte.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nevermore" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\nevermore.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="night_stalker" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\night_stalker.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="npc_dota_hero_abaddon_png" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\npc_dota_hero_abaddon_png.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nyx_assassin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\nyx_assassin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="obsidian_destroyer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\obsidian_destroyer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ogre_magi" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\ogre_magi.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="omniknight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\omniknight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="oracle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\oracle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="phantom_assassin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\phantom_assassin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="phantom_lancer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\phantom_lancer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="phoenix" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\phoenix.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="puck" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\puck.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pudge" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\pudge.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pugna" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\pugna.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="queenofpain" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\queenofpain.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="rattletrap" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\rattletrap.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="razor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\razor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="riki" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\riki.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="rubick" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\rubick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sand_king" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\sand_king.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="shadow_demon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\shadow_demon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="shadow_shaman" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\shadow_shaman.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="shredder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\shredder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="silencer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\silencer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="skeleton_king" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\skeleton_king.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="skywrath_mage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\skywrath_mage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="slardar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\slardar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="slark" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\slark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\sniper.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="spectre" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\spectre.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="spirit_breaker" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\spirit_breaker.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="storm_spirit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\storm_spirit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sven" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\sven.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="techies" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\techies.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="templar_assassin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\templar_assassin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="terrorblade" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\terrorblade.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="tidehunter" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\tidehunter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="tinker" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\tinker.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="tiny" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\tiny.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="treant" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\treant.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="troll_warlord" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\troll_warlord.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="tusk" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\tusk.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="undying" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\undying.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ursa" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\ursa.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="vengefulspirit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\vengefulspirit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="venomancer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\venomancer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="viper" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\viper.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="visage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\visage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="warlock" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\warlock.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="weaver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\weaver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="windrunner" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\windrunner.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="winter_wyvern" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\winter_wyvern.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="wisp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\wisp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="witch_doctor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\witch_doctor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="zuus" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\HeroesMiniIcons\zuus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SkillData" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Json\SkillData.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+</root>

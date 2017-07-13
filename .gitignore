@@ -211,3 +211,5 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 /ignore
+/AbilityV2/Ability/Ability.Overlay
+/AbilityV2/Ability/Ability.Modules

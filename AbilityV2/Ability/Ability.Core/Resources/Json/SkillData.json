@@ -1,0 +1,38 @@
+﻿{
+  "item_ethereal_blade": {
+    "IsDamageAmp": true,
+    "MinusMagicResistancePerc": 40,
+    "DamageAmpModifier": "modifier_item_ethereal_blade_ethereal",
+    "DealsDamageToTarget": true  
+  },
+  "item_veil_of_discord": {
+    "IsDamageAmp": true,
+    "MinusMagicResistancePerc": 25,
+    "DamageAmpModifier": "modifier_item_veil_of_discord_debuff"
+  },
+  "item_sheepstick": {
+    "HexDurationData": "sheep_duration"
+  },
+  "sven_storm_bolt": {
+    "StunDurationData": "bolt_stun_duration",
+    "HasProjectile": true,
+    "DealsDamageToTarget": true  
+  },
+  "puck_phase_shift": {
+    "IsHide": true 
+  },
+  "mirana_leap": {
+    "IsLeap": true 
+  },
+  "slark_pounce": {
+    "IsLeap": true,
+    "DealsDamageToTarget": true  
+  },
+  "obsidian_destroyer_astral_imprisonment": {
+    "IsHide": true
+  },
+  "pudge_meat_hook": {
+    "ParticleNames": [ "pudge_meathook.vpcf", "meathook.vpcf", "pudge_meathook_whale.vpcf" ],
+    "DealsDamageToTarget": true  
+  }
+}

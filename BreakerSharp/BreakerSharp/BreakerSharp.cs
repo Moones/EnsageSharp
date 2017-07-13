@@ -145,7 +145,7 @@
         public void OnLoad()
         {
             Variables.Hero = ObjectManager.LocalHero;
-            this.pause = Variables.Hero.ClassID != ClassID.CDOTA_Unit_Hero_SpiritBreaker;
+            this.pause = Variables.Hero.ClassId != ClassId.CDOTA_Unit_Hero_SpiritBreaker;
             this.itemCombo.Pause = this.pause;
             if (this.pause)
             {
@@ -166,8 +166,7 @@
             this.itemCombo.UpdateItems();
 
             Game.PrintMessage(
-                Constants.AssemblyName + " v" + Assembly.GetExecutingAssembly().GetName().Version + " loaded", 
-                MessageType.LogMessage);
+                Constants.AssemblyName + " v" + Assembly.GetExecutingAssembly().GetName().Version + " loaded");
         }
 
         /// <summary>
