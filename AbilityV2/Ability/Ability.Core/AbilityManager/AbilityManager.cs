@@ -464,18 +464,35 @@ namespace Ability.Core.AbilityManager
             // {
 
             // });
-            foreach (var hero in Heroes.All)
+
+            var heroes = ObjectManager.GetEntities<Player>().Where(x => x.Hero != null && x.Hero.IsValid).Select(x => x.Hero).ToList();
+            foreach (var hero in
+                ObjectManager.GetEntities<Hero>()
+                    .Where(hero => !hero.IsIllusion && heroes.All(x => x.Handle != hero.Handle)))
+            {
+                heroes.Add(hero);
+            }
+
+            foreach (var hero in heroes)
             {
                 this.AddUnit(hero);
             }
 
-            foreach (var hero in Heroes.All)
+            foreach (var keyValuePair in this.Units)
             {
-                foreach (var heroModifier in hero.Modifiers)
+                foreach (var sourceUnitModifier in keyValuePair.Value.SourceUnit.Modifiers)
                 {
-                    this.Unit_OnModifierAdded(hero, new ModifierChangedEventArgs(heroModifier));
+                    keyValuePair.Value.Modifiers.AddModifier(sourceUnitModifier);
                 }
             }
+
+            //foreach (var hero in heroes)
+            //{
+            //    foreach (var heroModifier in hero.Modifiers)
+            //    {
+            //        this.Unit_OnModifierAdded(hero, new ModifierChangedEventArgs(heroModifier));
+            //    }
+            //}
 
             foreach (var entity in ObjectManager.GetEntities<Unit>())
             {

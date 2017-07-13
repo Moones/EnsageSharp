@@ -16,6 +16,7 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillLevel
     using System;
 
     using Ability.Core.AbilityFactory.Utilities;
+    using Ability.Core.Utilities;
 
     /// <summary>
     ///     The skill level.
@@ -86,10 +87,22 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.SkillLevel
             this.levelUpdater.Dispose();
         }
 
+        private Sleeper updateSleeper = new Sleeper();
+
         /// <summary>The initialize.</summary>
         public virtual void Initialize()
         {
-            this.levelUpdater = new ActionExecutor(this.Update);
+            this.levelUpdater = new ActionExecutor(
+                () =>
+                    {
+                        if (this.updateSleeper.Sleeping)
+                        {
+                            return;
+                        }
+
+                        this.updateSleeper.Sleep(200);
+                        this.Update();
+                    });
             this.levelUpdater.Subscribe(this.Skill.Owner.DataReceiver.Updates);
         }
 

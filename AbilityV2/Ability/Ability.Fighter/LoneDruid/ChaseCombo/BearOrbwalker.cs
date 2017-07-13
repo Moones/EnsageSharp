@@ -15,7 +15,7 @@
 
         public BearOrbwalker()
         {
-            this.IssueSleep = 200;
+            this.IssueSleep = 150;
         }
 
 
@@ -82,7 +82,6 @@
             //        return true;
             //    }
             //}
-
             if (!this.RunAround(this.LocalHero, Game.MousePosition))
             {
                 this.Unit.SourceUnit.Move(Game.MousePosition);
@@ -103,7 +102,8 @@
 
         public override bool Attack()
         {
-            if (this.Unit.Position.PredictedByLatency.Distance2D(this.LocalHero.Position.PredictedByLatency) > 1100)
+            if (!this.LocalHero.SkillBook.HasAghanim && !this.LocalHero.Modifiers.ConsumedAghanim
+                && this.Unit.Position.PredictedByLatency.Distance2D(this.LocalHero.Position.PredictedByLatency) > 1100)
             {
                 return this.Bodyblocker.Bodyblock();
             }

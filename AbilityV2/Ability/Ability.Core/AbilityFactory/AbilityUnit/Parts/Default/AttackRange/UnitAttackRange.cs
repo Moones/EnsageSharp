@@ -32,10 +32,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.AttackRange
         public bool IsInAttackRange(IAbilityUnit target)
         {
             return
-                target.Position.Predict(
-                        (float)(Game.Ping + this.Unit.SourceUnit.GetTurnTime(target.SourceUnit) * 1000f))
+                target.Position.Predict((float)(Game.Ping + this.Unit.TurnRate.GetTurnTime(target) * 1000f))
                     .Distance2D(this.Unit.Position.Current)
-                <= this.Value + target.SourceUnit.HullRadius + this.Unit.SourceUnit.HullRadius;
+                <= this.Value + target.SourceUnit.HullRadius + this.Unit.SourceUnit.HullRadius + 50;
         }
     }
 }

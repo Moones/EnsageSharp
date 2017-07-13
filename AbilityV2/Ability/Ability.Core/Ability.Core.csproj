@@ -230,6 +230,8 @@
     <Compile Include="AbilityFactory\AbilityUnit\Parts\Default\PositionTracker\WorldIcon.cs" />
     <Compile Include="AbilityFactory\AbilityUnit\Parts\Default\TargetSelector\IUnitTargetSelector.cs" />
     <Compile Include="AbilityFactory\AbilityUnit\Parts\Default\TargetSelector\UnitTargetSelector.cs" />
+    <Compile Include="AbilityFactory\AbilityUnit\Parts\Default\TurnRate\IUnitTurnRate.cs" />
+    <Compile Include="AbilityFactory\AbilityUnit\Parts\Default\TurnRate\UnitTurnRate.cs" />
     <Compile Include="AbilityFactory\AbilityUnit\Parts\Heroes\EmberSpirit\SkillBook\EmberSpiritSkillBook.cs" />
     <Compile Include="AbilityFactory\AbilityUnit\Parts\Heroes\HeroMenuBase.cs" />
     <Compile Include="AbilityFactory\AbilityUnit\Parts\Heroes\Invoker\InvokerUnitMenu.cs" />
@@ -428,6 +430,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\Sleeper.cs" />
     <Compile Include="Utilities\Unsubscriber.cs" />
     <Compile Include="GlobalVariables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

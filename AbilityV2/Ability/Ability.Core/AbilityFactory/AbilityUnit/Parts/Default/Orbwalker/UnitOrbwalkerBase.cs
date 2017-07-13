@@ -18,7 +18,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Orbwalker
     using Ensage.Common.Extensions;
     using Ensage.Common.Extensions.SharpDX;
     using Ensage.Common.Menu;
-    using Ensage.Common.Objects.UtilityObjects;
 
     using SharpDX;
 
@@ -136,7 +135,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Orbwalker
             }
 
             this.Time = (Game.RawGameTime) * 1000 + Game.Ping;
-            this.NextAttack = this.Time - this.NextAttackTime - (this.Unit.SourceUnit.GetTurnTime(this.Target.SourceUnit) * 1000);
+            this.NextAttack = this.Time - this.NextAttackTime - (this.Unit.TurnRate.GetTurnTime(this.Target) * 1000);
             //Console.WriteLine(time + " " + Game.Ping + " " + this.NextAttackTime + " " + (this.Unit.SourceUnit.GetTurnTime(this.Target.SourceUnit) * 1000));
 
             if (this.NextAttack < 0)

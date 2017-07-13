@@ -20,7 +20,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.PositionTracker
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Menu;
-    using Ensage.Common.Objects.UtilityObjects;
 
     using SharpDX;
 

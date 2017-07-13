@@ -35,6 +35,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.ScreenInfo;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.TargetSelector;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.TurnRate;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitControl;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Visibility;
@@ -156,6 +157,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         ///     Gets the particle tracker.
         /// </summary>
         IUnitTargetSelector TargetSelector { get; set; }
+
+        IUnitTurnRate TurnRate { get; set; }
 
         /// <summary>
         ///     Gets the screen position.

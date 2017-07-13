@@ -19,9 +19,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.OrderQueue
 
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.OrderQueue.UnitOrder;
     using Ability.Core.AbilityFactory.Utilities;
+    using Ability.Core.Utilities;
 
     using Ensage;
-    using Ensage.Common.Objects.UtilityObjects;
 
     internal class UnitOrderQueue : IUnitOrderQueue
     {

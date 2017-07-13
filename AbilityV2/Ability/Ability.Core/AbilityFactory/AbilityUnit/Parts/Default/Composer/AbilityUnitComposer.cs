@@ -32,6 +32,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.ScreenInfo;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.TargetSelector;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.TurnRate;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Visibility;
 
@@ -84,6 +85,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
                         return null;
                     });
             this.AssignPart<IUnitAttackRange>(unit => new UnitAttackRange(unit));
+            this.AssignPart<IUnitTurnRate>(unit => new UnitTurnRate(unit));
         }
 
         #endregion

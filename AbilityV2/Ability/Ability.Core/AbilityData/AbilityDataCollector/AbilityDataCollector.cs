@@ -26,12 +26,12 @@ namespace Ability.Core.AbilityData.AbilityDataCollector
     using Ability.Core.AbilityManager;
     using Ability.Core.AbilityModule.Combo;
     using Ability.Core.MenuManager.GetValue;
+    using Ability.Core.Utilities;
 
     using Ensage;
     using Ensage.Common;
     using Ensage.Common.Extensions;
     using Ensage.Common.Menu;
-    using Ensage.Common.Objects.UtilityObjects;
 
     using SharpDX;
 

@@ -16,9 +16,9 @@ namespace Ability.Core.AbilityFactory.AbilitySkill.Parts.DefaultParts.Cooldown
     using System;
 
     using Ability.Core.AbilityFactory.Utilities;
+    using Ability.Core.Utilities;
 
     using Ensage;
-    using Ensage.Common.Objects.UtilityObjects;
 
     /// <summary>
     ///     The cooldown.

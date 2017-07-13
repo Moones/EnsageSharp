@@ -19,10 +19,10 @@ namespace Ability.Core.AbilityData.AbilityMapDataProvider
 
     using Ability.Core.AbilityData.AbilityMapDataProvider.AbilityMapData;
     using Ability.Core.AbilityData.AbilityMapDataProvider.AbilityMapData.Runes.AbilityRune.Types;
+    using Ability.Core.Utilities;
 
     using Ensage;
     using Ensage.Common.Menu;
-    using Ensage.Common.Objects.UtilityObjects;
     using Ensage.Items;
 
     [Export(typeof(IAbilityMapDataProvider))]

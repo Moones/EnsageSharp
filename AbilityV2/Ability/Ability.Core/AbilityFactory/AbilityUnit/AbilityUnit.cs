@@ -38,6 +38,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.ScreenInfo;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.SkillBook;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.TargetSelector;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.TurnRate;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitControl;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitDataReceiver;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Visibility;
@@ -204,6 +205,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         public IPosition Position { get; set; }
 
         public IUnitTargetSelector TargetSelector { get; set; }
+
+        public IUnitTurnRate TurnRate { get; set; }
 
         /// <summary>
         ///     Gets or sets the fog of war exploit.

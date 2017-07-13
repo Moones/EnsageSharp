@@ -21,7 +21,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitControl
     using Ability.Core.ActionQueue.AbilityAction;
 
     using Ensage;
-    using Ensage.Common.Objects.UtilityObjects;
 
     /// <summary>
     ///     The UnitControl interface.
@@ -64,11 +63,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.UnitControl
         ///     Gets or sets the move action.
         /// </summary>
         IAbilityAction MoveAction { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the orbwalker.
-        /// </summary>
-        Orbwalker Orbwalker { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether orbwalking.

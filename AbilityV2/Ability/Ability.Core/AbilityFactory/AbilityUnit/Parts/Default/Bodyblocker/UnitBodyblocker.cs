@@ -11,7 +11,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Bodyblocker
     using Ensage;
     using Ensage.Common.Extensions;
     using Ensage.Common.Extensions.SharpDX;
-    using Ensage.Common.Objects.UtilityObjects;
 
     using SharpDX;
 
@@ -305,7 +304,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Bodyblocker
                 }
                 else
                 {
-                    infront = this.Target.SourceUnit.InFront(250);
+                    infront = this.Target.SourceUnit.InFront(200);
                 }
             }
 

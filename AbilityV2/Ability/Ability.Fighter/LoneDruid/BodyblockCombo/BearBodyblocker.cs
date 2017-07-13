@@ -8,7 +8,7 @@
         public BearBodyblocker(IAbilityUnit unit)
             : base(unit)
         {
-            this.IssueSleep = 200;
+            this.IssueSleep = 150;
         }
     }
 }
