@@ -86,7 +86,7 @@
 
             var ping = Game.Ping;
 
-            var invisible = Me.IsInvisible() && Me.ClassID != ClassID.CDOTA_Unit_Hero_Riki
+            var invisible = Me.IsInvisible() && Me.ClassId != ClassId.CDOTA_Unit_Hero_Riki
                             && (!Me.HasModifier("modifier_templar_assassin_meld") || !Orbwalking.CanCancelAnimation());
 
             if (!invisible && MainMenu.Menu.Item("Ability#.EnableAutoUsage").GetValue<bool>()
@@ -166,7 +166,7 @@
                     }
                 }
 
-                if (Me.ClassID == ClassID.CDOTA_Unit_Hero_TemplarAssassin && target != null && target.IsVisible)
+                if (Me.ClassId == ClassId.CDOTA_Unit_Hero_TemplarAssassin && target != null && target.IsVisible)
                 {
                     var meld = Me.Spellbook.SpellW;
                     if (meld.ManaCost <= meMana && meld.Cooldown >= 0 && meld.Cooldown < UnitDatabase.GetAttackRate(Me)
@@ -226,7 +226,7 @@
 
         public static bool LaunchSnowball()
         {
-            if (Me.ClassID != ClassID.CDOTA_Unit_Hero_Tusk)
+            if (Me.ClassId != ClassId.CDOTA_Unit_Hero_Tusk)
             {
                 return false;
             }
@@ -315,7 +315,7 @@
                 return;
             }
 
-            if (args.TargetPosition != Vector3.Zero && args.Order == Order.MoveLocation)
+            if (args.TargetPosition != Vector3.Zero && args.OrderId == OrderId.MoveLocation)
             {
                 lastOrderPosition = args.TargetPosition;
             }

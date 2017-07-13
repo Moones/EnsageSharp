@@ -38,7 +38,7 @@
             Drawing.OnDraw += GankDamage.Drawing_OnDraw;
             Drawing.OnDraw += HpBar.Update;
             Drawing.OnDraw += AbilityOverlay.Drawing_OnDraw;
-            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
+            if (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Rubick)
             {
                 Events.OnUpdate += Rubick.Game_OnUpdate;
                 rubick = true;

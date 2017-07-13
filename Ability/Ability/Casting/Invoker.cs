@@ -121,7 +121,7 @@
             if (!MainMenu.ComboKeysMenu.Item("abilityKey1").GetValue<KeyBind>().Active)
             {
                 return MainMenu.InvokerMenu.Item("Ability#.InvokerInvoke").GetValue<bool>()
-                       && AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker
+                       && AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Invoker
                        && MyAbilities.InvokerInvoke.CanBeCasted()
                        && (ability.Cooldown <= 0.5
                            && ability.ManaCost + MyAbilities.InvokerInvoke.ManaCost < AbilityMain.Me.Mana);
@@ -133,7 +133,7 @@
             }
 
             return MainMenu.InvokerMenu.Item("Ability#.InvokerInvoke").GetValue<bool>()
-                   && AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker
+                   && AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Invoker
                    && MyAbilities.InvokerInvoke.CanBeCasted()
                    && (ability.Cooldown <= 0.5
                        && ability.ManaCost + MyAbilities.InvokerInvoke.ManaCost < AbilityMain.Me.Mana);

@@ -84,7 +84,7 @@
                 }
             }
 
-            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker && !ability.CanBeCasted())
+            if (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Invoker && !ability.CanBeCasted())
             {
                 var invoked = ability.Invoke();
                 if (!invoked)

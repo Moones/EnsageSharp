@@ -22,7 +22,7 @@
             {
                 baseEntity =
                     ObjectManager.GetEntities<Unit>()
-                        .FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Unit_Fountain && x.Team == AbilityMain.Me.Team);
+                        .FirstOrDefault(x => x.ClassId == ClassId.CDOTA_Unit_Fountain && x.Team == AbilityMain.Me.Team);
             }
 
             return baseEntity != null ? baseEntity.Position : Vector3.Zero;

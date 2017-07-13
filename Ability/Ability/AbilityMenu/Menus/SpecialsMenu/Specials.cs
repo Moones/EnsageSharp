@@ -52,7 +52,7 @@
                 RangeDrawing.AddRange(spell);
             }
 
-            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Rubick)
+            if (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Rubick)
             {
                 var spellSteal = AbilityMain.Me.FindSpell("rubick_spell_steal");
                 if (spellSteal != null)

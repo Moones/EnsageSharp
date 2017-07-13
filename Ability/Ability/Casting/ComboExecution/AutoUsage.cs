@@ -74,7 +74,7 @@
             }
 
             Ability tuskSnowBall;
-            if (me.ClassID == ClassID.CDOTA_Unit_Hero_Tusk && Dictionaries.InDamageDictionary.ContainsKey(hero.Handle)
+            if (me.ClassId == ClassId.CDOTA_Unit_Hero_Tusk && Dictionaries.InDamageDictionary.ContainsKey(hero.Handle)
                 && (Dictionaries.OutDamageDictionary[hero.Handle] + Dictionaries.InDamageDictionary[hero.Handle])
                 >= enemyHero.Health && Utils.SleepCheck("tusk_snowball") && heroDistance <= 1350
                 && me.FindSpell("tusk_snowball", out tuskSnowBall).CanBeCasted())

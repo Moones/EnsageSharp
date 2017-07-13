@@ -23,6 +23,8 @@
 
         public static Menu AbilityOverlayMenu;
 
+        public static Menu ManaBarMenu;
+
         public static Menu BlinkMenu;
 
         public static Menu ComboKeysMenu;
@@ -61,13 +63,14 @@
             Silences.SilencesMenu = new Menu("Silences", "silencesMenu" + AbilityMain.Me.Name);
             BlinkMenu = new Menu("Blink Configuration", "Ability#.Blink");
             OptionsMenu = new Menu("Options", "abilityOptions");
-            if (AbilityMain.Me.ClassID == ClassID.CDOTA_Unit_Hero_Invoker)
+            if (AbilityMain.Me.ClassId == ClassId.CDOTA_Unit_Hero_Invoker)
             {
                 InvokerMenu = new Menu("Invoker Configuration", "Ability#.InvokerConfig");
             }
 
             DamageIndicatorMenu = new Menu("DamageIndicator", "abilityDamageIndicator");
             GankDamageMenu = new Menu("GankDamage", "abilityGankDamage");
+            ManaBarMenu = new Menu("Mana Bar", "manaBar");
             AbilityOverlayMenu = new Menu("Ability Overlay", "abilityOverlayMenu");
             ComboKeysMenu = new Menu("Combo Keys", "comboKeysMenu");
             RangeDrawingMenu = new Menu("Ability Ranges", "Ability.RangeMenu");
