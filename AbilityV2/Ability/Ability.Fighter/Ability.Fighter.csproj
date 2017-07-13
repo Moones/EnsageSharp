@@ -45,8 +45,7 @@
     <Reference Include="SharpDX">
       <HintPath>C:\NvdKTVgtv\References\SharpDX.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Mathematics, Version=3.1.0.0, Culture=neutral, PublicKeyToken=7e3dc52b16ce4f66, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="SharpDX.Mathematics">
       <HintPath>C:\NvdKTVgtv\References\SharpDX.Mathematics.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.XInput">
