@@ -66,6 +66,24 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Bodyblocker
 
         public bool PreciseIssue()
         {
+            if (!this.Enabled || !this.issueSleeper.Sleeping)
+            {
+                return false;
+            }
+
+            if (!this.Unit.TargetSelector.TargetIsSet || !this.Target.Visibility.Visible || !this.Target.SourceUnit.IsAlive
+                || this.Target.Position.Current.Distance2D(this.Unit.Position.Current) > this.MaxTargetDistance)
+            {
+                //this.Unit.TargetSelector.GetTarget();
+                return false;
+            }
+
+            if ((!this.wasMoving && this.Target.SourceUnit.NetworkActivity == NetworkActivity.Move)
+                || (Math.Abs(this.lastRad - this.Target.SourceUnit.RotationRad) > Math.PI / 5))
+            {
+                return this.Bodyblock();
+            }
+
             return false;
         }
 
@@ -214,6 +232,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Bodyblocker
             return true;
         }
 
+        private double lastRad;
+
+        private bool wasMoving;
+
         public bool Bodyblock()
         {
             var unitPosition = this.Unit.Position.PredictedByLatency;
@@ -236,7 +258,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Bodyblocker
                                   + this.Target.SourceUnit.HullRadius + 100 < targetPosition.Distance2D(infront);
             var distanceFromSegment2 = unitPosition.Distance2D(
                  Vector2Extensions.ToVector3(projectionInfo2.SegmentPoint));
-            var canBlock = (this.Unit.SourceUnit.NetworkActivity == NetworkActivity.Move || this.moveOrderWasSent)
+            this.wasMoving = this.Unit.SourceUnit.NetworkActivity == NetworkActivity.Move;
+            var canBlock = (this.wasMoving || this.moveOrderWasSent)
                            && (projectionInfo2.IsOnSegment
                                || distanceFromSegment2 < this.Target.SourceUnit.HullRadius / 2) && isCloserToFront;
             if (!canBlock && (projectionInfo.IsOnSegment
@@ -271,16 +294,13 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Bodyblocker
 
                 if (!isCloserToFront)
                 {
-                    if (!isCloserToFront)
+                    if (distanceFromSegment2 < this.Target.SourceUnit.HullRadius + this.Unit.SourceUnit.HullRadius + 50)
                     {
-                        if (distanceFromSegment2 < this.Target.SourceUnit.HullRadius + this.Unit.SourceUnit.HullRadius + 50)
-                        {
-                            infront = Pathfinding.ExtendUntilWall(position, direction, distance + 500, this.Unit.Pathfinder);
-                        }
-                        else
-                        {
-                            infront = Pathfinding.ExtendUntilWall(unitPosition, direction, 500, this.Unit.Pathfinder);
-                        }
+                        infront = Pathfinding.ExtendUntilWall(position, direction, distance + 500, this.Unit.Pathfinder);
+                    }
+                    else
+                    {
+                        infront = Pathfinding.ExtendUntilWall(unitPosition, direction, 500, this.Unit.Pathfinder);
                     }
                 }
                 //else
@@ -290,7 +310,7 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Bodyblocker
             }
             else
             {
-                if (!this.Target.SourceUnit.CanMove() || this.Target.SourceUnit.NetworkActivity != NetworkActivity.Move)
+                if (!this.Target.SourceUnit.CanMove() || !this.wasMoving)
                 {
                     this.moveOrderWasSent = false;
                     return false;

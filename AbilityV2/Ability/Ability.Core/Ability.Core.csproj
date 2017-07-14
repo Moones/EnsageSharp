@@ -197,6 +197,10 @@
     <Compile Include="AbilityFactory\AbilityTalent\Parts\IAbilityTalentPart.cs" />
     <Compile Include="AbilityFactory\AbilityUnit\Metadata\AbilityUnitMetadataAttribute.cs" />
     <Compile Include="AbilityFactory\AbilityUnit\Metadata\IAbilityUnitMetadata.cs" />
+    <Compile Include="AbilityFactory\AbilityUnit\Parts\Default\AttackAnimationTracker\AttackAnimationTracker.cs" />
+    <Compile Include="AbilityFactory\AbilityUnit\Parts\Default\AttackAnimationTracker\IAttackAnimationTracker.cs" />
+    <Compile Include="AbilityFactory\AbilityUnit\Parts\Default\AttackAnimation\AttackAnimation.cs" />
+    <Compile Include="AbilityFactory\AbilityUnit\Parts\Default\AttackAnimation\IAttackAnimation.cs" />
     <Compile Include="AbilityFactory\AbilityUnit\Parts\Default\AttackRange\IUnitAttackRange.cs" />
     <Compile Include="AbilityFactory\AbilityUnit\Parts\Default\AttackRange\UnitAttackRange.cs" />
     <Compile Include="AbilityFactory\AbilityUnit\Parts\Default\Bodyblocker\IUnitBodyblocker.cs" />

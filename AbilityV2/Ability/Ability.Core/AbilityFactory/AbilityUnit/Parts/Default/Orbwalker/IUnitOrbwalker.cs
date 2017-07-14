@@ -19,10 +19,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Orbwalker
 
         bool Enabled { get; set; }
 
-        float NextAttackTime { get; set; }
-
-        float CancelAnimationTime { get; set;}
-
         bool BeforeAttack();
 
         bool AfterAttack();
@@ -32,7 +28,5 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Orbwalker
         bool CantAttack();
 
         bool Meanwhile();
-
-        void AttackStarted(float castPoint);
     }
 }

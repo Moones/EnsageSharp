@@ -19,6 +19,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
 
     using Ability.Core.AbilityFactory.AbilitySkill;
     using Ability.Core.AbilityFactory.AbilityUnit.Metadata;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.AttackAnimation;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.AttackAnimationTracker;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.AttackRange;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.DamageManipulation;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Health;
@@ -86,6 +88,17 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer
                     });
             this.AssignPart<IUnitAttackRange>(unit => new UnitAttackRange(unit));
             this.AssignPart<IUnitTurnRate>(unit => new UnitTurnRate(unit));
+            this.AssignPart<IAttackAnimation>(unit => new AttackAnimation(unit));
+            this.AssignPart<IAttackAnimationTracker>(
+                unit =>
+                    {
+                        if (!unit.IsEnemy && unit.SourceUnit.IsControllable)
+                        {
+                            return new AttackAnimationTracker(unit);
+                        }
+
+                        return null;
+                    });
         }
 
         #endregion

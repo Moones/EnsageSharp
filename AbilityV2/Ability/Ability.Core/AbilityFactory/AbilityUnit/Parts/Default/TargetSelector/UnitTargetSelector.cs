@@ -114,10 +114,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.TargetSelector
                 }
             }
 
-            if (result != null)
-            {
-                Console.WriteLine("setting target " + result.Name);
-            }
+            //if (result != null)
+            //{
+            //    Console.WriteLine("setting target " + result.Name);
+            //}
 
             this.Target = result;
             return result;

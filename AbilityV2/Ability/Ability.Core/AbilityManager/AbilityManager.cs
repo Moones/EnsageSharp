@@ -886,15 +886,13 @@ namespace Ability.Core.AbilityManager
             var abilityUnit = this.AbilityFactory.Value.CreateNewUnit(unit, this.LocalTeam);
             Console.WriteLine("adding unit " + abilityUnit.Name);
             this.AssignSkills(unit, abilityUnit);
-            if (abilityUnit.IsCreep)
+
+            if (abilityUnit.SourceUnit.IsControllable)
             {
                 this.controllableUnits.Add(unit.Handle, abilityUnit);
             }
-            else
-            {
-                this.allies.Add(unit.Handle, abilityUnit);
-            }
 
+            this.allies.Add(unit.Handle, abilityUnit);
             this.units.Add(unit.Handle, abilityUnit);
             this.OnUnitAdded(new UnitEventArgs { AbilityUnit = abilityUnit });
             this.abilityUnitProvider.Next(abilityUnit);

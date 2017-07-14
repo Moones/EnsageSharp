@@ -22,6 +22,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
     using Ability.Core.AbilityFactory.AbilityTeam;
     using Ability.Core.AbilityFactory.AbilityUnit.Data;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.AttackAnimation;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.AttackAnimationTracker;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.AttackRange;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.DamageManipulation;
@@ -394,6 +396,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         public bool IsHero { get; }
 
         public Hero SourceHero { get; }
+
+        public IAttackAnimation AttackAnimation { get; set; }
+
+        public IAttackAnimationTracker AttackAnimationTracker { get; set; }
 
         #endregion
     }

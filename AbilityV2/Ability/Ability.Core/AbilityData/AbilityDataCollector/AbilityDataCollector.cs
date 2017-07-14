@@ -201,6 +201,13 @@ namespace Ability.Core.AbilityData.AbilityDataCollector
 
         private void Unit_OnAnimationChanged(Entity sender, EventArgs args)
         {
+            //if (sender.Handle.Equals(this.AbilityUnitManager.Value.LocalHero.UnitHandle))
+            //{
+            //    var animation = this.AbilityUnitManager.Value.LocalHero.SourceUnit.Animation;
+            //    Console.WriteLine(
+            //        animation.Name + " " + animation.SequenceStartTime + " "
+            //        + this.AbilityUnitManager.Value.LocalHero.SourceUnit.NetworkActivity + " rawgametime: " + Game.RawGameTime);
+            //}
         }
 
         private void ObjectManager_OnRemoveEntity(EntityEventArgs args)
@@ -272,9 +279,8 @@ namespace Ability.Core.AbilityData.AbilityDataCollector
 
             foreach (var keyValuePair in this.AbilityUnitManager.Value.Units)
             {
-                if (!keyValuePair.Value.SourceUnit.IsAlive && !(keyValuePair.Value.SourceUnit is Hero))
+                if (!keyValuePair.Value.SourceUnit.IsAlive)
                 {
-                    keyValuePair.Value.Dispose();
                     continue;
                 }
 
@@ -283,7 +289,7 @@ namespace Ability.Core.AbilityData.AbilityDataCollector
                 //keyValuePair.Value.ScreenInfo.Update();
                 keyValuePair.Value.DataReceiver.Drawing_OnDraw();
 
-                if (keyValuePair.Value.SourceUnit.IsAlive && !keyValuePair.Value.IsEnemy
+                if (!keyValuePair.Value.IsEnemy
                     && keyValuePair.Value.SourceUnit.IsControllable)
                 {
                     foreach (var valueOrderIssuer in keyValuePair.Value.OrderIssuers)
@@ -452,12 +458,18 @@ namespace Ability.Core.AbilityData.AbilityDataCollector
                         case NetworkActivity.Attack2:
                         case NetworkActivity.AttackEvent:
 
+                            //if (sender.Handle.Equals(this.AbilityUnitManager.Value.LocalHero.UnitHandle))
+                            //{
+                            //    //var animation = this.AbilityUnitManager.Value.LocalHero.SourceUnit.Animation;
+                            //    Console.WriteLine("netw changed: " + Game.RawGameTime);
+                            //}
+
                             //Console.WriteLine(args.PropertyName + " " + args.NewValue);
-                            foreach (var orbwalker in this.Orbwalkers)
+                            foreach (var unit in this.AbilityUnitManager.Value.ControllableUnits)
                             {
-                                if (orbwalker.Unit.UnitHandle.Equals(sender.Handle))
+                                if (unit.Value.SourceUnit.IsAlive && unit.Value.UnitHandle.Equals(sender.Handle))
                                 {
-                                    orbwalker.AttackStarted((float)(orbwalker.Unit.SourceUnit.AttackPoint() * 1000f));
+                                    unit.Value.AttackAnimationTracker.AttackStarted();
                                 }
                             }
 
@@ -562,13 +574,12 @@ namespace Ability.Core.AbilityData.AbilityDataCollector
             var orderSleeping = this.orderSleeper.Sleeping;
             var orderCount = 0;
 
-            foreach (var keyValuePair in this.AbilityUnitManager.Value.Units)
+            foreach (var keyValuePair in this.AbilityUnitManager.Value.ControllableUnits)
             {
                 //Console.WriteLine("unit " + keyValuePair.Value.Name);
                 keyValuePair.Value.DataReceiver.Game_OnUpdate();
 
-                if (!orderSleeping && keyValuePair.Value.SourceUnit.IsAlive && !keyValuePair.Value.IsEnemy
-                    && keyValuePair.Value.SourceUnit.IsControllable)
+                if (!orderSleeping && keyValuePair.Value.SourceUnit.IsAlive)
                 {
                     foreach (var valueOrderIssuer in keyValuePair.Value.OrderIssuers)
                     {

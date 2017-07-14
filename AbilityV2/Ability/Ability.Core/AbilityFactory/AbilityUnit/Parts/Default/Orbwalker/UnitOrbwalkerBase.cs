@@ -135,14 +135,14 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Orbwalker
             }
 
             this.Time = (Game.RawGameTime) * 1000 + Game.Ping;
-            this.NextAttack = this.Time - this.NextAttackTime - (this.Unit.TurnRate.GetTurnTime(this.Target) * 1000);
+            this.NextAttack = this.Time - this.Unit.AttackAnimationTracker.NextAttackTime + (this.Unit.TurnRate.GetTurnTime(this.Target) * 1000);
             //Console.WriteLine(time + " " + Game.Ping + " " + this.NextAttackTime + " " + (this.Unit.SourceUnit.GetTurnTime(this.Target.SourceUnit) * 1000));
 
             if (this.NextAttack < 0)
             {
                 this.MoveToAttack = false;
                 this.beforeAttackExecuted = false;
-                if (this.Time > this.CancelAnimationTime)
+                if (this.Time >= this.Unit.AttackAnimationTracker.CancelAnimationTime)
                 {
                     if (this.afterAttackExecuted)
                     {
@@ -157,6 +157,9 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Orbwalker
             }
             else if (!this.Attacking)
             {
+                //Console.WriteLine(
+                //    this.Unit.TurnRate.GetTurnTime(this.Target) + " " + this.Unit.AttackAnimation.GetAttackRate() + " "
+                //    + this.Unit.SourceUnit.AttackRate());
                 this.afterAttackExecuted = false;
                 if (this.beforeAttackExecuted)
                 {
@@ -223,10 +226,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Orbwalker
         public IAbilityUnit Target => this.Unit.TargetSelector.Target;
 
         public bool Enabled { get; set; }
-
-        public float NextAttackTime { get; set; }
-
-        public float CancelAnimationTime { get; set; }
 
         public virtual bool BeforeAttack()
         {
@@ -365,15 +364,6 @@ namespace Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Orbwalker
         public virtual bool Meanwhile()
         {
             return this.Move();
-        }
-
-        public void AttackStarted(float castPoint)
-        {
-            //Console.WriteLine("attack started");
-            //Console.WriteLine(castPoint);
-            var time = Game.RawGameTime * 1000;
-            this.CancelAnimationTime = castPoint + time;
-            this.NextAttackTime = (float)(this.Unit.SourceUnit.AttackRate() * 1000) + time;
         }
 
         public virtual bool NoTarget()

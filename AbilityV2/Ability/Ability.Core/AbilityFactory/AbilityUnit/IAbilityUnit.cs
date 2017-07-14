@@ -19,6 +19,8 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
     using Ability.Core.AbilityFactory.AbilitySkill;
     using Ability.Core.AbilityFactory.AbilityTeam;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.AttackAnimation;
+    using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.AttackAnimationTracker;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.AttackRange;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.Composer;
     using Ability.Core.AbilityFactory.AbilityUnit.Parts.Default.DamageManipulation;
@@ -164,6 +166,10 @@ namespace Ability.Core.AbilityFactory.AbilityUnit
         ///     Gets the screen position.
         /// </summary>
         IScreenInfo ScreenInfo { get; set; }
+
+        IAttackAnimation AttackAnimation { get; set; }
+
+        IAttackAnimationTracker AttackAnimationTracker { get; set; }
 
         /// <summary>
         ///     Gets the skill book.
